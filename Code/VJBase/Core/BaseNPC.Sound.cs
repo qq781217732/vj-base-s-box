@@ -325,13 +325,13 @@ public partial class BaseNPC
 
     /// <summary>
     /// EmitSound — funcs.lua:89-98 VJ.EmitSound.
-    /// Fire-and-forget sound at entity position (no handle stored).
+    /// Fire-and-forget sound at entity position. Returns handle for optional storage/stopping.
     /// </summary>
-    protected void EmitSound(string sdFile, int sdLevel, float sdPitch)
+    protected SoundHandle EmitSound(string sdFile, int sdLevel, float sdPitch)
     {
-        if (string.IsNullOrEmpty(sdFile)) return;
+        if (string.IsNullOrEmpty(sdFile)) return null;
         sdFile = OnPlaySound(sdFile);
-        if (string.IsNullOrEmpty(sdFile)) return;
+        if (string.IsNullOrEmpty(sdFile)) return null;
 
         var handle = Sound.Play(sdFile, GameObject.WorldPosition);
         if (handle is { IsValid: true })
@@ -340,6 +340,7 @@ public partial class BaseNPC
             // Phase 3: sdLevel (dB) → SoundHandle.Distance / Decibels mapping
         }
         OnEmitSound(sdFile);
+        return handle;
     }
 
     /// <summary>GetSoundPitch — core.lua:940-961. Resolves pitchVar to a float.</summary>
@@ -554,7 +555,7 @@ public partial class BaseNPC
                     if (customSD != null) pickedSD = customSD;
                     IdleSoundBlockTime = curTime + Game.Random.Next(3, 5);
                     CurrentMedicAfterHealSound = (sdType != null ? sdType(pickedSD, MedicOnHealSoundLevel, GetSoundPitch(MedicOnHealSoundPitch))
-                        : CreateSound(pickedSD, MedicOnHealSoundLevel, GetSoundPitch(MedicOnHealSoundPitch)));
+                        : EmitSound(pickedSD, MedicOnHealSoundLevel, GetSoundPitch(MedicOnHealSoundPitch)));
                 }
             }
         }
@@ -663,7 +664,7 @@ public partial class BaseNPC
                     StopSD(CurrentSpeechSound);
                     StopSD(CurrentIdleSound);
                     NextIdleSoundT += 2;
-                    NextSuppressingSoundT = curTime + Game.Random.Next(3, 5);
+                    NextSuppressingSoundT = curTime + VJUtility.Rand(2.5f, 4f); // Lua math.random(2.5,4) is float
                     CurrentSpeechSound = (sdType != null ? sdType(pickedSD, CallForHelpSoundLevel, GetSoundPitch(CallForHelpSoundPitch))
                         : CreateSound(pickedSD, CallForHelpSoundLevel, GetSoundPitch(CallForHelpSoundPitch)));
                 }
@@ -727,7 +728,7 @@ public partial class BaseNPC
                     StopSD(CurrentMeleeAttackMissSound);
                     IdleSoundBlockTime = curTime + 1;
                     CurrentMeleeAttackMissSound = (sdType != null ? sdType(pickedSD, MeleeAttackMissSoundLevel, GetSoundPitch(MeleeAttackMissSoundPitch))
-                        : CreateSound(pickedSD, MeleeAttackMissSoundLevel, GetSoundPitch(MeleeAttackMissSoundPitch)));
+                        : EmitSound(pickedSD, MeleeAttackMissSoundLevel, GetSoundPitch(MeleeAttackMissSoundPitch)));
                 }
             }
         }
@@ -747,7 +748,7 @@ public partial class BaseNPC
                     NextAlertSoundT = dur;
                     NextInvestigateSoundT = curTime + 2;
                     IdleSoundBlockTime = curTime + Game.Random.Next(2, 4);
-                    NextSuppressingSoundT = curTime + Game.Random.Next(3, 5);
+                    NextSuppressingSoundT = curTime + VJUtility.Rand(2.5f, 4f); // Lua math.random(2.5,4) is float
                     CurrentSpeechSound = (sdType != null ? sdType(pickedSD, BecomeEnemyToPlayerSoundLevel, GetSoundPitch(BecomeEnemyToPlayerPitch))
                         : CreateSound(pickedSD, BecomeEnemyToPlayerSoundLevel, GetSoundPitch(BecomeEnemyToPlayerPitch)));
                 }
@@ -817,7 +818,7 @@ public partial class BaseNPC
                 if ((pickedSD != null && Game.Random.Next(1, ImpactSoundChance + 1) == 1) || customSD != null)
                 {
                     if (customSD != null) pickedSD = customSD;
-                    EmitSound(pickedSD, ImpactSoundLevel, GetSoundPitch(ImpactSoundPitch));
+                    CurrentImpactSound = EmitSound(pickedSD, ImpactSoundLevel, GetSoundPitch(ImpactSoundPitch));
                 }
             }
         }
@@ -955,7 +956,7 @@ public partial class BaseNPC
                     StopSD(CurrentSpeechSound);
                     IdleSoundBlockTime = curTime + 1;
                     CurrentSpeechSound = (sdType != null ? sdType(pickedSD, LeapAttackDamageSoundLevel, GetSoundPitch(LeapAttackDamageSoundPitch))
-                        : CreateSound(pickedSD, LeapAttackDamageSoundLevel, GetSoundPitch(LeapAttackDamageSoundPitch)));
+                        : EmitSound(pickedSD, LeapAttackDamageSoundLevel, GetSoundPitch(LeapAttackDamageSoundPitch)));
                 }
             }
         }
@@ -971,7 +972,7 @@ public partial class BaseNPC
                     if (!IdleSoundsWhileAttacking) StopSD(CurrentIdleSound);
                     IdleSoundBlockTime = curTime + 1;
                     CurrentLeapAttackDamageMissSound = (sdType != null ? sdType(pickedSD, LeapAttackDamageMissSoundLevel, GetSoundPitch(LeapAttackDamageMissSoundPitch))
-                        : CreateSound(pickedSD, LeapAttackDamageMissSoundLevel, GetSoundPitch(LeapAttackDamageMissSoundPitch)));
+                        : EmitSound(pickedSD, LeapAttackDamageMissSoundLevel, GetSoundPitch(LeapAttackDamageMissSoundPitch)));
                 }
             }
         }
