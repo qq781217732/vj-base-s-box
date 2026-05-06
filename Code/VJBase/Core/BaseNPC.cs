@@ -271,22 +271,25 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public virtual float GetAttackTimer(float mainTime, float executionTime, float animDur)
     {
         float rate = MathF.Max(AnimPlaybackRate, 0.01f);
-        // lua:974 — mainTime is nil/false → auto-calculate
-        if (mainTime <= 0)
+        // lua:974 — mainTime is nil/false → auto-calculate (sentinel: < 0, so 0 is a valid value)
+        if (mainTime < 0)
         {
-            // lua:976 — execution was event-based (no timer delay)
+            // lua:976 — executionTime is nil/false (= event-based, <=0 sentinel)
             if (executionTime <= 0)
                 return animDur / rate;
-            // lua:979 — execution was timer-based
+            // lua:979 — executionTime > 0 (= timer-based)
             else
             {
+                // lua:981 — animDur <= 0 → discard animation, use execution time only
                 if (animDur <= 0)
                     return executionTime / rate;
+                // lua:984 — animDur > 0 → animation has duration, subtract execution delay
                 else
                     return animDur - (executionTime / rate);
             }
         }
-        // lua:991 — number given, use directly
+        // lua:988-992 — number given, use directly (includes 0 = immediate)
+        // SKIP: lua:988 — istable(mainTime) random range (VJ.SET) — Phase 3
         else
         {
             return mainTime / rate;
@@ -304,19 +307,19 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
             case VJAttackType.Melee:
                 if (!skipStopAttacks)
                     AttackResetTime = curTime + GetAttackTimer(NextAnyAttackTime_Melee, TimeUntilMeleeAttackDamage, AttackAnimDuration);
-                AttackReEnableTime = curTime + ((NextMeleeAttackTime > 0 ? NextMeleeAttackTime : 0.8f) / rate);
+                AttackReEnableTime = curTime + GetAttackTimer(NextMeleeAttackTime, 0, 0);
                 break;
 
             case VJAttackType.Range:
                 if (!skipStopAttacks)
                     AttackResetTime = curTime + GetAttackTimer(NextAnyAttackTime_Range, TimeUntilRangeAttackProjectileRelease, AttackAnimDuration);
-                AttackReEnableTime = curTime + ((NextRangeAttackTime > 0 ? NextRangeAttackTime : 3f) / rate);
+                AttackReEnableTime = curTime + GetAttackTimer(NextRangeAttackTime, 0, 0);
                 break;
 
             case VJAttackType.Leap:
                 if (!skipStopAttacks)
                     AttackResetTime = curTime + GetAttackTimer(NextAnyAttackTime_Leap, TimeUntilLeapAttackDamage, AttackAnimDuration);
-                AttackReEnableTime = curTime + ((NextLeapAttackTime > 0 ? NextLeapAttackTime : 3f) / rate);
+                AttackReEnableTime = curTime + GetAttackTimer(NextLeapAttackTime, 0, 0);
                 break;
 
             case VJAttackType.Grenade:
