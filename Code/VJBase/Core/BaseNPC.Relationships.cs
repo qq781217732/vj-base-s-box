@@ -260,26 +260,6 @@ public partial class BaseNPC
 
                 AddEntityRelationship(ent, (int)VJBase.Disposition.Like, 0);
 
-                // core.lua:2320-2334 — non-VJ NPC: tell them how to feel about us
-                if (entTypeVal == ENT_TYPE_NPC)
-                {
-                    var entBase = ent.Components.Get<BaseNPC>();
-                    bool isNonVJ = entBase == null || !entBase.IsVJBaseSNPC;
-                    if (isNonVJ && entBase != null)
-                    {
-                        var myHandle = HandlePerceivedRelationship;
-                        if (myHandle != null)
-                        {
-                            var result = myHandle(this, ent, distanceToEnt, false);
-                            entBase.AddEntityRelationship(GameObject, result ?? (int)VJBase.Disposition.Hate, 0);
-                        }
-                        else
-                        {
-                            entBase.AddEntityRelationship(GameObject, (int)VJBase.Disposition.Hate, 0);
-                        }
-                    }
-                }
-
                 // core.lua:2303-2326 — YieldToAlliedPlayers push detection
                 if (entTypeVal == ENT_TYPE_PLAYER && YieldToAlliedPlayers && !IsGuard)
                 {
@@ -315,6 +295,26 @@ public partial class BaseNPC
             // ═══════════════════════════════════════════
             else
             {
+                // core.lua:2321-2334 — non-VJ NPC: tell them how to feel about us
+                if (entTypeVal == ENT_TYPE_NPC)
+                {
+                    var entBase = ent.Components.Get<BaseNPC>();
+                    bool isNonVJ = entBase == null || !entBase.IsVJBaseSNPC;
+                    if (isNonVJ && entBase != null)
+                    {
+                        var myHandle = HandlePerceivedRelationship;
+                        if (myHandle != null)
+                        {
+                            var result = myHandle(this, ent, distanceToEnt, false);
+                            entBase.AddEntityRelationship(GameObject, result ?? (int)VJBase.Disposition.Hate, 0);
+                        }
+                        else
+                        {
+                            entBase.AddEntityRelationship(GameObject, (int)VJBase.Disposition.Hate, 0);
+                        }
+                    }
+                }
+
                 var ene = GetEnemy();
                 bool eneValid = ene.IsValid();
 
