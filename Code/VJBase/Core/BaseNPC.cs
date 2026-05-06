@@ -10,6 +10,7 @@ namespace VJBase;
 public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttributes
 {
     // ═══ Core Data Fields ═══
+    public bool IsVJBaseSNPC { get; set; } = true;
     public float NPCClass { get; set; }
     public float MaxYawSpeed { get; set; }
     public bool VJ_DEBUG { get; set; }
@@ -94,6 +95,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     // ═══ Perception Config ═══
     public float SightDistance { get; set; } = 6500;
     public float SightAngle { get; set; } = 156;
+    public float ViewOffset { get; set; } = 64f;
     public VJBehavior Behavior { get; set; } = VJBehavior.Aggressive;
 
     // ═══ Perception System ═══
@@ -126,6 +128,9 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     // Signature: Func<self=the entity being perceived, perceiver=this NPC, distance, isFriendly>
     // Returns: int? disposition override (null = no override, let normal logic proceed)
     public Func<GameObject, GameObject, float, bool, int?> HandlePerceivedRelationship { get; set; }
+    public bool IsDefaultNPC { get; set; }
+    public Func<GameObject, GameObject, float, bool> CanBeEngaged { get; set; }
+    public Action<GameObject> OnAlert { get; set; }
 
     // ═══ Attack Config ═══
     public bool MeleeAttackAnimationFaceEnemy { get; set; }
@@ -154,6 +159,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     // ═══ INPCConditions state (was NPCConditions.cs Dictionary<GameObject, HashSet>) ═══
     private HashSet<Condition> _conditions = new();
     private List<Condition> _activeIgnoreConditions = new();
+    private Dictionary<GameObject, float> _ignoreEnemyUntil = new();
 
     // ═══ AI State ═══
     public virtual void SetState(VJState state, float time = 0) { AIState = state; }
@@ -554,6 +560,9 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     /// <summary>Called by GetClosestSound to let NPC filter sounds</summary>
     public virtual bool ShouldIgnoreSound(SoundEvent pSound) => false;
 
+    /// <summary>FL_* flag check — Phase 3: proper flag system. Currently returns false.</summary>
+    public virtual bool HasEntityFlag(GameObject ent, int flag) => false;
+
     /// <summary>Sound priority for best-sound selection</summary>
     public virtual int GetSoundPriority(SoundEvent pSound) => (int)SoundPriority.Medium;
 
@@ -591,6 +600,13 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     // ForceSetEnemy, DoEnemyAlert, DoReadyAlert
     // ═══════════════════════════════════════════════
 
+    /// <summary>UpdateEnemyMemory — core.lua: enemy memory. Phase 3: full memory decay system.</summary>
+    protected virtual void UpdateEnemyMemory(GameObject ent, Vector3 pos)
+    {
+        if (ent == null || !ent.IsValid()) return;
+        EntityMemory["enemy_pos"] = pos;
+    }
+
     /// <summary>ForceSetEnemy — core.lua:2043</summary>
     public virtual void ForceSetEnemy(GameObject ent, bool stopMoving = false, bool maxPerf = false, bool hasEnemy = false)
     {
@@ -616,10 +632,11 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
         Enemy.Target = ent;
 
         // core.lua:2050: self:UpdateEnemyMemory(ent, ent:GetPos())
-        // SKIP: UpdateEnemyMemory — Phase 3 enemy memory system
+        UpdateEnemyMemory(ent, ent.WorldPosition);
 
         // core.lua:2053: self:IgnoreEnemyUntil(ent, 0)
-        // SKIP: Source engine API (IgnoreEnemyUntil), not in S&box
+        // Phase 3: Source engine API, S&Box equivalent = ignore enemy for a duration
+        _ignoreEnemyUntil[ent] = Time.Now;
 
         // core.lua:2054: self:SetNPCState(NPC_STATE_COMBAT)
         SetNPCState((int)NPCState.Combat);
@@ -677,10 +694,9 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
         Alerted = VJAlertState.Enemy;
 
         // core.lua:2081: self:OnAlert(ent)
-        // SKIP: OnAlert callback — Phase 3 event system
+        OnAlert?.Invoke(ent);
 
-        // core.lua:2082-2092: alert sound / animation
-        // SKIP: alert sounds — Phase 3
+        // SKIP: core.lua:2082-2092 — alert sounds, animations — Phase 3
     }
 }
 

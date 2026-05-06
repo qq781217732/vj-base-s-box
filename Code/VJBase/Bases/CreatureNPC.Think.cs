@@ -196,11 +196,26 @@ public partial class CreatureNPC
         sched.Init("SCHEDULE_ALERT_CHASE");
 
         // init.lua:1736-1737
-        sched.EngTask(doLOSChase ? EngineTask.GetPathToEnemyLOS : EngineTask.GetPathToEnemy, 0);
-        sched.EngTask(EngineTask.RunPath, 0);
-        sched.EngTask(EngineTask.WaitForMovement, 0);
-
-        // SKIP: init.lua:1738-1742 — doLOSChase=true branch uses schedule_alert_chaseLOS with RunCode_OnFinish, RunCode_OnFail callbacks. Phase 3.
+        if (doLOSChase)
+        {
+            // init.lua:1729-1743 — LOS chase with re-chase loop
+            sched.EngTask(EngineTask.GetPathToEnemyLOS, 0);
+            sched.EngTask(EngineTask.WaitForMovement, 0);
+            sched.CanShootWhenMoving = true;
+            sched.CanBeInterrupted = true;
+            sched.RunCodeOnFinish = () =>
+            {
+                var ene = GetEnemy();
+                if (ene.IsValid())
+                    SCHEDULE_ALERT_CHASE(false);
+            };
+        }
+        else
+        {
+            sched.EngTask(EngineTask.GetPathToEnemy, 0);
+            sched.EngTask(EngineTask.RunPath, 0);
+            sched.EngTask(EngineTask.WaitForMovement, 0);
+        }
 
         StartSchedule(sched);
     }

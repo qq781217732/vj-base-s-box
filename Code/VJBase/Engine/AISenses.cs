@@ -843,8 +843,10 @@ public class AISenses
 	protected Vector3 GetEyePos_Entity(GameObject ent)
 	{
 		if (ent == null) return Vector3.Zero;
-		// Phase 3: use model attachment "eyes" or player ViewOffset instead of hardcoded 64u
-		return ent.WorldPosition + Vector3.Up * 64f;
+			var baseNPC = ent.Components.Get<BaseNPC>();
+			float viewOffset = baseNPC?.ViewOffset ?? 64f;
+			// Phase 3: use model attachment "eyes" or player ViewOffset
+			return ent.WorldPosition + Vector3.Up * viewOffset;
 	}
 
 	protected bool HasSensingFlags(int flags) => (SensingFlagBits & flags) != 0;

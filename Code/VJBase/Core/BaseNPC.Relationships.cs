@@ -16,6 +16,7 @@ public partial class BaseNPC
     private const int ENT_TYPE_PLAYER = 2;
     private const int ENT_TYPE_NEXTBOT = 3;
     private const int ENT_TYPE_OTHER = 4;
+    private const int FL_NOTARGET = 1 << 16; // Source engine: entity ignored by AI targeting
 
     // ═══════════════════════════════════════════════
     // Perception helpers — Source engine equivalent
@@ -124,8 +125,8 @@ public partial class BaseNPC
                 memories[ent] = entMemory = new Dictionary<string, object>();
 
             // core.lua:2167: ent:IsFlagSet(FL_NOTARGET) or !ent:Alive()
-            // SKIP: ent:IsFlagSet(FL_NOTARGET) — Phase 3 flag system
-            if (!Alive(ent))
+            // Phase 3: FL_NOTARGET flag check via HasEntityFlag stub (always false until flag system)
+            if (HasEntityFlag(ent, FL_NOTARGET) || !Alive(ent))
             {
                 if (GetEnemy() == ent)
                     ResetEnemy(true, false);
@@ -190,8 +191,11 @@ public partial class BaseNPC
                             {
                                 if (friClass == "CLASS_PLAYER_ALLY")
                                 {
-                                    // SKIP: AlliedWithPlayerAllies + IsDefaultNPC check — Phase 3
-                                    if (myFriPlyAllies)
+                                    // core.lua:2227 — both have CLASS_PLAYER_ALLY: need AlliedWithPlayerAllies or IsDefaultNPC
+                                    var entBase = ent.Components.Get<BaseNPC>();
+                                    bool entAllyWithPlayers = entBase != null && entBase.AlliedWithPlayerAllies;
+                                    bool entIsDefault = entBase != null && entBase.IsDefaultNPC;
+                                    if ((myFriPlyAllies && entAllyWithPlayers) || entIsDefault)
                                         calculatedDisp = (int)VJBase.Disposition.Like;
                                 }
                                 else
@@ -240,7 +244,26 @@ public partial class BaseNPC
                     ResetEnemy(true, false);
 
                 AddEntityRelationship(ent, (int)VJBase.Disposition.Like, 0);
-                // SKIP: non-VJ NPC reverse relationship — Phase 3
+
+                // core.lua:2320-2334 — non-VJ NPC: tell them how to feel about us
+                if (entTypeVal == ENT_TYPE_NPC)
+                {
+                    var entBase = ent.Components.Get<BaseNPC>();
+                    bool isNonVJ = entBase == null || !entBase.IsVJBaseSNPC;
+                    if (isNonVJ && entBase != null)
+                    {
+                        var myHandle = HandlePerceivedRelationship;
+                        if (myHandle != null)
+                        {
+                            var result = myHandle(this, ent, distanceToEnt, false);
+                            entBase.AddEntityRelationship(GameObject, result ?? (int)VJBase.Disposition.Hate, 0);
+                        }
+                        else
+                        {
+                            entBase.AddEntityRelationship(GameObject, (int)VJBase.Disposition.Hate, 0);
+                        }
+                    }
+                }
 
                 // core.lua:2303-2326 — YieldToAlliedPlayers push detection
                 if (entTypeVal == ENT_TYPE_PLAYER && YieldToAlliedPlayers && !IsGuard)
@@ -263,12 +286,13 @@ public partial class BaseNPC
                                 && (delta.x * delta.x + delta.y * delta.y) < (yCalc * yCalc * 1.999396f))
                             {
                                 SetCondition(Condition.PlayerPushing);
-                                // SKIP: SetTarget(ent) if no target — Phase 3
+                                if (!GetTarget().IsValid())
+                                    SetTarget(ent);
                             }
                         }
                     }
-                    // SKIP: GetMoveType() != MOVETYPE_NOCLIP — Phase 3
-                    // SKIP: GetInternalVariable("m_vecSmoothedVelocity") — Phase 3
+                    // core.lua:2303: GetMoveType() != MOVETYPE_NOCLIP → Rigidbody check above is equivalent
+                    // Phase 3: m_vecSmoothedVelocity → currently using rb.Velocity (instantaneous)
                 }
             }
             // ═══════════════════════════════════════════
@@ -276,8 +300,6 @@ public partial class BaseNPC
             // ═══════════════════════════════════════════
             else
             {
-                // SKIP: core.lua:2339-2350 — non-VJ NPC reverse relationship handling — Phase 3
-
                 var ene = GetEnemy();
                 bool eneValid = ene.IsValid();
 
@@ -285,8 +307,16 @@ public partial class BaseNPC
                     || calculatedDisp == (int)VJBase.Disposition.Interest
                     || calculatedDisp == (int)VJBase.Disposition.Hate)
                 {
-                    // SKIP: core.lua:2357-2362 — ent.CanBeEngaged callback — Phase 3
-
+                    // core.lua:2341-2345 — CanBeEngaged: let entity veto engagement
+                    var entBaseNPC = ent.Components.Get<BaseNPC>();
+                    var entCanEngage = entBaseNPC?.CanBeEngaged;
+                    if (entCanEngage != null && !entCanEngage(ent, GameObject, distanceToEnt) && (!eneValid || ene != ent))
+                    {
+                        AddEntityRelationship(ent, (int)VJBase.Disposition.Interest, 0);
+                        calculatedDisp = (int)VJBase.Disposition.Interest;
+                    }
+                    else
+                    {
                     // core.lua:2364-2378 — core enemy detection
                     // Conditions: EnemyDetection ON + (not neutral OR already enemy-alerted) + (XRay OR visible) + in view cone
                     if (EnemyDetection
@@ -322,6 +352,7 @@ public partial class BaseNPC
                             calculatedDisp = (int)VJBase.Disposition.Interest;
                         }
                     }
+                    } // closes else (CanBeEngaged passed → run enemy detection)
                 }
                 else
                 {
