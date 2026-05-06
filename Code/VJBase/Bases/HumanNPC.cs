@@ -118,6 +118,46 @@ public partial class HumanNPC : CreatureNPC
     public bool Weapon_CanCrouchAttack { get; set; } = true;
     public int Weapon_CrouchAttackChance { get; set; } = 2;
 
+    // ═══ Damage Immunity (ported from init.lua:3944-3951 + shared defaults) ═══
+    public bool GodMode { get; set; }
+    public bool ForceDamageFromBosses { get; set; }
+    public bool AllowIgnition { get; set; } = true;
+    public bool Immune_Fire { get; set; }
+    public bool Immune_Explosive { get; set; }
+    public bool Immune_Electricity { get; set; }
+    public bool Immune_Melee { get; set; }
+    public bool Immune_Sonic { get; set; }
+    public bool Immune_Bullet { get; set; }
+    public bool Immune_Toxic { get; set; }
+    public bool Immune_Dissolve { get; set; }
+
+    // ═══ Damage Response Config (ported from init.lua:4020-4135) ═══
+    public int BecomeEnemyToPlayer { get; set; }
+    public int DamageByPlayerDispositionLevel { get; set; }
+    public object DamageResponse { get; set; } = true; // true / "OnlySearch" / "OnlyMove"
+    public bool CombatDamageResponse { get; set; } = true;
+    public float NextCombatDamageResponseT { get; set; }
+    public (float a, float b) CombatDamageResponse_CoverTime { get; set; } = (3f, 5f);
+    public (float a, float b) CombatDamageResponse_Cooldown { get; set; } = (15f, 20f);
+
+    // ═══ Ally Damage Response (ported from init.lua:4082-4100) ═══
+    public bool DamageAllyResponse { get; set; } = true;
+    public (float a, float b) DamageAllyResponse_Cooldown { get; set; } = (20f, 30f);
+    public List<string> AnimTbl_DamageAllyResponse { get; set; } = new();
+    public List<string> AnimTbl_TakingCover { get; set; } = new();
+    public bool Passive_AlliesRunOnDamage { get; set; }
+
+    // ═══ Blood / Effects (ported from init.lua:3967-3971) ═══
+    public bool Bleeds { get; set; } = true;
+    public bool HasBloodParticle { get; set; } = true;
+    public bool HasBloodDecal { get; set; } = true;
+
+    // ═══ Misc Damage Fields (ported from OnTakeDamage) ═══
+    public object SavedDmgInfo { get; set; }
+    public bool CanEat { get; set; }
+    public object EatingData { get; set; }
+    public bool CanChatMessage { get; set; }
+
     // ═══ Idle / Wander Config ═══
     public bool IdleAlwaysWander { get; set; }
 
@@ -132,4 +172,12 @@ public partial class HumanNPC : CreatureNPC
     public virtual void OnWeaponAttack() { }
     public virtual bool OnWeaponStrafe() => true;
     public virtual void OnWeaponReload() { }
+
+    // ═══ Damage Callbacks (stubs — Phase 3) ═══
+    public virtual void OnDamaged(object dmginfo, int hitgroup, string status) { }
+    public virtual void OnBleed(object dmginfo, int hitgroup) { }
+    public virtual void OnSetEnemyFromDamage(object dmginfo, int hitgroup) { }
+    public virtual void OnBecomeEnemyToPlayer(object dmginfo, int hitgroup) { }
+    public virtual void ResetFollowBehavior() { }
+    public virtual void ResetEatingBehavior(string reason) { }
 }

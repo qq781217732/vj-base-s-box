@@ -746,4 +746,158 @@ public partial class HumanNPC
         }
         return grenade;
     }
+
+    // ═══ OnTakeDamage — human_base/init.lua:3918-4172 ═══
+    /// <summary>Source engine damage callback. Returns 0 to block damage, 1 to allow.</summary>
+    public virtual int OnTakeDamage(object dmginfo, int hitgroup)
+    {
+        // ---- Block A: Entry guards (lua:3918-3923) ----
+        // lua:3919-3920: Get/validate attacker
+        // SKIP: lua:3919 — dmginfo:GetAttacker() → dmgAttacker — Phase 3 S&Box DamageInfo
+        // SKIP: lua:3920 — !IsValid(dmgAttacker) → dmgAttacker = false
+        // lua:3922-3923: Friendly bullet damage filter
+        // SKIP: lua:3923 — dmgAttacker && dmginfo:IsBulletDamage() && dmgAttacker:IsNPC()
+        //        && dmgAttacker:Disposition(self) != D_HT
+        //        && (dmgAttacker:GetClass() == self:GetClass() || self:Disposition(dmgAttacker) == D_LI)
+        //        → return 0 — Phase 3 damage system + entity type
+
+        // ---- Block B: Inflictor + ragdoll guard (lua:3925-3929) ----
+        // lua:3925-3926: Get/validate inflictor
+        // SKIP: lua:3925 — dmginfo:GetInflictor() → dmgInflictor — Phase 3 S&Box DamageInfo
+        // SKIP: lua:3929 — dmgInflictor && dmgInflictor:GetClass() == "prop_ragdoll"
+        //        && dmgInflictor:GetVelocity():Length() <= 100 → return 0 — Phase 3 entity type
+
+        // ---- Block C: Init + Guard (lua:3931-3934) ----
+        // lua:3932: hitgroup already passed as parameter (GetLastDamageHitGroup in Lua)
+        // lua:3933
+        OnDamaged(dmginfo, hitgroup, "Init");
+        // lua:3934: GodMode or damage <= 0 → skip
+        // SKIP: lua:3934 — GodMode || dmginfo:GetDamage() <= 0 → return 0 — Phase 3 godmode + damage info
+
+        // ---- Block D: Fire entity detection (lua:3936-3942) ----
+        // SKIP: lua:3939 — self:IsOnFire() → isFireEnt detection — Phase 3 fire system
+        // SKIP: lua:3940 — dmgInflictor:GetClass() == "entityflame" + dmgAttacker:GetClass() — Phase 3
+        // SKIP: lua:3941 — WaterLevel() > 1 → self:Extinguish() — Phase 3 fire/water
+        bool isFireEnt = false; // stub
+
+        // ---- Block E: Boss bypass (lua:3944-3947) ----
+        // lua:3945: if ForceDamageFromBosses && dmgAttacker.VJ_ID_Boss → goto skip_immunity
+        // SKIP: lua:3945-3946 — dmgAttacker.VJ_ID_Boss → goto skip_immunity — Phase 3 boss flag
+
+        // ---- Block F: Immunity chain (lua:3949-3951) ----
+        // lua:3950: Fire ignition block
+        // SKIP: lua:3950 — isFireEnt && !AllowIgnition → Extinguish() + return 0 — Phase 3 fire
+        // lua:3951: Full immunity OR-chain (Fire/Toxic/Bullet/Explosive/Dissolve/Electricity/Melee/Sonic)
+        // SKIP: lua:3951 — Immune_Fire && (DMG_BURN||DMG_SLOWBURN||isFireEnt)
+        //        || Immune_Toxic && (DMG_ACID||RADIATION||POISON||NERVEGAS||PARALYZE)
+        //        || Immune_Bullet && (IsBulletDamage||DMG_BULLET||AIRBOAT||BUCKSHOT||SNIPER)
+        //        || Immune_Explosive && (DMG_BLAST||BLAST_SURFACE||MISSILEDEFENSE)
+        //        || Immune_Dissolve && IsDamageType(DMG_DISSOLVE)
+        //        || Immune_Electricity && (DMG_SHOCK||ENERGYBEAM||PHYSGUN)
+        //        || Immune_Melee && (DMG_CLUB||SLASH)
+        //        || Immune_Sonic && DMG_SONIC → return 0
+        //        — Phase 3 damage type tags (use VJDamageTags in future)
+
+        // ---- Block G: skip_immunity label + combine ball (lua:3953-3964) ----
+        skip_immunity:
+        // SKIP: lua:3954-3963 — combine ball class check / Immune_Dissolve / NextCombineBallDmgT
+        //        dmginfo:SetDamage / dmginfo:SetDamageType(DMG_DISSOLVE) — Phase 3 damage system
+
+        // ---- Block H: DoBleed helper (lua:3966-3974) ----
+        void DoBleed()
+        {
+            // lua:3967
+            if (Bleeds)
+            {
+                // lua:3968
+                OnBleed(dmginfo, hitgroup);
+                // lua:3970: SpawnBloodParticles — Phase 3 blood effects
+                // SKIP: lua:3970 — HasBloodParticle && !isFireEnt → SpawnBloodParticles(dmginfo, hitgroup)
+                // lua:3971: SpawnBloodDecals — Phase 3 blood effects
+                // SKIP: lua:3971 — HasBloodDecal → SpawnBloodDecals(dmginfo, hitgroup)
+                // lua:3972
+                PlaySoundSystem("Impact");
+            }
+        }
+
+        // ---- Block I: Dead guard (lua:3975) ----
+        // lua:3975
+        if (Dead) { DoBleed(); return 0; }
+
+        // ---- Block J: PreDamage + damage application (lua:3977-4000) ----
+        // lua:3977
+        OnDamaged(dmginfo, hitgroup, "PreDamage");
+        // SKIP: lua:3978 — dmginfo:GetDamage() <= 0 → return 0 — Phase 3 damage info
+        // SKIP: lua:3980-3990 — SavedDmgInfo table (dmginfo, attacker, inflictor, amount, pos, type, force, ammoType, hitgroup) — Phase 3
+        // SKIP: lua:3991 — self:SetHealth(self:Health() - dmginfo:GetDamage()) — Phase 3 HealthComponent
+        // SKIP: lua:3992 — VJ_DEBUG damage print — Phase 3 debug
+        // SKIP: lua:3993-3995 — HealthRegenParams.Enabled && ResetOnDmg → HealthRegenDelayT = curTime + ... — Phase 3 regen
+        // SKIP: lua:3997-3998 — SetSaveValue("m_iDamageCount"/"m_flLastDamageTime") — Phase 3 save/restore
+
+        // lua:3999
+        OnDamaged(dmginfo, hitgroup, "PostDamage");
+        // lua:4000
+        DoBleed();
+
+        // ---- Block K: I/O events (lua:4002-4008) ----
+        // SKIP: lua:4003-4007 — TriggerOutput("OnDamaged", ...) / MarkTookDamageFromEnemy(dmgAttacker) — Phase 3 I/O system
+
+        // ---- Block L: Pain sounds (lua:4010-4011) ----
+        // SKIP: lua:4010 — stillAlive = self:Health() > 0 — Phase 3 HealthComponent
+        // lua:4011
+        PlaySoundSystem("Pain");
+
+        // ---- Block M: AI response (lua:4013-4151) ----
+        // lua:4013: if VJ_CVAR_AI_ENABLED && GetState() != VJ_STATE_FREEZE
+        // SKIP: VJ_CVAR_AI_ENABLED — Phase 3 convar system (stub: always enabled for now)
+        if (GetState() != VJState.Freeze)
+        {
+            // lua:4014
+            var isPassive = Behavior == VJBehavior.Passive || Behavior == VJBehavior.PassiveNature;
+
+            // M1: Flinch (lua:4016-4017)
+            // SKIP: lua:4016 — !isFireEnt check — Phase 3
+            // lua:4017
+            Flinch(dmginfo, hitgroup);
+
+            // M2: Player attacker → BecomeEnemyToPlayer (lua:4020-4052)
+            // SKIP: lua:4021-4051 — dmgAttacker:IsPlayer() / CheckRelationship / SetRelationshipMemory
+            //        / BecomeEnemyToPlayer hostility counter / OnBecomeEnemyToPlayer
+            //        / ResetFollowBehavior / AddEntityRelationship(D_HT)
+            //        / PlaySoundSystem("BecomeEnemyToPlayer") / StopMoving / SetTarget / SCHEDULE_FACE
+            //        / CanChatMessage / PrintMessage / DamageByPlayer sounds
+            //        — Phase 3 player system + relationship
+
+            // M3: Combat damage response — take cover from visible enemy (lua:4056-4076) [HUMAN ONLY]
+            // SKIP: lua:4056-4076 — CombatDamageResponse / DoCoverTrace / AnimTbl_TakingCover
+            //        / PlayAnim / SCHEDULE_COVER_ENEMY / funcGetActiveWeapon / IsMoving
+            //        — Phase 3 cover + weapon system
+
+            // M4: No enemy response — ally alert + damage response (lua:4078-4128)
+            // SKIP: lua:4078-4128 — DamageAllyResponse / Allies_Check / Allies_Bring
+            //        / AnimTbl_DamageAllyResponse / DoReadyAlert / PlayAnim
+            //        / DamageResponse → CheckRelationship → ForceSetEnemy / SCHEDULE_COVER_ORIGIN
+            //        — Phase 3 ally system + damage response
+
+            // M5: Passive NPC run away (lua:4130-4134)
+            // SKIP: lua:4131-4134 — isPassive + TakingCoverT + DamageResponse → SCHEDULE_COVER_ORIGIN — Phase 3
+        }
+
+        // M6: Passive allies signal danger (lua:4138-4151) — OUTSIDE stillAlive block
+        // SKIP: lua:4138-4151 — isPassive + TakingCoverT + Passive_AlliesRunOnDamage
+        //        + Allies_Check + allies:SCHEDULE_COVER_ORIGIN + ally:PlaySoundSystem("Alert")
+        //        — Phase 3 ally system
+
+        // ---- Block N: Stop eating (lua:4154-4158) ----
+        // SKIP: lua:4155-4157 — CanEat && VJ_ST_Eating → EatingData.NextCheck + ResetEatingBehavior("Injured") — Phase 3 eating
+
+        // ---- Block O: Death (lua:4160-4171) ----
+        // SKIP: lua:4160 — self:Health() <= 0 && !Dead — Phase 3 HealthComponent
+        // SKIP: lua:4161 — RemoveEFlags(EFL_NO_DISSOLVE) — Phase 3 flags
+        // SKIP: lua:4162-4168 — IsDamageType(DMG_DISSOLVE) / dissolve DamageInfo / TakeDamageInfo — Phase 3
+        // SKIP: lua:4169 — BeginDeath(dmginfo, hitgroup) — Phase 3 (exists as stub in CreatureNPC.Think.cs)
+
+        // lua:4171
+        return 1;
+    }
 }

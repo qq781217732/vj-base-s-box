@@ -709,6 +709,20 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public virtual bool IsGibDamage(int dmgType) => false;
     public virtual void GibOnDeath(object dmginfo, int hitgroup) { GibbedOnDeath = true; }
 
+    // ═══ Phase 3 engine stubs (called by OnTakeDamage) ═══
+    public virtual bool IsOnFire() => false;
+    public virtual int WaterLevel() => 0;
+    public virtual void Extinguish() { }
+    public virtual void SpawnBloodParticles(object dmginfo, int hitgroup) { }
+    public virtual void SpawnBloodDecals(object dmginfo, int hitgroup) { }
+    public virtual void TriggerOutput(string output, GameObject activator) { }
+    public virtual void MarkTookDamageFromEnemy(GameObject attacker) { }
+    public virtual void SetSaveValue(string key, object value) { }
+    public virtual void Allies_Bring(string formation, float dist, object allies, int count) { }
+    public virtual void SetRelationshipMemory(GameObject ent, string key, object value) { }
+    public virtual float GetMaxLookDistance() => SightDistance;
+    public virtual int CheckRelationship(GameObject ent) => (int)VJBase.Disposition.Neutral;
+
     // ═══ Cleanup ═══
     protected override void OnDestroy()
     {
