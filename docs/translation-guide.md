@@ -275,7 +275,7 @@ public virtual void StartEngineTask(int taskId, float taskData)
 
 ## 7. 当前状态清单
 
-> 最后更新：2026-05-07（HumanNPC Initialize + DoChangeMovementType 机械翻译 + 字段拆分就位）
+> 最后更新：2026-05-07（HumanNPC SelectSchedule 机械翻译 + C2 逐行展开 + 辅助桩体系）
 
 ### 7.1a schedules.lua → BaseNPC.Schedule.cs（32 个方法）
 
@@ -343,7 +343,7 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | ✅ | `MaintainAlertBehavior` | 2359-2415 | 人类覆写：unreachable + 武器检测 + melee range/angle 判定 |
 | ✅ | `GrenadeAttack` | 3070-3186 | 完整骨架（~90 行，22 SKIP：动画/骨骼/可见性/实体 parent） |
 | ✅ | `ExecuteGrenadeAttack` | 3204-3331 | 完整骨架（~85 行，18 SKIP：spawn/bone/fuse/ownership） |
-| ❌ | `SelectSchedule` | 3520-3838 | ~320 行，战斗决策核心 — 下一优先 |
+| ✅ | `SelectSchedule` | 3520-3838 | ~275 行机械翻译。空闲/调查/无武器战斗/避让全部翻译；C2 武器战斗树（~190 行）逐行 SKIP 标记，Phase 3 武器系统就位后展开。需 +28 字段（HumanNPC.cs）+ 10 辅助桩（BaseNPC.cs）+ 2 动画桩（VJUtility.cs） |
 | ❌ | `OnTakeDamage` | 3918-4172 | ~255 行，伤害入口 — 免疫链/flinch/combat response |
 | ❌ | `TranslateActivity` | 2417-2466 | ~50 行，动画翻译 |
 | ❌ | `DoChangeWeapon` | 2470-2518 | ~50 行，武器Give/Remove/库存管理 |
@@ -358,6 +358,12 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | ❌ | `playReloadAnimation` local func | 2562-2582 | ~20 行 |
 
 > 新增字段（HumanNPC.cs）：`Model`, `StartHealth`, `WeaponInventory` (含 `WeaponSlots` 子类), `WeaponInventoryStatus`, `WeaponInventory_AntiArmorList`, `WeaponInventory_MeleeList`, `Weapon_Disabled`, `Weapon_IgnoreSpawnMenu`, `Weapon_CanMoveFire`, `IdleAlwaysWander`, `AnimationTranslations`
+> 
+> SelectSchedule 新增字段（HumanNPC.cs, 28 个）：`Weapon_UnarmedBehavior`, `Weapon_UnarmedBehavior_Active`, `Weapon_Strafe`, `Weapon_StrafeCooldown`, `Weapon_OcclusionDelay`, `Weapon_OcclusionDelayTime`, `Weapon_OcclusionDelayMinDist`, `Weapon_MaxDistance`, `Weapon_RetreatDistance`, `Weapon_AimTurnDiff`, `Weapon_AimTurnDiff_Def`, `AnimTbl_MoveToCover`, `AnimTbl_WeaponAttack`, `AnimTbl_WeaponAttackCrouch`, `AnimTbl_WeaponAim`, `WeaponLastShotTime`, `WeaponAttackAnim`, `NextWeaponAttackT`, `NextWeaponAttackT_Base`, `NextWeaponStrafeT`, `NextMoveOnGunCoveredT`, `NextMeleeWeaponAttackT`, `NextDangerDetectionT`, `HasPoseParameterLooking`, `Weapon_CanCrouchAttack`, `Weapon_CrouchAttackChance`
+> 
+> SelectSchedule 新增辅助桩（BaseNPC.cs, 10 个）：`CanFireWeapon`, `DoCoverTrace`, `TranslateActivity`, `UpdatePoseParamTracking`, `PlayIdleSound`, `GetActiveWeapon`, `GetBestSoundHint`, `NearestPoint`, `SetMovementActivity`, `GetActivity` — 全部返回安全默认值
+> 
+> SelectSchedule 新增动画桩（VJUtility.cs, 2 个）：`AnimExists`, `IsCurrentAnim`
 
 ### 7.2 接口体系
 
@@ -459,6 +465,14 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | `HumanNPC.cs` | `timer.Create("attack_grenade_start")` / `attackTimers[GRENADE]` | `GrenadeExecTime` 轮询 + `StashedGrenadeEnt/Dir` |
 | `BaseNPC.cs` | `timer.Create("attack_*_reset")` / `timer.Create("attack_*_reset_able")` | `ScheduleAttackTimers()` → `ProcessAttackTimers()` Think 轮询 |
 | `BaseNPC.cs` | 计时器字段缺失 | 10 timer config + 4 timer runtime + 3 grenade stash 字段 |
+
+#### 已解决（2026-05-07 会话 — SelectSchedule 机械翻译）
+| 文件 | 原 SKIP/缺失 | 解决方案 |
+|------|---------|----------|
+| `HumanNPC.Think.cs` | `SelectSchedule` 方法缺失 | ~275 行 override 机械翻译。Block A/B/C1/D 全部翻译为真实 C#；Block C2（武器战斗树 ~190 行）逐行 SKIP 标记 |
+| `HumanNPC.cs` | SelectSchedule 所需字段缺失（28 个） | 武器行为配置（11）+ 动画表（4）+ 运行时状态（9）+ 动画配置（4）全部添加 |
+| `BaseNPC.cs` | SelectSchedule 所需辅助方法缺失 | `CanFireWeapon` / `DoCoverTrace` / `TranslateActivity` / `UpdatePoseParamTracking` / `PlayIdleSound` / `GetActiveWeapon` / `GetBestSoundHint` / `NearestPoint` / `SetMovementActivity` / `GetActivity` — 全部 Phase 3 桩返回安全默认值 |
+| `VJUtility.cs` | `AnimExists` / `IsCurrentAnim` 缺失 | 动画存在/当前动画检查桩 |
 
 #### 剩余待填
 | 文件 | 行/位置 | SKIP 内容 | 归属系统 |
@@ -700,10 +714,19 @@ Source C++:  f:/DevProject/Sbox/source-sdk-2013/
    HumanNPC.cs 字段拆分就位（+21 行，11 新字段）
    修复 5 问题（B1 StartHealth 50 / B2 NextWanderTime / D1-D3 注释）
 
-11. 动画系统
+11. ✅ HumanNPC SelectSchedule  ← 已完成 2026-05-07
+   init.lua:3520-3838 → HumanNPC.Think.cs (~275 行)
+   空闲/调查/无武器战斗/避让全部翻译，C2 武器树逐行 SKIP
+   配套：HumanNPC.cs +28 字段，BaseNPC.cs +10 stubs，VJUtility.cs +2 stubs
+
+12. 动画系统
    16 个 M 标记动画方法仍是 return 0/false
-   12. CreatureNPC.MaintainAlertBehavior 缺口（~35 行未翻译）
-   13. HumanNPC SelectSchedule（~320 行，下一优先）
+
+13. HumanNPC OnTakeDamage（~255 行，下一优先）
+   伤害入口 — 免疫链/flinch/combat response
+
+14. CreatureNPC.MaintainAlertBehavior 缺口（~35 行未翻译）
+15. HumanNPC 剩余方法：TranslateActivity / DoChangeWeapon / ResetEnemy / CheckForDangers / CanFireWeapon / UpdatePoseParamTracking / 死亡序列
 ```
 
 ### 10.7 验证命令
@@ -722,7 +745,7 @@ cd f:/DevProject/Sbox/testzombie/Code && grep -rn "SKIP:" VJBase/
 ---
 
 *最后更新：2026-05-07*
-*翻译阶段：~65%。HumanNPC init.lua: 8/18 方法完成。下一步：SelectSchedule（~320 行）。*
+*翻译阶段：~70%。HumanNPC init.lua: 9/18 方法完成。下一步：OnTakeDamage（~255 行）。*
 
 ---
 
@@ -842,3 +865,61 @@ git revert <hash> → 一键回滚某个翻译块，不影响其他
 ❌ 翻译一半就 commit                             — 功能不完整
 ❌ 提交编译不过的代码                            — 破坏 bisect
 ```
+
+---
+
+## 12. Agent 协作翻译方法论
+
+> 总结自 2026-05-07 SelectSchedule 翻译会话。核心原则：**Agent 负责"看"，主 Agent 负责"写"。**
+
+### 12.1 三阶段流程
+
+```
+Phase 1: 探索（并行 3 Agent，信息收集）
+  Agent 1: 读 Lua 源码 — 分支结构、方法调用、条件检查、行号
+  Agent 2: 读 C# 现有代码 — 已有模式、字段签名、接口、override 关系
+  Agent 3: 追溯辅助调用 — 缺失桩、VJ.* 映射、SKIP 归属系统
+
+  → 3 个 Agent 同时跑，互不依赖。每个返回结构化报告。
+
+Phase 2: 设计（1 Plan Agent，方案产出）
+  喂入 Phase 1 全部发现 → 字段清单、方法结构、goto 处理、SKIP 分块估算
+  Plan Agent 产出比人工更完整（不易遗漏边界情况）
+
+Phase 3: 执行 + 自审（主 Agent 直接操作，不委托）
+  代码由主 Agent 逐行编写。Agent 不参与"写"——翻译质量依赖逐行注意力，不能委托。
+  写完立即执行 §5.5 提交前自审。
+```
+
+### 12.2 质量门：§5.5 逐行对照
+
+```
+1. 打开 Lua 源文件（左）+ C# 文件（右）
+2. 从第一个 Lua 行开始，确认每个行号在 C# 里都有对应（翻译 或 SKIP）
+3. 逐行检查 4 项：
+   ├─ 分支结构一致 (if/else/elseif)
+   ├─ 参数顺序一致
+   ├─ 变量语义一致 (存目标值 ≠ 存当前值)
+   └─ 无死代码 (写入永不读取的字段/字典)
+```
+
+**反例（今天踩的坑）：** SelectSchedule C2 块第一次用 5 行概要注释覆盖了 ~200 行 Lua，违反 1:1 映射。用户指出后才拆成逐行 SKIP。如果写完就做逐行对照，这个问题在第一次提交前就能发现。
+
+### 12.3 常见陷阱
+
+| 陷阱 | 表现 | 防范 |
+|------|------|------|
+| **概要注释** | 用 1 个 SKIP 覆盖 50 行 Lua | 每个 Lua 行号必须有独立 C# 行 |
+| **Agent 产出信任过高** | Agent 说 "~40 SKIP"，实际需要 ~110 行 | 基于 Lua 源码自己数行数，不依赖估算 |
+| **C2 大块被塞进 else** | 武器战斗树 ~200 行全标 SKIP 但有复杂分支结构 | 分支骨架必须保留（if/elseif/else/标签），即使内部全是 SKIP |
+| **字段默认值编造** | `Weapon_CrouchAttackChance=3` 实际 Lua=2 | 每个字段默认值去 Lua 源文件 grep 确认 |
+
+### 12.4 效率数据
+
+| 阶段 | 耗时 | 方式 |
+|------|------|------|
+| 探索（3 Agent 并行） | ~2 分钟 | 自动化 |
+| 设计（1 Plan Agent） | ~1 分钟 | 自动化 |
+| 编写（主 Agent） | ~15 分钟 | 手动 |
+| 自审（逐行对照） | ~5 分钟 | 手动 |
+| **总计** | **~23 分钟** | 320 行 Lua 翻译 |

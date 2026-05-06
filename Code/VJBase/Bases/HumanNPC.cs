@@ -95,7 +95,7 @@ public partial class HumanNPC : CreatureNPC
     public float Weapon_MaxDistance { get; set; } = 3000f;
     public float Weapon_RetreatDistance { get; set; } = 150f;
     public float? Weapon_AimTurnDiff { get; set; } // null = disabled (Lua: false)
-    public float Weapon_AimTurnDiff_Def { get; set; } = 0.7f;
+    public float Weapon_AimTurnDiff_Def { get; set; } = 1f;
 
     // ═══ Animation Table Config (ported from init.lua:153,301-305) ═══
     public List<string> AnimTbl_MoveToCover { get; set; } = new();
@@ -116,7 +116,7 @@ public partial class HumanNPC : CreatureNPC
     // ═══ Animation Config (ported from init.lua:130,303) ═══
     public bool HasPoseParameterLooking { get; set; } = true;
     public bool Weapon_CanCrouchAttack { get; set; } = true;
-    public int Weapon_CrouchAttackChance { get; set; } = 3;
+    public int Weapon_CrouchAttackChance { get; set; } = 2;
 
     // ═══ Idle / Wander Config ═══
     public bool IdleAlwaysWander { get; set; }
