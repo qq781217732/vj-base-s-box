@@ -544,5 +544,124 @@ cd f:/DevProject/Sbox/testzombie/Code && grep -rn "SKIP:" VJBase/
 
 ---
 
-*最后更新：2026-05-06（本会话：MaintainRelationships + EngineAITaskSystem + 关系系统补全 + base_aa.lua → BaseNPC.AA.cs + IEngineEntity 删除）*
-*翻译阶段：~45%，P0 全部完成，核心链路（感知→选敌→Schedule→AA 移动→NavMeshAgent）完整。下一步：调查系统/转向/动画。*
+*最后更新：2026-05-06*
+*翻译阶段：~45%，P0 全部完成。下一步：调查/转向/动画。*
+
+---
+
+## 11. AI 协作 Git 提交规范
+
+> **目标：让任何 AI 或人 10 秒内从 `git log` 看懂项目发生了什么。**
+
+### 11.1 何时提交
+
+```
+一个功能块翻译完 → commit
+一个 ENTi 方法搬完 → commit
+一个 Phase 填坑完成 → commit
+修了一个编译错误 → commit
+删了一组死代码     → commit
+```
+
+**不要在翻译中途提交。** 提交边界 = 功能边界，不是时间边界。
+
+### 11.2 提交消息格式
+
+```
+<type>(<scope>): <中文简述>
+
+Source: <lua文件:行号>
+Target: <cs文件>
+Methods: N/N
+SKIPs: N
+```
+
+### 11.3 type 类型
+
+| type | 含义 | 示例 |
+|------|------|------|
+| `translate` | 机械翻译 Lua→C# | `translate(P0): core.lua MaintainRelationships 全部 9 功能块` |
+| `fill` | Phase 3+ 填坑（从空壳变成实际逻辑） | `fill(Engine): EngineAITaskSystem 重写，Movement/Face/Wait 任务` |
+| `fix` | 修 bug（逻辑错误、编译错误、语义不对齐） | `fix(Relationships): Disposition 枚举与方法同名冲突` |
+| `cleanup` | 删死代码、消除双轨、重构 | `cleanup(Core): 删除 IEngineEntity/EngineEntity 双轨` |
+| `field` | 补字段、加配置项 | `field(BaseNPC): 新增 AA 移动状态字段` |
+| `docs` | 更新进度文档、修复文档错误 | `docs: 更新 §7 状态清单，MaintainRelationships 全部完成` |
+
+### 11.4 scope 范围
+
+```
+P0-P4      — 翻译阶段优先级
+Core       — BaseNPC.cs, VJEnums.cs, 接口文件等
+Engine     — AISenses.cs, EngineAITaskSystem.cs
+Schedule   — AISchedule.cs, AITask.cs
+Bases      — CreatureNPC, HumanNPC, TankNPC
+Relationships — MaintainRelationships 相关
+AA         — 飞行/水中移动
+docs       — 文档更新
+```
+
+### 11.5 完整示例
+
+```bash
+# 翻译一个完整方法
+git commit -m "$(cat <<'EOF'
+translate(Relationships): MaintainRelationships 核心翻译
+
+Source: core.lua:2127-2426
+Target: BaseNPC.Relationships.cs (~390 行)
+Methods: 1 (MaintainRelationships)
+Blocks: 7/9 (调查系统 + FL_NOTARGET SKIP)
+SKIPs: 2 (声音调查、手电筒检测 → Phase 3)
+EOF
+)"
+
+# 修一个编译错误
+git commit -m "$(cat <<'EOF'
+fix(Relationships): 3 个编译错误 — Disposition 冲突 + PlayerBase using + LengthSquared2D
+
+- Disposition.XXX → VJBase.Disposition.XXX (与 Disposition() 方法冲突)
+- 补 using SWB.Player (PlayerBase 未找到)
+- delta.LengthSquared2D() → delta.x*delta.x + delta.y*delta.y
+EOF
+)"
+
+# 删死代码
+git commit -m "$(cat <<'EOF'
+cleanup(Core): 删除 IEngineEntity + EngineEntity
+
+73 方法中仅 3 个被调用，全是 GameObject 属性转发。
+BaseNPC 是 Component，直接持有 GameObject 引用。
+与 NPCSchedule/NPCConditions/NPCAttributes 同样的双轨反模式。
+EOF
+)"
+```
+
+### 11.6 多人/多 AI 协作标记
+
+在 body 里标注作者，方便追溯：
+
+```
+Author: 阿纳金 (architect + audit)
+Author: 土豆 (executor, AA translation)
+Author: AI-Session-20260506 (MaintainRelationships + EngineAITaskSystem)
+```
+
+### 11.7 为什么这样做
+
+```
+git log --oneline  →  项目进度的秒级概览
+git log --grep="SKIPs:" → 找出所有引入新 SKIP 的提交
+git log --grep="Source: core.lua" → 某个 Lua 文件的所有翻译历史
+git diff HEAD~1 --stat → 每次提交改了什么文件
+git revert <hash> → 一键回滚某个翻译块，不影响其他
+```
+
+### 11.8 禁止事项
+
+```
+❌ git add -A && git commit -m "update"        — 不可追溯
+❌ git commit --amend 修改已推送的提交          — 破坏历史
+❌ 一个 commit 包含翻译 + 修复 + 重构混合内容    — 无法单独回滚
+❌ 翻译一半就 commit                             — 功能不完整
+❌ 提交编译不过的代码                            — 破坏 bisect
+```
