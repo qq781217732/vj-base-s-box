@@ -279,15 +279,15 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
             var ene = GetEnemy();
             if (ene.IsValid())
             {
-                var targetPos = ene.WorldPosition + WorldSpaceCenter_Entity(ene);
                 if (TurningUseAllAxis)
                 {
+                    var targetPos = WorldSpaceCenter_Entity(ene); // OBB center, already world-space
                     resultAng = GetTurnAngle(AnglesToward(targetPos));
                     ApplyFullAxisTurn(Rotation.LookAt((targetPos - GameObject.WorldPosition).Normal));
                 }
                 else
                 {
-                    resultAng = GetTurnAngle(AnglesToward(ene.WorldPosition));
+                    resultAng = GetTurnAngle(AnglesToward(ene.WorldPosition)); // feet, per Lua
                     ApplyYawTurn(YawToward(ene.WorldPosition));
                 }
             }
@@ -316,15 +316,15 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
         else if (target is GameObject ent && ent.IsValid())
         {
             ResetTurnTarget();
-            var targetPos = ent.WorldPosition + WorldSpaceCenter_Entity(ent);
             if (TurningUseAllAxis)
             {
+                var targetPos = WorldSpaceCenter_Entity(ent); // OBB center, already world-space
                 resultAng = GetTurnAngle(AnglesToward(targetPos));
                 ApplyFullAxisTurn(Rotation.LookAt((targetPos - GameObject.WorldPosition).Normal));
             }
             else
             {
-                resultAng = GetTurnAngle(AnglesToward(ent.WorldPosition));
+                resultAng = GetTurnAngle(AnglesToward(ent.WorldPosition)); // feet, per Lua
                 ApplyYawTurn(YawToward(ent.WorldPosition));
             }
             if (faceTime != 0)
@@ -393,32 +393,40 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
         else if (turnTarget is GameObject ent && ent.IsValid()
             && (turnData.Type == VJFaceStatus.Entity || (turnData.Type == VJFaceStatus.EntityVisible && Visible(ent))))
         {
-            var targetPos = ent.WorldPosition + WorldSpaceCenter_Entity(ent);
-            float targetYaw = YawToward(targetPos);
+            float targetYaw;
             if (TurningUseAllAxis)
+            {
+                var targetPos = WorldSpaceCenter_Entity(ent); // OBB center, already world-space
                 ApplyFullAxisTurn(Rotation.LookAt((targetPos - GameObject.WorldPosition).Normal));
+                targetYaw = YawToward(targetPos);
+            }
             else
+            {
+                targetYaw = YawToward(ent.WorldPosition); // feet, per Lua
                 ApplyYawTurn(targetYaw);
+            }
             SetIdealYawAndUpdate(targetYaw);
             turnData.LastYaw = targetYaw;
         }
         else if (eneValid && !Dead
             && (turnData.Type == VJFaceStatus.Enemy || (turnData.Type == VJFaceStatus.EnemyVisible && Enemy.Visible)))
         {
-            var targetPos = ene.WorldPosition + WorldSpaceCenter_Entity(ene);
-            float targetYaw = YawToward(targetPos);
+            float targetYaw;
             if (TurningUseAllAxis)
+            {
+                var targetPos = WorldSpaceCenter_Entity(ene); // OBB center, already world-space
                 ApplyFullAxisTurn(Rotation.LookAt((targetPos - GameObject.WorldPosition).Normal));
+                targetYaw = YawToward(targetPos);
+            }
             else
+            {
+                targetYaw = YawToward(ene.WorldPosition); // feet, per Lua
                 ApplyYawTurn(targetYaw);
+            }
             SetIdealYawAndUpdate(targetYaw);
             turnData.LastYaw = targetYaw;
         }
     }
-
-    // ═══ Sound ═══
-    public virtual void StopAllSounds() { } // Phase 3
-    public virtual float GetSoundPitch(float? pitchVar = null) => 100f;
 
     // ═══ Damage ═══
     public virtual void Flinch(object dmginfo, int hitgroup) { Flinching = true; }
@@ -680,23 +688,34 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
         // core.lua:2075: if self.Alerted == ALERT_STATE_ENEMY then return end
         if (Alerted == VJAlertState.Enemy) return;
 
-        // core.lua:2076: eneData.TimeAcquired = CurTime()
-        Enemy.TimeAcquired = Time.Now;
-        // core.lua:2077: eneData.VisibleTime = CurTime()
-        Enemy.VisibleTime = Time.Now;
-        // core.lua:2078: eneData.DistanceNearest = VJ.GetNearestDistance(self, ent)
-        Enemy.DistanceNearest = VJUtility.GetNearestDistance(GameObject, ent);
+        var curTime = Time.Now;
 
-        // core.lua:2079: eneData.Reset = false
-        Enemy.Reset = false;
-
-        // core.lua:2080: self.Alerted = ALERT_STATE_ENEMY
+        // core.lua:2077: selfData.Alerted = ALERT_STATE_ENEMY
         Alerted = VJAlertState.Enemy;
 
-        // core.lua:2081: self:OnAlert(ent)
+        // core.lua:2078-2081: Fixes NPC switching from combat to alert
+        if (GetNPCState() != (int)NPCState.Combat)
+            SetNPCState((int)NPCState.Alert);
+
+        // core.lua:2082: eneData.TimeAcquired = curTime
+        Enemy.TimeAcquired = curTime;
+        // core.lua:2083: eneData.VisibleTime = curTime
+        Enemy.VisibleTime = curTime;
+        // core.lua:2084: eneData.DistanceNearest = VJ.GetNearestDistance(self, ent)
+        Enemy.DistanceNearest = VJUtility.GetNearestDistance(GameObject, ent);
+
+        // core.lua:2085: eneData.Reset = false
+        Enemy.Reset = false;
+
+        // core.lua:2086: self:OnAlert(ent)
         OnAlert?.Invoke(ent);
 
-        // SKIP: core.lua:2082-2092 — alert sounds, animations — Phase 3
+        // core.lua:2087-2090: alert sound
+        if (curTime > NextAlertSoundT)
+        {
+            PlaySoundSystem("Alert");
+            NextAlertSoundT = curTime + VJUtility.Rand(NextSoundTime_Alert.a, NextSoundTime_Alert.b);
+        }
     }
 }
 
