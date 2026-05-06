@@ -263,7 +263,6 @@ public partial class CreatureNPC
                     if (OnMeleeAttackExecute("PreDamage", ent, isProp)) continue;
                     var dmgAmount = ScaleByDifficulty(MeleeAttackDamage);
                     // lua:2472-2496: Prop interaction block
-                    // lua:2472-2496: Prop interaction block
                     if (isProp)
                     {
                         bool piBool = PropInteraction is bool b && b;
@@ -278,16 +277,24 @@ public partial class CreatureNPC
                                 rb.Enabled = true;
                                 rb.Wake();
                                 // SKIP: lua:2485 — constraint.RemoveConstraints(ent, "Weld") — Phase 3 joint system
+                                // lua:2475 — true/"OnlyDamage" + health → applyDmg = true
+                                // SKIP: lua:2475 — ent:Health() / ent:GetInternalVariable("m_takedamage") — Phase 3
+                                if (piBool || piStr == "OnlyDamage")
+                                {
+                                    hitRegistered = true;
+                                    applyDmg = true;
+                                }
+                                // lua:2477-2478 — OnlyPush → applyDmg = false
+                                else if (piStr == "OnlyPush")
+                                {
+                                    applyDmg = false;
+                                }
+                                // lua:2486-2491: physics push (true or "OnlyPush")
                                 if (piBool || piStr == "OnlyPush")
                                 {
                                     hitRegistered = true;
                                     var pushDir = (GetEnemy()?.WorldPosition ?? myPos);
                                     rb.ApplyForce((pushDir + WorldRotation.Forward * (rb.Mass * 700) + Vector3.Up * (rb.Mass * 200)).Normal * rb.Mass * 100);
-                                }
-                                // SKIP: lua:2475 — ent:Health() / ent:GetInternalVariable("m_takedamage") — Phase 3
-                                if (piStr == "OnlyDamage")
-                                {
-                                    hitRegistered = true;
                                 }
                             }
                         }
