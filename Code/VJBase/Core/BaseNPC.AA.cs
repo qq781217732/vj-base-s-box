@@ -102,7 +102,7 @@ public partial class BaseNPC
 		}
 
 		// base_aa.lua:109-119 — Movement Calculations — TraceHull
-		// NOTE: WorldSpaceCenter() currently = GameObject.WorldPosition (Phase 3: add OBBCenter offset)
+		// WorldSpaceCenter() = WorldPosition + (Mins+Maxs)/2 (OBB center)
 		// Lua: myPos + OBBCenter() + vecStart. Since WorldSpaceCenter() already includes WorldPosition:
 		var startPos = WorldSpaceCenter() + VecStart;
 		var endPos = destVec ?? (WorldSpaceCenter_Entity(destGO!) + VecEnd);
