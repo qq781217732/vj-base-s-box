@@ -52,8 +52,8 @@ public partial class HumanNPC
         // SKIP: lua:2174-2175 — Source engine bit-flag capabilities (CAP_MOVE_*, capBitsDefault)
         // lua:2176-2179: LookupAttachment("eyes"/"forward") → CAP_ANIMATEDFACE
         // SKIP: lua:2176-2179 — Source engine attachment-based capability
-        // lua:2180-2185: Passive → Weapon_Disabled; otherwise add weapon caps
-        // SKIP: lua:2180-2185 — Source engine weapon capabilities (CAP_MOVE_SHOOT, capBitsWeapons)
+        // lua:2180-2182: Passive → Weapon_Disabled + Weapon_IgnoreSpawnMenu
+        // lua:2183-2184: elseif CapabilitiesAdd(capBitsWeapons) — SKIP (Source engine bit-flag caps)
         if (Behavior == VJBehavior.Passive || Behavior == VJBehavior.PassiveNature)
         {
             Weapon_Disabled = true;
