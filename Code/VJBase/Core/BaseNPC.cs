@@ -34,7 +34,30 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public float AttackAnimTime { get; set; }
     public float NextDoAnyAttackT { get; set; }
     public bool IsAbleToMeleeAttack { get; set; } = true;
+    public bool IsAbleToRangeAttack { get; set; } = true;
+    public bool IsAbleToLeapAttack { get; set; } = true;
     public bool MeleeAttack_IsPropAttack { get; set; }
+
+    // ═══ Attack Timer Config — creature init.lua:265-326 ═══
+    // "NextAnyAttackTime_*" — <=0 = auto calculate | >0 = fixed time (seconds)
+    public float NextAnyAttackTime_Melee { get; set; } = -1f; // -1 = auto (Lua: false)
+    public float NextMeleeAttackTime { get; set; } = 0.8f;
+    public float NextAnyAttackTime_Range { get; set; } = -1f;
+    public float NextRangeAttackTime { get; set; } = 3f;
+    public float NextAnyAttackTime_Leap { get; set; } = -1f;
+    public float NextLeapAttackTime { get; set; } = 3f;
+    public float NextAnyAttackTime_Grenade { get; set; } = 3f;
+    public float NextGrenadeAttackTime { get; set; } = 5f;
+    public float GrenadeAttackThrowTime { get; set; } = 1f;
+
+    // ═══ Attack Timer Runtime — polled in Think ═══
+    public float AttackResetTime { get; set; }
+    public float AttackReEnableTime { get; set; }
+    public float GrenadeExecTime { get; set; } // Grenade start → execute call
+    // Stashed grenade params for delayed execution
+    public GameObject StashedGrenadeEnt { get; set; }
+    public bool StashedGrenadeDisableOwner { get; set; }
+    public object StashedGrenadeLandDir { get; set; }
 
     // ═══ Melee Attack Config — core.lua:249-285 ═══
     public bool HasMeleeAttack { get; set; } = true;
@@ -239,6 +262,148 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public virtual void MaintainIdleAnimation(bool force) { }
     public virtual void MaintainIdleBehavior(int? idleType = null) { }
     public virtual void PlaySequence(string animation) { }
+
+    // ═══ Attack Timer System — creature init.lua:1825-1859, core.lua:972-994 ═══
+    /// <summary>GetAttackTimer — core.lua:972-994. Calculates timer delay for attack reset/re-enable.</summary>
+    /// <param name="mainTime">NextAnyAttackTime_* value (<=0 = auto)</param>
+    /// <param name="executionTime">TimeUntil*Damage value (<=0 = event-based)</param>
+    /// <param name="animDur">AttackAnimDuration</param>
+    public virtual float GetAttackTimer(float mainTime, float executionTime, float animDur)
+    {
+        float rate = MathF.Max(AnimPlaybackRate, 0.01f);
+        // lua:974 — mainTime is nil/false → auto-calculate
+        if (mainTime <= 0)
+        {
+            // lua:976 — execution was event-based (no timer delay)
+            if (executionTime <= 0)
+                return animDur / rate;
+            // lua:979 — execution was timer-based
+            else
+            {
+                if (animDur <= 0)
+                    return executionTime / rate;
+                else
+                    return animDur - (executionTime / rate);
+            }
+        }
+        // lua:991 — number given, use directly
+        else
+        {
+            return mainTime / rate;
+        }
+    }
+
+    /// <summary>ScheduleAttackTimers — replaces Lua attackTimers table, sets polling fields.</summary>
+    public virtual void ScheduleAttackTimers(bool skipStopAttacks = false)
+    {
+        float rate = MathF.Max(AnimPlaybackRate, 0.01f);
+        var curTime = Time.Now;
+
+        switch (AttackType)
+        {
+            case VJAttackType.Melee:
+                if (!skipStopAttacks)
+                    AttackResetTime = curTime + GetAttackTimer(NextAnyAttackTime_Melee, TimeUntilMeleeAttackDamage, AttackAnimDuration);
+                AttackReEnableTime = curTime + ((NextMeleeAttackTime > 0 ? NextMeleeAttackTime : 0.8f) / rate);
+                break;
+
+            case VJAttackType.Range:
+                if (!skipStopAttacks)
+                    AttackResetTime = curTime + GetAttackTimer(NextAnyAttackTime_Range, TimeUntilRangeAttackProjectileRelease, AttackAnimDuration);
+                AttackReEnableTime = curTime + ((NextRangeAttackTime > 0 ? NextRangeAttackTime : 3f) / rate);
+                break;
+
+            case VJAttackType.Leap:
+                if (!skipStopAttacks)
+                    AttackResetTime = curTime + GetAttackTimer(NextAnyAttackTime_Leap, TimeUntilLeapAttackDamage, AttackAnimDuration);
+                AttackReEnableTime = curTime + ((NextLeapAttackTime > 0 ? NextLeapAttackTime : 3f) / rate);
+                break;
+
+            case VJAttackType.Grenade:
+                if (!skipStopAttacks)
+                    AttackResetTime = curTime + GetAttackTimer(NextAnyAttackTime_Grenade, GrenadeAttackThrowTime, AttackAnimDuration);
+                AttackReEnableTime = curTime + 0.5f;
+                break;
+        }
+    }
+
+    /// <summary>StopAttacks — creature init.lua:2730-2745. Resets attack state, optionally cancels pending timers.</summary>
+    public virtual void StopAttacks(bool checkTimers = false)
+    {
+        if (Dead) return;
+
+        // lua:2735 — if checking timers and AttackState < Executed, re-trigger timers with skipStopAttacks
+        if (checkTimers && AttackState < VJAttackState.Executed)
+        {
+            ScheduleAttackTimers(true);
+        }
+
+        // lua:2739-2742 — reset attack state
+        AttackType = VJAttackType.None;
+        AttackState = VJAttackState.Done;
+        AttackSeed = 0;
+        LeapAttackHasJumped = false;
+
+        AttackResetTime = 0;
+        MaintainAlertBehavior(false);
+    }
+
+    /// <summary>SpawnRangeProjectile — creature init.lua:2635-2657. Virtual, override in derived types for specific projectiles.</summary>
+    public virtual void SpawnRangeProjectile(string projectileClass, GameObject target)
+    {
+        // Phase 3: actual S&Box prefab spawning — callers should override with game-specific projectile types.
+        // Lua flow: ents.Create(projectileClass) → SetPos(spawnPos) → SetAngles(angleTowardEnemy) →
+        //           OnRangeAttackExecute("PreSpawn") → SetOwner(self) → Spawn() → Activate() →
+        //           SetVelocity(RangeAttackProjVel) → OnRangeAttackExecute("PostSpawn")
+    }
+
+    /// <summary>MapDamageTypeToTag — converts Source DMG_* int → VJDamageTags string for DamageInfo.Tags.</summary>
+    public virtual string MapDamageTypeToTag(int damageType)
+    {
+        // Source DMG_* constants → S&Box tag strings
+        // Common values: DMG_SLASH=2, DMG_CLUB=128, DMG_GENERIC=0, DMG_BULLET=1, DMG_BLAST=8
+        return damageType switch
+        {
+            1 => VJDamageTags.Bullet,
+            2 => VJDamageTags.Slash,
+            8 => VJDamageTags.Blast,
+            16 => VJDamageTags.Shock,
+            32 => VJDamageTags.Burn,
+            128 => VJDamageTags.Club,
+            _ => VJDamageTags.Generic,
+        };
+    }
+
+    /// <summary>ProcessAttackTimers — called from Think to check and fire delayed attack callbacks.</summary>
+    public virtual void ProcessAttackTimers(float curTime)
+    {
+        // lua:3178-3183 — grenade start timer (ExecuteGrenadeAttack), fires independently
+        if (GrenadeExecTime > 0 && curTime > GrenadeExecTime)
+        {
+            GrenadeExecTime = 0;
+        }
+
+        // lua:1833-1835 — re-enable timer (fires independently, may fire before reset)
+        if (AttackReEnableTime > 0 && curTime > AttackReEnableTime)
+        {
+            AttackReEnableTime = 0;
+            // Read AttackType directly — it may still be set even if state changes later
+            var atkType = AttackType;
+            switch (atkType)
+            {
+                case VJAttackType.Melee: IsAbleToMeleeAttack = true; break;
+                case VJAttackType.Range: IsAbleToRangeAttack = true; break;
+                case VJAttackType.Leap: IsAbleToLeapAttack = true; break;
+            }
+        }
+
+        // lua:1827-1836 — reset timer → StopAttacks + MaintainAlertBehavior
+        if (AttackResetTime > 0 && curTime > AttackResetTime)
+        {
+            AttackResetTime = 0;
+            StopAttacks(false);
+        }
+    }
 
     // ═══ Target (generic, not enemy) ═══
     public GameObject Target { get; set; }

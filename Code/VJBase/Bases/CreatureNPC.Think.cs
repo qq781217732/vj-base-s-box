@@ -33,6 +33,9 @@ public partial class CreatureNPC
         OnThink();
         OnThinkActive();
 
+        // Process attack timers — check reset/re-enable polling fields
+        ProcessAttackTimers(curTime);
+
         var moveType = MovementType;
         bool isAA = moveType == VJMoveType.Aerial || moveType == VJMoveType.Aquatic;
 
@@ -260,11 +263,38 @@ public partial class CreatureNPC
                     if (OnMeleeAttackExecute("PreDamage", ent, isProp)) continue;
                     var dmgAmount = ScaleByDifficulty(MeleeAttackDamage);
                     // lua:2472-2496: Prop interaction block
-                    // SKIP: lua:2472-2496 — PropInteraction / GetPhysicsObject / constraint.RemoveConstraints / ApplyForceCenter — Phase 3 prop system
+                    // lua:2472-2496: Prop interaction block
+                    if (isProp)
+                    {
+                        bool piBool = PropInteraction is bool b && b;
+                        string piStr = PropInteraction as string;
+                        if (PropInteraction == null || PropInteraction.Equals(false))
+                            applyDmg = false;
+                        else if (piBool || piStr != null)
+                        {
+                            var rb = ent.Components.Get<Rigidbody>();
+                            if (rb != null)
+                            {
+                                rb.Enabled = true;
+                                rb.Wake();
+                                // SKIP: lua:2485 — constraint.RemoveConstraints(ent, "Weld") — Phase 3 joint system
+                                if (piBool || piStr == "OnlyPush")
+                                {
+                                    hitRegistered = true;
+                                    var pushDir = (GetEnemy()?.WorldPosition ?? myPos);
+                                    rb.ApplyForce((pushDir + WorldRotation.Forward * (rb.Mass * 700) + Vector3.Up * (rb.Mass * 200)).Normal * rb.Mass * 100);
+                                }
+                                // SKIP: lua:2475 — ent:Health() / ent:GetInternalVariable("m_takedamage") — Phase 3
+                                if (piStr == "OnlyDamage")
+                                {
+                                    hitRegistered = true;
+                                }
+                            }
+                        }
+                    }
                     if (applyDmg)
                     {
-                        // lua:2499: Knockback
-                        // SKIP: lua:2499-2511 — ent:GetMoveType() / MOVETYPE_PUSH / IsNextBot / loco:Approach — Phase 3 movement
+                        // lua:2499-2511: Knockback (skip IsNextBot/loco — Phase 3)
                         if (HasMeleeAttackKnockBack)
                         {
                             var vel = MeleeAttackKnockbackVelocity(ent);
@@ -272,13 +302,14 @@ public partial class CreatureNPC
                             var rb = ent.Components.Get<Rigidbody>();
                             if (rb != null) rb.Velocity = vel;
                         }
-                        // lua:2513-2522: Apply damage
+                        // lua:2513-2522: Apply damage with type tags
                         if (!DisableDefaultMeleeAttackDamageCode)
                         {
                             var dmgInfo = new DamageInfo();
                             dmgInfo.Damage = ScaleByDifficulty(dmgAmount);
-                            // SKIP: lua:2516 — SetDamageType(MeleeAttackDamageType) — Phase 3 damage type mapping
-                            // SKIP: lua:2517 — SetDamageForce — Phase 3 damage force
+                            // lua:2516 — SetDamageType → S&Box Tags
+                            dmgInfo.Tags.Add(MapDamageTypeToTag(MeleeAttackDamageType));
+                            // SKIP: lua:2517 — SetDamageForce — Phase 3 (S&Box: apply force separately on Rigidbody)
                             dmgInfo.Attacker = GameObject;
                             // SKIP: lua:2520 — VJ.DamageSpecialEnts — Phase 3 damage utility
                             ent.TakeDamage(dmgInfo);
@@ -303,7 +334,8 @@ public partial class CreatureNPC
         if (AttackState < VJAttackState.Executed)
         {
             AttackState = VJAttackState.Executed;
-            // SKIP: lua:2564-2566 — attackTimers[VJ.ATTACK_TYPE_MELEE](self) — Phase 3 attack timer system
+            // lua:2564-2566 — attackTimers[VJ.ATTACK_TYPE_MELEE](self)
+            ScheduleAttackTimers();
         }
         // lua:2568-2576: Sound feedback
         if (!skip)
@@ -338,14 +370,8 @@ public partial class CreatureNPC
                 var projectileClass = VJUtility.PICK(RangeAttackProjectiles) ?? VJUtility.PICK(RangeAttackEntityToSpawn);
                 if (projectileClass != null)
                 {
-                    // SKIP: lua:2635-2657 — ents.Create(projectileClass) / projectile spawning / physics — Phase 3 projectile system
-                    // lua:2636: spawnPos = RangeAttackProjPos(projectile)
-                    // lua:2638: set angles toward enemy
-                    // lua:2639: OnRangeAttackExecute("PreSpawn")
-                    // lua:2640: SetOwner(self)
-                    // lua:2642: Spawn()
-                    // lua:2648-2654: SetVelocity
-                    // lua:2656: OnRangeAttackExecute("PostSpawn")
+                    // lua:2635-2657 — spawn projectile via virtual dispatch
+                    SpawnRangeProjectile(projectileClass, ene);
                 }
             }
         }
@@ -355,7 +381,8 @@ public partial class CreatureNPC
             if (eneValid)
                 PlaySoundSystem("RangeAttack");
             AttackState = VJAttackState.Executed;
-            // SKIP: lua:2665-2666 — attackTimers[VJ.ATTACK_TYPE_RANGE](self) — Phase 3 attack timer system
+            // lua:2665-2667 — attackTimers[VJ.ATTACK_TYPE_RANGE](self)
+            ScheduleAttackTimers();
         }
     }
 
@@ -402,7 +429,8 @@ public partial class CreatureNPC
         if (AttackState < VJAttackState.Executed)
         {
             AttackState = VJAttackState.Executed;
-            // SKIP: lua:2704-2705 — attackTimers[VJ.ATTACK_TYPE_LEAP](self) — Phase 3 attack timer system
+            // lua:2704-2705 — attackTimers[VJ.ATTACK_TYPE_LEAP](self)
+            ScheduleAttackTimers();
         }
         // lua:2708-2716: Sound feedback
         if (!skip)

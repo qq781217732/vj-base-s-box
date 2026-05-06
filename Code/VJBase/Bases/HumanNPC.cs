@@ -20,13 +20,7 @@ public partial class HumanNPC : CreatureNPC
     public bool AllowWeaponOcclusionDelay { get; set; }
     public float NextThrowGrenadeT { get; set; }
 
-    // ═══ Attack Config (human-specific — no new properties, just constructor defaults) ═══
-    /// <summary>Human-specific values set in constructor to override BaseNPC defaults</summary>
-    public float NextAnyAttackTime_Melee { get; set; } = 1.5f;
-    public float NextMeleeAttackTime { get; set; } = 0.8f;
-    public float NextAnyAttackTime_Grenade { get; set; } = 3f;
-    public float GrenadeAttackThrowTime { get; set; } = 1f;
-    public float NextGrenadeAttackTime { get; set; } = 5f;
+    // ═══ Attack Config (human-specific values set in constructor) ═══
     public bool DisableChasingEnemy { get; set; }
     public bool HasGrenadeAttack { get; set; }
 
@@ -46,6 +40,10 @@ public partial class HumanNPC : CreatureNPC
         MeleeAttackDistance = 50;
         MeleeAttackAngleRadius = 45;
         TimeUntilMeleeAttackDamage = 0.3f;
+        NextAnyAttackTime_Melee = 1.5f;
+        NextMeleeAttackTime = 0.8f;
+        NextAnyAttackTime_Grenade = 3f;
+        NextGrenadeAttackTime = 5f;
 
         // Human-specific sound defaults (npc_vj_human_base/init.lua)
         HasExtraMeleeAttackSounds = true;
@@ -66,6 +64,19 @@ public partial class HumanNPC : CreatureNPC
 
     // Note: Behavior is defined on BaseNPC, default Aggressive
     // HumanNPC sets it via constructor if needed
+
+    // ═══ ProcessAttackTimers override — adds grenade execution ═══
+    public override void ProcessAttackTimers(float curTime)
+    {
+        // Handle grenade start timer (attack_grenade_start)
+        if (GrenadeExecTime > 0 && curTime > GrenadeExecTime)
+        {
+            GrenadeExecTime = 0;
+            ExecuteGrenadeAttack(StashedGrenadeEnt, StashedGrenadeDisableOwner, StashedGrenadeLandDir);
+        }
+
+        base.ProcessAttackTimers(curTime);
+    }
 
     // ═══ SetWeaponState ═══
     public virtual void SetWeaponState(VJWepState state = VJWepState.Ready, float time = -1)
@@ -258,14 +269,18 @@ public partial class HumanNPC : CreatureNPC
         var releaseTime = GrenadeAttackThrowTime;
         if (releaseTime <= 0)
         {
-            // lua:3173: event-based attack — execute immediately
-            // SKIP: lua:3173 — attackTimers[VJ.ATTACK_TYPE_GRENADE](self) — Phase 3 attack timer system
+            // lua:3173: event-based attack — execute immediately + schedule reset timer
+            ScheduleAttackTimers();
             ExecuteGrenadeAttack(customEnt, disableOwner, landDir);
         }
         else
         {
-            // SKIP: lua:3178-3183 — timer.Create("attack_grenade_start" .. index, releaseTime / AnimPlaybackRate, ...) — Phase 3 timer system
-            // Delayed execution — ExecuteGrenadeAttack(customEnt, disableOwner, landDir) called on timer
+            // lua:3178-3183 — attack_grenade_start timer → polling via GrenadeExecTime
+            float rate = MathF.Max(AnimPlaybackRate, 0.01f);
+            StashedGrenadeEnt = customEnt;
+            StashedGrenadeDisableOwner = disableOwner;
+            StashedGrenadeLandDir = landDir;
+            GrenadeExecTime = Time.Now + releaseTime / rate;
         }
         // lua:3184: OnGrenadeAttack("PostInit")
         OnGrenadeAttack("PostInit", customEnt, landDir);
@@ -355,7 +370,8 @@ public partial class HumanNPC : CreatureNPC
         if (AttackState < VJAttackState.Executed)
         {
             AttackState = VJAttackState.Executed;
-            // SKIP: lua:3326-3328 — attackTimers[VJ.ATTACK_TYPE_GRENADE](self) — Phase 3 attack timer system
+            // lua:3326-3328 — attackTimers[VJ.ATTACK_TYPE_GRENADE](self)
+            ScheduleAttackTimers();
         }
         return grenade;
     }

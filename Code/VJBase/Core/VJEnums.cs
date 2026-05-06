@@ -9,6 +9,26 @@ public static class VJCustom
     public const int DmgForceFlinch = 123455;
 }
 
+// ═══ VJ Damage Tags — Source DMG_* → S&Box DamageInfo.Tags ═══
+public static class VJDamageTags
+{
+    // Primary damage types
+    public const string Slash   = "vj.slash";
+    public const string Club    = "vj.club";
+    public const string Generic = "vj.generic";
+    public const string Bullet  = "vj.bullet";
+    public const string Burn    = "vj.burn";
+    public const string Blast   = "vj.blast";
+    public const string Explosion = "vj.explosion";
+    public const string Shock    = "vj.shock";
+    public const string Poison   = "vj.poison";
+    // Special types
+    public const string Bleed        = "vj.bleed";
+    public const string Physgun      = "vj.physgun";
+    public const string ForceFlinch  = "vj.force_flinch";
+    public const string CrossbowBolt = "vj.crossbow_bolt";
+}
+
 // ═══ Source Engine NPCState — VJ calls SetNPCState(NPC_STATE_COMBAT) in ForceSetEnemy ═══
 public enum NPCState { None = 0, Idle = 1, Alert = 2, Combat = 3 }
 
