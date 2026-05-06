@@ -20,10 +20,8 @@ public partial class HumanNPC : CreatureNPC
     public bool AllowWeaponOcclusionDelay { get; set; }
     public float NextThrowGrenadeT { get; set; }
 
-    // ═══ Attack Config (human defaults override BaseNPC defaults) ═══
-    public new float MeleeAttackDistance { get; set; } = 50;
-    public new float MeleeAttackAngleRadius { get; set; } = 45;
-    public new float TimeUntilMeleeAttackDamage { get; set; } = 0.3f;
+    // ═══ Attack Config (human-specific — no new properties, just constructor defaults) ═══
+    /// <summary>Human-specific values set in constructor to override BaseNPC defaults</summary>
     public float NextAnyAttackTime_Melee { get; set; } = 1.5f;
     public float NextMeleeAttackTime { get; set; } = 0.8f;
     public float NextAnyAttackTime_Grenade { get; set; } = 3f;
@@ -44,6 +42,11 @@ public partial class HumanNPC : CreatureNPC
 
     public HumanNPC()
     {
+        // Human-specific attack defaults (override BaseNPC defaults)
+        MeleeAttackDistance = 50;
+        MeleeAttackAngleRadius = 45;
+        TimeUntilMeleeAttackDamage = 0.3f;
+
         // Human-specific sound defaults (npc_vj_human_base/init.lua)
         HasExtraMeleeAttackSounds = true;
         HasSuppressingSounds = true;
@@ -133,13 +136,21 @@ public partial class HumanNPC : CreatureNPC
         var ene = Enemy.Target;
         if (!ene.IsValid() || TakingCoverT > curTime || (AttackAnimTime > curTime && MovementType != VJMoveType.Aerial && MovementType != VJMoveType.Aquatic)) return;
 
-        // Melee range check — stand and attack
+        // Melee range check — stand and attack (lua:2368-2375)
         if (HasMeleeAttack && Enemy.DistanceNearest < MeleeAttackDistance && Enemy.Visible)
         {
-            if (MovementType == VJMoveType.Aerial || MovementType == VJMoveType.Aquatic)
-                AA_StopMoving();
-            // Idle stand while in melee range
-            return;
+            // lua:2369 — angle check: enemy within melee angle radius
+            var toEnemy = (ene.WorldPosition - WorldPosition).Normal;
+            var headDir = WorldRotation.Forward; // GetHeadDirection() → Phase 3 skeleton
+            bool inAngle = headDir.Dot(toEnemy) > MathF.Cos(MathF.PI / 180f * MeleeAttackAngleRadius);
+            if (inAngle)
+            {
+                if (MovementType == VJMoveType.Aerial || MovementType == VJMoveType.Aquatic)
+                    AA_StopMoving();
+                // lua:2373: self:SCHEDULE_IDLE_STAND()
+                SCHEDULE_IDLE_STAND();
+                return;
+            }
         }
 
         if (MovementType == VJMoveType.Stationary || IsFollowing || Medic.Status != "false" || GetState() == VJState.OnlyAnimation)
