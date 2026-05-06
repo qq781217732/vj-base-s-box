@@ -5,8 +5,8 @@ using Sandbox;
 namespace VJBase;
 
 /// <summary>
-/// Human NPC — ported from npc_vj_human_base/shared.lua.
-/// Field defaults, constructor, and virtual callbacks. Behavioral logic lives in HumanNPC.Think.cs.
+/// Human NPC — ported from npc_vj_human_base/init.lua (fields from lines 14-323) + shared.lua (client callbacks).
+/// Field defaults, constructor, weapon inventory, and virtual callbacks. Behavioral logic lives in HumanNPC.Think.cs.
 /// </summary>
 public partial class HumanNPC : CreatureNPC
 {
@@ -24,7 +24,7 @@ public partial class HumanNPC : CreatureNPC
     public bool DisableChasingEnemy { get; set; }
     public bool HasGrenadeAttack { get; set; }
 
-    // ═══ Grenade Config — human_base/shared.lua ═══
+    // ═══ Grenade Config — human_base/init.lua:14-323 ═══
     public List<string> GrenadeAttackEntity { get; set; }
     public List<string> GrenadeAttackModel { get; set; }
     public string GrenadeAttackAttachment { get; set; }
@@ -63,9 +63,9 @@ public partial class HumanNPC : CreatureNPC
         SoundTbl_Impact = new() { "Flesh.BulletImpact" };
     }
 
-    // ═══ Spawn Config — human_base/shared.lua ═══
+    // ═══ Spawn Config — human_base/init.lua:14-323 ═══
     public List<string> Model { get; set; }
-    public int StartHealth { get; set; } = 100;
+    public int StartHealth { get; set; } = 50;
 
     // ═══ Weapon Inventory Slots ═══
     public class WeaponSlots
@@ -79,7 +79,7 @@ public partial class HumanNPC : CreatureNPC
     public List<string> WeaponInventory_AntiArmorList { get; set; }
     public List<string> WeaponInventory_MeleeList { get; set; }
 
-    // ═══ Weapon Config — human_base/shared.lua ═══
+    // ═══ Weapon Config — human_base/init.lua:14-323 ═══
     public bool Weapon_Disabled { get; set; }
     public bool Weapon_IgnoreSpawnMenu { get; set; }
     public bool Weapon_CanMoveFire { get; set; }

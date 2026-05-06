@@ -62,8 +62,8 @@ public partial class HumanNPC
 
         // lua:2187-2191: Health setup
         var hp = ScaleByDifficulty(StartHealth); // lua:2189: convar override or ScaleByDifficulty
-        // SKIP: lua:2190 — SetHealth(hp) / StartHealth = hp — S&Box health via HealthComponent
-        StartHealth = (int)hp; // lua:2190: StartHealth = hp
+        // SKIP: lua:2190 — SetHealth(hp) — S&Box health via HealthComponent
+        StartHealth = (int)hp; // lua:2191: StartHealth = hp
 
         // lua:2193-2194: Init() callback + ApplyBackwardsCompatibility
         // Phase 3: delegate to child class override; backwards compat not needed
@@ -76,8 +76,8 @@ public partial class HumanNPC
         // lua:2205: SetupBloodColor(BloodColor)
         // SKIP: lua:2205 — Source engine blood system
 
-        // lua:2207: NextWanderTime
-        NextWanderTime = Time.Now + (IdleAlwaysWander ? 0 : 1);
+        // lua:2207: preserve spawner-set value, else compute default
+        NextWanderTime = (NextWanderTime != 0 ? NextWanderTime : Time.Now + (IdleAlwaysWander ? 0 : 1));
 
         // lua:2209-2281: Delayed init (timer.Simple 0.1)
         // SKIP: lua:2211 — SetMaxLookDistance(SightDistance) — S&Box engine handles vision range
