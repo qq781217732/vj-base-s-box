@@ -40,20 +40,14 @@ public partial class BaseNPC
         ClearCondition(Condition.TaskFailed);
 
         // schedules.lua:398-413 — TurnData from schedule
-        var turnData = schedule.TurnData;
-        if (turnData != null)
+        if (schedule.TurnData is TurnData turnData)
         {
             var faceType = turnData.Type;
             if (CanTurnWhileMoving && faceType != VJFaceStatus.None)
             {
-                var turnTarget = turnData.Target;
                 ResetTurnTarget();
                 Turn.Type = faceType;
-                // Pre-calculate vector targets to yaw angles; entity/enemy targets stay as-is
-                if (turnTarget is Vector3 vec)
-                    Turn.Target = GetTurnAngle(Angles.LookAt(GameObject.WorldPosition, vec)).yaw;
-                else
-                    Turn.Target = turnTarget;
+                Turn.Target = turnData.Target; // entity target or null (enemy types don't need a target)
                 Turn.IsSchedule = true;
                 Turn.LastYaw = 1;
             }

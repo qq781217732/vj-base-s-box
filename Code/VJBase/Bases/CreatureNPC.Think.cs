@@ -108,8 +108,7 @@ public partial class CreatureNPC
 
         // SKIP: schedules.lua:208 — self:MaintainActivity() call at end of RunAI. Phase 3.
 
-        // SKIP: schedules.lua:228-267 — full TurnData system (VJ.FACE_POSITION/ENTITY/ENEMY + Visible variants)
-        // Phase 3: TurningUseAllAxis, GetTurnAngle, SetIdealYawAndUpdate, LerpAngle integration
+        MaintainTurnTarget();
     }
 
     // ═══ SelectSchedule — decides what to do next based on conditions ═══

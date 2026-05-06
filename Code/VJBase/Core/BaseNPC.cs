@@ -199,7 +199,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public virtual bool IsFacingIdealYaw()
     {
         if (Turn.Type == VJFaceStatus.None) return true;
-        float diff = Math.Abs(Math.AngleDelta(GetIdealYaw(), GameObject.WorldRotation.Yaw()));
+        float diff = Math.Abs(MathX.DeltaDegrees(GetIdealYaw(), GameObject.WorldRotation.Yaw()));
         return diff < FacingIdealYawThreshold;
     }
 
@@ -211,6 +211,42 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
         Turn.IsSchedule = false;
         Turn.LastYaw = 0;
         TurnResetTime = 0;
+    }
+
+    // Compute the target yaw toward a world-space point
+    private float YawToward(Vector3 targetPos)
+    {
+        var dir = (targetPos - GameObject.WorldPosition).Normal;
+        return Rotation.LookAt(dir).Yaw();
+    }
+
+    // Compute full angles (pitch+yaw+roll) toward a world-space point
+    private Angles AnglesToward(Vector3 targetPos)
+    {
+        var dir = (targetPos - GameObject.WorldPosition).Normal;
+        return Rotation.LookAt(dir).Angles();
+    }
+
+    // Apply yaw rotation at MaxYawSpeed deg/s. Returns the new yaw.
+    private float ApplyYawTurn(float targetYaw)
+    {
+        float currentYaw = GameObject.WorldRotation.Yaw();
+        float delta = MathX.DeltaDegrees(currentYaw, targetYaw);
+        float maxTurn = MaxYawSpeed * Time.Delta;
+        float turn = Math.Clamp(delta, -maxTurn, maxTurn);
+        float newYaw = currentYaw + turn;
+        GameObject.WorldRotation = Rotation.FromYaw(newYaw);
+        return newYaw;
+    }
+
+    // Apply full-axis rotation toward a target rotation at MaxYawSpeed deg/s
+    private void ApplyFullAxisTurn(Rotation targetRot)
+    {
+        Rotation currentRot = GameObject.WorldRotation;
+        float angle = currentRot.Distance(targetRot);
+        float maxTurn = MaxYawSpeed * Time.Delta;
+        float t = angle > 0.001f ? Math.Min(maxTurn / angle, 1f) : 1f;
+        GameObject.WorldRotation = Rotation.Slerp(currentRot, targetRot, t, true);
     }
 
     /// <summary>
@@ -231,10 +267,17 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
             var ene = GetEnemy();
             if (ene.IsValid())
             {
+                var targetPos = ene.WorldPosition + WorldSpaceCenter_Entity(ene);
                 if (TurningUseAllAxis)
-                    resultAng = GetTurnAngle(Angles.LookAt(GameObject.WorldPosition, ene.WorldPosition + WorldSpaceCenter_Entity(ene)));
+                {
+                    resultAng = GetTurnAngle(AnglesToward(targetPos));
+                    ApplyFullAxisTurn(Rotation.LookAt((targetPos - GameObject.WorldPosition).Normal));
+                }
                 else
-                    resultAng = GetTurnAngle(Angles.LookAt(GameObject.WorldPosition, ene.WorldPosition));
+                {
+                    resultAng = GetTurnAngle(AnglesToward(ene.WorldPosition));
+                    ApplyYawTurn(YawToward(ene.WorldPosition));
+                }
             }
             else
             {
@@ -247,7 +290,11 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
         else if (target is Vector3 vec)
         {
             ResetTurnTarget();
-            resultAng = GetTurnAngle(Angles.LookAt(GameObject.WorldPosition, vec));
+            resultAng = GetTurnAngle(AnglesToward(vec));
+            if (TurningUseAllAxis)
+                ApplyFullAxisTurn(Rotation.LookAt((vec - GameObject.WorldPosition).Normal));
+            else
+                ApplyYawTurn(YawToward(vec));
             if (faceTime != 0)
             {
                 Turn.Type = visibleOnly ? VJFaceStatus.PositionVisible : VJFaceStatus.Position;
@@ -257,10 +304,17 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
         else if (target is GameObject ent && ent.IsValid())
         {
             ResetTurnTarget();
+            var targetPos = ent.WorldPosition + WorldSpaceCenter_Entity(ent);
             if (TurningUseAllAxis)
-                resultAng = GetTurnAngle(Angles.LookAt(GameObject.WorldPosition, ent.WorldPosition + WorldSpaceCenter_Entity(ent)));
+            {
+                resultAng = GetTurnAngle(AnglesToward(targetPos));
+                ApplyFullAxisTurn(Rotation.LookAt((targetPos - GameObject.WorldPosition).Normal));
+            }
             else
-                resultAng = GetTurnAngle(Angles.LookAt(GameObject.WorldPosition, ent.WorldPosition));
+            {
+                resultAng = GetTurnAngle(AnglesToward(ent.WorldPosition));
+                ApplyYawTurn(YawToward(ent.WorldPosition));
+            }
             if (faceTime != 0)
             {
                 Turn.Type = visibleOnly ? VJFaceStatus.EntityVisible : VJFaceStatus.Entity;
@@ -273,20 +327,9 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
         }
 
         if (updateTurn)
-        {
-            if (TurningUseAllAxis)
-            {
-                var myAng = GameObject.WorldRotation.Angles();
-                var maxYawSpeed = GetMaxYawSpeed();
-                var newAng = Angles.Lerp(myAng, new Angles(resultAng.pitch, myAng.yaw, resultAng.roll), Time.Delta * maxYawSpeed * 0.01f);
-                GameObject.WorldRotation = newAng.ToRotation();
-            }
             SetIdealYawAndUpdate(resultAng.yaw);
-        }
         else
-        {
             IdealYaw = resultAng.yaw;
-        }
 
         if (faceTime != 0)
         {
@@ -311,7 +354,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
         }
 
         // StopOnFace: something else took over ideal yaw OR we're already facing target
-        if (turnData.StopOnFace && (Math.Abs(Math.AngleDelta(GetIdealYaw(), turnData.LastYaw)) > 1f || IsFacingIdealYaw()))
+        if (turnData.StopOnFace && (Math.Abs(MathX.DeltaDegrees(GetIdealYaw(), turnData.LastYaw)) > 1f || IsFacingIdealYaw()))
         {
             ResetTurnTarget();
             return;
@@ -326,55 +369,47 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
         {
             if (turnTarget is Vector3 v)
             {
-                var resultAng = GetTurnAngle(Angles.LookAt(GameObject.WorldPosition, v));
+                float targetYaw = YawToward(v);
                 if (TurningUseAllAxis)
-                {
-                    var myAng = GameObject.WorldRotation.Angles();
-                    var maxYawSpeed = GetMaxYawSpeed();
-                    var newAng = Angles.Lerp(myAng, new Angles(resultAng.pitch, myAng.yaw, resultAng.roll), Time.Delta * maxYawSpeed * 0.01f);
-                    GameObject.WorldRotation = newAng.ToRotation();
-                }
-                SetIdealYawAndUpdate(resultAng.yaw);
-                turnData.LastYaw = resultAng.yaw;
+                    ApplyFullAxisTurn(Rotation.LookAt((v - GameObject.WorldPosition).Normal));
+                float newYaw = TurningUseAllAxis ? GameObject.WorldRotation.Yaw() : ApplyYawTurn(targetYaw);
+                SetIdealYawAndUpdate(newYaw);
+                turnData.LastYaw = newYaw;
             }
         }
         else if (turnTarget is GameObject ent && ent.IsValid()
             && (turnData.Type == VJFaceStatus.Entity || (turnData.Type == VJFaceStatus.EntityVisible && Visible(ent))))
         {
-            Angles resultAng;
+            var targetPos = ent.WorldPosition + WorldSpaceCenter_Entity(ent);
+            float newYaw;
             if (TurningUseAllAxis)
             {
-                var myAng = GameObject.WorldRotation.Angles();
-                resultAng = GetTurnAngle(Angles.LookAt(GameObject.WorldPosition, ent.WorldPosition + WorldSpaceCenter_Entity(ent)));
-                var maxYawSpeed = GetMaxYawSpeed();
-                var newAng = Angles.Lerp(myAng, new Angles(resultAng.pitch, myAng.yaw, resultAng.roll), Time.Delta * maxYawSpeed * 0.01f);
-                GameObject.WorldRotation = newAng.ToRotation();
+                ApplyFullAxisTurn(Rotation.LookAt((targetPos - GameObject.WorldPosition).Normal));
+                newYaw = GameObject.WorldRotation.Yaw();
             }
             else
             {
-                resultAng = GetTurnAngle(Angles.LookAt(GameObject.WorldPosition, ent.WorldPosition));
+                newYaw = ApplyYawTurn(YawToward(ent.WorldPosition));
             }
-            SetIdealYawAndUpdate(resultAng.yaw);
-            turnData.LastYaw = resultAng.yaw;
+            SetIdealYawAndUpdate(newYaw);
+            turnData.LastYaw = newYaw;
         }
         else if (eneValid && !Dead
             && (turnData.Type == VJFaceStatus.Enemy || (turnData.Type == VJFaceStatus.EnemyVisible && Enemy.Visible)))
         {
-            Angles resultAng;
+            var targetPos = ene.WorldPosition + WorldSpaceCenter_Entity(ene);
+            float newYaw;
             if (TurningUseAllAxis)
             {
-                var myAng = GameObject.WorldRotation.Angles();
-                resultAng = GetTurnAngle(Angles.LookAt(GameObject.WorldPosition, ene.WorldPosition + WorldSpaceCenter_Entity(ene)));
-                var maxYawSpeed = GetMaxYawSpeed();
-                var newAng = Angles.Lerp(myAng, new Angles(resultAng.pitch, myAng.yaw, resultAng.roll), Time.Delta * maxYawSpeed * 0.01f);
-                GameObject.WorldRotation = newAng.ToRotation();
+                ApplyFullAxisTurn(Rotation.LookAt((targetPos - GameObject.WorldPosition).Normal));
+                newYaw = GameObject.WorldRotation.Yaw();
             }
             else
             {
-                resultAng = GetTurnAngle(Angles.LookAt(GameObject.WorldPosition, ene.WorldPosition));
+                newYaw = ApplyYawTurn(YawToward(ene.WorldPosition));
             }
-            SetIdealYawAndUpdate(resultAng.yaw);
-            turnData.LastYaw = resultAng.yaw;
+            SetIdealYawAndUpdate(newYaw);
+            turnData.LastYaw = newYaw;
         }
     }
 
