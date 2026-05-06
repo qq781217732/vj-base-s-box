@@ -92,8 +92,8 @@ VJBase/
 └── Bases/
     ├── CreatureNPC.cs              ← creature shared.lua
     ├── CreatureNPC.Think.cs        ← creature init.lua
-    ├── HumanNPC.cs                 ← human shared.lua
-    ├── HumanNPC.Think.cs           ← human init.lua
+    ├── HumanNPC.cs                 ← human shared.lua (字段+构造器, 102 行)
+    ├── HumanNPC.Think.cs           ← human init.lua (逻辑方法, ~485 行)
     ├── TankNPC.cs                  ← tank shared.lua
     └── TankNPC.Think.cs            ← tank init.lua
 ```
@@ -275,7 +275,7 @@ public virtual void StartEngineTask(int taskId, float taskData)
 
 ## 7. 当前状态清单
 
-> 最后更新：2026-05-07（攻击系统填坑：计时器 + 伤害标签 + Prop 交互 + 弹体框架 + OnlyPush fix）
+> 最后更新：2026-05-07（HumanNPC Initialize + DoChangeMovementType 机械翻译 + 字段拆分就位）
 
 ### 7.1a schedules.lua → BaseNPC.Schedule.cs（32 个方法）
 
@@ -327,6 +327,37 @@ public virtual void StartEngineTask(int taskId, float taskData)
 > - `SoundDuration` → `GetSoundDuration(sdSet)` 硬编码 fallback — Phase 3
 > - `math.random(1, chance)` → `Game.Random.Next(1, chance + 1)` 防 throw + 匹配 Lua inclusive-max
 > - Lua `customSD` 可传 table → C# 仅 `string`，调用方需先 `PickSound()` 选好
+
+### 7.1d HumanNPC init.lua → HumanNPC.Think.cs（18 方法 + 2 local 函数）
+
+> init.lua:2131-4515，HumanNPC 独有逻辑：初始化/武器库存/装弹/姿态/伤害/死亡/手雷。
+> 文件已拆分：HumanNPC.cs（字段+构造器+回调桩, 102 行）+ HumanNPC.Think.cs（逻辑方法, ~485 行）
+
+| 状态 | 方法 | Lua 行 | 备注 |
+|------|------|--------|------|
+| ✅ | `Initialize` | 2131-2282 | ~150 行机械翻译，SKIP ~28（hull/caps/flags/pose-params/hooks） |
+| ✅ | `DoChangeMovementType` | 2287-2319 | 4 分支（Ground/Aerial/Stationary/Physics），全 SKIP Source 引擎 caps |
+| ✅ | `ProcessAttackTimers` | — | 覆写：加 grenade exec 轮询 |
+| ✅ | `SetWeaponState` / `GetWeaponState` | 2520-2534 | 空壳（timer-based reset Phase 3） |
+| ✅ | `SCHEDULE_ALERT_CHASE` | 2340-2357 | doLOSChase 双分支 + RunCodeOnFinish re-chase 回环 |
+| ✅ | `MaintainAlertBehavior` | 2359-2415 | 人类覆写：unreachable + 武器检测 + melee range/angle 判定 |
+| ✅ | `GrenadeAttack` | 3070-3186 | 完整骨架（~90 行，22 SKIP：动画/骨骼/可见性/实体 parent） |
+| ✅ | `ExecuteGrenadeAttack` | 3204-3331 | 完整骨架（~85 行，18 SKIP：spawn/bone/fuse/ownership） |
+| ❌ | `SelectSchedule` | 3520-3838 | ~320 行，战斗决策核心 — 下一优先 |
+| ❌ | `OnTakeDamage` | 3918-4172 | ~255 行，伤害入口 — 免疫链/flinch/combat response |
+| ❌ | `TranslateActivity` | 2417-2466 | ~50 行，动画翻译 |
+| ❌ | `DoChangeWeapon` | 2470-2518 | ~50 行，武器Give/Remove/库存管理 |
+| ❌ | `ResetEnemy` | 3840-3916 | ~75 行，盟友敌人继承/内存清理 |
+| ❌ | `CheckForDangers` | 3356-3403 | ~50 行 |
+| ❌ | `CanFireWeapon` | 3476-3510 | ~35 行 |
+| ❌ | `UpdatePoseParamTracking` | 3426-3467 | ~40 行 |
+| ❌ | `BeginDeath` / `FinishDeath` / `CreateDeathCorpse` / `DeathWeaponDrop` | 4177-4513 | ~330 行死亡序列 |
+| ❌ | `GetAttackSpread` | 4515 | 空函数 |
+| ❌ | `ExecuteMeleeAttack` (覆写) | 2993-3058 | ~65 行，与 CreatureNPC 版差异小 |
+| ❌ | `attackTimers` local table | 2536-2560 | MELEE + GRENADE 计时器（~25 行，已由 BaseNPC.ScheduleAttackTimers 替代） |
+| ❌ | `playReloadAnimation` local func | 2562-2582 | ~20 行 |
+
+> 新增字段（HumanNPC.cs）：`Model`, `StartHealth`, `WeaponInventory` (含 `WeaponSlots` 子类), `WeaponInventoryStatus`, `WeaponInventory_AntiArmorList`, `WeaponInventory_MeleeList`, `Weapon_Disabled`, `Weapon_IgnoreSpawnMenu`, `Weapon_CanMoveFire`, `IdleAlwaysWander`, `AnimationTranslations`
 
 ### 7.2 接口体系
 
@@ -664,9 +695,15 @@ Source C++:  f:/DevProject/Sbox/source-sdk-2013/
    VJDamageTags 18 常量 + MapDamageTypeToTag + Prop 交互 + SpawnRangeProjectile 框架
    解 9 处 SKIP（attackTimers ×3 + SetDamageType + PropInteraction + projectile spawn + grenade timer ×2 + grenade exec）
 
-10. 动画系统
+10. ✅ HumanNPC Initialize + DoChangeMovementType  ← 已完成 2026-05-07
+   init.lua:2131-2319 → HumanNPC.Think.cs (+112 行)
+   HumanNPC.cs 字段拆分就位（+21 行，11 新字段）
+   修复 5 问题（B1 StartHealth 50 / B2 NextWanderTime / D1-D3 注释）
+
+11. 动画系统
    16 个 M 标记动画方法仍是 return 0/false
-   11. CreatureNPC.MaintainAlertBehavior 缺口（~35 行未翻译）
+   12. CreatureNPC.MaintainAlertBehavior 缺口（~35 行未翻译）
+   13. HumanNPC SelectSchedule（~320 行，下一优先）
 ```
 
 ### 10.7 验证命令
@@ -685,7 +722,7 @@ cd f:/DevProject/Sbox/testzombie/Code && grep -rn "SKIP:" VJBase/
 ---
 
 *最后更新：2026-05-07*
-*翻译阶段：~65%，P0 + 攻击骨架 + 攻击填坑 + 手雷全部完成。下一步：动画（16 M 方法），然后 MaintainAlertBehavior 缺口。*
+*翻译阶段：~65%。HumanNPC init.lua: 8/18 方法完成。下一步：SelectSchedule（~320 行）。*
 
 ---
 
