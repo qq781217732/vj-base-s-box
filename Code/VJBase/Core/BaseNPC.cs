@@ -172,6 +172,12 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public virtual void MaintainIdleBehavior(int? idleType = null) { }
     public virtual void PlaySequence(string animation) { }
 
+    // ═══ Target (generic, not enemy) ═══
+    public GameObject Target { get; set; }
+    public GameObject GetTarget() => Target;
+    public void SetTarget(GameObject ent) => Target = ent;
+    public Action<GameObject> OnInvestigate { get; set; }
+
     // ═══ Facing / Turn ═══
     public float TurnResetTime { get; set; }
     public float FacingIdealYawThreshold { get; set; } = 5f;

@@ -330,12 +330,45 @@ public partial class BaseNPC
                 }
 
                 // ═══════════════════════════════════════════
-                // core.lua:2392-2410 — Investigation system
+                // core.lua:2378-2408 — Investigation system
                 // ═══════════════════════════════════════════
                 if (!eneValid && CanInvestigate && NextInvestigationMove < Time.Now)
                 {
-                    // SKIP: core.lua:2393-2404 — sound investigation (VJ_SD_InvestLevel) — Phase 3
-                    // SKIP: core.lua:2405-2409 — flashlight investigation — Phase 3
+                    // core.lua:2381 — Sound investigation: VJ_SD_InvestLevel
+                    // Phase 3: VJ_SD_InvestLevel/VJ_SD_InvestTime from entity sound data
+                    float sdLevel = GetEntitySoundInvestLevel(ent);
+                    float sdTime = GetEntitySoundInvestTime(ent);
+                    if (sdLevel > 0 && distanceToEnt < (InvestigateSoundMultiplier * sdLevel) && (Time.Now - sdTime) <= 1f)
+                    {
+                        DoReadyAlert();
+                        if (CanSee(ent))
+                        {
+                            StopMoving();
+                            SetTarget(ent);
+                            SCHEDULE_FACE(EngineTask.FaceTarget);
+                            NextInvestigationMove = Time.Now + 0.3f;
+                        }
+                        else if (!IsFollowing)
+                        {
+                            SetLastPosition(entPos);
+                            SCHEDULE_GOTO_POSITION(EngineTask.WalkPath, schedule =>
+                            {
+                                schedule.CanShootWhenMoving = true;
+                                schedule.TurnData = new TurnData { Type = VJFaceStatus.Enemy };
+                            });
+                            NextInvestigationMove = Time.Now + 2f;
+                        }
+                        OnInvestigate?.Invoke(ent);
+                        // SKIP: PlaySoundSystem("Investigate") — Phase 3 sound system
+                    }
+                    // core.lua:2402 — Flashlight investigation
+                    else if (entTypeVal == ENT_TYPE_PLAYER && distanceToEnt < 350f && IsEntityShiningFlashlightOnMe(ent, myPos, entPos))
+                    {
+                        StopMoving();
+                        SetTarget(ent);
+                        SCHEDULE_FACE(EngineTask.FaceTarget);
+                        NextInvestigationMove = Time.Now + 0.1f;
+                    }
                 }
             }
 
@@ -384,5 +417,29 @@ public partial class BaseNPC
             if (!EqualityComparer<T>.Default.Equals(a[i], b[i]))
                 return false;
         return true;
+    }
+
+    // ═══ Investigation helpers ═══
+
+    // core.lua: entity.VJ_SD_InvestLevel — sound data set by noise-emitting entities
+    protected virtual float GetEntitySoundInvestLevel(GameObject ent)
+    {
+        // Phase 3: read from ent.Components or EntityMemory
+        return 0f;
+    }
+
+    // core.lua: entity.VJ_SD_InvestTime — timestamp of last sound from entity
+    protected virtual float GetEntitySoundInvestTime(GameObject ent)
+    {
+        // Phase 3: read from ent.Components or EntityMemory
+        return 0f;
+    }
+
+    // core.lua:2402 — player shining flashlight at NPC
+    protected virtual bool IsEntityShiningFlashlightOnMe(GameObject player, Vector3 myPos, Vector3 playerPos)
+    {
+        // Phase 3: need FlashlightIsOn() from player input/component system
+        // Full Lua check: ent:FlashlightIsOn() && (ent:GetForward():Dot((myPos-entPos):Normalized) > cosRad20)
+        return false;
     }
 }
