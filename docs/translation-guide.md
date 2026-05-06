@@ -291,7 +291,13 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | ⚠️ | `PlayFootstepSound` / `PlayIdleSound` | Phase 3 辅助音效系统（非 PlaySoundSystem，独立的 think 循环音效） |
 | ✅ | 音效配置字段 | 全部 ~200 字段（Has* / SoundTbl_* / *SoundChance / *SoundLevel / *SoundPitch / NextSoundTime_*） |
 
-> S&Box API 映射：`CreateSound` → `Sound.Play()` + Parent 手动绑定；`EmitSound` → `Sound.Play(position)` 不 parent；`math.random(1, chance)` → `Game.Random.Next(1, chance + 1)` 防 throw。
+> S&Box API 映射与已知限制：
+> - `CreateSound` → `Sound.Play()` + 手动 `handle.Parent = GameObject`（Phase 3 可切 `GameObject.PlaySound()` 自动 parent）
+> - `EmitSound` → `Sound.Play(eventName, WorldPosition)` 不 parent，fire-and-forget
+> - `SoundLevel` (dB) 接收参数但未映射到 `SoundHandle.Distance`/`Decibels` — Phase 3
+> - `SoundDuration` → `GetSoundDuration(sdSet)` 硬编码 fallback — Phase 3
+> - `math.random(1, chance)` → `Game.Random.Next(1, chance + 1)` 防 throw + 匹配 Lua inclusive-max
+> - Lua `customSD` 可传 table → C# 仅 `string`，调用方需先 `PickSound()` 选好
 
 ### 7.2 接口体系
 
@@ -513,6 +519,12 @@ Source C++:  f:/DevProject/Sbox/source-sdk-2013/
 **坑 9: S&Box Vector3 没有 2D 方法。** `Length2DSqr()` 不存在，手动展开 `delta.x*delta.x + delta.y*delta.y`。
 
 **坑 10: S&Box NavMeshAgent API。** `MoveTo(Vector3)` 存在但无重载，`IsNavigating`/`MaxSpeed`/`Velocity` 都是正确的。`UpdateRotation` 默认 true（自动面朝移动方向），手动控制旋转时需关掉。
+
+**坑 11: Game.Random.Next(1, 1) 抛异常。** Lua `math.random(1, 1)` 返回 1（安全）。.NET `Random.Next(1, 1)` 因为 min==max 抛 ArgumentOutOfRangeException。全局用 `Next(1, chance + 1)` 防 throw，同时匹配 Lua 的 inclusive-max 概率语义。
+
+**坑 12: Sound.Play() vs GameObject.PlaySound()。** S&Box 文档提及 `GameObject.PlaySound()` 自动 parent SoundHandle 到 GameObject。当前用 `Sound.Play()` + 手动 `handle.Parent = GameObject`，功能等效。如果 `GameObject.PlaySound()` API 稳定，Phase 3 可切过去。
+
+**坑 13: Lua table → C# string 类型窄化。** Lua `PlaySoundSystem` 的 `customSD` 可以是 string 或 table（PICK 随机选）。C# 签名是 `string`，不支持 table。调用方需先 `PickSound()` 选好再传入。Lua 的 `StartsWith("{")` table-string hack 已删除。
 
 ### 10.5 机械翻译 vs 自己造（红线）
 

@@ -303,6 +303,8 @@ public partial class BaseNPC
     /// <summary>
     /// CreateSound — funcs.lua:74-87 VJ.CreateSound.
     /// Creates a sound attached to this GameObject, sets pitch, returns handle.
+    /// NOTE: Uses Sound.Play() + manual Parent binding. S&Box also has GameObject.PlaySound()
+    /// which auto-parents; if that API is stable, switching to it would be cleaner (Phase 3).
     /// </summary>
     protected SoundHandle CreateSound(string sdFile, int sdLevel, float sdPitch)
     {
@@ -415,6 +417,16 @@ public partial class BaseNPC
     // PlaySoundSystem — core.lua:2944-3375
     // Centralized sound dispatch. Returns sound duration (0 = no sound played).
     // sdType: null → CreateSound (default); non-null → use provided func
+    //
+    // DESIGN NOTE (Lua→C# type narrowing):
+    //   Lua customSD can be string OR table (PICK randomly from table).
+    //   C# customSD is string only. Callers must PickSound() before passing.
+    //   The Lua StartsWith("{") table-string hack has been removed.
+    //
+    // DESIGN NOTE (Random chance):
+    //   Lua math.random(1, 1) returns 1 (safe).
+    //   .NET Random.Next(1, 1) throws. All calls use Next(1, chance + 1)
+    //   to match Lua's inclusive-max semantics without throwing.
     // ═══════════════════════════════════════════════
 
     public virtual float PlaySoundSystem(string sdSet, string customSD = null,
