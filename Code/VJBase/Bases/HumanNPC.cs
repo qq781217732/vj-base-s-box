@@ -133,19 +133,19 @@ public partial class HumanNPC : CreatureNPC
 
     // ═══ Damage Response Config (ported from init.lua:4020-4135) ═══
     public int BecomeEnemyToPlayer { get; set; }
-    public int DamageByPlayerDispositionLevel { get; set; }
+    public int DamageByPlayerDispositionLevel { get; set; } = 1;
     public object DamageResponse { get; set; } = true; // true / "OnlySearch" / "OnlyMove"
     public bool CombatDamageResponse { get; set; } = true;
     public float NextCombatDamageResponseT { get; set; }
     public (float a, float b) CombatDamageResponse_CoverTime { get; set; } = (3f, 5f);
-    public (float a, float b) CombatDamageResponse_Cooldown { get; set; } = (15f, 20f);
+    public (float a, float b) CombatDamageResponse_Cooldown { get; set; } = (3f, 3.5f);
 
     // ═══ Ally Damage Response (ported from init.lua:4082-4100) ═══
     public bool DamageAllyResponse { get; set; } = true;
-    public (float a, float b) DamageAllyResponse_Cooldown { get; set; } = (20f, 30f);
+    public (float a, float b) DamageAllyResponse_Cooldown { get; set; } = (9f, 12f);
     public List<string> AnimTbl_DamageAllyResponse { get; set; } = new();
     public List<string> AnimTbl_TakingCover { get; set; } = new();
-    public bool Passive_AlliesRunOnDamage { get; set; }
+    public bool Passive_AlliesRunOnDamage { get; set; } = true;
 
     // ═══ Blood / Effects (ported from init.lua:3967-3971) ═══
     public bool Bleeds { get; set; } = true;
