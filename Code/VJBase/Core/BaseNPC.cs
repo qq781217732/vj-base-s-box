@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Sandbox;
 
 namespace VJBase;
@@ -34,6 +35,69 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public float NextDoAnyAttackT { get; set; }
     public bool IsAbleToMeleeAttack { get; set; } = true;
     public bool MeleeAttack_IsPropAttack { get; set; }
+
+    // ═══ Melee Attack Config — core.lua:249-285 ═══
+    public bool HasMeleeAttack { get; set; } = true;
+    public float MeleeAttackDamage { get; set; } = 10;
+    public int MeleeAttackDamageType { get; set; } // DMG_SLASH
+    public bool HasMeleeAttackKnockBack { get; set; }
+    public float MeleeAttackDistance { get; set; }
+    public float MeleeAttackAngleRadius { get; set; } = 100;
+    public float MeleeAttackDamageDistance { get; set; }
+    public float MeleeAttackDamageAngleRadius { get; set; } = 100;
+    public int MeleeAttackReps { get; set; } = 1;
+    public float[] MeleeAttackExtraTimers { get; set; }
+    public bool MeleeAttackStopOnHit { get; set; }
+    public float TimeUntilMeleeAttackDamage { get; set; }
+    public bool MeleeAttackBleedEnemy { get; set; }
+    public int MeleeAttackBleedEnemyChance { get; set; } = 3;
+    public float MeleeAttackBleedEnemyDamage { get; set; } = 1;
+    public float MeleeAttackBleedEnemyTime { get; set; } = 1;
+    public int MeleeAttackBleedEnemyReps { get; set; } = 4;
+    public bool DisableDefaultMeleeAttackDamageCode { get; set; }
+    public object PropInteraction { get; set; } = true;
+    public float PropInteraction_MaxScale { get; set; } = 1;
+    public bool MeleeAttackPlayerSpeed { get; set; }
+    public float MeleeAttackPlayerSpeedWalk { get; set; } = 100;
+    public float MeleeAttackPlayerSpeedRun { get; set; } = 100;
+    public float MeleeAttackPlayerSpeedTime { get; set; } = 5;
+    public int MeleeAttackDSP { get; set; } = 32;
+    public int MeleeAttackDSPLimit { get; set; } = 60;
+
+    // ═══ Range Attack Config — core.lua:289-305 ═══
+    public bool HasRangeAttack { get; set; }
+    public List<string> RangeAttackProjectiles { get; set; }
+    public List<string> RangeAttackEntityToSpawn { get; set; }
+    public float RangeAttackMinDistance { get; set; } = 800;
+    public float RangeAttackMaxDistance { get; set; } = 2000;
+    public float RangeAttackAngleRadius { get; set; } = 100;
+    public int RangeAttackReps { get; set; } = 1;
+    public float[] RangeAttackExtraTimers { get; set; }
+    public float TimeUntilRangeAttackProjectileRelease { get; set; }
+
+    // ═══ Leap Attack Config — core.lua:309-329 ═══
+    public bool HasLeapAttack { get; set; }
+    public float LeapAttackDamage { get; set; } = 15;
+    public int LeapAttackDamageType { get; set; } // DMG_SLASH
+    public float LeapAttackMinDistance { get; set; } = 200;
+    public float LeapAttackMaxDistance { get; set; } = 500;
+    public float LeapAttackDamageDistance { get; set; } = 100;
+    public float LeapAttackAngleRadius { get; set; } = 60;
+    public int LeapAttackReps { get; set; } = 1;
+    public float[] LeapAttackExtraTimers { get; set; }
+    public bool LeapAttackStopOnHit { get; set; } = true;
+    public bool DisableDefaultLeapAttackDamageCode { get; set; }
+    public float TimeUntilLeapAttackDamage { get; set; }
+
+    // ═══ Attack Callbacks (virtual — override in derived NPC types) ═══
+    public virtual Vector3 MeleeAttackTraceOrigin() => WorldPosition + WorldRotation.Forward * 20;
+    public virtual Vector3 MeleeAttackTraceDirection() => WorldRotation.Forward;
+    public virtual Vector3 MeleeAttackKnockbackVelocity(GameObject ent) => (ent.WorldPosition - WorldPosition).Normal * 200;
+    public virtual bool OnMeleeAttackExecute(string status, GameObject ent = null, bool isProp = false) => false;
+    public virtual Vector3 RangeAttackProjPos(GameObject projectile) => WorldPosition + WorldRotation.Forward * 50;
+    public virtual Vector3 RangeAttackProjVel(GameObject projectile) => (GetEnemy()?.WorldPosition - WorldPosition ?? Vector3.Forward).Normal * 800;
+    public virtual bool OnRangeAttackExecute(string status, GameObject ent = null, GameObject projectile = null) => false;
+    public virtual bool OnLeapAttackExecute(string status, GameObject ent = null) => false;
     public float NextIdleTime { get; set; }
     public float NextWanderTime { get; set; }
     public float NextChaseTime { get; set; }

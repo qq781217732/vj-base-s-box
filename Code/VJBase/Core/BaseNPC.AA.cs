@@ -31,7 +31,6 @@ public partial class BaseNPC
 	public float AA_GroundLimit { get; set; } = 500;
 	public int AA_MinWanderDist { get; set; } = 500;
 	public float AA_MoveAccelerate { get; set; }
-	public bool HasMeleeAttack { get; set; }
 	public List<string> Aerial_AnimTbl_Calm { get; set; } = new();
 	public List<string> Aerial_AnimTbl_Alerted { get; set; } = new();
 	public List<string> Aquatic_AnimTbl_Calm { get; set; } = new();

@@ -226,6 +226,15 @@ public virtual void StartEngineTask(int taskId, float taskData)
 
 不做这一步的代价已在 2026-05-06 会话验证：4 个 bug 全是提交后用户抓出来的（分支放错、坐标 double-add、yaw-only 路径用错变量、死字典写入永不读取）。每个都是对照 Lua 原文 30 秒就能发现的。
 
+**2026-05-07 新增反面教材**（攻击系统翻译时自纠的 4 个错误）：
+
+| # | 错误 | 为什么是错的 | 查 Lua 30 秒 → |
+|---|------|-------------|----------------|
+| 1 | `ent.Name == myClass` 替代 `ent:GetClass()` | S&Box `GameObject.Name` 是实例名（"GameObject #123"），不是类型名（"npc_vj_creature_base"） | `if ent == self or ent:GetClass() == myClass then continue end` |
+| 2 | 编造 `PickRandom()` 方法 | 项目已有 `VJUtility.PICK()`，签名为 `PICK<T>(IList<T>)` | `PICK(selfData.RangeAttackProjectiles)` |
+| 3 | `HasMeleeAttack` 重复定义 | BaseNPC.AA.cs 和 BaseNPC.cs 都是 `partial class BaseNPC`，同名属性冲突 CS0102 | 每个字段只在一个 partial file 定义 |
+| 4 | `Scene.FindInPhysics(Vector3, float)` 签名编造 | S&Box API 签名为 `FindInPhysics(Sphere)`，`Sphere` 构造器接受 `(Vector3 center, float radius)` | 先查 `sbox_search_api` 再写调用 |
+
 ```
 □ 打开对应的 Lua 源文件
 □ 从入口方法开始，Lua 一行 → C# 一行，确认:
@@ -266,7 +275,7 @@ public virtual void StartEngineTask(int taskId, float taskData)
 
 ## 7. 当前状态清单
 
-> 最后更新：2026-05-06（转向+调查+批量消 SKIP+OBB+Sound+Git 规范焊接）
+> 最后更新：2026-05-07（HumanNPC chase + 攻击骨架 + 手雷 + TankNPC OnDamaged + §5.5 反面教材更新）
 
 ### 7.1a schedules.lua → BaseNPC.Schedule.cs（32 个方法）
 
@@ -360,6 +369,11 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | 22 | **批量消 SKIP (8 项)** — FL_NOTARGET/AlliedWithPlayerAllies/CanBeEngaged/OnAlert/doLOSChase/isVJBaseSNPC 等 | ✅ 2026-05-06 |
 | 23 | **WorldSpaceCenter OBB** — (Mins+Maxs)/2 包围盒中心，替代 feet-only WorldPosition | ✅ 2026-05-06 |
 | 24 | **IgnoreEnemyUntil 删除** — Source 引擎 reaction delay 在 S&Box 不存在，删死字典 | ✅ 2026-05-06 |
+| 25 | **HumanNPC SCHEDULE_ALERT_CHASE** — doLOSChase 双分支 + MaintainAlertBehavior unreachable-weapon 逻辑 | ✅ 2026-05-07 |
+| 26 | **CreatureNPC 攻击系统** — ExecuteMeleeAttack/ExecuteRangeAttack/ExecuteLeapAttack 从空壳翻译为完整骨架（~170 行） | ✅ 2026-05-07 |
+| 27 | **HumanNPC 手雷系统** — GrenadeAttack/ExecuteGrenadeAttack 从空壳翻译为完整骨架（~170 行） | ✅ 2026-05-07 |
+| 28 | **TankNPC OnDamaged** — base_tank.lua:35-49 机械翻译，Init/PreDamage 分支 | ✅ 2026-05-07 |
+| 29 | **Attack config fields (30+)** — core.lua:249-329 全部 Melee/Range/Leap 配置字段 + 9 个 virtual 回调搬入 BaseNPC.cs | ✅ 2026-05-07 |
 
 ### 7.4 SKIP 总表（Phase 3+ 填坑清单）
 
@@ -392,6 +406,16 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | `BaseNPC.cs` | DoEnemyAlert NPCState fix (Lua:2080-2083) | 补回 NPCState 检查，阻止 combat→alert→combat 切换 |
 | `CreatureNPC.Think.cs` | Breath sounds 空壳 (仅 timer 无播放) | StopSD + CreateSound + CurrentBreathSound 存储 |
 | `Core/` (新文件) | 整个 `PlaySoundSystem` 系统从未翻译 | `BaseNPC.Sound.cs` — 音效配置字段 + 35 分支 PlaySoundSystem + StopAllSounds + GetSoundPitch + 回调 |
+| `HumanNPC.cs` | SCHEDULE_ALERT_CHASE doLOSChase 双分支 SKIP | doLOSChase=true → schedule_alert_chaseLOS + RunCodeOnFinish re-chase 回环；false → schedule_alert_chase |
+| `HumanNPC.cs` | MaintainAlertBehavior 缺 unreachable-weapon 逻辑 | `HasCondition(Condition.EnemyUnreachable) && HasWeapon` → SCHEDULE_ALERT_CHASE(true) |
+| `CreatureNPC.Think.cs` | ExecuteMeleeAttack 空壳 | FindInPhysics 扫描 + 角度判定 + DamageInfo + 流血结构（~80 行），prop/击退/玩家特效标 Phase 3 SKIP |
+| `CreatureNPC.Think.cs` | ExecuteRangeAttack 空壳 | VJUtility.PICK 弹体选择 + AttackState 管理（~40 行），弹体生成/物理标 Phase 3 SKIP |
+| `CreatureNPC.Think.cs` | ExecuteLeapAttack 空壳 | FindInPhysics 扫描 + 伤害应用 + 命中/未命中回调（~50 行） |
+| `HumanNPC.cs` | GrenadeAttack 空壳 | 落地方向判定 + 转向 + 攻态 + 计时器骨架（~80 行），动画/骨骼/弹体生成标 Phase 3 SKIP |
+| `HumanNPC.cs` | ExecuteGrenadeAttack 空壳 | spawn 位姿 + 投掷速度 + 物理 + AttackState（~90 行），骨折/弹体生成/熔丝标 Phase 3 SKIP |
+| `TankNPC.cs` | OnDamaged Phase 3 stub | Init/PreDamage 分支机械翻译 + Source 伤害系统 SKIP 注释 |
+| `BaseNPC.cs` | 攻击配置字段缺失 (core.lua:249-329) | 新增 ~30 字段（MeleeDamage/MeleeDamageType/HasRangeAttack/LeapDamageDistance 等）+ 9 个 virtual 回调 |
+| `BaseNPC.AA.cs` | `HasMeleeAttack` 重复定义 | 删除重复，统一由 BaseNPC.cs 定义 |
 
 #### 剩余待填
 | 文件 | 行/位置 | SKIP 内容 | 归属系统 |
@@ -406,6 +430,16 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | `BaseNPC.AA.cs` | — | `AA_MoveAnimation` 动画选表/PlayAnim/ACT_* | 动画系统 |
 | `BaseNPC.Sound.cs` | — | `SoundLevel` (dB) 未映射到 S&Box 衰减 (`Distance`/`Decibels`) | 音效 |
 | `BaseNPC.Sound.cs` | — | `GetSoundDuration()` 硬编码 fallback，非真实音效文件时长 | 音效 |
+| `BaseNPC.Schedule.cs` | — | `RememberUnreachable` / `IsUnreachable` — Source 引擎敌人记忆 API | 敌人记忆 |
+| `HumanNPC.cs` | — | `IsMeleeWeapon` — 武器近战检测，Phase 3 武器系统 | 武器系统 |
+| `CreatureNPC.Think.cs` | — | `PropInteraction` / `GetPhysicsObject` / `constraint.RemoveConstraints` | Prop系统 |
+| `CreatureNPC.Think.cs` | — | `IsNextBot` / `loco:Approach` / `ViewPunch` / `SetDSP` / `DoMeleeAttackPlayerSpeed` | 玩家系统 |
+| `CreatureNPC.Think.cs` | — | `attackTimers` / `timer.Create` 计时器系统 | 计时器 |
+| `CreatureNPC.Think.cs` | — | `SetDamageType` / `SetDamageForce` / `SetInflictor` / `DMG_*` 常量 | 伤害系统 |
+| `CreatureNPC.Think.cs` | — | `ents.Create` / `Spawn` / `Activate` / projectile class dispatch | 弹体生成 |
+| `HumanNPC.cs` | — | `LookupAttachment` / `GetAttachment` / `LookupBone` / `GetBonePosition` / `GetShootPos` | 骨骼动画 |
+| `HumanNPC.cs` | — | `VisibleVec` / `VJ.TraceDirections` 可见性/空间查询 | 感知系统 |
+| `CreatureNPC.Think.cs` | — | `GetClass()` entity type comparison → component type check | 实体类型 |
 
 ### 7.5 新增文件清单
 
@@ -413,7 +447,7 @@ public virtual void StartEngineTask(int taskId, float taskData)
 |------|------|------|------|
 | `Engine/AISenses.cs` | ai_senses.cpp 机械翻译 | ~950 | ✅ |
 | `Core/VJEnums.cs` | enums.lua | ~147 | ✅ |
-| `Core/BaseNPC.cs` | core.lua 合并（敌人管理+条件+属性+hook+关系系统+Alive） | ~410 | ✅ |
+| `Core/BaseNPC.cs` | core.lua 合并（敌人管理+条件+属性+hook+关系系统+Alive+攻击配置） | ~500 | ✅ |
 | `Core/BaseNPC.Schedule.cs` | schedules.lua 全部 32 方法 | ~390 | ✅ |
 | `Core/BaseNPC.Relationships.cs` | core.lua:2127-2426 MaintainRelationships | ~390 | ✅ 9 功能块中 7 已实现 |
 | `Core/EngineAITaskSystem.cs` | Phase 3 重写（Movement/Face/Wait 任务） | ~280 | ✅ |
@@ -463,6 +497,18 @@ public virtual void StartEngineTask(int taskId, float taskData)
 - **IgnoreEnemyUntil 删除** — Source 引擎 reaction delay，S&Box 无等价机制
 - **§5.5 提交前自审** + **§11 Git 提交规范** — 焊进流程
 
+**2026-05-07 会话关键新增：**
+- **HumanNPC SCHEDULE_ALERT_CHASE** — doLOSChase 双分支（schedule_alert_chaseLOS + RunCodeOnFinish re-chase 回环 / schedule_alert_chase）
+- **HumanNPC MaintainAlertBehavior** — unreachable enemy + 武器检测（`HasCondition(Condition.EnemyUnreachable) && HasWeapon`）
+- **CreatureNPC ExecuteMeleeAttack** — FindInPhysics 扫描 + 角度判定 + DamageInfo + 流血结构（~80 行）
+- **CreatureNPC ExecuteRangeAttack** — VJUtility.PICK 弹体选 + AttackState 管理（~40 行）
+- **CreatureNPC ExecuteLeapAttack** — FindInPhysics 扫描 + 伤害 + hit/miss 回调（~50 行）
+- **HumanNPC GrenadeAttack** — 落地方向判定（Enemy/EnemyLastVis/FindBest）+ 转向 + 计时器骨架（~80 行）
+- **HumanNPC ExecuteGrenadeAttack** — spawn 位姿 + 投掷速度物理 + 熔丝分发（~90 行）
+- **TankNPC OnDamaged** — base_tank.lua:35-49 机械翻译，Init/PreDamage 分支 + DMG_* SKIP
+- **Attack config fields 30+** — core.lua:249-329 全部 Melee/Range/Leap 配置 + 9 个 virtual 回调搬入 BaseNPC.cs
+- **HasMeleeAttack 去重** — BaseNPC.AA.cs 删除重复定义，统一在 BaseNPC.cs
+
 ---
 
 ## 8. 翻译执行清单
@@ -510,10 +556,10 @@ python verify_api_mapping.py
 
 ```
 你是谁：帮阿纳金和土豆把 VJ Base (GMod Lua) 机械翻译成 S&Box C#
-做到哪：~55%。P0 全部完成 + 转向/调查/批量 SKIP 清零 + 音效系统就位。
-        剩余：门/水/动画/FL_OBJECT 4 个 Phase 3 系统设计。
-怎么验：python verify_api_mapping.py 交叉验证 Lua↔文档
-        git log --oneline -20 秒级概览（§11 Git 提交规范）
+做到哪：~60%。P0 + 攻击系统骨架（Melee/Range/Leap/Grenade）+ 手雷系统 + HumanNPC chase。
+        剩余：门/水/动画/FL_OBJECT 4 个 Phase 3 系统 + 攻击填坑（计时器/弹体/Prop）。
+怎么验：git log --oneline -20 秒级概览（§11 Git 提交规范）
+        python verify_api_mapping.py 交叉验证 Lua↔文档
 ```
 
 ### 10.2 必读文件（按顺序）
@@ -597,7 +643,17 @@ Source C++:  f:/DevProject/Sbox/source-sdk-2013/
 7. ✅ 音效系统  ← 已完成
    PlaySoundSystem 35 分支 + BaseNPC.Sound.cs (~1050 行)
 
-8. 动画系统
+8. ✅ HumanNPC chase + grenade + 攻击骨架  ← 已完成 2026-05-07
+   HumanNPC SCHEDULE_ALERT_CHASE 双分支 + MaintainAlertBehavior unreachable-weapon
+   GrenadeAttack/ExecuteGrenadeAttack 完整骨架 (~170 行)
+   ExecuteMeleeAttack/RangeAttack/LeapAttack 完整骨架 (~170 行)
+   TankNPC OnDamaged 机械翻译 + attack config fields 30+
+
+9. 攻击系统填坑（Phase 3）
+   attackTimers / timer.Create 计时器、ents.Create 弹体生成、DMG_* 伤害类型映射、PropInteraction
+   玩家 ViewPunch/SetDSP/SpeedMod、骨骼/动画 LookupBone/GetBonePosition
+
+10. 动画系统
    16 个 M 标记动画方法仍是 return 0/false
 ```
 
@@ -616,8 +672,8 @@ cd f:/DevProject/Sbox/testzombie/Code && grep -rn "SKIP:" VJBase/
 
 ---
 
-*最后更新：2026-05-06*
-*翻译阶段：~55%，P0 + 音效全部完成。下一步：动画。*
+*最后更新：2026-05-07*
+*翻译阶段：~60%，P0 + 攻击骨架 + 手雷全部完成。下一步：攻击系统填坑（计时器/弹体/Prop），然后动画。*
 
 ---
 

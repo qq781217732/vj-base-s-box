@@ -101,10 +101,21 @@ public partial class TankNPC : CreatureNPC
             MaintainIdleBehavior();
     }
 
-    // ═══ OnDamaged — filter damage by type ═══
+    // ═══ OnDamaged — filter damage by type (base_tank.lua:35-49) ═══
     public virtual void OnDamaged(object dmginfo, int hitgroup, string status)
     {
-        // Phase 3: implement damage type filtering
+        // lua:37-41: Init — skip gravity gun and crossbow bolt damage
+        if (status == "Init")
+        {
+            // SKIP: lua:37-41 — dmginfo:GetInflictor() / IsDamageType(DMG_PHYSGUN) / GetClass("crossbow_bolt") — Source damage system, Phase 3
+        }
+        // lua:43-48: PreDamage — filter melee damage unless from boss
+        else if (status == "PreDamage")
+        {
+            // SKIP: lua:43 — IsDamageType(DMG_SLASH) or IsDamageType(DMG_CLUB) or IsDamageType(DMG_GENERIC) — Source damage types, Phase 3
+            // lua:44: damage >= 30 AND attacker is boss → halve damage
+            // SKIP: lua:44-48 — dmginfo:GetDamage() / GetAttacker().VJ_ID_Boss / SetDamage — Source damage system, Phase 3
+        }
     }
 
     // ═══ Tank_AngleDiffuse ═══
