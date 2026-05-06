@@ -24,62 +24,7 @@ public partial class HumanNPC : CreatureNPC
     public bool DisableChasingEnemy { get; set; }
     public bool HasGrenadeAttack { get; set; }
 
-    // ═══ Shared Config — human_base/init.lua:14-153 ═══
-    public float StartHealth { get; set; } = 50;
-    public bool CanOpenDoors { get; set; } = true;
-    public bool HasOnPlayerSight { get; set; }
-    public int OnPlayerSightDispositionLevel { get; set; } = 1;
-    public bool OnPlayerSightOnlyOnce { get; set; } = true;
-    public (float a, float b) OnPlayerSightNextTime { get; set; } = (15f, 20f);
-    public string DamageResponse { get; set; } = "true";
-    public bool DamageAllyResponse { get; set; } = true;
-    public (float a, float b) DamageAllyResponse_Cooldown { get; set; } = (9f, 12f);
-    public bool CombatDamageResponse { get; set; } = true;
-    public (float a, float b) CombatDamageResponse_CoverTime { get; set; } = (3f, 5f);
-    public (float a, float b) CombatDamageResponse_Cooldown { get; set; } = (3f, 3.5f);
-    public bool CallForHelp { get; set; } = true;
-    public float CallForHelpDistance { get; set; } = 2000;
-    public float CallForHelpCooldown { get; set; } = 4;
-    public float CallForHelpAnimCooldown { get; set; } = 30;
-    public bool CallForHelpAnimFaceEnemy { get; set; } = true;
-    public bool CanInvestigate { get; set; } = true;
-    public bool FollowPlayer { get; set; } = true;
-    public bool CanReceiveOrders { get; set; } = true;
-    public bool Passive_RunOnTouch { get; set; } = true;
-    public bool Passive_AlliesRunOnDamage { get; set; } = true;
-    public float DangerDetectionDistance { get; set; } = 400;
-    public bool CanDetectDangers { get; set; } = true;
-    public bool CanRedirectGrenades { get; set; } = true;
-    public bool CanAlly { get; set; } = true;
-    public float BecomeEnemyToPlayer { get; set; } // false=don't, number=threshold
-    public bool AllowIgnition { get; set; } = true;
-    public bool ForceDamageFromBosses { get; set; }
-    public bool CanFlinch { get; set; }
-    public int FlinchChance { get; set; } = 16;
-    public float FlinchCooldown { get; set; } = 5;
-    public bool HasDamageByPlayerSounds { get; set; }
-    public float NextDamageByPlayerSoundT { get; set; }
-    public int DamageByPlayerDispositionLevel { get; set; }
-    public bool Weapon_Disabled { get; set; }
-    public bool Weapon_IgnoreSpawnMenu { get; set; }
-    public bool Weapon_CanMoveFire { get; set; } = true;
-    public bool Weapon_CanReload { get; set; } = true;
-    public bool Weapon_CanCrouchAttack { get; set; }
-    public int Weapon_CrouchAttackChance { get; set; } = 4;
-    public bool Weapon_FindCoverOnReload { get; set; } = true;
-    public bool Weapon_Strafe { get; set; } = true;
-    public (float a, float b) Weapon_StrafeCooldown { get; set; } = (3f, 6f);
-    public float Weapon_Accuracy { get; set; } = 0.6f;
-    public float Weapon_MaxDistance { get; set; } = 2500;
-    public float Weapon_MinDistance { get; set; }
-    public float Weapon_RetreatDistance { get; set; } = 200;
-    public float Weapon_OcclusionDelay { get; set; } = 3f; // Phase 3: may be bool false to disable
-    public float Weapon_OcclusionDelayMinDist { get; set; } = 500;
-    public (float a, float b) Weapon_OcclusionDelayTime { get; set; } = (1.2f, 3.5f);
-    public float Weapon_AimTurnDiff { get; set; } = 0.2f;
-    public float Weapon_AimTurnDiff_Def { get; set; } = 0.95f;
-
-    // ═══ Grenade Config — human_base/init.lua ═══
+    // ═══ Grenade Config — human_base/shared.lua ═══
     public List<string> GrenadeAttackEntity { get; set; }
     public List<string> GrenadeAttackModel { get; set; }
     public string GrenadeAttackAttachment { get; set; }
@@ -118,16 +63,32 @@ public partial class HumanNPC : CreatureNPC
         SoundTbl_Impact = new() { "Flesh.BulletImpact" };
     }
 
-    // ═══ Weapon Inventory — human_base/init.lua:2167 ═══
-    public Dictionary<string, object> WeaponInventory { get; set; } = new();
+    // ═══ Spawn Config — human_base/shared.lua ═══
+    public List<string> Model { get; set; }
+    public int StartHealth { get; set; } = 100;
+
+    // ═══ Weapon Inventory Slots ═══
+    public class WeaponSlots
+    {
+        public GameObject Primary { get; set; }
+        public GameObject AntiArmor { get; set; }
+        public GameObject Melee { get; set; }
+    }
+    public WeaponSlots WeaponInventory { get; set; } = new();
     public VJWepInventory WeaponInventoryStatus { get; set; } = VJWepInventory.None;
     public List<string> WeaponInventory_AntiArmorList { get; set; }
     public List<string> WeaponInventory_MeleeList { get; set; }
-    public Dictionary<int, object> AnimationTranslations { get; set; } = new();
 
-    // ═══ Weapon Config Extras ═══
-    public bool Weapon_UnarmedBehavior { get; set; } = true;
-    public bool Weapon_UnarmedBehavior_Active { get; set; }
+    // ═══ Weapon Config — human_base/shared.lua ═══
+    public bool Weapon_Disabled { get; set; }
+    public bool Weapon_IgnoreSpawnMenu { get; set; }
+    public bool Weapon_CanMoveFire { get; set; }
+
+    // ═══ Idle / Wander Config ═══
+    public bool IdleAlwaysWander { get; set; }
+
+    // ═══ Animation Config — human_base/init.lua ═══
+    public Dictionary<int, object> AnimationTranslations { get; set; } = new();
 
     // ═══ Virtual Callbacks (stubs — override in derived types) ═══
     public virtual bool OnGrenadeAttack(string status, object customEnt, Vector3? landDir = null) => false;
