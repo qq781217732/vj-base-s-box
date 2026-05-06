@@ -271,6 +271,182 @@ public partial class HumanNPC
         NextChaseTime = curTime + (Enemy.Distance > 2000 ? 1f : 0.1f);
     }
 
+    // ═══ SelectSchedule — human_base/init.lua:3520-3838 ═══
+    public override void SelectSchedule()
+    {
+        // lua:3520-3522: entry guard
+        if (VJ_IsBeingControlled || Dead) return;
+
+        // lua:3524-3527: local variables
+        float curTime = Time.Now;
+        var ene = GetEnemy();
+        bool eneValid = ene.IsValid();
+        PlayIdleSound(null, null, eneValid);
+
+        // ═══ Idle Behavior (lua:3529-3577) ═══
+        if (!eneValid)
+        {
+            // lua:3531-3532: MaintainIdleBehavior for non-grenade attack types
+            if (AttackType != VJAttackType.Grenade)
+                MaintainIdleBehavior();
+
+            // lua:3534-3535: Reset TakingCoverT if not alerted
+            if (Alerted == VJAlertState.None)
+                TakingCoverT = 0;
+
+            // lua:3537
+            Weapon_UnarmedBehavior_Active = false;
+
+            // lua:3539-3576: Investigation block
+            // SKIP: lua:3518 — bitsDanger = bit.bor(SOUND_BULLET_IMPACT, SOUND_COMBAT, SOUND_WORLD, SOUND_DANGER) — Phase 3 sound constants
+            if (CanInvestigate
+                && (HasCondition(Condition.HearBulletImpact)
+                    || HasCondition(Condition.HearCombat)
+                    || HasCondition(Condition.HearWorld)
+                    || HasCondition(Condition.HearDanger))
+                && NextInvestigationMove < curTime
+                && TakingCoverT < curTime
+                && !IsBusy())
+            {
+                // lua:3541: GetBestSoundHint(bitsDanger) — Source engine sound location
+                var sdSrc = GetBestSoundHint(0); // SKIP: bitsDanger mask — Phase 3 sound system
+                // lua:3542
+                if (sdSrc != null)
+                {
+                    // lua:3544: allowed flag
+                    bool allowed = true;
+                    // SKIP: lua:3545-3553 — sdSrc.owner, .type, IsVehicle(), GetDriver(), Disposition checks — Phase 3 sound event system
+                    // lua:3556-3560 — commented-out player sound check
+
+                    // lua:3561-3574: Execute investigation
+                    if (allowed)
+                    {
+                        DoReadyAlert();                              // lua:3562
+                        StopMoving();                                 // lua:3563
+                        // SKIP: lua:3564 — SetLastPosition(sdSrc.origin) — sdSrc is null (Phase 3 sound)
+                        SCHEDULE_FACE("TASK_FACE_LASTPOSITION");     // lua:3565
+                        // lua:3567-3571: commented-out custom schedule
+                        // SKIP: lua:3572 — OnInvestigate(sdOwner) — sdOwner is null (Phase 3)
+                        PlaySoundSystem("Investigate");              // lua:3573
+                        TakingCoverT = curTime + 1;                  // lua:3574
+                    }
+                }
+            }
+        }
+        // ═══ Combat Behavior (lua:3579-3819) ═══
+        else
+        {
+            // lua:3581-3582: Get active weapon + enemy data
+            var wep = GetActiveWeapon(); // SKIP: returns null — Phase 3 weapon system
+            var eneData = Enemy;
+
+            // ═══ C1: No valid weapon (lua:3585-3603) ═══
+            if (!wep.IsValid())
+            {
+                // lua:3587-3594: Scared behavior (Weapon_UnarmedBehavior)
+                if (Weapon_UnarmedBehavior)
+                {
+                    if (!IsBusy() && curTime > NextChaseTime)
+                    {
+                        Weapon_UnarmedBehavior_Active = true;               // lua:3589
+                        if (!IsFollowing && eneData.Visible)
+                        {
+                            SCHEDULE_COVER_ENEMY("TASK_RUN_PATH");          // lua:3591
+                            return;                                         // lua:3592
+                        }
+                    }
+                }
+                // lua:3596-3600: No scared behavior but has melee — chase
+                else if (HasMeleeAttack)
+                {
+                    Weapon_UnarmedBehavior_Active = false;                  // lua:3597
+                    NextDangerDetectionT = curTime + 4;                    // lua:3598
+                    MaintainAlertBehavior();                                // lua:3599
+                    return;                                                 // lua:3600
+                }
+                // lua:3602: Fallback — idle, then fall through to goto_conditions
+                MaintainIdleBehavior(2);
+                // lua:3603: //return — Allow other behaviors (COND_PLAYER_PUSHING) to run
+            }
+            // ═══ C2: Has valid weapon (lua:3604-3816) — ALL SKIP (wep is null, Phase 3) ═══
+            else
+            {
+                if (wep == null) goto goto_conditions; // compiler guard (dead code)
+
+                Weapon_UnarmedBehavior_Active = false;                      // lua:3605
+
+                // SKIP: lua:3607 — enePos_Eye = ene:EyePos() — Phase 3 eye position
+                var myPos = WorldPosition;                                  // lua:3608
+                // SKIP: lua:3609 — myPosCentered = myPos + OBBCenter() — Phase 3 OBB
+                var myPosCentered = myPos; // stub
+
+                // --- lua:3611-3620: Retreat from too-close enemy ---
+                // SKIP: lua:3612 — DoCoverTrace(myPosCentered, enePos_Eye), wep.IsMeleeWeapon, ene.Behavior — Phase 3 weapon + cover
+                // SKIP: lua:3613 — VJ.TraceDirections(self, "Quick", 200, ...) — Phase 3 utility
+                // SKIP: lua:3616 — GetWeaponState/SetWeaponState — Phase 3 weapon state
+                // SKIP: lua:3618 — SCHEDULE_GOTO_POSITION("TASK_RUN_PATH", lambda) — Phase 3
+                // SKIP: lua:3619 — goto goto_conditions — Phase 3
+
+                // --- lua:3623-3651: CanFireWeapon checks + occlusion ---
+                // SKIP: lua:3623-3629 — CanFireWeapon(false,false) / (true,true) — Phase 3 weapon
+                // SKIP: lua:3625-3626 — Weapon_MaxDistance / NextWeaponAttackT check → MaintainAlertBehavior
+                // SKIP: lua:3631 — DoCoverTrace(EyePos, enePos_Eye, true) occlusion check
+                // SKIP: lua:3632 — TakingCoverT guard
+                // SKIP: lua:3633-3650 — Weapon_OcclusionDelay / GetWeaponState / LastHiddenZoneT / GetUp / MaintainAlertBehavior / WeaponAttackState
+                // SKIP: lua:3642 — goto goto_checkwep — Phase 3
+                // SKIP: lua:3651 — goto goto_conditions — Phase 3
+
+                // SKIP: lua:3654 — ::goto_checkwep:: label (C#: goto_checkwep:)
+            goto_checkwep:
+                _ = 0; // label anchor — Phase 3 weapon combat loop will start here
+                // SKIP: lua:3655-3816 — VJ weapon combat loop — Phase 3 weapon system
+                // C2c-i (lua:3655-3670): if wep.IsVJBaseWeapon → aim turning (FInAimCone, SetTurnTarget, UpdatePoseParamTracking)
+                // C2c-ii (lua:3673-3734): cover/obstruction check (DoCoverTrace ×2, friendly-in-LOS reposition, behind-cover reposition, VJ.GetNearestPositions / NearestPoint, custom GOTO_POSITION schedule)
+                // C2c-iii (lua:3737-3794): weapon attack (melee vs ranged, TranslateActivity/PICK/AnimExists/AnimDuration/PlayAnim, crouch fire, ammo check)
+                // C2c-iv (lua:3797-3806): random strafing while shooting (VJ.TraceDirections Radial, OnWeaponStrafe)
+                // C2c-v (lua:3808-3816): non-VJ weapons → SetSchedule(SCHED_RANGE_ATTACK1)
+            }
+        }
+
+        // ═══ goto_conditions: Handle player pushing yield (lua:3821-3837) ═══
+        goto_conditions:
+        // lua:3823
+        if (HasCondition(Condition.PlayerPushing) && curTime > TakingCoverT && !IsBusy("Activities"))
+        {
+            // lua:3824
+            PlaySoundSystem("YieldToPlayer");
+
+            // Build schedule_yield_player inline (lua:3512-3517 — module-level shared in Lua)
+            var yieldSched = new AISchedule();
+            yieldSched.Init("SCHEDULE_YIELD_PLAYER");
+            yieldSched.EngTask(EngineTask.MoveAwayPath, 120);
+            yieldSched.EngTask(EngineTask.RunPath, 0);
+            yieldSched.EngTask(EngineTask.WaitForMovement, 0);
+            yieldSched.CanShootWhenMoving = true;
+
+            // lua:3825-3834: Set turn data based on enemy/target status
+            if (eneValid)
+            {
+                // lua:3825-3826: Face current enemy (visible only)
+                yieldSched.TurnData = new TurnData { Type = VJFaceStatus.EnemyVisible, Target = null };
+            }
+            else if (GetTarget().IsValid())
+            {
+                // lua:3828-3829: Face current target (visible only)
+                yieldSched.TurnData = new TurnData { Type = VJFaceStatus.EntityVisible, Target = GetTarget() };
+            }
+            else
+            {
+                // lua:3831-3832: Reset turn data (nil = none)
+                yieldSched.TurnData = new TurnData { Type = VJFaceStatus.None };
+            }
+
+            // lua:3835
+            StartSchedule(yieldSched);
+            TakingCoverT = curTime + 2; // lua:3836
+        }
+    }
+
     // ═══ GrenadeAttack — human_base/init.lua:3070-3186 ═══
     public virtual bool GrenadeAttack(GameObject customEnt = null, bool disableOwner = false)
     {

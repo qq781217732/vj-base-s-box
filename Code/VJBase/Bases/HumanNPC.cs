@@ -84,6 +84,40 @@ public partial class HumanNPC : CreatureNPC
     public bool Weapon_IgnoreSpawnMenu { get; set; }
     public bool Weapon_CanMoveFire { get; set; }
 
+    // ═══ Weapon Behavior Config (ported from init.lua:285-297) ═══
+    public bool Weapon_UnarmedBehavior { get; set; } = true;
+    public bool Weapon_UnarmedBehavior_Active { get; set; }
+    public bool Weapon_Strafe { get; set; } = true;
+    public (float a, float b) Weapon_StrafeCooldown { get; set; } = (3f, 6f);
+    public bool Weapon_OcclusionDelay { get; set; } = true;
+    public (float a, float b) Weapon_OcclusionDelayTime { get; set; } = (3f, 5f);
+    public float Weapon_OcclusionDelayMinDist { get; set; } = 100f;
+    public float Weapon_MaxDistance { get; set; } = 3000f;
+    public float Weapon_RetreatDistance { get; set; } = 150f;
+    public float? Weapon_AimTurnDiff { get; set; } // null = disabled (Lua: false)
+    public float Weapon_AimTurnDiff_Def { get; set; } = 0.7f;
+
+    // ═══ Animation Table Config (ported from init.lua:153,301-305) ═══
+    public List<string> AnimTbl_MoveToCover { get; set; } = new();
+    public List<string> AnimTbl_WeaponAttack { get; set; } = new();
+    public List<string> AnimTbl_WeaponAttackCrouch { get; set; } = new();
+    public List<string> AnimTbl_WeaponAim { get; set; } = new();
+
+    // ═══ Weapon Runtime State (ported from init.lua:1649-1662) ═══
+    public float WeaponLastShotTime { get; set; }
+    public string WeaponAttackAnim { get; set; }
+    public float NextWeaponAttackT { get; set; }
+    public float NextWeaponAttackT_Base { get; set; }
+    public float NextWeaponStrafeT { get; set; }
+    public float NextMoveOnGunCoveredT { get; set; }
+    public float NextMeleeWeaponAttackT { get; set; }
+    public float NextDangerDetectionT { get; set; }
+
+    // ═══ Animation Config (ported from init.lua:130,303) ═══
+    public bool HasPoseParameterLooking { get; set; } = true;
+    public bool Weapon_CanCrouchAttack { get; set; } = true;
+    public int Weapon_CrouchAttackChance { get; set; } = 3;
+
     // ═══ Idle / Wander Config ═══
     public bool IdleAlwaysWander { get; set; }
 

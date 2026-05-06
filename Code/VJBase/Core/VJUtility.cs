@@ -48,4 +48,10 @@ public static class VJUtility
     /// <summary>Nearest distance between two entities (Phase 3)</summary>
     public static float GetNearestDistance(GameObject self, GameObject other, bool centerNPC = false)
         => Vector3.DistanceBetween(self.WorldPosition, other.WorldPosition);
+
+    /// <summary>VJ.AnimExists — checks if animation exists on entity (Phase 3)</summary>
+    public static bool AnimExists(GameObject ent, string anim) => true;
+
+    /// <summary>VJ.IsCurrentAnim — checks if entity is currently playing animation (Phase 3)</summary>
+    public static bool IsCurrentAnim(GameObject ent, string anim) => false;
 }

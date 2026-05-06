@@ -254,7 +254,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public virtual float ScaleByDifficulty(float num) => num; // Phase 3: implement scaling
 
     // ═══ Busy checks ═══
-    public virtual bool IsBusy(string checkType) => false; // Phase 3
+    public virtual bool IsBusy(string checkType = null) => false; // Phase 3
 
     // ═══ Animation (stubs — Phase 3) ═══
     public virtual void PlayAnim(string animation, bool lockAnim = false, float lockTime = 0,
@@ -263,7 +263,44 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public virtual void MaintainIdleBehavior(int? idleType = null) { }
     public virtual void PlaySequence(string animation) { }
 
-    // ═══ Attack Timer System — creature init.lua:1825-1859, core.lua:972-994 ═══
+    // ═══ Phase 3 stubs — called by SelectSchedule ═══
+    /// <summary>CanFireWeapon — human init.lua:3476. Returns false (conservative) until Phase 3.</summary>
+    public virtual bool CanFireWeapon(bool checkState, bool checkLOS) => false;
+
+    /// <summary>DoCoverTrace — human init.lua:1294. Returns true = "behind cover" (conservative default).</summary>
+    public virtual bool DoCoverTrace(Vector3 start, Vector3 end, bool checkForEntity = false, object options = null)
+    {
+        if (options != null && options is System.Collections.Generic.Dictionary<string, object> opts
+            && opts.TryGetValue("SetLastHiddenTime", out var v))
+            LastHiddenZoneT = Time.Now;
+        return true;
+    }
+
+    /// <summary>TranslateActivity — human init.lua:2417. Pass-through until Phase 3 animation.</summary>
+    public virtual string TranslateActivity(string animName) => animName;
+
+    /// <summary>UpdatePoseParamTracking — human init.lua:3426. Phase 3 animation.</summary>
+    public virtual void UpdatePoseParamTracking(bool reset) { }
+
+    /// <summary>PlayIdleSound — core.lua:2836. Phase 3 sound system.</summary>
+    public virtual void PlayIdleSound(float? delayA = null, float? delayB = null, bool hasEnemy = false) { }
+
+    /// <summary>GetActiveWeapon — Source engine NPC:GetActiveWeapon. Returns null until Phase 3 weapon system.</summary>
+    public virtual GameObject GetActiveWeapon() => null;
+
+    /// <summary>GetBestSoundHint — Source engine NPC:GetBestSoundHint. Returns null until Phase 3 sound system.</summary>
+    public virtual object GetBestSoundHint(int soundMask) => null;
+
+    /// <summary>NearestPoint — Source engine NPC:NearestPoint(navmesh). Pass-through until Phase 3 nav system.</summary>
+    public virtual Vector3 NearestPoint(Vector3 pos) => pos;
+
+    /// <summary>SetMovementActivity — Source engine NPC:SetMovementActivity. Phase 3 animation.</summary>
+    public virtual void SetMovementActivity(string activity) { }
+
+    /// <summary>GetActivity — Source engine NPC:GetActivity. Returns null until Phase 3 animation.</summary>
+    public virtual string GetActivity() => null;
+
+    /// ═══ Attack Timer System — creature init.lua:1825-1859, core.lua:972-994 ═══
     /// <summary>GetAttackTimer — core.lua:972-994. Calculates timer delay for attack reset/re-enable.</summary>
     /// <param name="mainTime">NextAnyAttackTime_* value (<=0 = auto)</param>
     /// <param name="executionTime">TimeUntil*Damage value (<=0 = event-based)</param>
