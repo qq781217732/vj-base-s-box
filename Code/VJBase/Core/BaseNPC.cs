@@ -372,44 +372,35 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
                 float targetYaw = YawToward(v);
                 if (TurningUseAllAxis)
                     ApplyFullAxisTurn(Rotation.LookAt((v - GameObject.WorldPosition).Normal));
-                float newYaw = TurningUseAllAxis ? GameObject.WorldRotation.Yaw() : ApplyYawTurn(targetYaw);
-                SetIdealYawAndUpdate(newYaw);
-                turnData.LastYaw = newYaw;
+                else
+                    ApplyYawTurn(targetYaw);
+                SetIdealYawAndUpdate(targetYaw);
+                turnData.LastYaw = targetYaw;
             }
         }
         else if (turnTarget is GameObject ent && ent.IsValid()
             && (turnData.Type == VJFaceStatus.Entity || (turnData.Type == VJFaceStatus.EntityVisible && Visible(ent))))
         {
             var targetPos = ent.WorldPosition + WorldSpaceCenter_Entity(ent);
-            float newYaw;
+            float targetYaw = YawToward(targetPos);
             if (TurningUseAllAxis)
-            {
                 ApplyFullAxisTurn(Rotation.LookAt((targetPos - GameObject.WorldPosition).Normal));
-                newYaw = GameObject.WorldRotation.Yaw();
-            }
             else
-            {
-                newYaw = ApplyYawTurn(YawToward(ent.WorldPosition));
-            }
-            SetIdealYawAndUpdate(newYaw);
-            turnData.LastYaw = newYaw;
+                ApplyYawTurn(targetYaw);
+            SetIdealYawAndUpdate(targetYaw);
+            turnData.LastYaw = targetYaw;
         }
         else if (eneValid && !Dead
             && (turnData.Type == VJFaceStatus.Enemy || (turnData.Type == VJFaceStatus.EnemyVisible && Enemy.Visible)))
         {
             var targetPos = ene.WorldPosition + WorldSpaceCenter_Entity(ene);
-            float newYaw;
+            float targetYaw = YawToward(targetPos);
             if (TurningUseAllAxis)
-            {
                 ApplyFullAxisTurn(Rotation.LookAt((targetPos - GameObject.WorldPosition).Normal));
-                newYaw = GameObject.WorldRotation.Yaw();
-            }
             else
-            {
-                newYaw = ApplyYawTurn(YawToward(ene.WorldPosition));
-            }
-            SetIdealYawAndUpdate(newYaw);
-            turnData.LastYaw = newYaw;
+                ApplyYawTurn(targetYaw);
+            SetIdealYawAndUpdate(targetYaw);
+            turnData.LastYaw = targetYaw;
         }
     }
 
