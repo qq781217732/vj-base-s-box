@@ -220,6 +220,26 @@ public virtual void StartEngineTask(int taskId, float taskData)
 }
 ```
 
+### 5.5 提交前自审（焊进流程）
+
+**写完一个功能块 → 提交前 → 逐行对照 Lua 原文 diff 一遍。**
+
+不做这一步的代价已在 2026-05-06 会话验证：4 个 bug 全是提交后用户抓出来的（分支放错、坐标 double-add、yaw-only 路径用错变量、死字典写入永不读取）。每个都是对照 Lua 原文 30 秒就能发现的。
+
+```
+□ 打开对应的 Lua 源文件
+□ 从入口方法开始，Lua 一行 → C# 一行，确认:
+   ├─ 分支结构一致 (if/else/elseif 对应)
+   ├─ 参数顺序一致
+   ├─ 变量语义一致 (Lua 存目标值 → C# 也必须存目标值，不能存当前值)
+   └─ 无死代码 (写入但永不读取的字段/字典)
+□ 改了辅助方法 → 检查所有调用方是否适配新语义
+   (例: WorldSpaceCenter 从 feet→OBB 中心 → 调用方是否重复加了 WorldPosition)
+□ git diff --stat 确认改动文件数和预期一致
+```
+
+**这不是可选项。** 翻译阶段的 bug 不是逻辑设计错误——是粗心。对照 Lua 原文 diff 能拦住 90% 的粗心错。`git log --oneline` 里 `fix` 开头的提交应该极少。如果 `fix` 比 `translate` 还多，流程有问题。
+
 ---
 
 ## 6. 幻觉防范
@@ -246,7 +266,7 @@ public virtual void StartEngineTask(int taskId, float taskData)
 
 ## 7. 当前状态清单
 
-> 最后更新：2026-05-06
+> 最后更新：2026-05-06（转向+调查+批量消 SKIP+OBB+Sound+Git 规范焊接）
 
 ### 7.1a schedules.lua → BaseNPC.Schedule.cs（32 个方法）
 
@@ -335,6 +355,11 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | 17 | **`Disposition` 枚举与 `Disposition()` 方法冲突** — 全局改用 `VJBase.Disposition.XXX` | ✅ 2026-05-06 |
 | 18 | 补 `using SWB.Player;` — `PlayerBase` 命名空间缺失 | ✅ 2026-05-06 |
 | 19 | **base_aa.lua → BaseNPC.AA.cs** — 5 方法全部机械翻译，字段从 CreatureNPC 搬到 BaseNPC | ✅ 2026-05-06 |
+| 20 | **转向系统** — TurnData 6 种 FACE 类型 + MaintainTurnTarget + SetTurnTarget 完整实现 | ✅ 2026-05-06 |
+| 21 | **调查系统** — 声音 + 手电筒检测，OnInvestigate 回调 + SCHEDULE_FACE/GOTO_POSITION | ✅ 2026-05-06 |
+| 22 | **批量消 SKIP (8 项)** — FL_NOTARGET/AlliedWithPlayerAllies/CanBeEngaged/OnAlert/doLOSChase/isVJBaseSNPC 等 | ✅ 2026-05-06 |
+| 23 | **WorldSpaceCenter OBB** — (Mins+Maxs)/2 包围盒中心，替代 feet-only WorldPosition | ✅ 2026-05-06 |
+| 24 | **IgnoreEnemyUntil 删除** — Source 引擎 reaction delay 在 S&Box 不存在，删死字典 | ✅ 2026-05-06 |
 
 ### 7.4 SKIP 总表（Phase 3+ 填坑清单）
 
@@ -351,6 +376,18 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | `BaseNPC.Relationships.cs` | `ent.VJ_NPC_Class` 跨实体读取 | `ent.Components.Get<BaseNPC>()?.VJ_NPC_Class` |
 | `BaseNPC.Relationships.cs` | 实体类型检测用 Tags | 改为组件检测 `Get<BaseNPC>()`/`Get<PlayerBase>()` |
 | `BaseNPC.Relationships.cs` | `PlaySoundSystem("LostEnemy")` / `("Investigate")` / `("OnPlayerSight")` — 3 处 | `BaseNPC.Sound.cs` — PlaySoundSystem 完整翻译 35 分支 |
+| `BaseNPC.Relationships.cs` | 行 126 `FL_NOTARGET` 标志检查 | `HasEntityFlag(ent, FL_NOTARGET)` stub 到位（Phase 3 flag system 填） |
+| `BaseNPC.Relationships.cs` | 行 242 非 VJ NPC 反向关系 | 组件化 `entBase.AddEntityRelationship(GameObject, ...)`，已在 else 分支正确位置 |
+| `BaseNPC.Relationships.cs` | 行 287 `ent.CanBeEngaged` 回调 | `entBaseNPC?.CanBeEngaged(ent, GameObject, distance)` 委托调用 |
+| `BaseNPC.Relationships.cs` | 行 192 `AlliedWithPlayerAllies` + `IsDefaultNPC` 完整逻辑 | 跨实体 `ent.Components.Get<BaseNPC>()?.AlliedWithPlayerAllies` + `IsDefaultNPC` |
+| `BaseNPC.Relationships.cs` | 行 269-270 `GetMoveType()` + `m_vecSmoothedVelocity` | Rigidbody 等效；velocity → rb.Velocity（Phase 3 优化平滑） |
+| `BaseNPC.cs` | 行 376 `UpdateEnemyMemory(ent, ent:GetPos())` | `EntityMemory["enemy_pos"] = pos` 基础实现 |
+| `BaseNPC.cs` | 行 379 `IgnoreEnemyUntil(ent, 0)` | **已删除** — Source reaction delay 在 S&Box 不存在（9ced735） |
+| `BaseNPC.cs` | `OnAlert` 回调 | `OnAlert?.Invoke(ent)` 委托 |
+| `BaseNPC.Schedule.cs` | TurnData FACE_POSITION/ENTITY/VISIBLE | 全部 6 种 FACE 类型完整实现（fdb90cf + c39dafc） |
+| `CreatureNPC.Think.cs` | doLOSChase=true RunCode callbacks | `RunCodeOnFinish` re-chase 循环（8d7537d） |
+| `Engine/AISenses.cs` | 行 846 `GetEyePos_Entity` 硬编码 64 units | `BaseNPC.ViewOffset` 字段，有组件读 ViewOffset，无则 fallback 64 |
+| `BaseNPC.AA.cs` | `WorldSpaceCenter()` 仅返回 origin，缺 OBB 中心偏移 | (Mins+Maxs)/2 OBB 中心（33e5d36 + 5b990d8 fix double-add） |
 | `BaseNPC.cs` | alert sounds (DoEnemyAlert) | PlaySoundSystem("Alert") + cooldown timer |
 | `BaseNPC.cs` | DoEnemyAlert NPCState fix (Lua:2080-2083) | 补回 NPCState 检查，阻止 combat→alert→combat 切换 |
 | `CreatureNPC.Think.cs` | Breath sounds 空壳 (仅 timer 无播放) | StopSD + CreateSound + CurrentBreathSound 存储 |
@@ -359,22 +396,13 @@ public virtual void StartEngineTask(int taskId, float taskData)
 #### 剩余待填
 | 文件 | 行/位置 | SKIP 内容 | 归属系统 |
 |------|---------|----------|----------|
-| `BaseNPC.Relationships.cs` | 行 126 | `FL_NOTARGET` 标志检查 | 标志系统 |
-| `BaseNPC.Relationships.cs` | 行 242 | 非 VJ NPC 反向关系 | 关系系统 |
-| `BaseNPC.Relationships.cs` | 行 269-270 | `GetMoveType()` + `m_vecSmoothedVelocity` | Source 引擎 API |
-| `BaseNPC.Relationships.cs` | 行 287 | `ent.CanBeEngaged` 回调 | 实体属性 |
-| `BaseNPC.Relationships.cs` | 行 192 | `AlliedWithPlayerAllies` + `IsDefaultNPC` 完整逻辑 | 关系系统 |
-| `BaseNPC.cs` | 行 376 | `UpdateEnemyMemory(ent, ent:GetPos())` | 敌人记忆 |
-| `BaseNPC.cs` | 行 379 | `IgnoreEnemyUntil(ent, 0)` | Source 引擎 API |
+| `BaseNPC.Relationships.cs` | 行 126 | `FL_NOTARGET` — stub 到位，Phase 3 flag system 填 `HasEntityFlag` | 标志系统 |
+| `BaseNPC.Relationships.cs` | 行 269-270 | `m_vecSmoothedVelocity` — 当前用 rb.Velocity 瞬时值，Phase 3 平滑 | Source 引擎 API |
 | `BaseNPC.Schedule.cs` | — | `m_hOpeningDoor` door system | 门系统 |
-| `BaseNPC.Schedule.cs` | — | TurnData FACE_POSITION/ENTITY/VISIBLE | 转向系统 |
 | `CreatureNPC.Think.cs` | — | `MaintainActivity()` call | 动画维持 |
-| `CreatureNPC.Think.cs` | — | doLOSChase=true RunCode callbacks | 视线追击 |
 | `Engine/AISenses.cs` | 599 | `LookForObjects` — FL_OBJECT 系统 | 感知物件 |
-| `Engine/AISenses.cs` | 846 | `GetEyePos_Entity` 硬编码 64 units | 模型 view offset |
 | `BaseNPC.AA.cs` | 95-103 | `WaterLevel()` 水源检查 — 整个 aquatic 分支 | 水系统 |
 | `BaseNPC.AA.cs` | 98-101 | `MASK_WATER` trace + aquatic 可达性检查 | 水系统 |
-| `BaseNPC.AA.cs` | — | `WorldSpaceCenter()` 仅返回 origin，缺 OBB 中心偏移 | 实体包围盒 |
 | `BaseNPC.AA.cs` | — | `AA_MoveAnimation` 动画选表/PlayAnim/ACT_* | 动画系统 |
 | `BaseNPC.Sound.cs` | — | `SoundLevel` (dB) 未映射到 S&Box 衰减 (`Distance`/`Decibels`) | 音效 |
 | `BaseNPC.Sound.cs` | — | `GetSoundDuration()` 硬编码 fallback，非真实音效文件时长 | 音效 |
@@ -421,13 +449,19 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | 调查系统 | 2379-2408 | ✅ | 声音检测 + 手电筒 + PlaySoundSystem("Investigate") |
 | OnPlayerSight | 2412-2424 | ✅ | 检测逻辑 + `OnPlayerSight(ent)` 回调 + PlaySoundSystem("OnPlayerSight") |
 
-**本会话关键新增：**
+**2026-05-06 会话关键新增：**
 - `BaseNPC.Alive(ent)` — 查 VJ NPC 的 Dead 标志，非 VJ 默认活着
 - `AddEntityRelationship(ent, disp, priority)` → `_relationshipDisp` 字典
 - `Disposition(ent)` — 查询已存储的关系
 - `HandlePerceivedRelationship` 委托 — 实体自定义感知回调
 - `Disposition` 回落逻辑 — 中立 NPC → D_NU，敌对 NPC → D_VJ_INTEREST
 - `Disposition.XXX` → `VJBase.Disposition.XXX` — 解决与 `Disposition()` 方法的命名冲突
+- **转向系统** — TurnData 6 种 FACE 类型 + `SetTurnTarget` + `MaintainTurnTarget` + `ApplyYawTurn`/`ApplyFullAxisTurn`
+- **调查系统** — 声音 + 手电筒检测 (`GetEntitySoundInvestLevel`/`IsEntityShiningFlashlightOnMe`)
+- **批量消 SKIP (8 项)** — `AlliedWithPlayerAllies`/`IsDefaultNPC` 跨实体读、`CanBeEngaged` 委托、`OnAlert` 回调、非 VJ 反向关系组件化、`doLOSChase` RunCodeOnFinish、`FL_NOTARGET` stub、`GetTarget`/`SetTarget` guard
+- **WorldSpaceCenter OBB** — `(Mins+Maxs)/2` 包围盒中心 + double-add bugfix
+- **IgnoreEnemyUntil 删除** — Source 引擎 reaction delay，S&Box 无等价机制
+- **§5.5 提交前自审** + **§11 Git 提交规范** — 焊进流程
 
 ---
 
@@ -448,6 +482,7 @@ public virtual void StartEngineTask(int taskId, float taskData)
 □ 4. 编译通过
 □ 5. 对比 Lua 原文件逐行确认无遗漏
 □ 6. 跑 verify_api_mapping.py 交叉验证
+□ 7. 提交前自审（§5.5）：逐行对照 Lua diff，检查分支/参数/变量语义/死代码
 ```
 
 ---
@@ -475,8 +510,10 @@ python verify_api_mapping.py
 
 ```
 你是谁：帮阿纳金和土豆把 VJ Base (GMod Lua) 机械翻译成 S&Box C#
-做到哪：~45%。P0 全部完成：感知→关系维护→选敌→Schedule→AA 移动→NavMeshAgent
+做到哪：~55%。P0 全部完成 + 转向/调查/批量 SKIP 清零 + 音效系统就位。
+        剩余：门/水/动画/FL_OBJECT 4 个 Phase 3 系统设计。
 怎么验：python verify_api_mapping.py 交叉验证 Lua↔文档
+        git log --oneline -20 秒级概览（§11 Git 提交规范）
 ```
 
 ### 10.2 必读文件（按顺序）
