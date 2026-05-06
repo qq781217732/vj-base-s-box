@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/Katana/luacheck_work/**)",
+      "Bash(\"F:/DevProject/Sbox/luacheck.exe\" . --config \"C:\\\\\\\\Users\\\\\\\\Katana\\\\\\\\luacheck_work\\\\\\\\luacheck_conf.lua\" --no-unused-args --no-color)",
+      "Bash(grep -A1 \"entities\\\\\\\\\\\\\\\\npc_vj_creature_base\\\\\\\\\\\\\\\\init.lua.*error\\\\|entities\\\\\\\\\\\\\\\\npc_vj_human_base\\\\\\\\\\\\\\\\init.lua.*error\\\\|vj_base\\\\\\\\\\\\\\\\ai\\\\\\\\\\\\\\\\core.lua.*error\\\\|weapons\\\\\\\\\\\\\\\\weapon_vj_base\")",
+      "Bash(ast-grep --pattern 'function VJ.$_\\($$$\\)' --lang lua --json=stream f:/DevProject/Sbox/VJ-Base-master/lua/vj_base/funcs.lua)",
+      "Bash(python -c \"import sys,json; [print\\(json.loads\\(l\\).get\\('text',''\\)[:80]\\) for l in sys.stdin]\")"
+    ]
+  }
+}

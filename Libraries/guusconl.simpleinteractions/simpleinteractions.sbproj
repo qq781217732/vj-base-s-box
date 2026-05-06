@@ -1,0 +1,13 @@
+{
+  "Title": "SimpleInteractions",
+  "Type": "library",
+  "Org": "guusconl",
+  "Ident": "simpleinteractions",
+  "Schema": 1,
+  "IncludeSourceFiles": false,
+  "Resources": null,
+  "PackageReferences": [],
+  "EditorReferences": null,
+  "IsWhitelistDisabled": false,
+  "Metadata": {}
+}

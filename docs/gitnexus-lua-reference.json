@@ -1,0 +1,5131 @@
+{
+  "generated": "2026-05-05T10:40:34.053Z",
+  "source": "GitNexus LadybugDB (lua knowledge graph)",
+  "repo": "F:/DevProject/Sbox/VJ-Base-master",
+  "totalLuaFiles": 88,
+  "totalSymbols": 830,
+  "classes": {
+    "BaseNPC": {
+      "csharpFile": "Core/BaseNPC.cs",
+      "category": "P0_Core",
+      "luaFiles": [
+        "lua/vj_base/ai/core.lua"
+      ],
+      "symbols": [
+        {
+          "name": "metaEntity",
+          "line": 7,
+          "endLine": 7,
+          "kind": "Variable"
+        },
+        {
+          "name": "funcGetTable",
+          "line": 8,
+          "endLine": 8,
+          "kind": "Variable"
+        },
+        {
+          "name": "funcSetSaveValue",
+          "line": 9,
+          "endLine": 9,
+          "kind": "Variable"
+        },
+        {
+          "name": "funcGetCycle",
+          "line": 10,
+          "endLine": 10,
+          "kind": "Variable"
+        },
+        {
+          "name": "funcGetSequenceActivity",
+          "line": 11,
+          "endLine": 11,
+          "kind": "Variable"
+        },
+        {
+          "name": "funcVisible",
+          "line": 12,
+          "endLine": 12,
+          "kind": "Variable"
+        },
+        {
+          "name": "funcGetClass",
+          "line": 13,
+          "endLine": 13,
+          "kind": "Variable"
+        },
+        {
+          "name": "metaNPC",
+          "line": 15,
+          "endLine": 15,
+          "kind": "Variable"
+        },
+        {
+          "name": "funcGetEnemy",
+          "line": 16,
+          "endLine": 16,
+          "kind": "Variable"
+        },
+        {
+          "name": "funcGetIdealActivity",
+          "line": 17,
+          "endLine": 17,
+          "kind": "Variable"
+        },
+        {
+          "name": "funcGetActivity",
+          "line": 18,
+          "endLine": 18,
+          "kind": "Variable"
+        },
+        {
+          "name": "funcGetIdealSequence",
+          "line": 19,
+          "endLine": 19,
+          "kind": "Variable"
+        },
+        {
+          "name": "funcAddEntityRelationship",
+          "line": 20,
+          "endLine": 20,
+          "kind": "Variable"
+        },
+        {
+          "name": "funcIsInViewCone",
+          "line": 21,
+          "endLine": 21,
+          "kind": "Variable"
+        },
+        {
+          "name": "defPos",
+          "line": 23,
+          "endLine": 23,
+          "kind": "Variable"
+        },
+        {
+          "name": "defAng",
+          "line": 24,
+          "endLine": 24,
+          "kind": "Variable"
+        },
+        {
+          "name": "CurTime",
+          "line": 25,
+          "endLine": 25,
+          "kind": "Variable"
+        },
+        {
+          "name": "IsValid",
+          "line": 26,
+          "endLine": 26,
+          "kind": "Variable"
+        },
+        {
+          "name": "GetConVar",
+          "line": 27,
+          "endLine": 27,
+          "kind": "Variable"
+        },
+        {
+          "name": "isnumber",
+          "line": 28,
+          "endLine": 28,
+          "kind": "Variable"
+        },
+        {
+          "name": "isvector",
+          "line": 29,
+          "endLine": 29,
+          "kind": "Variable"
+        },
+        {
+          "name": "isstring",
+          "line": 30,
+          "endLine": 30,
+          "kind": "Variable"
+        },
+        {
+          "name": "tonumber",
+          "line": 31,
+          "endLine": 31,
+          "kind": "Variable"
+        },
+        {
+          "name": "string_sub",
+          "line": 32,
+          "endLine": 32,
+          "kind": "Variable"
+        },
+        {
+          "name": "string_find",
+          "line": 33,
+          "endLine": 33,
+          "kind": "Variable"
+        },
+        {
+          "name": "string_left",
+          "line": 34,
+          "endLine": 34,
+          "kind": "Variable"
+        },
+        {
+          "name": "table_concat",
+          "line": 35,
+          "endLine": 35,
+          "kind": "Variable"
+        },
+        {
+          "name": "table_remove",
+          "line": 36,
+          "endLine": 36,
+          "kind": "Variable"
+        },
+        {
+          "name": "bAND",
+          "line": 37,
+          "endLine": 37,
+          "kind": "Variable"
+        },
+        {
+          "name": "math_rad",
+          "line": 38,
+          "endLine": 38,
+          "kind": "Variable"
+        },
+        {
+          "name": "math_deg",
+          "line": 39,
+          "endLine": 39,
+          "kind": "Variable"
+        },
+        {
+          "name": "math_cos",
+          "line": 40,
+          "endLine": 40,
+          "kind": "Variable"
+        },
+        {
+          "name": "math_atan2",
+          "line": 41,
+          "endLine": 41,
+          "kind": "Variable"
+        },
+        {
+          "name": "math_min",
+          "line": 42,
+          "endLine": 42,
+          "kind": "Variable"
+        },
+        {
+          "name": "math_max",
+          "line": 43,
+          "endLine": 43,
+          "kind": "Variable"
+        },
+        {
+          "name": "math_angDif",
+          "line": 44,
+          "endLine": 44,
+          "kind": "Variable"
+        },
+        {
+          "name": "StopSD",
+          "line": 45,
+          "endLine": 45,
+          "kind": "Variable"
+        },
+        {
+          "name": "PICK",
+          "line": 46,
+          "endLine": 46,
+          "kind": "Variable"
+        },
+        {
+          "name": "VJ_STATE_NONE",
+          "line": 47,
+          "endLine": 47,
+          "kind": "Variable"
+        },
+        {
+          "name": "VJ_STATE_FREEZE",
+          "line": 48,
+          "endLine": 48,
+          "kind": "Variable"
+        },
+        {
+          "name": "VJ_STATE_ONLY_ANIMATION_CONSTANT",
+          "line": 49,
+          "endLine": 49,
+          "kind": "Variable"
+        },
+        {
+          "name": "VJ_BEHAVIOR_PASSIVE",
+          "line": 50,
+          "endLine": 50,
+          "kind": "Variable"
+        },
+        {
+          "name": "VJ_BEHAVIOR_PASSIVE_NATURE",
+          "line": 51,
+          "endLine": 51,
+          "kind": "Variable"
+        },
+        {
+          "name": "VJ_MOVETYPE_GROUND",
+          "line": 52,
+          "endLine": 52,
+          "kind": "Variable"
+        },
+        {
+          "name": "VJ_MOVETYPE_AERIAL",
+          "line": 53,
+          "endLine": 53,
+          "kind": "Variable"
+        },
+        {
+          "name": "VJ_MOVETYPE_AQUATIC",
+          "line": 54,
+          "endLine": 54,
+          "kind": "Variable"
+        },
+        {
+          "name": "VJ_MOVETYPE_STATIONARY",
+          "line": 55,
+          "endLine": 55,
+          "kind": "Variable"
+        },
+        {
+          "name": "VJ_MOVETYPE_PHYSICS",
+          "line": 56,
+          "endLine": 56,
+          "kind": "Variable"
+        },
+        {
+          "name": "ALERT_STATE_READY",
+          "line": 57,
+          "endLine": 57,
+          "kind": "Variable"
+        },
+        {
+          "name": "ALERT_STATE_ENEMY",
+          "line": 58,
+          "endLine": 58,
+          "kind": "Variable"
+        },
+        {
+          "name": "ANIM_TYPE_NONE",
+          "line": 59,
+          "endLine": 59,
+          "kind": "Variable"
+        },
+        {
+          "name": "ANIM_TYPE_ACTIVITY",
+          "line": 60,
+          "endLine": 60,
+          "kind": "Variable"
+        },
+        {
+          "name": "ANIM_TYPE_SEQUENCE",
+          "line": 61,
+          "endLine": 61,
+          "kind": "Variable"
+        },
+        {
+          "name": "ANIM_TYPE_GESTURE",
+          "line": 62,
+          "endLine": 62,
+          "kind": "Variable"
+        },
+        {
+          "name": "MEM_OVERRIDE_DISPOSITION",
+          "line": 63,
+          "endLine": 63,
+          "kind": "Variable"
+        },
+        {
+          "name": "MEM_CACHE_CLASSES",
+          "line": 64,
+          "endLine": 64,
+          "kind": "Variable"
+        },
+        {
+          "name": "MEM_CACHE_DISPOSITION",
+          "line": 65,
+          "endLine": 65,
+          "kind": "Variable"
+        },
+        {
+          "name": "MEM_CACHE_ENT_TYPE",
+          "line": 66,
+          "endLine": 66,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_gib_collision",
+          "line": 68,
+          "endLine": 68,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_gib_fade",
+          "line": 69,
+          "endLine": 69,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_gib_fadetime",
+          "line": 70,
+          "endLine": 70,
+          "kind": "Variable"
+        },
+        {
+          "name": "colorGrey",
+          "line": 206,
+          "endLine": 206,
+          "kind": "Variable"
+        },
+        {
+          "name": "corpse",
+          "line": 210,
+          "endLine": 210,
+          "kind": "Variable"
+        },
+        {
+          "name": "dmginfo",
+          "line": 212,
+          "endLine": 212,
+          "kind": "Variable"
+        },
+        {
+          "name": "ent",
+          "line": 215,
+          "endLine": 215,
+          "kind": "Variable"
+        },
+        {
+          "name": "str1111",
+          "line": 3514,
+          "endLine": 3514,
+          "kind": "Variable"
+        },
+        {
+          "name": "str1",
+          "line": 3515,
+          "endLine": 3515,
+          "kind": "Variable"
+        },
+        {
+          "name": "VJ_CheckAllFourSides",
+          "line": 3517,
+          "endLine": 3557,
+          "kind": "Method"
+        },
+        {
+          "name": "result",
+          "line": 3520,
+          "endLine": 3520,
+          "kind": "Variable"
+        },
+        {
+          "name": "i",
+          "line": 3521,
+          "endLine": 3521,
+          "kind": "Variable"
+        },
+        {
+          "name": "myPos",
+          "line": 3522,
+          "endLine": 3522,
+          "kind": "Variable"
+        },
+        {
+          "name": "myPosCentered",
+          "line": 3523,
+          "endLine": 3523,
+          "kind": "Variable"
+        },
+        {
+          "name": "myForward",
+          "line": 3524,
+          "endLine": 3524,
+          "kind": "Variable"
+        },
+        {
+          "name": "myRight",
+          "line": 3525,
+          "endLine": 3525,
+          "kind": "Variable"
+        },
+        {
+          "name": "positions",
+          "line": 3526,
+          "endLine": 3531,
+          "kind": "Variable"
+        },
+        {
+          "name": "tr",
+          "line": 3535,
+          "endLine": 3539,
+          "kind": "Variable"
+        },
+        {
+          "name": "hitPos",
+          "line": 3540,
+          "endLine": 3540,
+          "kind": "Variable"
+        }
+      ],
+      "stats": {
+        "methods": 1,
+        "fields": 76,
+        "total": 77
+      }
+    },
+    "AISchedule": {
+      "csharpFile": "Schedule/AISchedule.cs",
+      "category": "P1_Schedule",
+      "luaFiles": [
+        "lua/vj_base/ai/schedules.lua"
+      ],
+      "symbols": [
+        {
+          "name": "VJ_MOVETYPE_AERIAL",
+          "line": 2,
+          "endLine": 2,
+          "kind": "Variable"
+        },
+        {
+          "name": "VJ_MOVETYPE_AQUATIC",
+          "line": 3,
+          "endLine": 3,
+          "kind": "Variable"
+        },
+        {
+          "name": "VJ_MOVETYPE_STATIONARY",
+          "line": 4,
+          "endLine": 4,
+          "kind": "Variable"
+        },
+        {
+          "name": "metaEntity",
+          "line": 6,
+          "endLine": 6,
+          "kind": "Variable"
+        },
+        {
+          "name": "funcGetTable",
+          "line": 7,
+          "endLine": 7,
+          "kind": "Variable"
+        },
+        {
+          "name": "SCHEDULE_FACE",
+          "line": 9,
+          "endLine": 520,
+          "kind": "Method"
+        },
+        {
+          "name": "RunEngineTask",
+          "line": 521,
+          "endLine": 521,
+          "kind": "Method"
+        },
+        {
+          "name": "StartEngineSchedule",
+          "line": 522,
+          "endLine": 522,
+          "kind": "Method"
+        },
+        {
+          "name": "EngineScheduleFinish",
+          "line": 523,
+          "endLine": 523,
+          "kind": "Method"
+        },
+        {
+          "name": "DoingEngineSchedule",
+          "line": 524,
+          "endLine": 524,
+          "kind": "Method"
+        }
+      ],
+      "stats": {
+        "methods": 5,
+        "fields": 5,
+        "total": 10
+      }
+    },
+    "CreatureNPC": {
+      "csharpFile": "Bases/CreatureNPC.cs",
+      "category": "P1_Combat",
+      "luaFiles": [
+        "lua/vj_base/ai/base_aa.lua",
+        "lua/entities/npc_vj_creature_base/init.lua",
+        "lua/entities/npc_vj_creature_base/shared.lua"
+      ],
+      "symbols": [
+        {
+          "name": "SetAutomaticFrameAdvance",
+          "line": 11,
+          "endLine": 13,
+          "kind": "Method"
+        },
+        {
+          "name": "MatFootStepQCEvent",
+          "line": 15,
+          "endLine": 20,
+          "kind": "Method"
+        },
+        {
+          "name": "defPos",
+          "line": 16,
+          "endLine": 16,
+          "kind": "Variable"
+        },
+        {
+          "name": "defAng",
+          "line": 17,
+          "endLine": 17,
+          "kind": "Variable"
+        },
+        {
+          "name": "metaEntity",
+          "line": 19,
+          "endLine": 19,
+          "kind": "Variable"
+        },
+        {
+          "name": "funcGetTable",
+          "line": 20,
+          "endLine": 20,
+          "kind": "Variable"
+        },
+        {
+          "name": "AA_StopMoving",
+          "line": 25,
+          "endLine": 36,
+          "kind": "Method"
+        },
+        {
+          "name": "selfData",
+          "line": 27,
+          "endLine": 27,
+          "kind": "Variable"
+        },
+        {
+          "name": "vecStart",
+          "line": 49,
+          "endLine": 49,
+          "kind": "Variable"
+        },
+        {
+          "name": "vecEnd",
+          "line": 50,
+          "endLine": 50,
+          "kind": "Variable"
+        },
+        {
+          "name": "funcDrawModel",
+          "line": 52,
+          "endLine": 52,
+          "kind": "Variable"
+        },
+        {
+          "name": "destVec",
+          "line": 53,
+          "endLine": 53,
+          "kind": "Variable"
+        },
+        {
+          "name": "Initialize",
+          "line": 54,
+          "endLine": 64,
+          "kind": "Method"
+        },
+        {
+          "name": "Draw",
+          "line": 58,
+          "endLine": 61,
+          "kind": "Method"
+        },
+        {
+          "name": "DrawTranslucent",
+          "line": 66,
+          "endLine": 66,
+          "kind": "Method"
+        },
+        {
+          "name": "badACTs",
+          "line": 356,
+          "endLine": 356,
+          "kind": "Variable"
+        },
+        {
+          "name": "AA_MoveAnimation",
+          "line": 358,
+          "endLine": 376,
+          "kind": "Method"
+        },
+        {
+          "name": "curSeq",
+          "line": 362,
+          "endLine": 362,
+          "kind": "Variable"
+        },
+        {
+          "name": "curACT",
+          "line": 363,
+          "endLine": 363,
+          "kind": "Variable"
+        },
+        {
+          "name": "chosenAnim",
+          "line": 365,
+          "endLine": 365,
+          "kind": "Variable"
+        },
+        {
+          "name": "_",
+          "line": 372,
+          "endLine": 372,
+          "kind": "Variable"
+        },
+        {
+          "name": "PreInit",
+          "line": 548,
+          "endLine": 548,
+          "kind": "Method"
+        },
+        {
+          "name": "Init",
+          "line": 550,
+          "endLine": 556,
+          "kind": "Method"
+        },
+        {
+          "name": "OnThink",
+          "line": 558,
+          "endLine": 558,
+          "kind": "Method"
+        },
+        {
+          "name": "OnThinkActive",
+          "line": 560,
+          "endLine": 560,
+          "kind": "Method"
+        },
+        {
+          "name": "OnFollow",
+          "line": 608,
+          "endLine": 608,
+          "kind": "Method"
+        },
+        {
+          "name": "OnIdleDialogue",
+          "line": 623,
+          "endLine": 623,
+          "kind": "Method"
+        },
+        {
+          "name": "OnMedicBehavior",
+          "line": 655,
+          "endLine": 655,
+          "kind": "Method"
+        },
+        {
+          "name": "OnPlayerSight",
+          "line": 657,
+          "endLine": 657,
+          "kind": "Method"
+        },
+        {
+          "name": "OnInvestigate",
+          "line": 666,
+          "endLine": 666,
+          "kind": "Method"
+        },
+        {
+          "name": "OnResetEnemy",
+          "line": 668,
+          "endLine": 668,
+          "kind": "Method"
+        },
+        {
+          "name": "OnAlert",
+          "line": 670,
+          "endLine": 670,
+          "kind": "Method"
+        },
+        {
+          "name": "OnCallForHelp",
+          "line": 674,
+          "endLine": 674,
+          "kind": "Method"
+        },
+        {
+          "name": "OnMeleeAttack",
+          "line": 703,
+          "endLine": 703,
+          "kind": "Method"
+        },
+        {
+          "name": "MeleeAttackTraceOrigin",
+          "line": 705,
+          "endLine": 707,
+          "kind": "Method"
+        },
+        {
+          "name": "MeleeAttackTraceDirection",
+          "line": 710,
+          "endLine": 712,
+          "kind": "Method"
+        },
+        {
+          "name": "MeleeAttackKnockbackVelocity",
+          "line": 714,
+          "endLine": 716,
+          "kind": "Method"
+        },
+        {
+          "name": "OnMeleeAttackExecute",
+          "line": 741,
+          "endLine": 741,
+          "kind": "Method"
+        },
+        {
+          "name": "OnRangeAttack",
+          "line": 762,
+          "endLine": 762,
+          "kind": "Method"
+        },
+        {
+          "name": "OnRangeAttackExecute",
+          "line": 788,
+          "endLine": 788,
+          "kind": "Method"
+        },
+        {
+          "name": "RangeAttackProjPos",
+          "line": 790,
+          "endLine": 793,
+          "kind": "Method"
+        },
+        {
+          "name": "RangeAttackProjVel",
+          "line": 795,
+          "endLine": 1818,
+          "kind": "Method"
+        },
+        {
+          "name": "phys",
+          "line": 797,
+          "endLine": 797,
+          "kind": "Variable"
+        },
+        {
+          "name": "attackTimers",
+          "line": 1820,
+          "endLine": 1854,
+          "kind": "Variable"
+        },
+        {
+          "name": "Think",
+          "line": 1856,
+          "endLine": 2395,
+          "kind": "Method"
+        },
+        {
+          "name": "curTime",
+          "line": 1864,
+          "endLine": 1864,
+          "kind": "Variable"
+        },
+        {
+          "name": "doHeavyProcesses",
+          "line": 1869,
+          "endLine": 1869,
+          "kind": "Variable"
+        },
+        {
+          "name": "pickedSD",
+          "line": 1876,
+          "endLine": 1876,
+          "kind": "Variable"
+        },
+        {
+          "name": "dur",
+          "line": 1877,
+          "endLine": 1877,
+          "kind": "Variable"
+        },
+        {
+          "name": "moveType",
+          "line": 1888,
+          "endLine": 1888,
+          "kind": "Variable"
+        },
+        {
+          "name": "moveTypeAA",
+          "line": 1889,
+          "endLine": 1889,
+          "kind": "Variable"
+        },
+        {
+          "name": "myVelLen",
+          "line": 1902,
+          "endLine": 1902,
+          "kind": "Variable"
+        },
+        {
+          "name": "dist",
+          "line": 1905,
+          "endLine": 1905,
+          "kind": "Variable"
+        },
+        {
+          "name": "moveSpeed",
+          "line": 1909,
+          "endLine": 1909,
+          "kind": "Variable"
+        },
+        {
+          "name": "velPos",
+          "line": 1916,
+          "endLine": 1916,
+          "kind": "Variable"
+        },
+        {
+          "name": "velTimeCur",
+          "line": 1917,
+          "endLine": 1917,
+          "kind": "Variable"
+        },
+        {
+          "name": "followData",
+          "line": 1944,
+          "endLine": 1944,
+          "kind": "Variable"
+        },
+        {
+          "name": "followEnt",
+          "line": 1945,
+          "endLine": 1945,
+          "kind": "Variable"
+        },
+        {
+          "name": "followIsLiving",
+          "line": 1946,
+          "endLine": 1946,
+          "kind": "Variable"
+        },
+        {
+          "name": "distToPly",
+          "line": 1950,
+          "endLine": 1950,
+          "kind": "Variable"
+        },
+        {
+          "name": "busy",
+          "line": 1951,
+          "endLine": 1951,
+          "kind": "Variable"
+        },
+        {
+          "name": "isFar",
+          "line": 1955,
+          "endLine": 1955,
+          "kind": "Variable"
+        },
+        {
+          "name": "schedule",
+          "line": 1969,
+          "endLine": 1969,
+          "kind": "Variable"
+        },
+        {
+          "name": "healthRegen",
+          "line": 2003,
+          "endLine": 2003,
+          "kind": "Variable"
+        },
+        {
+          "name": "myHP",
+          "line": 2005,
+          "endLine": 2005,
+          "kind": "Variable"
+        },
+        {
+          "name": "plyControlled",
+          "line": 2017,
+          "endLine": 2017,
+          "kind": "Variable"
+        },
+        {
+          "name": "myPos",
+          "line": 2018,
+          "endLine": 2018,
+          "kind": "Variable"
+        },
+        {
+          "name": "ene",
+          "line": 2019,
+          "endLine": 2019,
+          "kind": "Variable"
+        },
+        {
+          "name": "eneValid",
+          "line": 2020,
+          "endLine": 2020,
+          "kind": "Variable"
+        },
+        {
+          "name": "eneData",
+          "line": 2021,
+          "endLine": 2021,
+          "kind": "Variable"
+        },
+        {
+          "name": "eatingData",
+          "line": 2039,
+          "endLine": 2039,
+          "kind": "Variable"
+        },
+        {
+          "name": "food",
+          "line": 2052,
+          "endLine": 2052,
+          "kind": "Variable"
+        },
+        {
+          "name": "foodDist",
+          "line": 2057,
+          "endLine": 2057,
+          "kind": "Variable"
+        },
+        {
+          "name": "hint",
+          "line": 2099,
+          "endLine": 2099,
+          "kind": "Variable"
+        },
+        {
+          "name": "size",
+          "line": 2104,
+          "endLine": 2104,
+          "kind": "Variable"
+        },
+        {
+          "name": "foodData",
+          "line": 2113,
+          "endLine": 2113,
+          "kind": "Variable"
+        },
+        {
+          "name": "enePos",
+          "line": 2134,
+          "endLine": 2134,
+          "kind": "Variable"
+        },
+        {
+          "name": "eneDist",
+          "line": 2135,
+          "endLine": 2135,
+          "kind": "Variable"
+        },
+        {
+          "name": "eneDistNear",
+          "line": 2136,
+          "endLine": 2136,
+          "kind": "Variable"
+        },
+        {
+          "name": "eneIsVisible",
+          "line": 2137,
+          "endLine": 2137,
+          "kind": "Variable"
+        },
+        {
+          "name": "limitChase",
+          "line": 2160,
+          "endLine": 2160,
+          "kind": "Variable"
+        },
+        {
+          "name": "minDist",
+          "line": 2162,
+          "endLine": 2162,
+          "kind": "Variable"
+        },
+        {
+          "name": "maxDist",
+          "line": 2163,
+          "endLine": 2163,
+          "kind": "Variable"
+        },
+        {
+          "name": "seed",
+          "line": 2215,
+          "endLine": 2215,
+          "kind": "Variable"
+        },
+        {
+          "name": "anim",
+          "line": 2232,
+          "endLine": 2232,
+          "kind": "Variable"
+        },
+        {
+          "name": "guardData",
+          "line": 2344,
+          "endLine": 2344,
+          "kind": "Variable"
+        },
+        {
+          "name": "RunCode_OnFinish",
+          "line": 2357,
+          "endLine": 2364,
+          "kind": "Method"
+        },
+        {
+          "name": "moveDir",
+          "line": 2372,
+          "endLine": 2372,
+          "kind": "Variable"
+        },
+        {
+          "name": "propColBlacklist",
+          "line": 2397,
+          "endLine": 2397,
+          "kind": "Variable"
+        },
+        {
+          "name": "MaintainPropInteraction",
+          "line": 2399,
+          "endLine": 2431,
+          "kind": "Method"
+        },
+        {
+          "name": "behavior",
+          "line": 2400,
+          "endLine": 2400,
+          "kind": "Variable"
+        },
+        {
+          "name": "myCenter",
+          "line": 2403,
+          "endLine": 2403,
+          "kind": "Variable"
+        },
+        {
+          "name": "vPhys",
+          "line": 2406,
+          "endLine": 2406,
+          "kind": "Variable"
+        },
+        {
+          "name": "tr",
+          "line": 2408,
+          "endLine": 2412,
+          "kind": "Variable"
+        },
+        {
+          "name": "surfaceArea",
+          "line": 2419,
+          "endLine": 2419,
+          "kind": "Variable"
+        },
+        {
+          "name": "myPhys",
+          "line": 2421,
+          "endLine": 2421,
+          "kind": "Variable"
+        },
+        {
+          "name": "ExecuteMeleeAttack",
+          "line": 2433,
+          "endLine": 2561,
+          "kind": "Method"
+        },
+        {
+          "name": "skip",
+          "line": 2437,
+          "endLine": 2437,
+          "kind": "Variable"
+        },
+        {
+          "name": "hitRegistered",
+          "line": 2438,
+          "endLine": 2438,
+          "kind": "Variable"
+        },
+        {
+          "name": "myClass",
+          "line": 2441,
+          "endLine": 2441,
+          "kind": "Variable"
+        },
+        {
+          "name": "applyDmg",
+          "line": 2451,
+          "endLine": 2451,
+          "kind": "Variable"
+        },
+        {
+          "name": "isProp",
+          "line": 2452,
+          "endLine": 2452,
+          "kind": "Variable"
+        },
+        {
+          "name": "dmgAmount",
+          "line": 2454,
+          "endLine": 2454,
+          "kind": "Variable"
+        },
+        {
+          "name": "propBehavior",
+          "line": 2456,
+          "endLine": 2456,
+          "kind": "Variable"
+        },
+        {
+          "name": "curEnemy",
+          "line": 2472,
+          "endLine": 2472,
+          "kind": "Variable"
+        },
+        {
+          "name": "physMass",
+          "line": 2473,
+          "endLine": 2473,
+          "kind": "Variable"
+        },
+        {
+          "name": "isNextBot",
+          "line": 2484,
+          "endLine": 2484,
+          "kind": "Variable"
+        },
+        {
+          "name": "vel",
+          "line": 2488,
+          "endLine": 2488,
+          "kind": "Variable"
+        },
+        {
+          "name": "dmgInfo",
+          "line": 2498,
+          "endLine": 2498,
+          "kind": "Variable"
+        },
+        {
+          "name": "bleedName",
+          "line": 2509,
+          "endLine": 2509,
+          "kind": "Variable"
+        },
+        {
+          "name": "bleedDmg",
+          "line": 2510,
+          "endLine": 2510,
+          "kind": "Variable"
+        },
+        {
+          "name": "DoMeleeAttackPlayerSpeed",
+          "line": 2563,
+          "endLine": 2605,
+          "kind": "Method"
+        },
+        {
+          "name": "vSD_PlaySound",
+          "line": 2566,
+          "endLine": 2566,
+          "kind": "Variable"
+        },
+        {
+          "name": "vSD_SoundTable",
+          "line": 2567,
+          "endLine": 2567,
+          "kind": "Variable"
+        },
+        {
+          "name": "vSD_SoundLevel",
+          "line": 2568,
+          "endLine": 2568,
+          "kind": "Variable"
+        },
+        {
+          "name": "vSD_FadeOutTime",
+          "line": 2569,
+          "endLine": 2569,
+          "kind": "Variable"
+        },
+        {
+          "name": "vEF_NoInterrupt",
+          "line": 2571,
+          "endLine": 2571,
+          "kind": "Variable"
+        },
+        {
+          "name": "walkspeed_before",
+          "line": 2572,
+          "endLine": 2572,
+          "kind": "Variable"
+        },
+        {
+          "name": "runspeed_before",
+          "line": 2573,
+          "endLine": 2573,
+          "kind": "Variable"
+        },
+        {
+          "name": "sdFadeTime",
+          "line": 2591,
+          "endLine": 2591,
+          "kind": "Variable"
+        },
+        {
+          "name": "timerName",
+          "line": 2592,
+          "endLine": 2592,
+          "kind": "Variable"
+        },
+        {
+          "name": "ExecuteRangeAttack",
+          "line": 2607,
+          "endLine": 2653,
+          "kind": "Method"
+        },
+        {
+          "name": "projectileClass",
+          "line": 2617,
+          "endLine": 2617,
+          "kind": "Variable"
+        },
+        {
+          "name": "projectile",
+          "line": 2619,
+          "endLine": 2619,
+          "kind": "Variable"
+        },
+        {
+          "name": "spawnPos",
+          "line": 2620,
+          "endLine": 2620,
+          "kind": "Variable"
+        },
+        {
+          "name": "ExecuteLeapAttack",
+          "line": 2655,
+          "endLine": 2701,
+          "kind": "Method"
+        },
+        {
+          "name": "LeapAttackJump",
+          "line": 2703,
+          "endLine": 2712,
+          "kind": "Method"
+        },
+        {
+          "name": "StopAttacks",
+          "line": 2714,
+          "endLine": 2729,
+          "kind": "Method"
+        },
+        {
+          "name": "math_angDif",
+          "line": 2731,
+          "endLine": 2734,
+          "kind": "Function"
+        },
+        {
+          "name": "UpdatePoseParamTracking",
+          "line": 2736,
+          "endLine": 2776,
+          "kind": "Method"
+        },
+        {
+          "name": "newPitch",
+          "line": 2741,
+          "endLine": 2741,
+          "kind": "Variable"
+        },
+        {
+          "name": "newYaw",
+          "line": 2742,
+          "endLine": 2742,
+          "kind": "Variable"
+        },
+        {
+          "name": "newRoll",
+          "line": 2743,
+          "endLine": 2743,
+          "kind": "Variable"
+        },
+        {
+          "name": "myEyePos",
+          "line": 2745,
+          "endLine": 2745,
+          "kind": "Variable"
+        },
+        {
+          "name": "myAng",
+          "line": 2746,
+          "endLine": 2746,
+          "kind": "Variable"
+        },
+        {
+          "name": "eneAng",
+          "line": 2747,
+          "endLine": 2747,
+          "kind": "Variable"
+        },
+        {
+          "name": "funcCustom",
+          "line": 2758,
+          "endLine": 2758,
+          "kind": "Variable"
+        },
+        {
+          "name": "speed",
+          "line": 2759,
+          "endLine": 2759,
+          "kind": "Variable"
+        },
+        {
+          "name": "names",
+          "line": 2760,
+          "endLine": 2760,
+          "kind": "Variable"
+        },
+        {
+          "name": "namesPitch",
+          "line": 2761,
+          "endLine": 2761,
+          "kind": "Variable"
+        },
+        {
+          "name": "namesYaw",
+          "line": 2762,
+          "endLine": 2762,
+          "kind": "Variable"
+        },
+        {
+          "name": "namesRoll",
+          "line": 2763,
+          "endLine": 2763,
+          "kind": "Variable"
+        },
+        {
+          "name": "pose",
+          "line": 2765,
+          "endLine": 2765,
+          "kind": "Variable"
+        },
+        {
+          "name": "schedule_yield_player",
+          "line": 2778,
+          "endLine": 2778,
+          "kind": "Variable"
+        },
+        {
+          "name": "bitsDanger",
+          "line": 2784,
+          "endLine": 2784,
+          "kind": "Variable"
+        },
+        {
+          "name": "SelectSchedule",
+          "line": 2786,
+          "endLine": 2861,
+          "kind": "Method"
+        },
+        {
+          "name": "sdSrc",
+          "line": 2821,
+          "endLine": 2821,
+          "kind": "Variable"
+        },
+        {
+          "name": "allowed",
+          "line": 2824,
+          "endLine": 2824,
+          "kind": "Variable"
+        },
+        {
+          "name": "sdOwner",
+          "line": 2825,
+          "endLine": 2825,
+          "kind": "Variable"
+        },
+        {
+          "name": "ResetEnemy",
+          "line": 2863,
+          "endLine": 2931,
+          "kind": "Method"
+        },
+        {
+          "name": "getAllies",
+          "line": 2871,
+          "endLine": 2871,
+          "kind": "Variable"
+        },
+        {
+          "name": "allyEne",
+          "line": 2874,
+          "endLine": 2874,
+          "kind": "Variable"
+        },
+        {
+          "name": "curEnemies",
+          "line": 2886,
+          "endLine": 2886,
+          "kind": "Variable"
+        },
+        {
+          "name": "moveToEnemy",
+          "line": 2903,
+          "endLine": 2903,
+          "kind": "Variable"
+        },
+        {
+          "name": "OnTakeDamage",
+          "line": 2933,
+          "endLine": 3165,
+          "kind": "Method"
+        },
+        {
+          "name": "dmgAttacker",
+          "line": 2934,
+          "endLine": 2934,
+          "kind": "Variable"
+        },
+        {
+          "name": "dmgInflictor",
+          "line": 2940,
+          "endLine": 2940,
+          "kind": "Variable"
+        },
+        {
+          "name": "hitgroup",
+          "line": 2947,
+          "endLine": 2947,
+          "kind": "Variable"
+        },
+        {
+          "name": "dmgType",
+          "line": 2951,
+          "endLine": 2951,
+          "kind": "Variable"
+        },
+        {
+          "name": "isFireEnt",
+          "line": 2953,
+          "endLine": 2953,
+          "kind": "Variable"
+        },
+        {
+          "name": "DoBleed",
+          "line": 2981,
+          "endLine": 2989,
+          "kind": "Function"
+        },
+        {
+          "name": "stillAlive",
+          "line": 3025,
+          "endLine": 3025,
+          "kind": "Variable"
+        },
+        {
+          "name": "isPassive",
+          "line": 3029,
+          "endLine": 3029,
+          "kind": "Variable"
+        },
+        {
+          "name": "relationMemory",
+          "line": 3039,
+          "endLine": 3039,
+          "kind": "Variable"
+        },
+        {
+          "name": "dispLvl",
+          "line": 3062,
+          "endLine": 3062,
+          "kind": "Variable"
+        },
+        {
+          "name": "canMove",
+          "line": 3072,
+          "endLine": 3072,
+          "kind": "Variable"
+        },
+        {
+          "name": "responseDist",
+          "line": 3076,
+          "endLine": 3076,
+          "kind": "Variable"
+        },
+        {
+          "name": "allies",
+          "line": 3077,
+          "endLine": 3077,
+          "kind": "Variable"
+        },
+        {
+          "name": "dmgResponse",
+          "line": 3097,
+          "endLine": 3097,
+          "kind": "Variable"
+        },
+        {
+          "name": "sightDist",
+          "line": 3101,
+          "endLine": 3101,
+          "kind": "Variable"
+        },
+        {
+          "name": "dissolve",
+          "line": 3156,
+          "endLine": 3156,
+          "kind": "Variable"
+        },
+        {
+          "name": "vecZ500",
+          "line": 3167,
+          "endLine": 3167,
+          "kind": "Variable"
+        },
+        {
+          "name": "vecZ4",
+          "line": 3168,
+          "endLine": 3168,
+          "kind": "Variable"
+        },
+        {
+          "name": "BeginDeath",
+          "line": 3170,
+          "endLine": 3293,
+          "kind": "Method"
+        },
+        {
+          "name": "doBecomeEnemyToPlayer",
+          "line": 3185,
+          "endLine": 3185,
+          "kind": "Variable"
+        },
+        {
+          "name": "responseType",
+          "line": 3186,
+          "endLine": 3186,
+          "kind": "Variable"
+        },
+        {
+          "name": "movedAllyNum",
+          "line": 3187,
+          "endLine": 3187,
+          "kind": "Variable"
+        },
+        {
+          "name": "moved",
+          "line": 3193,
+          "endLine": 3193,
+          "kind": "Variable"
+        },
+        {
+          "name": "faceTime",
+          "line": 3205,
+          "endLine": 3205,
+          "kind": "Variable"
+        },
+        {
+          "name": "bloodDecal",
+          "line": 3236,
+          "endLine": 3236,
+          "kind": "Variable"
+        },
+        {
+          "name": "decalPos",
+          "line": 3238,
+          "endLine": 3238,
+          "kind": "Variable"
+        },
+        {
+          "name": "deathTime",
+          "line": 3270,
+          "endLine": 3270,
+          "kind": "Variable"
+        },
+        {
+          "name": "animTime",
+          "line": 3276,
+          "endLine": 3276,
+          "kind": "Variable"
+        },
+        {
+          "name": "FinishDeath",
+          "line": 3295,
+          "endLine": 3305,
+          "kind": "Method"
+        },
+        {
+          "name": "colorGrey",
+          "line": 3307,
+          "endLine": 3307,
+          "kind": "Variable"
+        },
+        {
+          "name": "CreateDeathCorpse",
+          "line": 3309,
+          "endLine": 3465,
+          "kind": "Method"
+        },
+        {
+          "name": "corpseMdl",
+          "line": 3327,
+          "endLine": 3327,
+          "kind": "Variable"
+        },
+        {
+          "name": "corpseMdlCustom",
+          "line": 3328,
+          "endLine": 3328,
+          "kind": "Variable"
+        },
+        {
+          "name": "corpseClass",
+          "line": 3330,
+          "endLine": 3330,
+          "kind": "Variable"
+        },
+        {
+          "name": "corpse",
+          "line": 3341,
+          "endLine": 3341,
+          "kind": "Variable"
+        },
+        {
+          "name": "useLocalVel",
+          "line": 3400,
+          "endLine": 3400,
+          "kind": "Variable"
+        },
+        {
+          "name": "dmgForce",
+          "line": 3401,
+          "endLine": 3401,
+          "kind": "Variable"
+        },
+        {
+          "name": "totalSurface",
+          "line": 3406,
+          "endLine": 3406,
+          "kind": "Variable"
+        },
+        {
+          "name": "physCount",
+          "line": 3407,
+          "endLine": 3407,
+          "kind": "Variable"
+        },
+        {
+          "name": "childPhysObj",
+          "line": 3409,
+          "endLine": 3409,
+          "kind": "Variable"
+        },
+        {
+          "name": "childPhysObj_BonePos",
+          "line": 3412,
+          "endLine": 3412,
+          "kind": "Variable"
+        },
+        {
+          "name": "hpCalc",
+          "line": 3430,
+          "endLine": 3430,
+          "kind": "Variable"
+        }
+      ],
+      "stats": {
+        "methods": 46,
+        "fields": 151,
+        "total": 197
+      }
+    },
+    "TankNPC": {
+      "csharpFile": "Bases/TankNPC.cs",
+      "category": "P2_Tank",
+      "luaFiles": [
+        "lua/vj_base/ai/base_tank.lua",
+        "lua/entities/npc_vj_tank_base/init.lua",
+        "lua/entities/npc_vj_tank_base/shared.lua"
+      ],
+      "symbols": [
+        {
+          "name": "PhysicsCollide",
+          "line": 11,
+          "endLine": 11,
+          "kind": "Method"
+        },
+        {
+          "name": "PhysicsUpdate",
+          "line": 13,
+          "endLine": 13,
+          "kind": "Method"
+        },
+        {
+          "name": "SCHEDULE_FACE",
+          "line": 26,
+          "endLine": 26,
+          "kind": "Method"
+        },
+        {
+          "name": "MaintainAlertBehavior",
+          "line": 28,
+          "endLine": 28,
+          "kind": "Method"
+        },
+        {
+          "name": "OnDamaged",
+          "line": 30,
+          "endLine": 45,
+          "kind": "Method"
+        },
+        {
+          "name": "dmgInflictor",
+          "line": 33,
+          "endLine": 33,
+          "kind": "Variable"
+        },
+        {
+          "name": "Tank_AngleDiffuse",
+          "line": 47,
+          "endLine": 52,
+          "kind": "Method"
+        },
+        {
+          "name": "outcome",
+          "line": 48,
+          "endLine": 48,
+          "kind": "Variable"
+        },
+        {
+          "name": "Tank_Init",
+          "line": 59,
+          "endLine": 59,
+          "kind": "Method"
+        },
+        {
+          "name": "Tank_GunnerSpawnPosition",
+          "line": 61,
+          "endLine": 63,
+          "kind": "Method"
+        },
+        {
+          "name": "Tank_OnThink",
+          "line": 65,
+          "endLine": 65,
+          "kind": "Method"
+        },
+        {
+          "name": "Tank_OnThinkActive",
+          "line": 67,
+          "endLine": 67,
+          "kind": "Method"
+        },
+        {
+          "name": "Tank_OnRunOver",
+          "line": 69,
+          "endLine": 69,
+          "kind": "Method"
+        },
+        {
+          "name": "GetNearDeathSparkPositions",
+          "line": 71,
+          "endLine": 78,
+          "kind": "Method"
+        },
+        {
+          "name": "randPos",
+          "line": 72,
+          "endLine": 72,
+          "kind": "Variable"
+        },
+        {
+          "name": "Tank_OnInitialDeath",
+          "line": 80,
+          "endLine": 80,
+          "kind": "Method"
+        },
+        {
+          "name": "Tank_OnDeathCorpse",
+          "line": 113,
+          "endLine": 113,
+          "kind": "Method"
+        },
+        {
+          "name": "Tank_UpdateIdleParticles",
+          "line": 115,
+          "endLine": 124,
+          "kind": "Method"
+        },
+        {
+          "name": "Tank_UpdateMoveParticles",
+          "line": 126,
+          "endLine": 135,
+          "kind": "Method"
+        },
+        {
+          "name": "runoverException",
+          "line": 148,
+          "endLine": 148,
+          "kind": "Variable"
+        },
+        {
+          "name": "defAng",
+          "line": 149,
+          "endLine": 149,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_melee",
+          "line": 151,
+          "endLine": 151,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_reduce_vfx",
+          "line": 152,
+          "endLine": 152,
+          "kind": "Variable"
+        },
+        {
+          "name": "metaEntity",
+          "line": 154,
+          "endLine": 154,
+          "kind": "Variable"
+        },
+        {
+          "name": "funcGetTable",
+          "line": 155,
+          "endLine": 155,
+          "kind": "Variable"
+        },
+        {
+          "name": "Init",
+          "line": 157,
+          "endLine": 192,
+          "kind": "Method"
+        },
+        {
+          "name": "phys",
+          "line": 171,
+          "endLine": 171,
+          "kind": "Variable"
+        },
+        {
+          "name": "gunner",
+          "line": 179,
+          "endLine": 179,
+          "kind": "Variable"
+        },
+        {
+          "name": "OnTouch",
+          "line": 194,
+          "endLine": 199,
+          "kind": "Method"
+        },
+        {
+          "name": "Tank_RunOver",
+          "line": 201,
+          "endLine": 210,
+          "kind": "Method"
+        },
+        {
+          "name": "OnThink",
+          "line": 212,
+          "endLine": 241,
+          "kind": "Method"
+        },
+        {
+          "name": "selfData",
+          "line": 214,
+          "endLine": 214,
+          "kind": "Variable"
+        },
+        {
+          "name": "vec80z",
+          "line": 243,
+          "endLine": 243,
+          "kind": "Variable"
+        },
+        {
+          "name": "FACE_NONE",
+          "line": 244,
+          "endLine": 244,
+          "kind": "Variable"
+        },
+        {
+          "name": "OnThinkActive",
+          "line": 246,
+          "endLine": 353,
+          "kind": "Method"
+        },
+        {
+          "name": "hasMoved",
+          "line": 253,
+          "endLine": 253,
+          "kind": "Variable"
+        },
+        {
+          "name": "myPos",
+          "line": 254,
+          "endLine": 254,
+          "kind": "Variable"
+        },
+        {
+          "name": "tr",
+          "line": 255,
+          "endLine": 255,
+          "kind": "Variable"
+        },
+        {
+          "name": "eneData",
+          "line": 266,
+          "endLine": 266,
+          "kind": "Variable"
+        },
+        {
+          "name": "ene",
+          "line": 267,
+          "endLine": 267,
+          "kind": "Variable"
+        },
+        {
+          "name": "plyControlled",
+          "line": 269,
+          "endLine": 269,
+          "kind": "Variable"
+        },
+        {
+          "name": "enePos",
+          "line": 270,
+          "endLine": 270,
+          "kind": "Variable"
+        },
+        {
+          "name": "angEne",
+          "line": 271,
+          "endLine": 271,
+          "kind": "Variable"
+        },
+        {
+          "name": "angDiffuse",
+          "line": 272,
+          "endLine": 272,
+          "kind": "Variable"
+        },
+        {
+          "name": "heightRatio",
+          "line": 273,
+          "endLine": 273,
+          "kind": "Variable"
+        },
+        {
+          "name": "enemyIsHighUp",
+          "line": 274,
+          "endLine": 274,
+          "kind": "Variable"
+        },
+        {
+          "name": "reverse",
+          "line": 281,
+          "endLine": 281,
+          "kind": "Variable"
+        },
+        {
+          "name": "driveSpeed",
+          "line": 301,
+          "endLine": 301,
+          "kind": "Variable"
+        },
+        {
+          "name": "moveVel",
+          "line": 302,
+          "endLine": 302,
+          "kind": "Variable"
+        },
+        {
+          "name": "slopeFactor",
+          "line": 306,
+          "endLine": 306,
+          "kind": "Variable"
+        },
+        {
+          "name": "SelectSchedule",
+          "line": 355,
+          "endLine": 381,
+          "kind": "Method"
+        },
+        {
+          "name": "eneValid",
+          "line": 359,
+          "endLine": 359,
+          "kind": "Variable"
+        },
+        {
+          "name": "OnDeath",
+          "line": 383,
+          "endLine": 404,
+          "kind": "Method"
+        },
+        {
+          "name": "vec500z",
+          "line": 406,
+          "endLine": 406,
+          "kind": "Variable"
+        },
+        {
+          "name": "colorGray",
+          "line": 407,
+          "endLine": 407,
+          "kind": "Variable"
+        },
+        {
+          "name": "OnCreateDeathCorpse",
+          "line": 409,
+          "endLine": 454,
+          "kind": "Method"
+        },
+        {
+          "name": "gunCorpse",
+          "line": 413,
+          "endLine": 413,
+          "kind": "Variable"
+        },
+        {
+          "name": "soldierMDL",
+          "line": 431,
+          "endLine": 431,
+          "kind": "Variable"
+        },
+        {
+          "name": "effectData",
+          "line": 447,
+          "endLine": 447,
+          "kind": "Variable"
+        },
+        {
+          "name": "CustomOnRemove",
+          "line": 456,
+          "endLine": 462,
+          "kind": "Method"
+        },
+        {
+          "name": "Tank_PlaySoundSystem",
+          "line": 464,
+          "endLine": 488,
+          "kind": "Method"
+        },
+        {
+          "name": "curMoveSD",
+          "line": 470,
+          "endLine": 470,
+          "kind": "Variable"
+        },
+        {
+          "name": "curTrackSD",
+          "line": 476,
+          "endLine": 476,
+          "kind": "Variable"
+        }
+      ],
+      "stats": {
+        "methods": 26,
+        "fields": 37,
+        "total": 63
+      }
+    },
+    "HumanNPC": {
+      "csharpFile": "Bases/HumanNPC.cs",
+      "category": "P2_Human",
+      "luaFiles": [
+        "lua/entities/npc_vj_human_base/init.lua",
+        "lua/entities/npc_vj_human_base/shared.lua"
+      ],
+      "symbols": [
+        {
+          "name": "SetAutomaticFrameAdvance",
+          "line": 11,
+          "endLine": 13,
+          "kind": "Method"
+        },
+        {
+          "name": "MatFootStepQCEvent",
+          "line": 15,
+          "endLine": 20,
+          "kind": "Method"
+        },
+        {
+          "name": "funcDrawModel",
+          "line": 52,
+          "endLine": 52,
+          "kind": "Variable"
+        },
+        {
+          "name": "Initialize",
+          "line": 54,
+          "endLine": 64,
+          "kind": "Method"
+        },
+        {
+          "name": "Draw",
+          "line": 58,
+          "endLine": 61,
+          "kind": "Method"
+        },
+        {
+          "name": "DrawTranslucent",
+          "line": 66,
+          "endLine": 66,
+          "kind": "Method"
+        },
+        {
+          "name": "PreInit",
+          "line": 532,
+          "endLine": 532,
+          "kind": "Method"
+        },
+        {
+          "name": "Init",
+          "line": 534,
+          "endLine": 540,
+          "kind": "Method"
+        },
+        {
+          "name": "OnThink",
+          "line": 542,
+          "endLine": 542,
+          "kind": "Method"
+        },
+        {
+          "name": "OnThinkActive",
+          "line": 544,
+          "endLine": 544,
+          "kind": "Method"
+        },
+        {
+          "name": "OnFollow",
+          "line": 592,
+          "endLine": 592,
+          "kind": "Method"
+        },
+        {
+          "name": "OnIdleDialogue",
+          "line": 607,
+          "endLine": 607,
+          "kind": "Method"
+        },
+        {
+          "name": "OnMedicBehavior",
+          "line": 639,
+          "endLine": 639,
+          "kind": "Method"
+        },
+        {
+          "name": "OnPlayerSight",
+          "line": 641,
+          "endLine": 641,
+          "kind": "Method"
+        },
+        {
+          "name": "OnInvestigate",
+          "line": 662,
+          "endLine": 662,
+          "kind": "Method"
+        },
+        {
+          "name": "OnResetEnemy",
+          "line": 664,
+          "endLine": 664,
+          "kind": "Method"
+        },
+        {
+          "name": "OnAlert",
+          "line": 666,
+          "endLine": 666,
+          "kind": "Method"
+        },
+        {
+          "name": "OnCallForHelp",
+          "line": 670,
+          "endLine": 670,
+          "kind": "Method"
+        },
+        {
+          "name": "OnThinkAttack",
+          "line": 678,
+          "endLine": 678,
+          "kind": "Method"
+        },
+        {
+          "name": "OnMeleeAttack",
+          "line": 699,
+          "endLine": 699,
+          "kind": "Method"
+        },
+        {
+          "name": "MeleeAttackTraceOrigin",
+          "line": 701,
+          "endLine": 703,
+          "kind": "Method"
+        },
+        {
+          "name": "MeleeAttackTraceDirection",
+          "line": 706,
+          "endLine": 708,
+          "kind": "Method"
+        },
+        {
+          "name": "MeleeAttackKnockbackVelocity",
+          "line": 710,
+          "endLine": 712,
+          "kind": "Method"
+        },
+        {
+          "name": "OnMeleeAttackExecute",
+          "line": 737,
+          "endLine": 737,
+          "kind": "Method"
+        },
+        {
+          "name": "OnWeaponChange",
+          "line": 739,
+          "endLine": 739,
+          "kind": "Method"
+        },
+        {
+          "name": "OnWeaponCanFire",
+          "line": 741,
+          "endLine": 741,
+          "kind": "Method"
+        },
+        {
+          "name": "OnWeaponAttack",
+          "line": 743,
+          "endLine": 743,
+          "kind": "Method"
+        },
+        {
+          "name": "OnWeaponStrafe",
+          "line": 745,
+          "endLine": 745,
+          "kind": "Method"
+        },
+        {
+          "name": "OnWeaponReload",
+          "line": 747,
+          "endLine": 747,
+          "kind": "Method"
+        },
+        {
+          "name": "OnGrenadeAttack",
+          "line": 779,
+          "endLine": 779,
+          "kind": "Method"
+        },
+        {
+          "name": "OnGrenadeAttackExecute",
+          "line": 809,
+          "endLine": 809,
+          "kind": "Method"
+        },
+        {
+          "name": "OnKilledEnemy",
+          "line": 811,
+          "endLine": 811,
+          "kind": "Method"
+        },
+        {
+          "name": "OnAllyKilled",
+          "line": 813,
+          "endLine": 813,
+          "kind": "Method"
+        },
+        {
+          "name": "OnDamaged",
+          "line": 826,
+          "endLine": 826,
+          "kind": "Method"
+        },
+        {
+          "name": "OnBleed",
+          "line": 828,
+          "endLine": 828,
+          "kind": "Method"
+        },
+        {
+          "name": "OnFlinch",
+          "line": 848,
+          "endLine": 848,
+          "kind": "Method"
+        },
+        {
+          "name": "OnBecomeEnemyToPlayer",
+          "line": 850,
+          "endLine": 850,
+          "kind": "Method"
+        },
+        {
+          "name": "OnSetEnemyFromDamage",
+          "line": 852,
+          "endLine": 852,
+          "kind": "Method"
+        },
+        {
+          "name": "HandleGibOnDeath",
+          "line": 872,
+          "endLine": 872,
+          "kind": "Method"
+        },
+        {
+          "name": "OnDeath",
+          "line": 885,
+          "endLine": 885,
+          "kind": "Method"
+        },
+        {
+          "name": "OnDeathWeaponDrop",
+          "line": 887,
+          "endLine": 887,
+          "kind": "Method"
+        },
+        {
+          "name": "OnCreateDeathCorpse",
+          "line": 889,
+          "endLine": 889,
+          "kind": "Method"
+        },
+        {
+          "name": "CustomOnRemove",
+          "line": 891,
+          "endLine": 891,
+          "kind": "Method"
+        },
+        {
+          "name": "Controller_Initialize",
+          "line": 893,
+          "endLine": 895,
+          "kind": "Method"
+        },
+        {
+          "name": "PICK",
+          "line": 897,
+          "endLine": 897,
+          "kind": "Variable"
+        },
+        {
+          "name": "SetAnimationTranslations",
+          "line": 899,
+          "endLine": 1601,
+          "kind": "Method"
+        },
+        {
+          "name": "isFemale",
+          "line": 1065,
+          "endLine": 1065,
+          "kind": "Variable"
+        },
+        {
+          "name": "defPos",
+          "line": 1609,
+          "endLine": 1609,
+          "kind": "Variable"
+        },
+        {
+          "name": "StopSD",
+          "line": 1611,
+          "endLine": 1611,
+          "kind": "Variable"
+        },
+        {
+          "name": "CurTime",
+          "line": 1612,
+          "endLine": 1612,
+          "kind": "Variable"
+        },
+        {
+          "name": "IsValid",
+          "line": 1613,
+          "endLine": 1613,
+          "kind": "Variable"
+        },
+        {
+          "name": "GetConVar",
+          "line": 1614,
+          "endLine": 1614,
+          "kind": "Variable"
+        },
+        {
+          "name": "math_min",
+          "line": 1615,
+          "endLine": 1615,
+          "kind": "Variable"
+        },
+        {
+          "name": "math_max",
+          "line": 1616,
+          "endLine": 1616,
+          "kind": "Variable"
+        },
+        {
+          "name": "math_rad",
+          "line": 1617,
+          "endLine": 1617,
+          "kind": "Variable"
+        },
+        {
+          "name": "math_cos",
+          "line": 1618,
+          "endLine": 1618,
+          "kind": "Variable"
+        },
+        {
+          "name": "math_angApproach",
+          "line": 1619,
+          "endLine": 1619,
+          "kind": "Variable"
+        },
+        {
+          "name": "VJ_STATE_FREEZE",
+          "line": 1620,
+          "endLine": 1620,
+          "kind": "Variable"
+        },
+        {
+          "name": "VJ_STATE_ONLY_ANIMATION",
+          "line": 1621,
+          "endLine": 1621,
+          "kind": "Variable"
+        },
+        {
+          "name": "VJ_STATE_ONLY_ANIMATION_CONSTANT",
+          "line": 1622,
+          "endLine": 1622,
+          "kind": "Variable"
+        },
+        {
+          "name": "VJ_STATE_ONLY_ANIMATION_NOATTACK",
+          "line": 1623,
+          "endLine": 1623,
+          "kind": "Variable"
+        },
+        {
+          "name": "VJ_BEHAVIOR_PASSIVE",
+          "line": 1624,
+          "endLine": 1624,
+          "kind": "Variable"
+        },
+        {
+          "name": "VJ_BEHAVIOR_PASSIVE_NATURE",
+          "line": 1625,
+          "endLine": 1625,
+          "kind": "Variable"
+        },
+        {
+          "name": "VJ_MOVETYPE_GROUND",
+          "line": 1626,
+          "endLine": 1626,
+          "kind": "Variable"
+        },
+        {
+          "name": "VJ_MOVETYPE_AERIAL",
+          "line": 1627,
+          "endLine": 1627,
+          "kind": "Variable"
+        },
+        {
+          "name": "VJ_MOVETYPE_AQUATIC",
+          "line": 1628,
+          "endLine": 1628,
+          "kind": "Variable"
+        },
+        {
+          "name": "VJ_MOVETYPE_STATIONARY",
+          "line": 1629,
+          "endLine": 1629,
+          "kind": "Variable"
+        },
+        {
+          "name": "VJ_MOVETYPE_PHYSICS",
+          "line": 1630,
+          "endLine": 1630,
+          "kind": "Variable"
+        },
+        {
+          "name": "ANIM_TYPE_GESTURE",
+          "line": 1631,
+          "endLine": 1631,
+          "kind": "Variable"
+        },
+        {
+          "name": "metaEntity",
+          "line": 1633,
+          "endLine": 1633,
+          "kind": "Variable"
+        },
+        {
+          "name": "funcGetTable",
+          "line": 1634,
+          "endLine": 1634,
+          "kind": "Variable"
+        },
+        {
+          "name": "funcGetPoseParameter",
+          "line": 1635,
+          "endLine": 1635,
+          "kind": "Variable"
+        },
+        {
+          "name": "funcSetPoseParameter",
+          "line": 1636,
+          "endLine": 1636,
+          "kind": "Variable"
+        },
+        {
+          "name": "metaNPC",
+          "line": 1638,
+          "endLine": 1638,
+          "kind": "Variable"
+        },
+        {
+          "name": "funcGetEnemy",
+          "line": 1639,
+          "endLine": 1639,
+          "kind": "Variable"
+        },
+        {
+          "name": "funcHasCondition",
+          "line": 1640,
+          "endLine": 1640,
+          "kind": "Variable"
+        },
+        {
+          "name": "funcGetActiveWeapon",
+          "line": 1641,
+          "endLine": 1641,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_debug",
+          "line": 1665,
+          "endLine": 1665,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_processtime",
+          "line": 1666,
+          "endLine": 1666,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_poseparams",
+          "line": 1667,
+          "endLine": 1667,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_shadows",
+          "line": 1668,
+          "endLine": 1668,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_snd",
+          "line": 1669,
+          "endLine": 1669,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_fri_base",
+          "line": 1670,
+          "endLine": 1670,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_fri_player",
+          "line": 1671,
+          "endLine": 1671,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_fri_antlion",
+          "line": 1672,
+          "endLine": 1672,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_fri_combine",
+          "line": 1673,
+          "endLine": 1673,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_fri_zombie",
+          "line": 1674,
+          "endLine": 1674,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_allies",
+          "line": 1675,
+          "endLine": 1675,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_anim_death",
+          "line": 1676,
+          "endLine": 1676,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_corpse",
+          "line": 1677,
+          "endLine": 1677,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_loot",
+          "line": 1678,
+          "endLine": 1678,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_wander",
+          "line": 1679,
+          "endLine": 1679,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_chase",
+          "line": 1680,
+          "endLine": 1680,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_flinch",
+          "line": 1681,
+          "endLine": 1681,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_melee",
+          "line": 1682,
+          "endLine": 1682,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_blood",
+          "line": 1683,
+          "endLine": 1683,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_god",
+          "line": 1684,
+          "endLine": 1684,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_wep_reload",
+          "line": 1685,
+          "endLine": 1685,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_ply_betray",
+          "line": 1686,
+          "endLine": 1686,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_callhelp",
+          "line": 1687,
+          "endLine": 1687,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_investigate",
+          "line": 1688,
+          "endLine": 1688,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_eat",
+          "line": 1689,
+          "endLine": 1689,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_ply_follow",
+          "line": 1690,
+          "endLine": 1690,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_ply_chat",
+          "line": 1691,
+          "endLine": 1691,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_medic",
+          "line": 1692,
+          "endLine": 1692,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_wep",
+          "line": 1693,
+          "endLine": 1693,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_wep_secondary",
+          "line": 1694,
+          "endLine": 1694,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_grenade",
+          "line": 1695,
+          "endLine": 1695,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_dangerdetection",
+          "line": 1696,
+          "endLine": 1696,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_wep_drop",
+          "line": 1697,
+          "endLine": 1697,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_gib_vfx",
+          "line": 1698,
+          "endLine": 1698,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_gib",
+          "line": 1699,
+          "endLine": 1699,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_blood_gmod",
+          "line": 1700,
+          "endLine": 1700,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_sight_xray",
+          "line": 1701,
+          "endLine": 1701,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_snd_gib",
+          "line": 1702,
+          "endLine": 1702,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_snd_track",
+          "line": 1703,
+          "endLine": 1703,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_snd_footstep",
+          "line": 1704,
+          "endLine": 1704,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_snd_idle",
+          "line": 1705,
+          "endLine": 1705,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_snd_breath",
+          "line": 1706,
+          "endLine": 1706,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_snd_alert",
+          "line": 1707,
+          "endLine": 1707,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_snd_danger",
+          "line": 1708,
+          "endLine": 1708,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_snd_melee",
+          "line": 1709,
+          "endLine": 1709,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_snd_pain",
+          "line": 1710,
+          "endLine": 1710,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_snd_death",
+          "line": 1711,
+          "endLine": 1711,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_snd_plyfollow",
+          "line": 1712,
+          "endLine": 1712,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_snd_plybetrayal",
+          "line": 1713,
+          "endLine": 1713,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_snd_plydamage",
+          "line": 1714,
+          "endLine": 1714,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_snd_plysight",
+          "line": 1715,
+          "endLine": 1715,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_snd_medic",
+          "line": 1716,
+          "endLine": 1716,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_snd_wep_reload",
+          "line": 1717,
+          "endLine": 1717,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_snd_grenade",
+          "line": 1718,
+          "endLine": 1718,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_snd_wep_suppressing",
+          "line": 1719,
+          "endLine": 1719,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_snd_callhelp",
+          "line": 1720,
+          "endLine": 1720,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_snd_receiveorder",
+          "line": 1721,
+          "endLine": 1721,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_corpse_collision",
+          "line": 1722,
+          "endLine": 1722,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_debug_engine",
+          "line": 1723,
+          "endLine": 1723,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_difficulty",
+          "line": 1724,
+          "endLine": 1724,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_sight_distance",
+          "line": 1725,
+          "endLine": 1725,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_health",
+          "line": 1726,
+          "endLine": 1726,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_human_jump",
+          "line": 1727,
+          "endLine": 1727,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_ply_frag",
+          "line": 1728,
+          "endLine": 1728,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_blood_pool",
+          "line": 1729,
+          "endLine": 1729,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_corpse_undo",
+          "line": 1730,
+          "endLine": 1730,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_corpse_fade",
+          "line": 1731,
+          "endLine": 1731,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_corpse_fadetime",
+          "line": 1732,
+          "endLine": 1732,
+          "kind": "Variable"
+        },
+        {
+          "name": "ai_serverragdolls",
+          "line": 1733,
+          "endLine": 1733,
+          "kind": "Variable"
+        },
+        {
+          "name": "InitConvars",
+          "line": 1736,
+          "endLine": 3494,
+          "kind": "Function"
+        },
+        {
+          "name": "hasDist",
+          "line": 3462,
+          "endLine": 3462,
+          "kind": "Variable"
+        },
+        {
+          "name": "hasChecks",
+          "line": 3463,
+          "endLine": 3463,
+          "kind": "Variable"
+        },
+        {
+          "name": "selfData",
+          "line": 3464,
+          "endLine": 3464,
+          "kind": "Variable"
+        },
+        {
+          "name": "curWep",
+          "line": 3465,
+          "endLine": 3465,
+          "kind": "Variable"
+        },
+        {
+          "name": "enemyDist",
+          "line": 3474,
+          "endLine": 3474,
+          "kind": "Variable"
+        },
+        {
+          "name": "schedule_yield_player",
+          "line": 3496,
+          "endLine": 3496,
+          "kind": "Variable"
+        },
+        {
+          "name": "bitsDanger",
+          "line": 3502,
+          "endLine": 3502,
+          "kind": "Variable"
+        },
+        {
+          "name": "SelectSchedule",
+          "line": 3504,
+          "endLine": 3822,
+          "kind": "Method"
+        },
+        {
+          "name": "curTime",
+          "line": 3508,
+          "endLine": 3508,
+          "kind": "Variable"
+        },
+        {
+          "name": "ene",
+          "line": 3509,
+          "endLine": 3509,
+          "kind": "Variable"
+        },
+        {
+          "name": "eneValid",
+          "line": 3510,
+          "endLine": 3510,
+          "kind": "Variable"
+        },
+        {
+          "name": "sdSrc",
+          "line": 3525,
+          "endLine": 3525,
+          "kind": "Variable"
+        },
+        {
+          "name": "allowed",
+          "line": 3528,
+          "endLine": 3528,
+          "kind": "Variable"
+        },
+        {
+          "name": "sdOwner",
+          "line": 3529,
+          "endLine": 3529,
+          "kind": "Variable"
+        },
+        {
+          "name": "wep",
+          "line": 3565,
+          "endLine": 3565,
+          "kind": "Variable"
+        },
+        {
+          "name": "eneData",
+          "line": 3566,
+          "endLine": 3566,
+          "kind": "Variable"
+        },
+        {
+          "name": "enePos_Eye",
+          "line": 3591,
+          "endLine": 3591,
+          "kind": "Variable"
+        },
+        {
+          "name": "myPos",
+          "line": 3592,
+          "endLine": 3592,
+          "kind": "Variable"
+        },
+        {
+          "name": "myPosCentered",
+          "line": 3593,
+          "endLine": 3593,
+          "kind": "Variable"
+        },
+        {
+          "name": "moveCheck",
+          "line": 3597,
+          "endLine": 3597,
+          "kind": "Variable"
+        },
+        {
+          "name": "schedule",
+          "line": 3700,
+          "endLine": 3700,
+          "kind": "Variable"
+        },
+        {
+          "name": "coverRunAnim",
+          "line": 3702,
+          "endLine": 3702,
+          "kind": "Variable"
+        },
+        {
+          "name": "finalAnim",
+          "line": 3725,
+          "endLine": 3725,
+          "kind": "Variable"
+        },
+        {
+          "name": "animDur",
+          "line": 3727,
+          "endLine": 3727,
+          "kind": "Variable"
+        },
+        {
+          "name": "hasAmmo",
+          "line": 3739,
+          "endLine": 3739,
+          "kind": "Variable"
+        },
+        {
+          "name": "anim_crouch",
+          "line": 3762,
+          "endLine": 3762,
+          "kind": "Variable"
+        },
+        {
+          "name": "ResetEnemy",
+          "line": 3824,
+          "endLine": 3900,
+          "kind": "Method"
+        },
+        {
+          "name": "getAllies",
+          "line": 3832,
+          "endLine": 3832,
+          "kind": "Variable"
+        },
+        {
+          "name": "allyEne",
+          "line": 3835,
+          "endLine": 3835,
+          "kind": "Variable"
+        },
+        {
+          "name": "curEnemies",
+          "line": 3848,
+          "endLine": 3848,
+          "kind": "Variable"
+        },
+        {
+          "name": "moveToEnemy",
+          "line": 3865,
+          "endLine": 3865,
+          "kind": "Variable"
+        },
+        {
+          "name": "OnTakeDamage",
+          "line": 3902,
+          "endLine": 4156,
+          "kind": "Method"
+        },
+        {
+          "name": "dmgAttacker",
+          "line": 3903,
+          "endLine": 3903,
+          "kind": "Variable"
+        },
+        {
+          "name": "dmgInflictor",
+          "line": 3909,
+          "endLine": 3909,
+          "kind": "Variable"
+        },
+        {
+          "name": "hitgroup",
+          "line": 3916,
+          "endLine": 3916,
+          "kind": "Variable"
+        },
+        {
+          "name": "dmgType",
+          "line": 3920,
+          "endLine": 3920,
+          "kind": "Variable"
+        },
+        {
+          "name": "isFireEnt",
+          "line": 3922,
+          "endLine": 3922,
+          "kind": "Variable"
+        },
+        {
+          "name": "DoBleed",
+          "line": 3950,
+          "endLine": 3958,
+          "kind": "Function"
+        },
+        {
+          "name": "healthRegen",
+          "line": 3977,
+          "endLine": 3977,
+          "kind": "Variable"
+        },
+        {
+          "name": "stillAlive",
+          "line": 3994,
+          "endLine": 3994,
+          "kind": "Variable"
+        },
+        {
+          "name": "isPassive",
+          "line": 3998,
+          "endLine": 3998,
+          "kind": "Variable"
+        },
+        {
+          "name": "relationMemory",
+          "line": 4008,
+          "endLine": 4008,
+          "kind": "Variable"
+        },
+        {
+          "name": "dispLvl",
+          "line": 4031,
+          "endLine": 4031,
+          "kind": "Variable"
+        },
+        {
+          "name": "canMove",
+          "line": 4044,
+          "endLine": 4044,
+          "kind": "Variable"
+        },
+        {
+          "name": "hideTime",
+          "line": 4046,
+          "endLine": 4046,
+          "kind": "Variable"
+        },
+        {
+          "name": "anim",
+          "line": 4047,
+          "endLine": 4047,
+          "kind": "Variable"
+        },
+        {
+          "name": "responseDist",
+          "line": 4067,
+          "endLine": 4067,
+          "kind": "Variable"
+        },
+        {
+          "name": "allies",
+          "line": 4068,
+          "endLine": 4068,
+          "kind": "Variable"
+        },
+        {
+          "name": "dmgResponse",
+          "line": 4088,
+          "endLine": 4088,
+          "kind": "Variable"
+        },
+        {
+          "name": "sightDist",
+          "line": 4092,
+          "endLine": 4092,
+          "kind": "Variable"
+        },
+        {
+          "name": "dissolve",
+          "line": 4147,
+          "endLine": 4147,
+          "kind": "Variable"
+        },
+        {
+          "name": "vecZ500",
+          "line": 4158,
+          "endLine": 4158,
+          "kind": "Variable"
+        },
+        {
+          "name": "vecZ4",
+          "line": 4159,
+          "endLine": 4159,
+          "kind": "Variable"
+        },
+        {
+          "name": "BeginDeath",
+          "line": 4161,
+          "endLine": 4282,
+          "kind": "Method"
+        },
+        {
+          "name": "doBecomeEnemyToPlayer",
+          "line": 4176,
+          "endLine": 4176,
+          "kind": "Variable"
+        },
+        {
+          "name": "responseType",
+          "line": 4177,
+          "endLine": 4177,
+          "kind": "Variable"
+        },
+        {
+          "name": "movedAllyNum",
+          "line": 4178,
+          "endLine": 4178,
+          "kind": "Variable"
+        },
+        {
+          "name": "moved",
+          "line": 4184,
+          "endLine": 4184,
+          "kind": "Variable"
+        },
+        {
+          "name": "faceTime",
+          "line": 4196,
+          "endLine": 4196,
+          "kind": "Variable"
+        },
+        {
+          "name": "bloodDecal",
+          "line": 4227,
+          "endLine": 4227,
+          "kind": "Variable"
+        },
+        {
+          "name": "decalPos",
+          "line": 4229,
+          "endLine": 4229,
+          "kind": "Variable"
+        },
+        {
+          "name": "tr",
+          "line": 4231,
+          "endLine": 4231,
+          "kind": "Variable"
+        },
+        {
+          "name": "deathTime",
+          "line": 4259,
+          "endLine": 4259,
+          "kind": "Variable"
+        },
+        {
+          "name": "chosenAnim",
+          "line": 4264,
+          "endLine": 4264,
+          "kind": "Variable"
+        },
+        {
+          "name": "animTime",
+          "line": 4265,
+          "endLine": 4265,
+          "kind": "Variable"
+        },
+        {
+          "name": "FinishDeath",
+          "line": 4284,
+          "endLine": 4294,
+          "kind": "Method"
+        },
+        {
+          "name": "colorGrey",
+          "line": 4296,
+          "endLine": 4296,
+          "kind": "Variable"
+        },
+        {
+          "name": "CreateDeathCorpse",
+          "line": 4298,
+          "endLine": 4462,
+          "kind": "Method"
+        },
+        {
+          "name": "corpseMdl",
+          "line": 4316,
+          "endLine": 4316,
+          "kind": "Variable"
+        },
+        {
+          "name": "corpseMdlCustom",
+          "line": 4317,
+          "endLine": 4317,
+          "kind": "Variable"
+        },
+        {
+          "name": "corpseClass",
+          "line": 4319,
+          "endLine": 4319,
+          "kind": "Variable"
+        },
+        {
+          "name": "corpse",
+          "line": 4331,
+          "endLine": 4331,
+          "kind": "Variable"
+        },
+        {
+          "name": "useLocalVel",
+          "line": 4390,
+          "endLine": 4390,
+          "kind": "Variable"
+        },
+        {
+          "name": "dmgForce",
+          "line": 4391,
+          "endLine": 4391,
+          "kind": "Variable"
+        },
+        {
+          "name": "totalSurface",
+          "line": 4396,
+          "endLine": 4396,
+          "kind": "Variable"
+        },
+        {
+          "name": "physCount",
+          "line": 4397,
+          "endLine": 4397,
+          "kind": "Variable"
+        },
+        {
+          "name": "childPhysObj",
+          "line": 4399,
+          "endLine": 4399,
+          "kind": "Variable"
+        },
+        {
+          "name": "childPhysObj_BonePos",
+          "line": 4402,
+          "endLine": 4402,
+          "kind": "Variable"
+        },
+        {
+          "name": "hpCalc",
+          "line": 4420,
+          "endLine": 4420,
+          "kind": "Variable"
+        },
+        {
+          "name": "DeathWeaponDrop",
+          "line": 4464,
+          "endLine": 4493,
+          "kind": "Method"
+        },
+        {
+          "name": "activeWep",
+          "line": 4465,
+          "endLine": 4465,
+          "kind": "Variable"
+        },
+        {
+          "name": "orgPos",
+          "line": 4470,
+          "endLine": 4470,
+          "kind": "Variable"
+        },
+        {
+          "name": "phys",
+          "line": 4476,
+          "endLine": 4476,
+          "kind": "Variable"
+        },
+        {
+          "name": "GetAttackSpread",
+          "line": 4495,
+          "endLine": 4495,
+          "kind": "Method"
+        }
+      ],
+      "stats": {
+        "methods": 54,
+        "fields": 177,
+        "total": 231
+      }
+    },
+    "TankGunner": {
+      "csharpFile": "Components/TankGunner.cs",
+      "category": "P2_Tank",
+      "luaFiles": [
+        "lua/entities/npc_vj_tankg_base/init.lua"
+      ],
+      "symbols": [
+        {
+          "name": "Tank_Init",
+          "line": 55,
+          "endLine": 55,
+          "kind": "Method"
+        },
+        {
+          "name": "Tank_OnThink",
+          "line": 57,
+          "endLine": 57,
+          "kind": "Method"
+        },
+        {
+          "name": "Tank_OnThinkActive",
+          "line": 59,
+          "endLine": 59,
+          "kind": "Method"
+        },
+        {
+          "name": "Tank_OnPrepareShell",
+          "line": 61,
+          "endLine": 61,
+          "kind": "Method"
+        },
+        {
+          "name": "Tank_OnFireShell",
+          "line": 97,
+          "endLine": 97,
+          "kind": "Method"
+        },
+        {
+          "name": "Tank_UpdateIdleParticles",
+          "line": 99,
+          "endLine": 108,
+          "kind": "Method"
+        },
+        {
+          "name": "TANK_SHELL_STATUS_EMPTY",
+          "line": 123,
+          "endLine": 123,
+          "kind": "Variable"
+        },
+        {
+          "name": "TANK_SHELL_STATUS_RELOADING",
+          "line": 124,
+          "endLine": 124,
+          "kind": "Variable"
+        },
+        {
+          "name": "TANK_SHELL_STATUS_READY",
+          "line": 125,
+          "endLine": 125,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_range",
+          "line": 128,
+          "endLine": 128,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_reduce_vfx",
+          "line": 129,
+          "endLine": 129,
+          "kind": "Variable"
+        },
+        {
+          "name": "metaEntity",
+          "line": 131,
+          "endLine": 131,
+          "kind": "Variable"
+        },
+        {
+          "name": "funcGetTable",
+          "line": 132,
+          "endLine": 132,
+          "kind": "Variable"
+        },
+        {
+          "name": "Init",
+          "line": 134,
+          "endLine": 142,
+          "kind": "Method"
+        },
+        {
+          "name": "OnThink",
+          "line": 144,
+          "endLine": 149,
+          "kind": "Method"
+        },
+        {
+          "name": "OnThinkActive",
+          "line": 151,
+          "endLine": 202,
+          "kind": "Method"
+        },
+        {
+          "name": "selfData",
+          "line": 152,
+          "endLine": 152,
+          "kind": "Variable"
+        },
+        {
+          "name": "parent",
+          "line": 154,
+          "endLine": 154,
+          "kind": "Variable"
+        },
+        {
+          "name": "turning",
+          "line": 159,
+          "endLine": 159,
+          "kind": "Variable"
+        },
+        {
+          "name": "ene",
+          "line": 160,
+          "endLine": 160,
+          "kind": "Variable"
+        },
+        {
+          "name": "myPos",
+          "line": 168,
+          "endLine": 168,
+          "kind": "Variable"
+        },
+        {
+          "name": "enePos",
+          "line": 169,
+          "endLine": 169,
+          "kind": "Variable"
+        },
+        {
+          "name": "angEne",
+          "line": 170,
+          "endLine": 170,
+          "kind": "Variable"
+        },
+        {
+          "name": "angDiffuse",
+          "line": 171,
+          "endLine": 171,
+          "kind": "Variable"
+        },
+        {
+          "name": "heightRatio",
+          "line": 172,
+          "endLine": 172,
+          "kind": "Variable"
+        },
+        {
+          "name": "SelectSchedule",
+          "line": 204,
+          "endLine": 227,
+          "kind": "Method"
+        },
+        {
+          "name": "eneValid",
+          "line": 208,
+          "endLine": 208,
+          "kind": "Variable"
+        },
+        {
+          "name": "eneData",
+          "line": 218,
+          "endLine": 218,
+          "kind": "Variable"
+        },
+        {
+          "name": "Tank_PrepareShell",
+          "line": 229,
+          "endLine": 249,
+          "kind": "Method"
+        },
+        {
+          "name": "Tank_FireShell",
+          "line": 251,
+          "endLine": 354,
+          "kind": "Method"
+        },
+        {
+          "name": "shell",
+          "line": 259,
+          "endLine": 259,
+          "kind": "Variable"
+        },
+        {
+          "name": "onCreateCall",
+          "line": 261,
+          "endLine": 261,
+          "kind": "Variable"
+        },
+        {
+          "name": "calculatedVel",
+          "line": 267,
+          "endLine": 267,
+          "kind": "Variable"
+        },
+        {
+          "name": "phys",
+          "line": 280,
+          "endLine": 280,
+          "kind": "Variable"
+        },
+        {
+          "name": "myAng",
+          "line": 287,
+          "endLine": 287,
+          "kind": "Variable"
+        },
+        {
+          "name": "myAngForward",
+          "line": 288,
+          "endLine": 288,
+          "kind": "Variable"
+        },
+        {
+          "name": "muzzleFlashPos",
+          "line": 292,
+          "endLine": 292,
+          "kind": "Variable"
+        },
+        {
+          "name": "muzzleFlash",
+          "line": 293,
+          "endLine": 293,
+          "kind": "Variable"
+        },
+        {
+          "name": "lightFire",
+          "line": 298,
+          "endLine": 298,
+          "kind": "Variable"
+        },
+        {
+          "name": "smokePos",
+          "line": 312,
+          "endLine": 312,
+          "kind": "Variable"
+        },
+        {
+          "name": "smokeWhite",
+          "line": 313,
+          "endLine": 313,
+          "kind": "Variable"
+        },
+        {
+          "name": "dust",
+          "line": 324,
+          "endLine": 324,
+          "kind": "Variable"
+        },
+        {
+          "name": "OnCreateDeathCorpse",
+          "line": 356,
+          "endLine": 362,
+          "kind": "Method"
+        },
+        {
+          "name": "corpsePhys",
+          "line": 357,
+          "endLine": 357,
+          "kind": "Variable"
+        },
+        {
+          "name": "CustomOnRemove",
+          "line": 364,
+          "endLine": 367,
+          "kind": "Method"
+        },
+        {
+          "name": "Tank_PlaySoundSystem",
+          "line": 369,
+          "endLine": 389,
+          "kind": "Method"
+        },
+        {
+          "name": "curMoveSD",
+          "line": 374,
+          "endLine": 374,
+          "kind": "Variable"
+        }
+      ],
+      "stats": {
+        "methods": 15,
+        "fields": 32,
+        "total": 47
+      }
+    },
+    "BaseWeapon": {
+      "csharpFile": "Components/BaseWeapon.cs",
+      "category": "P3_Weapon",
+      "luaFiles": [
+        "lua/weapons/weapon_vj_base/shared.lua"
+      ],
+      "symbols": [
+        {
+          "name": "Init",
+          "line": 171,
+          "endLine": 171,
+          "kind": "Method"
+        },
+        {
+          "name": "OnEquip",
+          "line": 173,
+          "endLine": 173,
+          "kind": "Method"
+        },
+        {
+          "name": "OnDeploy",
+          "line": 175,
+          "endLine": 175,
+          "kind": "Method"
+        },
+        {
+          "name": "OnThink",
+          "line": 177,
+          "endLine": 177,
+          "kind": "Method"
+        },
+        {
+          "name": "OnGetBulletPos",
+          "line": 179,
+          "endLine": 179,
+          "kind": "Method"
+        },
+        {
+          "name": "OnDrawWorldModel",
+          "line": 181,
+          "endLine": 181,
+          "kind": "Method"
+        },
+        {
+          "name": "OnAnimEvent",
+          "line": 183,
+          "endLine": 183,
+          "kind": "Method"
+        },
+        {
+          "name": "OnPrimaryAttack",
+          "line": 210,
+          "endLine": 210,
+          "kind": "Method"
+        },
+        {
+          "name": "OnPrimaryAttack_BulletCallback",
+          "line": 214,
+          "endLine": 214,
+          "kind": "Method"
+        },
+        {
+          "name": "NPC_SecondaryFire_BeforeTimer",
+          "line": 216,
+          "endLine": 216,
+          "kind": "Method"
+        },
+        {
+          "name": "NPC_SecondaryFire",
+          "line": 218,
+          "endLine": 238,
+          "kind": "Method"
+        },
+        {
+          "name": "owner",
+          "line": 220,
+          "endLine": 220,
+          "kind": "Variable"
+        },
+        {
+          "name": "spawnPos",
+          "line": 221,
+          "endLine": 221,
+          "kind": "Variable"
+        },
+        {
+          "name": "projectile",
+          "line": 222,
+          "endLine": 222,
+          "kind": "Variable"
+        },
+        {
+          "name": "phys",
+          "line": 228,
+          "endLine": 228,
+          "kind": "Variable"
+        },
+        {
+          "name": "OnSecondaryAttack",
+          "line": 240,
+          "endLine": 240,
+          "kind": "Method"
+        },
+        {
+          "name": "OnReload",
+          "line": 257,
+          "endLine": 257,
+          "kind": "Method"
+        },
+        {
+          "name": "OnHolster",
+          "line": 259,
+          "endLine": 259,
+          "kind": "Method"
+        },
+        {
+          "name": "CustomOnRemove",
+          "line": 261,
+          "endLine": 261,
+          "kind": "Method"
+        },
+        {
+          "name": "DecideAnimationLength",
+          "line": 269,
+          "endLine": 269,
+          "kind": "Method"
+        },
+        {
+          "name": "metaEntity",
+          "line": 284,
+          "endLine": 284,
+          "kind": "Variable"
+        },
+        {
+          "name": "funcDrawModel",
+          "line": 285,
+          "endLine": 285,
+          "kind": "Variable"
+        },
+        {
+          "name": "funcGetTable",
+          "line": 286,
+          "endLine": 286,
+          "kind": "Variable"
+        },
+        {
+          "name": "metaNPC",
+          "line": 288,
+          "endLine": 288,
+          "kind": "Variable"
+        },
+        {
+          "name": "funcGetActiveWeapon",
+          "line": 289,
+          "endLine": 289,
+          "kind": "Variable"
+        },
+        {
+          "name": "metaAngle",
+          "line": 291,
+          "endLine": 291,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_wep_muzzleflash",
+          "line": 293,
+          "endLine": 293,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_wep_muzzleflash_light",
+          "line": 294,
+          "endLine": 294,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_wep_shells",
+          "line": 295,
+          "endLine": 295,
+          "kind": "Variable"
+        },
+        {
+          "name": "oldShells",
+          "line": 297,
+          "endLine": 297,
+          "kind": "Variable"
+        },
+        {
+          "name": "Initialize",
+          "line": 299,
+          "endLine": 349,
+          "kind": "Method"
+        },
+        {
+          "name": "GetCapabilities",
+          "line": 351,
+          "endLine": 353,
+          "kind": "Method"
+        },
+        {
+          "name": "SetDefaultValues",
+          "line": 355,
+          "endLine": 381,
+          "kind": "Method"
+        },
+        {
+          "name": "Equip",
+          "line": 383,
+          "endLine": 440,
+          "kind": "Method"
+        },
+        {
+          "name": "replacementWep",
+          "line": 385,
+          "endLine": 385,
+          "kind": "Variable"
+        },
+        {
+          "name": "actualWeapon",
+          "line": 394,
+          "endLine": 394,
+          "kind": "Variable"
+        },
+        {
+          "name": "ammoType",
+          "line": 395,
+          "endLine": 395,
+          "kind": "Variable"
+        },
+        {
+          "name": "EquipAmmo",
+          "line": 442,
+          "endLine": 446,
+          "kind": "Method"
+        },
+        {
+          "name": "Deploy",
+          "line": 448,
+          "endLine": 470,
+          "kind": "Method"
+        },
+        {
+          "name": "deploySD",
+          "line": 455,
+          "endLine": 455,
+          "kind": "Variable"
+        },
+        {
+          "name": "curTime",
+          "line": 460,
+          "endLine": 460,
+          "kind": "Variable"
+        },
+        {
+          "name": "anim",
+          "line": 461,
+          "endLine": 461,
+          "kind": "Variable"
+        },
+        {
+          "name": "animTime",
+          "line": 462,
+          "endLine": 462,
+          "kind": "Variable"
+        },
+        {
+          "name": "commonAttachmentNames",
+          "line": 472,
+          "endLine": 479,
+          "kind": "Variable"
+        },
+        {
+          "name": "GetBulletPos",
+          "line": 481,
+          "endLine": 519,
+          "kind": "Method"
+        },
+        {
+          "name": "customPos",
+          "line": 487,
+          "endLine": 487,
+          "kind": "Variable"
+        },
+        {
+          "name": "bulletAttach",
+          "line": 493,
+          "endLine": 493,
+          "kind": "Variable"
+        },
+        {
+          "name": "Think",
+          "line": 521,
+          "endLine": 527,
+          "kind": "Method"
+        },
+        {
+          "name": "NPC_Think",
+          "line": 529,
+          "endLine": 541,
+          "kind": "Method"
+        },
+        {
+          "name": "selfData",
+          "line": 534,
+          "endLine": 534,
+          "kind": "Variable"
+        },
+        {
+          "name": "NPC_CanFire",
+          "line": 543,
+          "endLine": 586,
+          "kind": "Method"
+        },
+        {
+          "name": "ownerData",
+          "line": 546,
+          "endLine": 546,
+          "kind": "Variable"
+        },
+        {
+          "name": "ene",
+          "line": 547,
+          "endLine": 547,
+          "kind": "Variable"
+        },
+        {
+          "name": "isVJHuman",
+          "line": 548,
+          "endLine": 548,
+          "kind": "Variable"
+        },
+        {
+          "name": "isControlled",
+          "line": 554,
+          "endLine": 554,
+          "kind": "Variable"
+        },
+        {
+          "name": "sdTbl",
+          "line": 559,
+          "endLine": 559,
+          "kind": "Variable"
+        },
+        {
+          "name": "aimPos",
+          "line": 572,
+          "endLine": 572,
+          "kind": "Variable"
+        },
+        {
+          "name": "aimDir",
+          "line": 573,
+          "endLine": 573,
+          "kind": "Variable"
+        },
+        {
+          "name": "sightDir",
+          "line": 574,
+          "endLine": 574,
+          "kind": "Variable"
+        },
+        {
+          "name": "NPCShoot_Primary",
+          "line": 588,
+          "endLine": 645,
+          "kind": "Method"
+        },
+        {
+          "name": "fireTime",
+          "line": 604,
+          "endLine": 604,
+          "kind": "Variable"
+        },
+        {
+          "name": "fireSd",
+          "line": 610,
+          "endLine": 610,
+          "kind": "Variable"
+        },
+        {
+          "name": "PrimaryAttack",
+          "line": 647,
+          "endLine": 805,
+          "kind": "Method"
+        },
+        {
+          "name": "isNPC",
+          "line": 657,
+          "endLine": 657,
+          "kind": "Variable"
+        },
+        {
+          "name": "isPly",
+          "line": 658,
+          "endLine": 658,
+          "kind": "Variable"
+        },
+        {
+          "name": "dryFireSound",
+          "line": 664,
+          "endLine": 664,
+          "kind": "Variable"
+        },
+        {
+          "name": "fireFarSd",
+          "line": 690,
+          "endLine": 690,
+          "kind": "Variable"
+        },
+        {
+          "name": "meleeHit",
+          "line": 704,
+          "endLine": 704,
+          "kind": "Variable"
+        },
+        {
+          "name": "ownersPos",
+          "line": 705,
+          "endLine": 705,
+          "kind": "Variable"
+        },
+        {
+          "name": "entData",
+          "line": 707,
+          "endLine": 707,
+          "kind": "Variable"
+        },
+        {
+          "name": "dmginfo",
+          "line": 710,
+          "endLine": 710,
+          "kind": "Variable"
+        },
+        {
+          "name": "dmgAmount",
+          "line": 711,
+          "endLine": 711,
+          "kind": "Variable"
+        },
+        {
+          "name": "meleeSd",
+          "line": 727,
+          "endLine": 727,
+          "kind": "Variable"
+        },
+        {
+          "name": "bullet",
+          "line": 740,
+          "endLine": 740,
+          "kind": "Variable"
+        },
+        {
+          "name": "Callback",
+          "line": 748,
+          "endLine": 750,
+          "kind": "Method"
+        },
+        {
+          "name": "plyDmg",
+          "line": 757,
+          "endLine": 757,
+          "kind": "Variable"
+        },
+        {
+          "name": "spread",
+          "line": 769,
+          "endLine": 769,
+          "kind": "Variable"
+        },
+        {
+          "name": "PrimaryAttackEffects",
+          "line": 807,
+          "endLine": 880,
+          "kind": "Method"
+        },
+        {
+          "name": "muzzleAttach",
+          "line": 818,
+          "endLine": 818,
+          "kind": "Variable"
+        },
+        {
+          "name": "muzzleFlashEffect",
+          "line": 822,
+          "endLine": 822,
+          "kind": "Variable"
+        },
+        {
+          "name": "shootPos",
+          "line": 823,
+          "endLine": 823,
+          "kind": "Variable"
+        },
+        {
+          "name": "particles",
+          "line": 832,
+          "endLine": 832,
+          "kind": "Variable"
+        },
+        {
+          "name": "muzzleLight",
+          "line": 848,
+          "endLine": 848,
+          "kind": "Variable"
+        },
+        {
+          "name": "shellAttach",
+          "line": 869,
+          "endLine": 869,
+          "kind": "Variable"
+        },
+        {
+          "name": "effectData",
+          "line": 874,
+          "endLine": 874,
+          "kind": "Variable"
+        },
+        {
+          "name": "CanSecondaryAttack",
+          "line": 882,
+          "endLine": 883,
+          "kind": "Method"
+        },
+        {
+          "name": "SecondaryAttack",
+          "line": 886,
+          "endLine": 901,
+          "kind": "Method"
+        },
+        {
+          "name": "DoIdleAnimation",
+          "line": 903,
+          "endLine": 914,
+          "kind": "Method"
+        },
+        {
+          "name": "TranslateActivity",
+          "line": 916,
+          "endLine": 936,
+          "kind": "Method"
+        },
+        {
+          "name": "translation",
+          "line": 921,
+          "endLine": 921,
+          "kind": "Variable"
+        },
+        {
+          "name": "FireAnimationEvent",
+          "line": 938,
+          "endLine": 948,
+          "kind": "Method"
+        },
+        {
+          "name": "Reload",
+          "line": 950,
+          "endLine": 984,
+          "kind": "Method"
+        },
+        {
+          "name": "reloadSD",
+          "line": 958,
+          "endLine": 958,
+          "kind": "Variable"
+        },
+        {
+          "name": "ammoUsed",
+          "line": 966,
+          "endLine": 966,
+          "kind": "Variable"
+        },
+        {
+          "name": "NPC_Reload",
+          "line": 986,
+          "endLine": 992,
+          "kind": "Method"
+        },
+        {
+          "name": "Holster",
+          "line": 994,
+          "endLine": 999,
+          "kind": "Method"
+        },
+        {
+          "name": "OnDrop",
+          "line": 1002,
+          "endLine": 1004,
+          "kind": "Method"
+        },
+        {
+          "name": "OwnerChanged",
+          "line": 1006,
+          "endLine": 1011,
+          "kind": "Method"
+        },
+        {
+          "name": "CanBePickedUpByNPCs",
+          "line": 1013,
+          "endLine": 1015,
+          "kind": "Method"
+        },
+        {
+          "name": "GetWeaponCustomPosition",
+          "line": 1017,
+          "endLine": 1029,
+          "kind": "Method"
+        },
+        {
+          "name": "boneID",
+          "line": 1019,
+          "endLine": 1019,
+          "kind": "Variable"
+        },
+        {
+          "name": "customAng",
+          "line": 1022,
+          "endLine": 1022,
+          "kind": "Variable"
+        },
+        {
+          "name": "pos",
+          "line": 1023,
+          "endLine": 1023,
+          "kind": "Variable"
+        },
+        {
+          "name": "MaintainWorldModel",
+          "line": 1031,
+          "endLine": 1041,
+          "kind": "Method"
+        },
+        {
+          "name": "wepPos",
+          "line": 1035,
+          "endLine": 1035,
+          "kind": "Variable"
+        },
+        {
+          "name": "SetupDataTables",
+          "line": 1043,
+          "endLine": 1048,
+          "kind": "Method"
+        },
+        {
+          "name": "DrawWorldModel",
+          "line": 1051,
+          "endLine": 1073,
+          "kind": "Method"
+        },
+        {
+          "name": "drawMdl",
+          "line": 1052,
+          "endLine": 1052,
+          "kind": "Variable"
+        },
+        {
+          "name": "OnRemove",
+          "line": 1076,
+          "endLine": 1079,
+          "kind": "Method"
+        },
+        {
+          "name": "SetupWeaponHoldTypeForAI",
+          "line": 1082,
+          "endLine": 1255,
+          "kind": "Method"
+        },
+        {
+          "name": "bezdigZenk_Kalel",
+          "line": 1087,
+          "endLine": 1087,
+          "kind": "Variable"
+        },
+        {
+          "name": "bezdigZenk_Vazel",
+          "line": 1088,
+          "endLine": 1088,
+          "kind": "Variable"
+        },
+        {
+          "name": "rifleOverride",
+          "line": 1095,
+          "endLine": 1095,
+          "kind": "Variable"
+        },
+        {
+          "name": "medzZenk_Genal",
+          "line": 1096,
+          "endLine": 1096,
+          "kind": "Variable"
+        },
+        {
+          "name": "medzZenk_Kalel",
+          "line": 1097,
+          "endLine": 1097,
+          "kind": "Variable"
+        },
+        {
+          "name": "bonbakshen_varichadz",
+          "line": 1105,
+          "endLine": 1105,
+          "kind": "Variable"
+        },
+        {
+          "name": "bonbakshen_Vazel",
+          "line": 1106,
+          "endLine": 1106,
+          "kind": "Variable"
+        }
+      ],
+      "stats": {
+        "methods": 47,
+        "fields": 70,
+        "total": 117
+      }
+    },
+    "VJUtils": {
+      "csharpFile": "Utilities/VJUtils.cs",
+      "category": "P4_Utils",
+      "luaFiles": [
+        "lua/vj_base/funcs.lua"
+      ],
+      "symbols": [
+        {
+          "name": "CurTime",
+          "line": 1,
+          "endLine": 1,
+          "kind": "Variable"
+        },
+        {
+          "name": "IsValid",
+          "line": 2,
+          "endLine": 2,
+          "kind": "Variable"
+        },
+        {
+          "name": "tonumber",
+          "line": 4,
+          "endLine": 4,
+          "kind": "Variable"
+        },
+        {
+          "name": "string_find",
+          "line": 5,
+          "endLine": 5,
+          "kind": "Variable"
+        },
+        {
+          "name": "string_gsub",
+          "line": 6,
+          "endLine": 6,
+          "kind": "Variable"
+        },
+        {
+          "name": "math_round",
+          "line": 7,
+          "endLine": 7,
+          "kind": "Variable"
+        },
+        {
+          "name": "math_floor",
+          "line": 8,
+          "endLine": 8,
+          "kind": "Variable"
+        },
+        {
+          "name": "math_min",
+          "line": 9,
+          "endLine": 9,
+          "kind": "Variable"
+        },
+        {
+          "name": "math_max",
+          "line": 10,
+          "endLine": 10,
+          "kind": "Variable"
+        },
+        {
+          "name": "math_rad",
+          "line": 11,
+          "endLine": 11,
+          "kind": "Variable"
+        },
+        {
+          "name": "math_cos",
+          "line": 12,
+          "endLine": 12,
+          "kind": "Variable"
+        },
+        {
+          "name": "math_sin",
+          "line": 13,
+          "endLine": 13,
+          "kind": "Variable"
+        },
+        {
+          "name": "bShiftL",
+          "line": 14,
+          "endLine": 14,
+          "kind": "Variable"
+        },
+        {
+          "name": "PICK",
+          "line": 23,
+          "endLine": 29,
+          "kind": "Method"
+        },
+        {
+          "name": "SET",
+          "line": 38,
+          "endLine": 40,
+          "kind": "Method"
+        },
+        {
+          "name": "HasValue",
+          "line": 49,
+          "endLine": 59,
+          "kind": "Method"
+        },
+        {
+          "name": "STOPSOUND",
+          "line": 65,
+          "endLine": 67,
+          "kind": "Method"
+        },
+        {
+          "name": "CreateSound",
+          "line": 69,
+          "endLine": 82,
+          "kind": "Method"
+        },
+        {
+          "name": "funcCustom",
+          "line": 75,
+          "endLine": 75,
+          "kind": "Variable"
+        },
+        {
+          "name": "sdID",
+          "line": 76,
+          "endLine": 76,
+          "kind": "Variable"
+        },
+        {
+          "name": "funcCustom2",
+          "line": 80,
+          "endLine": 80,
+          "kind": "Variable"
+        },
+        {
+          "name": "EmitSound",
+          "line": 84,
+          "endLine": 93,
+          "kind": "Method"
+        },
+        {
+          "name": "GetMoveVelocity",
+          "line": 100,
+          "endLine": 112,
+          "kind": "Method"
+        },
+        {
+          "name": "GetMoveDirection",
+          "line": 121,
+          "endLine": 127,
+          "kind": "Method"
+        },
+        {
+          "name": "entPos",
+          "line": 123,
+          "endLine": 123,
+          "kind": "Variable"
+        },
+        {
+          "name": "dir",
+          "line": 124,
+          "endLine": 124,
+          "kind": "Variable"
+        },
+        {
+          "name": "GetNearestPositions",
+          "line": 141,
+          "endLine": 155,
+          "kind": "Method"
+        },
+        {
+          "name": "ent1NearPos",
+          "line": 142,
+          "endLine": 142,
+          "kind": "Variable"
+        },
+        {
+          "name": "ent1Pos",
+          "line": 144,
+          "endLine": 144,
+          "kind": "Variable"
+        },
+        {
+          "name": "ent2NearPos",
+          "line": 151,
+          "endLine": 151,
+          "kind": "Variable"
+        },
+        {
+          "name": "GetNearestDistance",
+          "line": 167,
+          "endLine": 178,
+          "kind": "Method"
+        },
+        {
+          "name": "entPosZ",
+          "line": 203,
+          "endLine": 203,
+          "kind": "Variable"
+        },
+        {
+          "name": "entPosCentered",
+          "line": 204,
+          "endLine": 204,
+          "kind": "Variable"
+        },
+        {
+          "name": "myForward",
+          "line": 205,
+          "endLine": 205,
+          "kind": "Variable"
+        },
+        {
+          "name": "myRight",
+          "line": 206,
+          "endLine": 206,
+          "kind": "Variable"
+        },
+        {
+          "name": "trData",
+          "line": 207,
+          "endLine": 207,
+          "kind": "Variable"
+        },
+        {
+          "name": "resultIndex",
+          "line": 208,
+          "endLine": 208,
+          "kind": "Variable"
+        },
+        {
+          "name": "result",
+          "line": 210,
+          "endLine": 210,
+          "kind": "Variable"
+        },
+        {
+          "name": "runTrace",
+          "line": 213,
+          "endLine": 227,
+          "kind": "Function"
+        },
+        {
+          "name": "tr",
+          "line": 215,
+          "endLine": 215,
+          "kind": "Variable"
+        },
+        {
+          "name": "hitPos",
+          "line": 216,
+          "endLine": 216,
+          "kind": "Variable"
+        },
+        {
+          "name": "angleIncrement",
+          "line": 253,
+          "endLine": 253,
+          "kind": "Variable"
+        },
+        {
+          "name": "angle",
+          "line": 257,
+          "endLine": 257,
+          "kind": "Variable"
+        },
+        {
+          "name": "forwardDot",
+          "line": 259,
+          "endLine": 259,
+          "kind": "Variable"
+        },
+        {
+          "name": "rightDot",
+          "line": 260,
+          "endLine": 260,
+          "kind": "Variable"
+        }
+      ],
+      "stats": {
+        "methods": 11,
+        "fields": 34,
+        "total": 45
+      }
+    },
+    "VJEnums": {
+      "csharpFile": "VJEnums.cs",
+      "category": "P4_Utils",
+      "luaFiles": [],
+      "symbols": [],
+      "stats": {
+        "methods": 0,
+        "fields": 0,
+        "total": 0
+      }
+    },
+    "NPCHooks": {
+      "csharpFile": "Core/NPCHooks.cs",
+      "category": "P4_Utils",
+      "luaFiles": [
+        "lua/vj_base/hooks.lua"
+      ],
+      "symbols": [
+        {
+          "name": "CurTime",
+          "line": 1,
+          "endLine": 1,
+          "kind": "Variable"
+        },
+        {
+          "name": "IsValid",
+          "line": 2,
+          "endLine": 2,
+          "kind": "Variable"
+        },
+        {
+          "name": "GetConVar",
+          "line": 3,
+          "endLine": 3,
+          "kind": "Variable"
+        },
+        {
+          "name": "tonumber",
+          "line": 4,
+          "endLine": 4,
+          "kind": "Variable"
+        },
+        {
+          "name": "string_StartWith",
+          "line": 5,
+          "endLine": 5,
+          "kind": "Variable"
+        },
+        {
+          "name": "table_remove",
+          "line": 6,
+          "endLine": 6,
+          "kind": "Variable"
+        },
+        {
+          "name": "vj_npc_wep_ply_pickup",
+          "line": 8,
+          "endLine": 8,
+          "kind": "Variable"
+        },
+        {
+          "name": "metaEntity",
+          "line": 10,
+          "endLine": 10,
+          "kind": "Variable"
+        },
+        {
+          "name": "funcGetClass",
+          "line": 11,
+          "endLine": 11,
+          "kind": "Variable"
+        },
+        {
+          "name": "funcGetTable",
+          "line": 12,
+          "endLine": 12,
+          "kind": "Variable"
+        },
+        {
+          "name": "entInfos",
+          "line": 15,
+          "endLine": 154,
+          "kind": "Variable"
+        },
+        {
+          "name": "CanBeEngaged",
+          "line": 58,
+          "endLine": 60,
+          "kind": "Method"
+        },
+        {
+          "name": "ignoredNPCs",
+          "line": 156,
+          "endLine": 156,
+          "kind": "Variable"
+        },
+        {
+          "name": "dangerEnts",
+          "line": 157,
+          "endLine": 157,
+          "kind": "Variable"
+        },
+        {
+          "name": "grenadeEnts",
+          "line": 158,
+          "endLine": 158,
+          "kind": "Variable"
+        },
+        {
+          "name": "grenadeGrabbableEnts",
+          "line": 159,
+          "endLine": 159,
+          "kind": "Variable"
+        },
+        {
+          "name": "attackableEnts",
+          "line": 160,
+          "endLine": 160,
+          "kind": "Variable"
+        },
+        {
+          "name": "destructibleEnts",
+          "line": 161,
+          "endLine": 161,
+          "kind": "Variable"
+        },
+        {
+          "name": "entClass",
+          "line": 164,
+          "endLine": 164,
+          "kind": "Variable"
+        },
+        {
+          "name": "entData",
+          "line": 165,
+          "endLine": 165,
+          "kind": "Variable"
+        },
+        {
+          "name": "entInfo",
+          "line": 166,
+          "endLine": 166,
+          "kind": "Variable"
+        },
+        {
+          "name": "isNPC",
+          "line": 167,
+          "endLine": 167,
+          "kind": "Variable"
+        },
+        {
+          "name": "entIsVJ",
+          "line": 172,
+          "endLine": 172,
+          "kind": "Variable"
+        },
+        {
+          "name": "entInfoClass",
+          "line": 186,
+          "endLine": 186,
+          "kind": "Variable"
+        },
+        {
+          "name": "classOverride",
+          "line": 190,
+          "endLine": 190,
+          "kind": "Variable"
+        },
+        {
+          "name": "cvSeePlys",
+          "line": 204,
+          "endLine": 204,
+          "kind": "Variable"
+        },
+        {
+          "name": "entEneCount",
+          "line": 205,
+          "endLine": 205,
+          "kind": "Variable"
+        },
+        {
+          "name": "entIsNature",
+          "line": 206,
+          "endLine": 206,
+          "kind": "Variable"
+        },
+        {
+          "name": "otherClass",
+          "line": 211,
+          "endLine": 211,
+          "kind": "Variable"
+        },
+        {
+          "name": "otherData",
+          "line": 212,
+          "endLine": 212,
+          "kind": "Variable"
+        },
+        {
+          "name": "points",
+          "line": 257,
+          "endLine": 257,
+          "kind": "Variable"
+        },
+        {
+          "name": "result",
+          "line": 263,
+          "endLine": 263,
+          "kind": "Variable"
+        },
+        {
+          "name": "ent",
+          "line": 298,
+          "endLine": 298,
+          "kind": "Variable"
+        },
+        {
+          "name": "isPly",
+          "line": 300,
+          "endLine": 300,
+          "kind": "Variable"
+        },
+        {
+          "name": "quiet",
+          "line": 306,
+          "endLine": 306,
+          "kind": "Variable"
+        },
+        {
+          "name": "funcCustom",
+          "line": 321,
+          "endLine": 321,
+          "kind": "Variable"
+        },
+        {
+          "name": "VJ_NPCPLY_DEATH",
+          "line": 325,
+          "endLine": 335,
+          "kind": "Function"
+        },
+        {
+          "name": "wasLast",
+          "line": 327,
+          "endLine": 327,
+          "kind": "Variable"
+        },
+        {
+          "name": "getPlys",
+          "line": 368,
+          "endLine": 368,
+          "kind": "Variable"
+        },
+        {
+          "name": "getAll",
+          "line": 369,
+          "endLine": 369,
+          "kind": "Variable"
+        },
+        {
+          "name": "relationEnts",
+          "line": 388,
+          "endLine": 388,
+          "kind": "Variable"
+        },
+        {
+          "name": "it",
+          "line": 390,
+          "endLine": 390,
+          "kind": "Variable"
+        },
+        {
+          "name": "relationEnt",
+          "line": 392,
+          "endLine": 392,
+          "kind": "Variable"
+        }
+      ],
+      "stats": {
+        "methods": 2,
+        "fields": 41,
+        "total": 43
+      }
+    }
+  }
+}

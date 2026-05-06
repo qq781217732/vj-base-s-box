@@ -1,0 +1,39 @@
+============================================
+  剩余待编写清单
+============================================
+
+【P0 — 影响战斗体验】
+  ○ ConstantlyFaceEnemy 完善        BaseNPC — 当前只调SetTurnTarget,
+                                            缺距离/姿态/攻击状态条件判断
+  ○ Bleed DOT (流血持续伤害)        CreatureNPC — 近战后持续掉血
+  ○ HitGroup 映射表                 CreatureNPC.Flinch — 不同部位不同动画
+
+【P1 — 影响战术深度】
+  ○ Investigation 检测              BaseNPC.UpdateSenses — 声/光调查
+  ○ ForceSetEnemy                   BaseNPC — 强制设敌+关系记忆
+  ○ Class-based alliance 表         BaseNPC — 叛军/联合军/VJ阵营识别
+  ○ YieldToAlliedPlayers 推挤检测   BaseNPC — 玩家推挤NPC时让路
+
+【P2 — 音效系统补齐 (当前只有5/30类别)】
+  ○ 空闲对话 (IdleDialogue)         CreatureNPC — NPC间交谈
+  ○ 投掷前/医疗前/发现敌人          CreatureNPC — 状态转换音效
+  ○ 击杀敌人/盟友阵亡/被玩家伤害    CreatureNPC — 战斗反馈音效
+  ○ 压制/换弹/调查                   CreatureNPC — 战术音效
+
+【P3 — 死亡系统完善】
+  ○ GibOnDeath / IsGibDamage        CreatureNPC — 粉碎死亡
+  ○ CreateExtraDeathCorpse          CreatureNPC — 额外尸体碎片
+  ○ CreateDeathLoot                 CreatureNPC — 死亡掉落
+
+【不需要编写的 (设计差异,非缺失)】
+  ✗ ActivityTranslateAI 武器动画表  GMod ACT_*→序列映射, S&Box用AnimGraph
+  ✗ SetupWeaponHoldTypeForAI 表     同上,硬编码ACT_*映射
+  ✗ 20把具体武器                    只保留BaseWeapon接口
+  ✗ 执行AnimationEvent               GMod动画事件系统
+  ✗ 引擎Task系统                    async/await替代
+  ✗ 血液粒子/贴花/池               S&Box VFXHelper已封装
+
+============================================
+  实际需要编写的: ~15个方法体 (每个10-50行)
+  不需要的: 架构差异,不是功能缺失
+============================================

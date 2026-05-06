@@ -1,0 +1,342 @@
+﻿using SWB.Shared;
+using System;
+
+namespace SWB.Base;
+
+public class ViewModelHandler : Component
+{
+	public ModelRenderer ViewModelRenderer { get; set; }
+	public SkinnedModelRenderer ViewModelHandsRenderer { get; set; }
+	public Weapon Weapon { get; set; }
+	public CameraComponent Camera { get; set; }
+	public bool ShouldDraw { get; set; }
+
+	// Editor
+	public bool EditorMode { get; set; }
+	public AngPos EditorOffset { get; set; }
+	public float EditorFOV { get; set; }
+
+	IPlayerBase player => Weapon.Owner;
+
+	float animSpeed = 1;
+	float weaponFOVSpeed = 1;
+
+	// Target animation values
+	Vector3 targetVectorPos;
+	Vector3 targetVectorRot;
+	float targetWeaponFOV = -1;
+
+	// Finalized animation values
+	Vector3 finalVectorPos;
+	Rotation finalRot;
+	float finalWeaponFOV;
+
+	// Sway
+	Rotation lastEyeRot;
+
+	// Aim animation
+	float aimTime;
+
+	// Helpful values
+	Vector3 localVel;
+	bool isAiming;
+
+	protected override void OnDestroy()
+	{
+		if ( !player.IsFirstPerson ) return;
+		player.FieldOfView = Screen.CreateVerticalFieldOfView( Preferences.FieldOfView );
+	}
+
+	protected override void OnDisabled()
+	{
+		// Reinitialize all target values when enabled
+		targetWeaponFOV = -1;
+	}
+
+	protected override void OnUpdate()
+	{
+		var renderType = ShouldDraw ? ModelRenderer.ShadowRenderType.Off : ModelRenderer.ShadowRenderType.ShadowsOnly;
+		ViewModelRenderer.Enabled = player.IsFirstPerson;
+		ViewModelRenderer.RenderType = renderType;
+
+		if ( ViewModelHandsRenderer is not null )
+		{
+			ViewModelHandsRenderer.Enabled = player.IsFirstPerson;
+			ViewModelHandsRenderer.RenderType = renderType;
+		}
+
+		if ( !player.IsFirstPerson ) return;
+
+		// For particles & lighting
+		Camera.WorldPosition = Scene.Camera.WorldPosition;
+		Camera.WorldRotation = Scene.Camera.WorldRotation;
+
+		if ( targetWeaponFOV == -1 )
+		{
+			targetWeaponFOV = Weapon.ViewModelFOV;
+			finalWeaponFOV = Weapon.ViewModelFOV;
+		}
+
+		// Skinned modelrenderer has issues with following parent
+		WorldPosition = Camera.WorldPosition;
+		WorldRotation = Camera.WorldRotation;
+
+		// Pos + FOV
+		finalVectorPos = finalVectorPos.LerpTo( targetVectorPos, animSpeed * RealTime.SmoothDelta );
+		finalWeaponFOV = MathX.LerpTo( finalWeaponFOV, targetWeaponFOV, weaponFOVSpeed * animSpeed * RealTime.SmoothDelta );
+
+		// Angles
+		var targetRot = MathUtil.ToRotation( targetVectorRot );
+		finalRot = finalRot.SlerpTo( targetRot, animSpeed * RealTime.SmoothDelta );
+
+		// Reset Speed
+		animSpeed = 10 * Weapon.AnimSpeed;
+
+		// Change the angles and positions of the viewmodel with the new vectors
+		WorldRotation *= finalRot;
+		// Position has to be set after rotation!
+		WorldPosition += finalVectorPos.z * WorldRotation.Up + finalVectorPos.y * WorldRotation.Forward + finalVectorPos.x * WorldRotation.Right;
+		Camera.FieldOfView = Screen.CreateVerticalFieldOfView( finalWeaponFOV );
+
+		// Initialize the target vectors for this frame
+		targetVectorPos = Vector3.Zero;
+		targetVectorRot = Vector3.Zero;
+		targetWeaponFOV = Weapon.ViewModelFOV;
+
+		// Editor mode
+		if ( EditorMode )
+		{
+			targetVectorRot += MathUtil.ToVector3( EditorOffset.Angle );
+			targetVectorPos += EditorOffset.Pos;
+			targetWeaponFOV = EditorFOV;
+			return;
+		}
+
+		// I'm sure there's something already that does this for me, but I spend an hour
+		// searching through the wiki and a bunch of other garbage and couldn't find anything...
+		// So I'm doing it manually. Problem solved.
+		var eyeRot = player.EyeAngles.ToRotation();
+		localVel = new Vector3( eyeRot.Right.Dot( player.Velocity ), eyeRot.Forward.Dot( player.Velocity ), player.Velocity.z );
+
+		HandleIdleAnimation();
+		HandleWalkAnimation();
+		HandleJumpAnimation();
+		HandleMovementStateAnimation();
+
+		// Tucking
+		isAiming = !Weapon.ShouldTuckVar && Weapon.IsAiming;
+		if ( Weapon.RunAnimData != AngPos.Zero && Weapon.ShouldTuckVar )
+		{
+			var animationCompletion = Math.Min( 1, ((Weapon.TuckRange - Weapon.TuckDist) / Weapon.TuckRange) + 0.5f );
+			animationCompletion = Math.Clamp( animationCompletion, 0f, 1f );
+			animationCompletion += (1f - animationCompletion) * player.ViewModelLadderTuckBlend;
+
+			targetVectorPos += Weapon.RunAnimData.Pos * animationCompletion;
+			targetVectorRot += MathUtil.ToVector3( Weapon.RunAnimData.Angle * animationCompletion );
+			return;
+		}
+
+		HandleSwayAnimation();
+		HandleIronAnimation();
+		HandleSprintAnimation();
+		HandleCustomizeAnimation();
+	}
+
+	protected virtual void HandleIdleAnimation()
+	{
+		// No swaying if aiming
+		if ( isAiming )
+			return;
+
+		// Perform a "breathing" animation
+		var breatheTime = RealTime.Now * 2.0f;
+		targetVectorPos -= new Vector3( MathF.Cos( breatheTime / 4.0f ) / 8.0f, 0.0f, -MathF.Cos( breatheTime / 4.0f ) / 32.0f );
+		targetVectorRot -= new Vector3( MathF.Cos( breatheTime / 5.0f ), MathF.Cos( breatheTime / 4.0f ), MathF.Cos( breatheTime / 7.0f ) );
+
+		var postureBlend = player.ViewModelPostureBlend;
+		if ( postureBlend > 0f )
+			targetVectorPos += new Vector3( -1.0f, -1.0f, 0.5f ) * postureBlend;
+	}
+
+	protected virtual void HandleWalkAnimation()
+	{
+		var walkAnimationWeight = player.ViewModelWalkAnimationWeight;
+		if ( walkAnimationWeight <= 0f )
+			return;
+
+		var breatheTime = RealTime.Now * player.ViewModelWalkAnimationCycleRate;
+		var walkSpeed = new Vector3( player.Velocity.x, player.Velocity.y, 0.0f ).Length;
+		var maxWalkSpeed = MathF.Max( player.ViewModelWalkAnimationMaxSpeed, 1.0f );
+		var roll = 0.0f;
+		var yaw = 0.0f;
+
+		// Check for sideways velocity to sway the gun slightly
+		if ( isAiming || localVel.x > 0.0f )
+			roll = -7.0f * (localVel.x / maxWalkSpeed);
+		else if ( localVel.x < 0.0f )
+			yaw = 3.0f * (localVel.x / maxWalkSpeed);
+
+		// Check if ADS & firing
+		if ( isAiming && Weapon.TimeSincePrimaryShoot < 0.1f )
+		{
+			targetVectorRot -= new Vector3( 0, 0, roll ) * walkAnimationWeight;
+			return;
+		}
+
+		// Perform walk cycle
+		targetVectorPos -= new Vector3( (-MathF.Cos( breatheTime / 2.0f ) / 5.0f) * walkSpeed / maxWalkSpeed - yaw / 4.0f, 0.0f, 0.0f ) * walkAnimationWeight;
+		targetVectorRot -= new Vector3( (Math.Clamp( MathF.Cos( breatheTime ), -0.3f, 0.3f ) * 2.0f) * walkSpeed / maxWalkSpeed, (-MathF.Cos( breatheTime / 2.0f ) * 1.2f) * walkSpeed / maxWalkSpeed - yaw * 1.5f, roll ) * walkAnimationWeight;
+	}
+
+
+	protected virtual void HandleSwayAnimation()
+	{
+		var swayspeed = 5;
+
+		// Fix the sway faster if we're ironsighting
+		if ( isAiming )
+			swayspeed = 20;
+
+		// Lerp the eye position
+		lastEyeRot = Rotation.Lerp( lastEyeRot, player.Camera.WorldRotation, swayspeed * RealTime.SmoothDelta );
+
+		// Calculate the difference between our current eye angles and old (lerped) eye angles
+		var angDif = player.Camera.WorldRotation.Angles() - lastEyeRot.Angles();
+		angDif = new Angles( angDif.pitch, MathX.RadianToDegree( MathF.Atan2( MathF.Sin( MathX.DegreeToRadian( angDif.yaw ) ), MathF.Cos( MathX.DegreeToRadian( angDif.yaw ) ) ) ), 0 );
+
+		// Perform sway
+		targetVectorPos += new Vector3( Math.Clamp( angDif.yaw * 0.04f, -1.5f, 1.5f ), 0.0f, Math.Clamp( angDif.pitch * 0.04f, -1.5f, 1.5f ) );
+		targetVectorRot += new Vector3( Math.Clamp( angDif.pitch * 0.2f, -4.0f, 4.0f ), Math.Clamp( angDif.yaw * 0.2f, -4.0f, 4.0f ), 0.0f );
+	}
+
+
+	protected virtual void HandleIronAnimation()
+	{
+		if ( isAiming && !Weapon.IsReloading && Weapon.AimAnimData != AngPos.Zero )
+		{
+			var speedMod = 1f;
+			if ( aimTime == 0 )
+			{
+				aimTime = RealTime.Now;
+			}
+
+			var timeDiff = RealTime.Now - aimTime;
+
+			// Mod only while actively scoping
+			if ( Weapon.IsScoping || (!Weapon.IsScoping && timeDiff < 0.2f) )
+			{
+				speedMod = timeDiff * 10;
+			}
+
+			animSpeed = 10 * Weapon.AnimSpeed * speedMod;
+			targetVectorPos += Weapon.AimAnimData.Pos;
+			targetVectorRot += MathUtil.ToVector3( Weapon.AimAnimData.Angle );
+
+			if ( Weapon.AimInfo.ViewModelFOV > 0 )
+				targetWeaponFOV = Weapon.AimInfo.ViewModelFOV;
+
+			weaponFOVSpeed = Weapon.AimInfo.AimInFOVSpeed;
+		}
+		else
+		{
+			aimTime = 0;
+			targetWeaponFOV = Weapon.ViewModelFOV;
+		}
+	}
+
+	protected virtual void HandleSprintAnimation()
+	{
+		var sprintAnimationWeight = player.ViewModelSprintAnimationWeight;
+		if ( sprintAnimationWeight <= 0f )
+			return;
+
+		if ( Weapon.RunAnimData != AngPos.Zero && !Weapon.IsCustomizing )
+		{
+			targetVectorPos += Weapon.RunAnimData.Pos * sprintAnimationWeight;
+			targetVectorRot += MathUtil.ToVector3( Weapon.RunAnimData.Angle ) * sprintAnimationWeight;
+		}
+	}
+
+
+	protected virtual void HandleCustomizeAnimation()
+	{
+		if ( Weapon.IsCustomizing && Weapon.CustomizeAnimData != AngPos.Zero )
+		{
+			targetVectorPos += Weapon.CustomizeAnimData.Pos;
+			targetVectorRot += MathUtil.ToVector3( Weapon.CustomizeAnimData.Angle );
+		}
+	}
+
+	void ApplyMovementArc( float progress, float positionDivisor, float rotationDivisor, float strength = 1f )
+	{
+		var f = 0.31f * Math.Clamp( progress, 0f, 1f );
+		var xx = MathUtil.BezierY( f, 0.0f, -4.0f, 0.0f );
+		var yy = 0.0f;
+		var zz = MathUtil.BezierY( f, 0.0f, -2.0f, -5.0f );
+		var pt = MathUtil.BezierY( f, 0.0f, -4.36f, 10.0f );
+		var yw = xx;
+		var rl = MathUtil.BezierY( f, 0.0f, -10.82f, -5.0f );
+		targetVectorPos += (new Vector3( xx, yy, zz ) / positionDivisor) * strength;
+		targetVectorRot += (new Vector3( pt, yw, rl ) / rotationDivisor) * strength;
+		animSpeed = 20.0f;
+	}
+
+	void ApplyFallingAnimation( float fallStrength )
+	{
+		var breatheTime = RealTime.Now * (24.0f + (fallStrength * 6.0f));
+		targetVectorPos += new Vector3( MathF.Cos( breatheTime / 2.0f ) / 16.0f, 0.0f, -3.5f - (fallStrength * 1.5f) + (MathF.Sin( breatheTime / 3.0f ) / 16.0f) ) / 4.0f;
+		targetVectorRot += new Vector3( 6.0f + (fallStrength * 4.0f) - (MathF.Sin( breatheTime / 3.0f ) / 4.0f), MathF.Cos( breatheTime / 2.0f ) / 4.0f, -3.0f - (fallStrength * 2.0f) ) / 4.0f;
+		animSpeed = 20.0f;
+	}
+
+	void ApplySlideAnimation( float slideStrength )
+	{
+		targetVectorPos += new Vector3( -0.6f, -1.25f, 0.35f ) * slideStrength;
+		targetVectorRot += new Vector3( 1.5f, 0.0f, -3.0f ) * slideStrength;
+		animSpeed = 18.0f;
+	}
+
+	void ApplyLadderAnimation( float ladderStrength )
+	{
+		var climbTime = RealTime.Now * (6.0f + (ladderStrength * 4.0f));
+		var climbWave = MathF.Sin( climbTime );
+		var climbSway = MathF.Cos( climbTime * 0.5f );
+		var climbLift = MathF.Abs( climbWave );
+		targetVectorPos += new Vector3( climbSway * 0.15f, 0.0f, climbLift * 0.5f ) * ladderStrength;
+		targetVectorRot += new Vector3( climbLift * 2.0f, climbSway * 1.5f, 0.0f ) * ladderStrength;
+		animSpeed = 18.0f;
+	}
+
+	protected virtual void HandleMovementStateAnimation()
+	{
+		if ( player.SlideAnimationStrength > 0f )
+			ApplySlideAnimation( player.SlideAnimationStrength );
+
+		if ( player.LadderAnimationStrength > 0f )
+			ApplyLadderAnimation( player.LadderAnimationStrength );
+	}
+
+	protected virtual void HandleJumpAnimation()
+	{
+		if ( !isAiming )
+		{
+			if ( player.JustJumpedTimer > 0f )
+			{
+				ApplyMovementArc( player.JumpAnimationProgress, 4.0f, 4.0f );
+			}
+			else if ( player.FallAnimationStrength > 0f )
+			{
+				ApplyFallingAnimation( player.FallAnimationStrength );
+			}
+			else if ( player.bJustLanded || player.LandingAnimationProgress > 0f )
+			{
+				ApplyMovementArc( player.LandingAnimationProgress, 2.0f, 2.0f, player.LandingAnimationStrength );
+			}
+		}
+		else
+		{
+			var aimingLandingOffset = player.LandingAnimationStrength * player.LandingAnimationAlpha * 0.5f;
+			targetVectorPos += new Vector3( 0.0f, 0.0f, Math.Clamp( localVel.z / 1000.0f, -1.0f, 1.0f ) - aimingLandingOffset );
+		}
+	}
+}

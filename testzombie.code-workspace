@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../VJ-Base-master"
+		},
+		{
+			"path": "../source-sdk-2013"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"*.shader": "slang",
+			"*.hlsl": "slang"
+		}
+	}
+}

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>package.guusconl.simpleinteractions</name>
+    </assembly>
+    <members>
+        <member name="T:SimpleInteractions.SimpleInteraction">
+            <summary>
+            Simple interaction component
+            </summary>
+        </member>
+        <member name="P:SimpleInteractions.SimpleInteraction.Collider">
+            <summary>
+            If not set, will try to find a collider on the same GameObject.
+            </summary>
+        </member>
+        <member name="M:Sandbox.InteractionPanel.BuildHash">
+            <summary>
+            the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
+            </summary>
+        </member>
+        <member name="M:Sandbox.InteractionPanel.TriggerInteractAnimation">
+            <summary>
+            Triggers the interaction animation.
+            </summary>
+        </member>
+    </members>
+</doc>

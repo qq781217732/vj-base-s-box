@@ -1,0 +1,78 @@
+InteractionPanel
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-color: #444;
+	justify-content: center;
+	align-items: center;
+	font-weight: bold;
+	border-radius: 20px;
+	font-size: 25px;
+	font-family: Poppins;
+	color: #fff;
+	text-stroke: 8px black;
+	transform-origin: left center;
+
+
+	transition: all 0.1s ease-out;
+	transform: scale( 1 );
+
+	// When the element is created make it expand from nothing.
+	&:intro {
+		transform: scale( 0 );
+	}
+
+	&:outro {
+		transform: scale( 0 );
+	}
+
+
+	.InteractionTitle
+	{
+		color: #fff;
+		margin-right: 15px;
+		white-space: normal;
+		max-width: 300px;
+		align-items: center;
+	}
+
+	.ProgressBar {
+		position: absolute; /* Place the progress bar within the root */
+		top: 0;
+		left: 0;
+		height: 100%; /* Fill the entire height of the root */
+		z-index: 0; /* Ensure it is below the content */
+		border-radius: 20px;
+		background-color: #a2a2a2;
+	}
+
+	.Left
+	{
+		flex-direction: column;
+		align-items: center;
+		padding-left: 20px;
+		min-width: 110px;
+
+	}
+
+	.Right
+	{
+		width: 100%;
+		align-items: center;
+		margin-left: 30px;
+
+	}
+
+	.InteractionHold
+	{
+		margin-top: -13px;
+		margin-bottom: 5px;
+
+	}
+
+	&.interact {
+		transition: all 0.1s ease-out;
+		transform: scale(0.98);
+	}
+}

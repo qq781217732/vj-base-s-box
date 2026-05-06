@@ -1,0 +1,89 @@
+ 01:25:54   Compiler CS1513 } expected
+ 01:25:54   Compiler CS1519 Invalid token '}' in a member declaration
+ 01:25:54   Compiler CS1513 } expected
+ 01:25:54   Compiler CS1022 Type or namespace definition, or end-of-file expected
+ 01:25:54   Compiler CS1527 Elements defined in a namespace cannot be explicitly declared as private, protected, protected internal, or private protected
+ 01:25:54   Compiler CS0116 A namespace cannot directly contain members such as fields, methods or statements
+ 01:25:54   Compiler CS0116 A namespace cannot directly contain members such as fields, methods or statements
+ 01:25:54   Compiler CS0116 A namespace cannot directly contain members such as fields, methods or statements
+ 01:25:54   Compiler CS0116 A namespace cannot directly contain members such as fields, methods or statements
+ 01:25:54   Compiler CS0116 A namespace cannot directly contain members such as fields, methods or statements
+ 01:25:54   Compiler CS0116 A namespace cannot directly contain members such as fields, methods or statements
+ 01:25:54   Compiler CS0116 A namespace cannot directly contain members such as fields, methods or statements
+ 01:25:54   Compiler CS0116 A namespace cannot directly contain members such as fields, methods or statements
+ 01:25:54   Compiler CS0116 A namespace cannot directly contain members such as fields, methods or statements
+ 01:25:54   Compiler CS0116 A namespace cannot directly contain members such as fields, methods or statements
+ 01:25:54   Compiler CS0116 A namespace cannot directly contain members such as fields, methods or statements
+ 01:25:54   Compiler CS0116 A namespace cannot directly contain members such as fields, methods or statements
+ 01:25:54   Compiler CS0116 A namespace cannot directly contain members such as fields, methods or statements
+ 01:25:54   Compiler CS0116 A namespace cannot directly contain members such as fields, methods or statements
+ 01:25:54   Compiler CS0549 '.RunCombat()' is a new virtual member in sealed type ''
+ 01:25:54   Compiler CS0549 '.ExecuteMeleeAttack(BaseWeapon)' is a new virtual member in sealed type ''
+ 01:25:54   Compiler CS0549 '.ExecuteRangeAttack(BaseWeapon)' is a new virtual member in sealed type ''
+ 01:25:54   Compiler CS0549 '.ExecuteLeapAttack()' is a new virtual member in sealed type ''
+ 01:25:54   Compiler CS0549 '.OnCreatureDeath(DamageInfo)' is a new virtual member in sealed type ''
+ 01:25:54   Compiler CS0549 '.StopAttacks()' is a new virtual member in sealed type ''
+ 01:25:54   Compiler CS0549 '.OnCreatureInit()' is a new virtual member in sealed type ''
+ 01:25:54   Compiler CS0122 'AttackState' is inaccessible due to its protection level
+ 01:25:54   Compiler CS0115 'HumanNPC.OnCreatureDeath(DamageInfo)': no suitable method found to override
+ 01:25:54   Compiler CS0103 The name 'IsDead' does not exist in the current context
+ 01:25:54   Compiler CS0103 The name 'PauseAttacks' does not exist in the current context
+ 01:25:54   Compiler CS0103 The name 'IsFlinching' does not exist in the current context
+ 01:25:54   Compiler CS0103 The name '_nextAttack' does not exist in the current context
+ 01:25:54   Compiler CS0103 The name 'Components' does not exist in the current context
+ 01:25:54   Compiler CS0103 The name 'HasCondition' does not exist in the current context
+ 01:25:54   Compiler CS0103 The name 'ExecuteMeleeAttack' does not exist in the current context
+ 01:25:54   Compiler CS0103 The name 'PlayAttackSound' does not exist in the current context
+ 01:25:54   Compiler CS0103 The name 'HasCondition' does not exist in the current context
+ 01:25:54   Compiler CS0103 The name 'ExecuteRangeAttack' does not exist in the current context
+ 01:25:54   Compiler CS0103 The name 'PlayAttackSound' does not exist in the current context
+ 01:25:54   Compiler CS0103 The name '_isFlinching' does not exist in the current context
+ 01:25:54   Compiler CS0103 The name 'OnCreatureInit' does not exist in the current context
+ 01:25:54   Compiler CS0103 The name 'RunCombat' does not exist in the current context
+ 01:25:54   Compiler CS0103 The name '_attackType' does not exist in the current context
+ 01:25:54   Compiler CS0103 The name '_attackState' does not exist in the current context
+ 01:25:54   Compiler CS0122 'AttackState' is inaccessible due to its protection level
+ 01:25:54   Compiler CS0120 An object reference is required for the non-static field, method, or property 'Transform.Position'
+ 01:25:54   Compiler CS0117 'Transform' does not contain a definition for 'World'
+ 01:25:54   Compiler CS0119 'GameObject' is a type, which is not valid in the given context
+ 01:25:54   Compiler CS0120 An object reference is required for the non-static field, method, or property 'Transform.Position'
+ 01:25:54   Compiler CS0117 'Transform' does not contain a definition for 'World'
+ 01:25:54   Compiler CS0103 The name 'Enemy' does not exist in the current context
+ 01:25:54   Compiler CS0119 'GameObject' is a type, which is not valid in the given context
+ 01:25:54   Compiler CS0246 The type or namespace name 'IDamageable' could not be found (are you missing a using directive or an assembly reference?)
+ 01:25:54   Compiler CS0117 'Transform' does not contain a definition for 'World'
+ 01:25:54   Compiler CS0103 The name 'ApplyBleed' does not exist in the current context
+ 01:25:54   Compiler CS0103 The name '_attackState' does not exist in the current context
+ 01:25:54   Compiler  [1] CS0122 'AttackState' is inaccessible due to its protection level
+ 01:25:54   Compiler CS0103 The name 'PlaySound' does not exist in the current context
+ 01:25:54   Compiler CS0103 The name '_nextAttack' does not exist in the current context
+ 01:25:54   Compiler CS0103 The name 'ExtraMeleeHit' does not exist in the current context
+ 01:25:54   Compiler CS0103 The name 'OnCreatureDeath' does not exist in the current context
+ 01:25:54   Compiler CS0103 The name '_attackType' does not exist in the current context
+ 01:25:54   Compiler CS0103 The name '_attackState' does not exist in the current context
+ 01:25:54   Compiler CS0122 'AttackState' is inaccessible due to its protection level
+ 01:25:54   Compiler CS1503 Argument 1: cannot convert from 'VJBase.' to 'VJBase.BaseNPC'
+ 01:25:54   Compiler CS0103 The name '_attackState' does not exist in the current context
+ 01:25:54   Compiler CS0122 'AttackState' is inaccessible due to its protection level
+ 01:25:54   Compiler CS0103 The name 'Enemy' does not exist in the current context
+ 01:25:54   Compiler CS0120 An object reference is required for the non-static field, method, or property 'SandboxSystemExtensions.IsValid(IValid?)'
+ 01:25:54   Compiler CS0103 The name '_attackType' does not exist in the current context
+ 01:25:54   Compiler CS0103 The name '_attackState' does not exist in the current context
+ 01:25:54   Compiler CS0122 'AttackState' is inaccessible due to its protection level
+ 01:25:54   Compiler CS0120 An object reference is required for the non-static field, method, or property 'Transform.Position'
+ 01:25:54   Compiler CS0103 The name 'Enemy' does not exist in the current context
+ 01:25:54   Compiler CS0120 An object reference is required for the non-static field, method, or property 'PhysicsBody.Velocity'
+ 01:25:54   Compiler CS0103 The name '_attackState' does not exist in the current context
+ 01:25:54   Compiler CS0122 'AttackState' is inaccessible due to its protection level
+ 01:25:54   Compiler CS0103 The name '_nextAttack' does not exist in the current context
+ 01:25:54   Compiler CS0103 The name 'IsDead' does not exist in the current context
+ 01:25:54   Compiler CS0103 The name '_attackType' does not exist in the current context
+ 01:25:54   Compiler CS0103 The name '_attackState' does not exist in the current context
+ 01:25:54   Compiler CS0122 'AttackState' is inaccessible due to its protection level
+ 01:25:54   Compiler CS0103 The name 'PlayAttackSound' does not exist in the current context
+ 01:25:54   Compiler CS0103 The name '_attackType' does not exist in the current context
+ 01:25:54   Compiler CS0103 The name '_attackType' does not exist in the current context
+ 01:25:54   Compiler CS0103 The name '_attackState' does not exist in the current context
+ 01:25:54   Compiler CS0122 'AttackState' is inaccessible due to its protection level
+ 01:25:54   Compiler CS0103 The name '_attackAnimTime' does not exist in the current context
+ 01:25:54   Compiler CS0117 'CreatureNPC' does not contain a definition for 'OnCreatureDeath'

@@ -1,0 +1,1556 @@
+
+
+>>> Bases\CreatureNPC.cs
+CLASS CreatureNPC
+  PROP public bool HasSounds
+  PROP public float IdleSoundInterval
+  PROP public float BreathSoundInterval
+  PROP public int IdleSoundLevel
+  PROP public int BreathSoundLevel
+  PROP public int AlertSoundLevel
+  PROP public int CombatIdleSoundLevel
+  PROP public int DeathSoundLevel
+  PROP public string SoundTbl_Idle
+  PROP public string SoundTbl_Breath
+  PROP public string SoundTbl_CombatIdle
+  PROP public string SoundTbl_Alert
+  PROP public string SoundTbl_Death
+  PROP public string SoundTbl_Pain
+  PROP public string SoundTbl_FootStep
+  PROP public string SoundTbl_MeleeAttack
+  PROP public string SoundTbl_RangeAttack
+  PROP public string SoundTbl_LeapAttackJump
+  PROP public string SoundTbl_MeleeMiss
+  PROP public string SoundTbl_LeapAttackDamage
+  PROP public string SoundTbl_GrenadeAttack
+  PROP public string SoundTbl_Investigate
+  PROP public string SoundTbl_DangerSight
+  PROP public string SoundTbl_CallForHelp
+  PROP public string SoundTbl_KilledEnemy
+  PROP public string SoundTbl_AllyDeath
+  PROP public string SoundTbl_DamageByPlayer
+  PROP public bool HasInvestigateSound
+  PROP public bool HasCallForHelpSound
+  PROP public bool HasGrenadeAttackSound
+  PROP public bool HasKilledEnemySound
+  PROP public bool HasAllyDeathSound
+  PROP public bool HasDamageByPlayerSound
+  PROP public bool HasDangerSightSound
+  PROP public MovementType MovementType
+  PROP public float WanderRadius
+  PROP public float WanderInterval
+  PROP protected bool UsesAAMovement
+  PROP public bool CanFlinch
+  PROP public float FlinchChance
+  PROP public float FlinchCooldown
+  PROP public string FlinchAnim
+  PROP public bool UseHitGroupFlinch
+  PROP protected Dictionary<string, string> HitGroupAnimMap
+  PROP public bool CanBleed
+  PROP public float BleedDamage
+  PROP public float BleedInterval
+  PROP public float BleedDuration
+  PROP public bool CanGib
+  PROP public float DeathDelayTime
+  PROP public bool HasDeathRagdoll
+  PROP public string DeathLootPrefab
+  PROP public float DeathLootChance
+  PROP public float AA_GroundLimit
+  PROP public float AA_MinWanderDist
+  PROP public float AA_MoveAccelerate
+  PROP public float AA_MoveDecelerate
+  PROP public float Aerial_FlyingSpeed_Calm
+  PROP public float Aerial_FlyingSpeed_Alerted
+  PROP public float Aquatic_SwimmingSpeed_Calm
+  PROP public float Aquatic_SwimmingSpeed_Alerted
+  PROP public string Aerial_AnimTbl_Calm
+  PROP public string Aerial_AnimTbl_Alerted
+  PROP public string Aquatic_AnimTbl_Calm
+  PROP public string Aquatic_AnimTbl_Alerted
+  PROP public bool CanEat
+  PROP public int EatCooldown
+  PROP public bool PropInteraction
+  PROP public float PropInteraction_MaxScale
+  PROP public bool LimitChaseDistance
+  PROP public float LimitChaseDistance_Min
+  PROP public float LimitChaseDistance_Max
+  PROP public string BloodColor
+  PROP public bool HasBloodDecal
+  PROP public float BloodDecalDistance
+  PROP public bool HasBloodParticle
+  PROP public bool HasBloodPool
+  PROP public bool HasPoseParameterLooking
+  PROP public float PoseParameterLooking_TurningSpeed
+  PROP public bool GodMode
+  PROP public bool AllowIgnition
+  PROP public bool Immune_Bullet
+  PROP public bool Immune_Melee
+  PROP public bool Immune_Fire
+  PROP public bool CanInvestigate
+  PROP public int InvestigateSoundMultiplier
+  PROP public bool Passive_RunOnTouch
+  PROP public bool Passive_AlliesRunOnDamage
+  PROP public bool ConstantlyFaceEnemy_IfVisible
+  PROP public bool EnemyTouchDetection
+  PROP public bool EnemyXRayDetection
+  METH protected override void OnStart(())
+  CALL OnCreatureInit()
+  METH protected override void OnUpdate(())
+  CALL RunCombat()
+  CALL PlayAmbientSounds()
+  CALL HasCondition()
+  CALL MaintainIdleBehavior()
+  METH protected virtual void PlayAmbientSounds(())
+  CALL SoundSystem.PlayFromTable()
+  CALL HasCondition()
+  CALL string.IsNullOrEmpty()
+  CALL SoundSystem.PlayFromTable()
+  CALL HasCondition()
+  CALL string.IsNullOrEmpty()
+  CALL SoundSystem.PlayFromTable()
+  CALL string.IsNullOrEmpty()
+  CALL SoundSystem.PlayFromTable()
+  CALL RandomHelper.NextFloat()
+  METH protected virtual void MaintainIdleBehavior(())
+  CALL RandomHelper.NextFloat()
+  CALL AAIdleWander()
+  CALL RandomHelper.NextFloat()
+  CALL RandomHelper.NextFloat()
+  CALL RandomHelper.NextFloat()
+  CALL MoveTo()
+  METH public virtual void AAMoveTo((Vector3 destination, bool playAnim = true, string moveType = "Calm"))
+  CALL SceneTrace.Ray(Transform.Position, Transform.Position - Vector3.Up * 200f)
+			.IgnoreGameObject(GameObject)
+			.Run()
+  CALL SceneTrace.Ray(Transform.Position, Transform.Position - Vector3.Up * 200f)
+			.IgnoreGameObject()
+  CALL SceneTrace.Ray()
+  CALL destination.WithZ()
+  CALL Math.Max()
+  CALL PhysicsBody.IsValid()
+  CALL SetTurnTarget()
+  METH public virtual void AAIdleWander(())
+  CALL RandomHelper.NextFloat()
+  CALL RandomHelper.NextFloat()
+  CALL RandomHelper.NextFloat()
+  CALL RandomHelper.NextFloat()
+  CALL AAMoveTo()
+  METH protected override void OnDamaged((DamageInfo info))
+  CALL DamageFlash()
+  CALL Flinch()
+  CALL SoundSystem.PlayFromTable()
+  CALL Enemy.IsValid()
+  CALL info.Attacker.IsValid()
+  CALL info.Attacker.Components.Get<BaseNPC>()
+  CALL SetCondition()
+  CALL SetCondition()
+  METH protected void DamageFlash(())
+  CALL Model.IsValid()
+  CALL ResetFlash()
+  METH private async Task ResetFlash(())
+  CALL GameTask.DelaySeconds()
+  CALL Model.IsValid()
+  METH protected virtual void Flinch((DamageInfo info))
+  CALL RandomHelper.Chance()
+  CALL Components.Get<AnimationDriver>()
+  CALL GetFlinchAnimForHitGroup()
+  CALL animDriver.PlaySequence()
+  CALL ResetFlinch()
+  METH protected virtual string GetFlinchAnimForHitGroup((string hitGroup))
+  CALL string.IsNullOrEmpty()
+  CALL HitGroupAnimMap.TryGetValue()
+  METH private async Task ResetFlinch((float delay))
+  CALL GameTask.DelaySeconds()
+  METH public void ApplyBleed(())
+  CALL RunBleed()
+  METH private async Task RunBleed(())
+  CALL GameTask.DelaySeconds()
+  CALL Math.Max()
+  CALL OnKilled()
+  METH protected virtual void RunCombat(())
+  CALL HasCondition()
+  CALL ExecuteMeleeAttack()
+  CALL PlayAttackSound()
+  METH protected virtual void ExecuteMeleeAttack(())
+  CALL Scene.FindInPhysics()
+  CALL obj.IsValid()
+  CALL Vector3.Dot()
+  CALL MathF.Cos()
+  CALL MathX.DegreeToRadian()
+  CALL obj.Components.Get<BaseNPC>()
+  CALL dmg.Tags.Add()
+  CALL obj.TakeDamage()
+  CALL obj.Components.Get<Rigidbody>()
+  CALL body.IsValid()
+  CALL ApplyBleed()
+  CALL PlaySound()
+  CALL Game.Random.Next()
+  CALL ExtraMeleeHit()
+  METH private async Task ExtraMeleeHit((float delay))
+  CALL GameTask.DelaySeconds()
+  CALL PlayAttackSound()
+  METH protected virtual void ExecuteRangeAttack(())
+  CALL Enemy.IsValid()
+  CALL RangeHandler.Execute()
+  METH protected virtual void ExecuteLeapAttack(())
+  CALL Enemy.IsValid()
+  CALL Trajectory.Calculate()
+  CALL PhysicsBody.IsValid()
+  METH public virtual void StopAttacks(())
+  METH public virtual void PlayAttackSound(())
+  CALL SoundSystem.PlayFromTable()
+  CALL SoundSystem.PlayFromTable()
+  CALL SoundSystem.PlayFromTable()
+  CALL SoundSystem.PlayFromTable()
+  METH public virtual void PlayInvestigateSound(())
+  CALL SoundSystem.PlayFromTable()
+  METH public virtual void PlayCallForHelpSound(())
+  CALL SoundSystem.PlayFromTable()
+  METH public virtual void PlayKilledEnemySound(())
+  CALL SoundSystem.PlayFromTable()
+  METH public virtual void PlayAllyDeathSound(())
+  CALL SoundSystem.PlayFromTable()
+  METH public virtual void PlayDamageByPlayerSound(())
+  CALL SoundSystem.PlayFromTable()
+  METH public virtual void PlayDangerSightSound(())
+  CALL SoundSystem.PlayFromTable()
+  METH public virtual void PlayGrenadeAttackSound(())
+  CALL SoundSystem.PlayFromTable()
+  METH protected override async void OnKilled((DamageInfo info))
+  CALL OnCreatureDeath()
+  CALL IsGibDamage()
+  CALL PlaySound()
+  CALL VFXHelper.PlayParticles()
+  CALL SoundSystem.PlayFromTable()
+  CALL Model.IsValid()
+  CALL PhysicsBody.IsValid()
+  CALL StopMoving()
+  CALL StopAllSounds()
+  CALL SpawnDeathLoot()
+  CALL GameTask.DelaySeconds()
+  CALL GameObject.Destroy()
+  METH public bool IsGibDamage((DamageInfo info))
+  CALL info.Tags.Has()
+  CALL info.Tags.Has()
+  METH public virtual void SpawnDeathLoot(())
+  CALL string.IsNullOrEmpty()
+  CALL RandomHelper.Chance()
+  CALL CleanupObject()
+  METH private async Task CleanupObject((GameObject obj, float delay))
+  CALL GameTask.DelaySeconds()
+  CALL obj?.Destroy()
+  METH protected virtual void OnCreatureInit(())
+  METH protected virtual bool OnCreatureDeath((DamageInfo info))
+
+>>> Bases\HumanNPC.cs
+CLASS HumanNPC
+  PROP public bool CanReceiveOrders
+  PROP public bool BecomeEnemyToPlayer
+  PROP public bool DisableWandering
+  PROP public bool HasBloodDecal
+  PROP public bool HasBloodParticle
+  PROP public bool HasBloodPool
+  PROP public int BloodDecalDistance
+  PROP public string BloodColor
+  PROP public bool Bleeds
+  PROP public bool Immune_Bullet
+  PROP public bool Immune_Melee
+  PROP public bool GodMode
+  PROP public bool AllowIgnition
+  PROP public bool CanInvestigate
+  PROP public int InvestigateSoundMultiplier
+  PROP public bool CanDetectDangers
+  PROP public int DangerDetectionDistance
+  PROP public bool CanRedirectGrenades
+  PROP public bool HasPoseParameterLooking
+  PROP public int PoseParameterLooking_TurningSpeed
+  PROP public bool ConstantlyFaceEnemy_IfVisible
+  PROP public bool ConstantlyFaceEnemy_IfAttacking
+  PROP public string ConstantlyFaceEnemy_Postures
+  PROP public int ConstantlyFaceEnemy_MinDistance
+  PROP public bool LimitChaseDistance
+  PROP public int LimitChaseDistance_Min
+  PROP public int LimitChaseDistance_Max
+  PROP public bool EnemyTouchDetection
+  PROP public bool EnemyXRayDetection
+  PROP public bool Passive_RunOnTouch
+  PROP public bool Passive_AlliesRunOnDamage
+  PROP public string AnimTbl_CallForHelp
+  PROP public string AnimTbl_Idle
+  PROP public string AnimTbl_Walk
+  PROP public string AnimTbl_Run
+  PROP public string AnimTbl_FollowStart
+  PROP public string AnimTbl_FollowStop
+  PROP public float HealthRegenRate
+  PROP public float HealthRegenDelay
+  PROP public BaseWeapon CurrentWeapon
+  PROP public bool AutoSwitchWeapon
+  PROP public bool NPC_CanFire
+  PROP public WeaponAttackState CurrentWeaponState
+  PROP public bool Weapon_CanReload
+  PROP public float Weapon_MaxDistance
+  PROP public float Weapon_MinDistance
+  PROP public bool Weapon_CanPickup
+  PROP public float CoverPeekChance
+  PROP public bool UseCoverSystem
+  PROP public float CoverSearchRadius
+  PROP public bool IsMedic
+  PROP public float MedicCheckDistance
+  PROP public float MedicHealDistance
+  PROP public float MedicHealAmount
+  PROP public float MedicHealCooldown
+  PROP public string Medic_SpawnPropOnHealModel
+  PROP public string Medic_SpawnPropOnHealAttachment
+  PROP public bool Medic_SpawnPropOnHeal
+  PROP public float Medic_TimeUntilHeal
+  PROP public bool CallForHelp
+  PROP public float CallForHelpDistance
+  PROP public float CallForHelpCooldown
+  PROP public int CallForHelpAnimCooldown
+  PROP public bool CallForHelpAnimFaceEnemy
+  PROP public bool CanThrowGrenades
+  PROP public string GrenadePrefab
+  PROP public bool HasOnPlayerSight
+  PROP public float OnPlayerSightDistance
+  PROP public bool OnPlayerSightOnlyOnce
+  PROP public Vector2 OnPlayerSightNextTime
+  PROP public int OnPlayerSightDispositionLevel
+  PROP public bool CanFollow
+  PROP public GameObject FollowTarget
+  PROP public float FollowMinDistance
+  PROP public float FollowMaxDistance
+  METH protected override void OnStart(())
+  CALL Components.GetAll<BaseWeapon>()
+  CALL _weapons.Add()
+  CALL SwitchToBestWeapon()
+  METH protected override void OnUpdate(())
+  CALL HealthRegenTick()
+  CALL MedicCheck()
+  CALL MaintainFollow()
+  CALL CustomOnThink()
+  CALL CheckPlayerSight()
+  METH private void HealthRegenTick(())
+  CALL Math.Min()
+  METH protected override void OnDamaged((DamageInfo info))
+  CALL CallAlliesForHelp()
+  METH public bool PickupWeapon((BaseWeapon weapon))
+  CALL weapon.IsValid()
+  CALL weapon.Owner.IsValid()
+  CALL _weapons.Contains()
+  CALL weapon.OnEquip()
+  CALL _weapons.Add()
+  CALL SwitchToBestWeapon()
+  METH public void DropWeapon((BaseWeapon weapon = null))
+  CALL weapon.IsValid()
+  CALL _weapons.Remove()
+  CALL SwitchToBestWeapon()
+  METH public void DropAllWeapons(())
+  CALL _weapons.ToArray()
+  CALL _weapons.Clear()
+  METH public void SwitchToBestWeapon(())
+  CALL w.IsValid()
+  CALL Math.Max()
+  METH protected override AISchedule SelectCombatSchedule(())
+  CALL BetterWeaponSwitch()
+  CALL ShouldPeekFromCover()
+  CALL Runner.RangeAttack()
+  CALL Enemy.IsValid()
+  CALL Vector3.DistanceBetween()
+  CALL RandomHelper.Chance()
+  CALL GrenadeSchedule()
+  CALL Enemy.IsValid()
+  CALL CoverEvaluator.FindCover()
+  CALL Runner.FindCover()
+  CALL CurrentWeapon.IsValid()
+  CALL HasCondition()
+  CALL Runner.MeleeAttack()
+  CALL Vector3.DistanceBetween()
+  CALL HasCondition()
+  CALL ReloadSchedule()
+  CALL Runner.RangeAttack()
+  CALL HasCondition()
+  CALL Runner.BackAway()
+  CALL Runner.ChaseEnemy()
+  CALL Runner.Wander()
+  METH protected override void MaintainIdleBehavior(())
+  METH private AISchedule ReloadSchedule(())
+  CALL new AISchedule("SCHED_HUMAN_RELOAD")
+			.Task("TASK_RELOAD", async (npc, ct) =>
+			{
+				if (CurrentWeapon.IsValid())
+				{
+					CurrentWeapon.Reload();
+					await GameTask.DelaySeconds(CurrentWeapon.ReloadTime);
+				}
+			})
+			.Interrupt()
+  CALL new AISchedule("SCHED_HUMAN_RELOAD")
+			.Task()
+  CALL CurrentWeapon.IsValid()
+  CALL CurrentWeapon.Reload()
+  CALL GameTask.DelaySeconds()
+  METH private AISchedule GrenadeSchedule(())
+  CALL new AISchedule("SCHED_HUMAN_GRENADE")
+			.Task("TASK_FACE_ENEMY", (npc, ct) => FaceEnemy(ct))
+			.Task("TASK_THROW_GRENADE", (npc, ct) =>
+			{
+				GrenadeAttack();
+				return Task.CompletedTask;
+			})
+			.Interrupt()
+  CALL new AISchedule("SCHED_HUMAN_GRENADE")
+			.Task("TASK_FACE_ENEMY", (npc, ct) => FaceEnemy(ct))
+			.Task()
+  CALL new AISchedule("SCHED_HUMAN_GRENADE")
+			.Task()
+  CALL FaceEnemy()
+  CALL GrenadeAttack()
+  METH protected virtual void GrenadeAttack(())
+  CALL Enemy.IsValid()
+  CALL go.AddComponent<Rigidbody>()
+  CALL PlaySound()
+  METH protected void MedicCheck(())
+  CALL Scene.FindInPhysics()
+  CALL obj.IsValid()
+  CALL obj.Components.Get<BaseNPC>()
+  CALL Vector3.DistanceBetween()
+  CALL MoveTo()
+  CALL best.Components.Get<BaseNPC>()
+  CALL Math.Min()
+  CALL PlaySound()
+  METH protected virtual void CallAlliesForHelp(())
+  CALL Enemy.IsValid()
+  CALL Scene.FindInPhysics()
+  CALL obj.IsValid()
+  CALL obj.Components.Get<HumanNPC>()
+  CALL ally.Enemy.IsValid()
+  CALL ally.SetCondition()
+  CALL ally.SetCondition()
+  CALL PlaySound()
+  METH public virtual void Follow((GameObject target))
+  CALL OnFollowStarted()
+  METH public virtual void StopFollowing(())
+  CALL StopMoving()
+  METH protected virtual void OnFollowStarted((GameObject target))
+  METH protected virtual void MaintainFollow(())
+  CALL FollowTarget.IsValid()
+  CALL StopFollowing()
+  CALL Vector3.DistanceBetween()
+  CALL MoveTo()
+  CALL StopMoving()
+  METH public void DoDiamondFormation((GameObject leader, int index, float spacing = 50f))
+  CALL leader.IsValid()
+  CALL MoveTo()
+  METH protected virtual void CustomOnThink(())
+  CALL Enemy.IsValid()
+  CALL HasCondition()
+  CALL HasCondition()
+  CALL CurrentWeapon.IsValid()
+  CALL FireWeapon()
+  CALL CurrentWeapon.IsValid()
+  CALL CurrentWeapon.Reload()
+  CALL Enemy.IsValid()
+  CALL Vector3.DistanceBetween()
+  CALL RandomHelper.Chance()
+  CALL GrenadeAttack()
+  METH protected virtual void FireWeapon(())
+  CALL CurrentWeapon.IsValid()
+  CALL Enemy.IsValid()
+  CALL RangeHandler.Execute()
+  METH protected virtual void BetterWeaponSwitch(())
+  CALL Enemy.IsValid()
+  CALL Vector3.DistanceBetween()
+  CALL w.IsValid()
+  CALL Math.Max()
+  CALL Math.Max()
+  CALL Math.Abs()
+  CALL Math.Max()
+  METH protected bool ShouldPeekFromCover(())
+  CALL RandomHelper.Chance()
+  METH protected virtual void CheckPlayerSight(())
+  CALL Scene.GetAllObjects()
+  CALL obj.IsValid()
+  CALL obj.Tags.Has()
+  CALL Vector3.DistanceBetween()
+  CALL Scene.Trace.Ray(Transform.Position + Vector3.Up * 32f,
+				obj.Transform.Position + Vector3.Up * 32f)
+				.IgnoreGameObject(GameObject)
+				.WithoutTags("npc", "trigger")
+				.Run()
+  CALL Scene.Trace.Ray(Transform.Position + Vector3.Up * 32f,
+				obj.Transform.Position + Vector3.Up * 32f)
+				.IgnoreGameObject(GameObject)
+				.WithoutTags()
+  CALL Scene.Trace.Ray(Transform.Position + Vector3.Up * 32f,
+				obj.Transform.Position + Vector3.Up * 32f)
+				.IgnoreGameObject()
+  CALL Scene.Trace.Ray()
+  CALL OnPlayerSpotted()
+  CALL Game.Random.Float()
+  METH protected virtual void OnPlayerSpotted((GameObject player))
+  CALL SetCondition()
+  CALL SetCondition()
+  METH protected override bool OnCreatureDeath((DamageInfo info))
+  CALL DropAllWeapons()
+
+>>> Bases\TankNPC.cs
+CLASS TankNPC
+  PROP public bool Tank_GunnerEnabled
+  PROP public string Tank_GunnerPrefab
+  PROP public float Tank_AngleOffset
+  PROP public float Tank_TurningSpeed
+  PROP public float Tank_DrivingSpeed
+  PROP public float Tank_DriveAwayDistance
+  PROP public float Tank_DriveTowardsDistance
+  PROP public float Tank_RanOverDistance
+  PROP public float Tank_CollisionBoundSize
+  PROP public float Tank_CollisionBoundUp
+  PROP public float Tank_CollisionBoundDown
+  PROP public string Tank_DeathDecal
+  PROP public float Tank_DeathExplosionDelay
+  PROP public int Tank_DeathExplosionCount
+  PROP public bool Tank_DeathDriverCorpse
+  PROP public float Tank_DeathDriverCorpseChance
+  PROP public string Tank_DeathDriverCorpseModel
+  PROP public bool HasMoveSound
+  PROP public bool HasRunOverSound
+  PROP public string SoundTbl_DrivingEngine
+  PROP public string SoundTbl_Track
+  PROP public string SoundTbl_RunOver
+  PROP public bool Tank_IsMoving
+  PROP public int Tank_Status
+  PROP public GameObject Gunner
+  METH protected override void OnStart(())
+  CALL PhysicsBody.IsValid()
+  CALL SpawnGunner()
+  METH protected override void OnUpdate(())
+  CALL OnThinkActive()
+  CALL UpdateIdleParticles()
+  CALL RandomHelper.NextFloat()
+  METH protected virtual void SpawnGunner(())
+  CALL string.IsNullOrEmpty()
+  CALL GetGunnerSpawnPosition()
+  METH public virtual Vector3 GetGunnerSpawnPosition(())
+  METH protected override AISchedule SelectCombatSchedule(())
+  CALL Enemy.IsValid()
+  CALL Runner.Wander()
+  CALL Vector3.DistanceBetween()
+  CALL SetTurnTarget()
+  CALL Runner.ChaseEnemy()
+  METH protected virtual void OnThinkActive(())
+  CALL Enemy.IsValid()
+  CALL Vector3.DistanceBetween()
+  CALL phys.IsValid()
+  CALL Rotation.LookAt()
+  CALL Rotation.Slerp()
+  CALL PlayMovementSounds()
+  CALL TryRunOver()
+  CALL StopMovementSounds()
+  METH protected virtual void TryRunOver((GameObject target))
+  CALL target.IsValid()
+  CALL Vector3.DistanceBetween()
+  CALL ScaleByDifficulty()
+  CALL dmg.Tags.Add()
+  CALL dmg.Tags.Add()
+  CALL target.TakeDamage()
+  CALL target.Components.Get<Rigidbody>()
+  CALL targetBody.IsValid()
+  CALL SoundSystem.Play()
+  CALL RandomHelper.NextFloat()
+  METH protected virtual void PlayMovementSounds(())
+  CALL string.IsNullOrEmpty()
+  CALL Sound.Play()
+  CALL string.IsNullOrEmpty()
+  CALL Sound.Play()
+  METH protected virtual void StopMovementSounds(())
+  CALL _currentEngineSound?.Stop()
+  CALL _currentTrackSound?.Stop()
+  METH protected virtual void UpdateIdleParticles(())
+  CALL VFXHelper.PlayParticles()
+  METH protected override async void OnKilled((DamageInfo info))
+  CALL StopMovementSounds()
+  CALL GameTask.DelaySeconds()
+  CALL GameObject.IsValid()
+  CALL SoundSystem.Play()
+  CALL RandomHelper.NextFloat()
+  CALL RadiusDamage.Apply()
+  CALL string.IsNullOrEmpty()
+  CALL SceneTrace.Ray(Transform.Position + Vector3.Up * 4f,
+					Transform.Position - Vector3.Up * 500f)
+				.IgnoreGameObject(GameObject)
+				.Run()
+  CALL SceneTrace.Ray(Transform.Position + Vector3.Up * 4f,
+					Transform.Position - Vector3.Up * 500f)
+				.IgnoreGameObject()
+  CALL SceneTrace.Ray()
+  CALL VFXHelper.PlaceDecal()
+  CALL GameObject.Destroy()
+  METH protected override bool OnCreatureDeath((DamageInfo info))
+  METH public static float AngleDiffuse((float targetYaw, float currentYaw))
+  METH protected override void OnDestroy(())
+  CALL StopMovementSounds()
+  METH protected virtual void Tank_Init(())
+  METH protected virtual void Tank_OnRunOver((GameObject target))
+  METH protected virtual bool Tank_OnInitialDeath((DamageInfo info))
+  METH protected virtual void Tank_UpdateMoveParticles(())
+  METH protected virtual void GetNearDeathSparkPositions(())
+
+>>> Combat\Handlers.cs
+CLASS MeleeHandler
+  METH public static bool Execute((BaseNPC npc, float range = 0f, float angleRadius = 0f, float damage = 0f))
+  CALL SceneTrace.Ray(origin, forward)
+			.IgnoreGameObject(npc.GameObject)
+			.Radius(angleRadius * 0.5f)
+			.Run()
+  CALL SceneTrace.Ray(origin, forward)
+			.IgnoreGameObject(npc.GameObject)
+			.Radius()
+  CALL SceneTrace.Ray(origin, forward)
+			.IgnoreGameObject()
+  CALL SceneTrace.Ray()
+  CALL target.IsValid()
+  CALL Vector3.Dot()
+  CALL MathF.Cos()
+  CALL MathX.DegreeToRadian()
+  CALL dmg.Tags.Add()
+  CALL target.TakeDamage()
+  CALL target.Components.Get<Rigidbody>()
+  CALL targetBody.IsValid()
+
+>>> Combat\Handlers.cs
+CLASS RangeHandler
+  METH public static bool Execute((BaseNPC npc, float range = 0f, float damage = 0f))
+  CALL target.IsValid()
+  CALL SceneTrace.Ray(spawnPos, spawnPos + dir * range)
+			.IgnoreGameObject(npc.GameObject)
+			.Run()
+  CALL SceneTrace.Ray(spawnPos, spawnPos + dir * range)
+			.IgnoreGameObject()
+  CALL SceneTrace.Ray()
+  CALL dmg.Tags.Add()
+  CALL tr.GameObject?.TakeDamage()
+
+>>> Combat\Handlers.cs
+CLASS CoverEvaluator
+  METH public static Vector3? FindCover((BaseNPC npc))
+  CALL MathX.DegreeToRadian()
+  CALL Rotation.FromYaw()
+  CALL Senses.CanSeePoint()
+
+>>> Combat\Handlers.cs
+CLASS RadiusDamage
+  METH public static void Apply((BaseNPC attacker, Vector3 origin, float radius = 150f,
+		float maxDamage = 15f, bool realisticRadius = true))
+  CALL attacker.Scene.FindInPhysics()
+  CALL obj.IsValid()
+  CALL Vector3.DistanceBetween()
+  CALL Math.Max()
+  CALL dmg.Tags.Add()
+  CALL obj.TakeDamage()
+
+>>> Components\AnimationDriver.cs
+CLASS AnimationDriver
+  PROP public SkinnedModelRenderer Model
+  CALL Components.Get<SkinnedModelRenderer>()
+  PROP private SceneModel SceneModel
+  PROP private AnimGraphDirectPlayback DirectPlayback
+  PROP public string CurrentSequenceName
+  PROP public float CurrentDuration
+  METH public void PlaySequence((string sequenceName))
+  CALL DirectPlayback?.Play()
+  METH public void PlayGesture((string sequenceName))
+  CALL DirectPlayback?.Play()
+  METH public (string Name, float Duration) PlayAnim((
+		string animName,
+		bool lockAnim = false,
+		float lockAnimTime = 0f))
+  CALL string.IsNullOrEmpty()
+  CALL HasSequence()
+  CALL PlaySequence()
+  PROP public bool IsAnimLocked
+  PROP public bool HasIdleAnimation
+  PROP public string IdleAnimList
+  METH public void MaintainIdleAnimation((bool force = false))
+  CALL Model.IsValid()
+  CALL RandomHelper.NextFloat()
+  CALL IdleAnimList.Split(',').Select(s => s.Trim()).ToList()
+  CALL IdleAnimList.Split(',').Select()
+  CALL IdleAnimList.Split()
+  CALL s.Trim()
+  CALL Game.Random.Next()
+  CALL PlayAnim()
+  PROP public bool HasFootstepSounds
+  PROP public string FootstepSoundList
+  PROP public float FootstepIntervalWalk
+  PROP public float FootstepIntervalRun
+  METH public void MaintainFootsteps((bool isRunning))
+  CALL string.IsNullOrEmpty()
+  CALL FootstepSoundList.Split()
+  CALL paths[Game.Random.Next(0, paths.Length)].Trim()
+  CALL Game.Random.Next()
+  CALL string.IsNullOrEmpty()
+  CALL Sound.Play()
+  METH public void SetPlaybackRate((float rate))
+  CALL Model.IsValid()
+  METH public float GetPlaybackRate(())
+  METH public bool IsPlaying((string sequenceName))
+  METH public bool HasSequence((string name))
+  CALL Model.IsValid()
+  CALL Model.Model?.AnimationNames?.Contains()
+  METH public void Cancel(())
+  CALL DirectPlayback?.Cancel()
+  METH public Transform? GetBoneTransform((string boneName))
+  CALL Model.IsValid()
+  CALL Model.TryGetBoneTransform()
+  METH public Transform? GetAttachment((string attachmentName))
+  CALL Model?.Model?.GetAttachment()
+  METH public GameObject GetAttachmentObject((string attachmentName))
+  CALL Model?.GetAttachmentObject()
+  METH public void SetBodyGroup((string name, int value))
+  CALL Model?.SetBodyGroup()
+  METH public int GetBodyGroup((string name))
+  CALL Model?.GetBodyGroup()
+  METH public void SetMaterialOverride((Material material))
+  CALL Model?.SetMaterialOverride()
+  METH public void SetTint((Color color))
+  CALL Model.IsValid()
+  METH public void SetMaterialGroup((string groupName))
+  CALL Model.IsValid()
+
+>>> Components\AnimationDriver.cs
+CLASS Sequences
+
+>>> Components\BaseWeapon.cs
+CLASS BaseWeapon
+  PROP public string WeaponName
+  PROP public string HoldType
+  PROP public bool IsMeleeWeapon
+  PROP public float MeleeRange
+  PROP public bool MadeForNPCsOnly
+  PROP public GameObject Owner
+  PROP public int ClipSize
+  PROP public int Clip1
+  PROP public int ReserveAmmo
+  PROP public string AmmoType
+  PROP public int TakeAmmo
+  PROP public bool HasAmmo
+  PROP public bool IsReloading
+  PROP public FireMode PrimaryFireMode
+  PROP public int BurstCount
+  PROP public int BurstSize
+  PROP public float BurstPause
+  PROP public float PrimaryDelay
+  PROP public float SecondaryDelay
+  PROP public float ReloadTime
+  PROP public float ReloadTimeUntilAmmo
+  PROP protected TimeUntil NextPrimaryFire
+  PROP protected TimeUntil NextSecondaryFire
+  PROP public float PrimaryDamage
+  PROP public float PrimaryForce
+  PROP public int PrimaryBullets
+  PROP public float PrimarySpread
+  PROP public float NPC_FiringDistanceScale
+  PROP public float NPC_FiringDistanceMax
+  PROP public float NPC_CustomSpread
+  PROP public bool NPC_StandingOnly
+  PROP public float NPC_FiringCone
+  PROP public float NPC_AimDeviation
+  PROP public float NPC_FireRate
+  PROP public string MuzzleAttachment
+  PROP public string ShellAttachment
+  PROP public bool SpawnShells
+  PROP public string PrimarySound
+  PROP public string SecondarySound
+  PROP public string ReloadSound
+  PROP public string DryFireSound
+  PROP public string DeploySound
+  PROP public bool MuzzleFlash
+  PROP public bool ShowTracer
+  PROP public string ImpactDecal
+  METH protected override void OnStart(())
+  METH public virtual void OnEquip((GameObject newOwner))
+  METH public virtual void PrimaryAttack(())
+  CALL DryFire()
+  CALL string.IsNullOrEmpty()
+  CALL Sound.Play()
+  CALL FireBullet()
+  CALL FireBullet()
+  CALL PlayMuzzleEffects()
+  METH protected virtual void FireBullet(())
+  CALL owner.IsValid()
+  CALL GetBulletSpawnPosition()
+  CALL GetAimDirection()
+  CALL Owner?.Components.Get<BaseNPC>()
+  CALL npc.Enemy.IsValid()
+  CALL npc.GetAimSpread()
+  CALL SceneTrace.Ray(startPos, startPos + dir * 50000f)
+			.IgnoreGameObject(owner)
+			.IgnoreGameObject(GameObject)
+			.Run()
+  CALL SceneTrace.Ray(startPos, startPos + dir * 50000f)
+			.IgnoreGameObject(owner)
+			.IgnoreGameObject()
+  CALL SceneTrace.Ray(startPos, startPos + dir * 50000f)
+			.IgnoreGameObject()
+  CALL SceneTrace.Ray()
+  CALL tr.GameObject.IsValid()
+  CALL dmg.Tags.Add()
+  CALL tr.GameObject.TakeDamage()
+  CALL string.IsNullOrEmpty()
+  CALL VFXHelper.PlaceDecal()
+  METH public virtual Vector3 GetBulletSpawnPosition(())
+  CALL string.IsNullOrEmpty()
+  CALL Components.Get<SkinnedModelRenderer>()
+  CALL renderer?.Model?.GetAttachment()
+  METH protected virtual Vector3 GetAimDirection(())
+  CALL Owner?.Components.Get<BaseNPC>()
+  CALL npc.Enemy.IsValid()
+  METH public virtual void SecondaryAttack(())
+  CALL string.IsNullOrEmpty()
+  CALL Sound.Play()
+  METH public virtual async void Reload(())
+  CALL string.IsNullOrEmpty()
+  CALL Sound.Play()
+  CALL GameTask.DelaySeconds()
+  CALL GameObject.IsValid()
+  CALL Math.Min()
+  CALL GameTask.DelaySeconds()
+  METH public virtual bool NPC_CanFire((BaseNPC npc))
+  CALL npc.Enemy.IsValid()
+  CALL Vector3.Dot()
+  CALL GetAimDirection()
+  METH public virtual Vector3 GetNPCFireDirection((BaseNPC npc))
+  CALL GetAimDirection()
+  METH public virtual void NPC_Think((BaseNPC npc))
+  CALL NPC_CanFire()
+  CALL PrimaryAttack()
+  CALL Math.Max()
+  METH protected virtual void PlayMuzzleEffects(())
+  CALL VFXHelper.AttachParticles()
+  METH protected virtual void DryFire(())
+  CALL string.IsNullOrEmpty()
+  CALL Sound.Play()
+  METH protected virtual void ShellEject(())
+  CALL string.IsNullOrEmpty()
+  CALL VFXHelper.AttachParticles()
+  METH protected virtual void SpawnTracer((Vector3 start, Vector3 end))
+  CALL Rotation.LookAt()
+  CALL VFXHelper.PlayParticles()
+  METH public virtual bool OnDeploy(())
+  CALL string.IsNullOrEmpty()
+  CALL Sound.Play()
+
+>>> Components\SquadLeader.cs
+CLASS SquadLeader
+  PROP public float SquadRadius
+  PROP public float FormationSpacing
+  PROP public bool ShareEnemies
+  METH protected override void OnStart(())
+  CALL Components.Get<HumanNPC>()
+  METH protected override void OnUpdate(())
+  CALL _members.Clear()
+  CALL Scene.GetAllComponents<HumanNPC>()
+  CALL Vector3.DistanceBetween()
+  CALL _members.Add()
+  CALL _leader.Enemy.IsValid()
+  CALL member.Enemy.IsValid()
+  CALL member.SetCondition()
+  CALL member.SetCondition()
+  CALL _members[i].HasCondition()
+  CALL _members[i].DoDiamondFormation()
+
+>>> Core\AIConfig.cs
+CLASS AIConfig
+  PROP public string NPCClass
+  PROP public string SquadName
+  PROP public NPCBehavior Behavior
+  PROP public NPCMovementType MovementType
+  PROP public float SightDistance
+  PROP public float HearingDistance
+  PROP public float FieldOfView
+  PROP public bool CanSeeInDark
+  PROP public float LoseEnemyTime
+  PROP public bool EnemyDetection
+  PROP public bool ConstantlyFaceEnemy
+  PROP public float ConstantlyFaceEnemyMaxDist
+  PROP public float WalkSpeed
+  PROP public float RunSpeed
+  PROP public float TurnSpeed
+  PROP public float StepHeight
+  PROP public float JumpHeight
+  PROP public bool CanOpenDoors
+  PROP public bool CanTurnWhileStationary
+  PROP public bool CanTurnWhileMoving
+  PROP public bool CanFireWhileMoving
+  PROP public bool DisableChasingEnemy
+  PROP public bool HasMeleeAttack
+  PROP public bool HasRangeAttack
+  PROP public bool HasLeapAttack
+  PROP public bool HasGrenadeAttack
+  PROP public float MeleeAttackDistance
+  PROP public float MeleeAttackDamage
+  PROP public float MeleeAttackDelay
+  PROP public float MeleeAttackDamageAngleRadius
+  PROP public float RangeDistance
+  PROP public float RangeToMeleeDistance
+  PROP public float RangeAttackDelay
+  PROP public float GrenadeThrowChance
+  PROP public float CallForHelpDistance
+  PROP public float CallForHelpCooldown
+  PROP public float MaxHealth
+  PROP public bool CanGib
+  PROP public float GibDamageThreshold
+  PROP public float DeathDelayTime
+  PROP public bool HasDeathRagdoll
+  PROP public float ThinkInterval
+  PROP public float ConditionGatherInterval
+  PROP public bool CanAlly
+  PROP public bool YieldToAlliedPlayers
+  PROP public bool AlliedWithPlayerAllies
+  PROP public bool DebugAI
+  PROP public bool DebugDrawSenses
+
+>>> Core\BaseNPC.cs
+CLASS BaseNPC
+  PROP public AIConfig Config
+  PROP public float Health
+  PROP public float MaxHealth
+  PROP public bool IsDead
+  PROP public bool IsAlive
+  PROP public bool Dead
+  PROP public bool IsMoving
+  CALL Agent.IsValid()
+  PROP protected SkinnedModelRenderer Model
+  PROP protected NavMeshAgent Agent
+  PROP protected Collider Body
+  PROP public NPCState State
+  PROP public NPCState IdealState
+  PROP public BaseNPC Enemy
+  PROP public GameObject Target
+  PROP public Vector3 LastKnownEnemyPosition
+  PROP public SenseMemory EnemyMemory
+  PROP public SenseMemory SoundMemory
+  PROP public Vector3 GuardPosition
+  PROP public Vector3 LastPosition
+  PROP protected HashSet<Condition> ActiveConditions
+  PROP protected HashSet<Condition> IgnoredConditions
+  METH public void SetCondition((Condition c))
+  CALL ActiveConditions.Add()
+  METH public void ClearCondition((Condition c))
+  CALL ActiveConditions.Remove()
+  METH public bool HasCondition((Condition c))
+  CALL ActiveConditions.Contains()
+  METH protected void ClearSenseConditions(())
+  CALL ActiveConditions.Where(c => c.IsSenseCondition()).ToList()
+  CALL ActiveConditions.Where()
+  CALL c.IsSenseCondition()
+  CALL ActiveConditions.Remove()
+  PROP protected ScheduleRunner Runner
+  PROP protected NPCSoundSystem SoundSystem
+  PROP public AttackType CurrentAttack
+  PROP public AttackState AttackState
+  PROP public bool PauseAttacks
+  PROP protected TimeUntil NextMeleeAttack
+  PROP protected TimeUntil NextRangeAttack
+  PROP protected TimeUntil NextLeapAttack
+  PROP public List<string> AlliedClasses
+  PROP protected TimeUntil NextDecisionTime
+  PROP protected TimeSince TimeSinceEnemyAcquired
+  METH protected override void OnStart(())
+  CALL Components.Get<SkinnedModelRenderer>()
+  CALL Components.Get<NavMeshAgent>()
+  CALL Components.Get<Collider>()
+  CALL Agent.IsValid()
+  CALL CustomInitialize()
+  METH protected override void OnUpdate(())
+  CALL GatherConditions()
+  CALL SelectIdealState()
+  CALL ShouldInterruptSchedule()
+  CALL Runner.Cancel()
+  CALL Runner.Execute()
+  CALL SelectSchedule()
+  CALL Enemy.IsValid()
+  CALL Vector3.DistanceBetween()
+  CALL HasCondition()
+  CALL SetTurnTarget()
+  CALL DrawDebug()
+  METH protected override void OnDestroy(())
+  CALL SoundSystem.StopAll()
+  CALL Runner.Cancel()
+  CALL CustomOnRemove()
+  METH protected virtual void GatherConditions(())
+  CALL ClearSenseConditions()
+  CALL GatherEnemyConditions()
+  METH protected virtual void GatherEnemyConditions(())
+  CALL Enemy.IsValid()
+  CALL SetCondition()
+  CALL SetCondition()
+  CALL Senses.CanSee()
+  CALL SetCondition()
+  CALL SetCondition()
+  CALL ClearCondition()
+  CALL SetCondition()
+  CALL EnemyMemory.Update()
+  CALL ClearCondition()
+  CALL ClearCondition()
+  CALL SetCondition()
+  CALL Vector3.DistanceBetween()
+  CALL SetCondition()
+  CALL SetCondition()
+  CALL SetCondition()
+  CALL Vector3.Dot()
+  CALL SetCondition()
+  CALL SetCondition()
+  METH protected virtual NPCState SelectIdealState(())
+  CALL HasCondition()
+  CALL HasCondition()
+  CALL HasCondition()
+  CALL HasCondition()
+  CALL HasCondition()
+  CALL HasCondition()
+  CALL HasCondition()
+  METH protected virtual bool ShouldInterruptSchedule(())
+  CALL ActiveConditions.Any()
+  CALL c.IsInterruptCondition()
+  METH protected virtual AISchedule SelectSchedule(())
+  CALL SelectCombatSchedule()
+  CALL SelectAlertSchedule()
+  CALL SelectIdleSchedule()
+  METH protected virtual AISchedule SelectIdleSchedule(())
+  CALL Runner.Wander()
+  METH protected virtual AISchedule SelectAlertSchedule(())
+  CALL HasCondition()
+  CALL Runner.GotoPosition()
+  CALL Runner.Investigate()
+  METH protected virtual AISchedule SelectCombatSchedule(())
+  CALL HasCondition()
+  CALL Runner.MeleeAttack()
+  CALL HasCondition()
+  CALL Runner.BackAway()
+  CALL HasCondition()
+  CALL Runner.RangeAttack()
+  CALL Runner.ChaseEnemy()
+  METH public virtual void OnScheduleComplete(())
+  PROP public string ModelPath
+  PROP public float EyeHeight
+  PROP public Vector3 EyePosition
+  PROP public virtual Vector3 ShootPosition
+  PROP public Vector3 WorldSpaceCenter
+  CALL Body.IsValid()
+  METH public void SetModel((string path))
+  CALL Model.IsValid()
+  CALL string.IsNullOrEmpty()
+  CALL Sandbox.Model.Load()
+  METH public void SetTint((Color color))
+  CALL Model.IsValid()
+  METH public void SetMaterialGroup((string groupName))
+  CALL Model.IsValid()
+  METH public void SetBodyGroup((string name, int value))
+  CALL Model?.SetBodyGroup()
+  METH public void MoveTo((Vector3 position, float speed = 0f))
+  CALL Agent.IsValid()
+  CALL Agent.MoveTo()
+  METH public void StopMoving(())
+  CALL Agent.IsValid()
+  CALL Agent.Stop()
+  METH protected void SetTurnTarget((GameObject entity = null, Vector3? position = null))
+  CALL entity.IsValid()
+  CALL entity.IsValid()
+  CALL Rotation.LookAt()
+  CALL Rotation.Slerp()
+  METH public async Task FaceEnemy((CancellationToken ct))
+  CALL Enemy.IsValid()
+  CALL Enemy.IsValid()
+  CALL Rotation.LookAt()
+  CALL Rotation.Slerp()
+  CALL Rotation.Difference()
+  CALL GameTask.Yield()
+  METH public async Task FacePosition((Vector3 pos, CancellationToken ct))
+  CALL Rotation.LookAt()
+  CALL Rotation.Slerp()
+  CALL Rotation.Difference()
+  CALL GameTask.Yield()
+  METH public async Task FaceTarget((Vector3 targetPos, float duration = 0.3f))
+  CALL Rotation.LookAt()
+  CALL Rotation.Slerp()
+  CALL GameTask.Delay()
+  METH public SoundHandle PlaySound((string soundPath, float volume = 1f, float pitch = 1f))
+  CALL SoundSystem.Play()
+  METH public void StopAllSounds(())
+  CALL SoundSystem.StopAll()
+  METH public void OnDamage((in DamageInfo info))
+  CALL SetCondition()
+  CALL SetCondition()
+  CALL info.Attacker.IsValid()
+  CALL info.Attacker.Components.Get<BaseNPC>()
+  CALL Enemy.IsValid()
+  CALL SetCondition()
+  CALL SetCondition()
+  CALL OnDamaged()
+  CALL OnKilled()
+  METH protected virtual void OnDamaged((DamageInfo info))
+  METH public virtual float ScaleByDifficulty((float baseDamage))
+  METH protected virtual void OnKilled((DamageInfo info))
+  CALL StopMoving()
+  CALL StopAllSounds()
+  CALL Runner.Cancel()
+  CALL GameObject.Destroy()
+  METH public virtual Vector3 GetAimPosition((GameObject target, Vector3 aimOrigin,
+		float predictionRate = 0f, float projectileSpeed = 1f))
+  CALL target.IsValid()
+  CALL target.Components.Get<Rigidbody>()
+  CALL targetBody.IsValid()
+  CALL Vector3.DistanceBetween()
+  CALL Math.Max()
+  METH public virtual float GetAimSpread((GameObject target, Vector3 goalPos, float baseSpread = 1f))
+  CALL Vector3.DistanceBetween()
+  CALL Math.Min()
+  CALL target.IsValid()
+  CALL target.Components.Get<Rigidbody>()
+  CALL targetBody.IsValid()
+  CALL Math.Min()
+  CALL Math.Min()
+  CALL Math.Clamp()
+  METH public virtual void ForceSetEnemy((BaseNPC newEnemy))
+  CALL newEnemy.IsValid()
+  CALL EnemyMemory.Update()
+  CALL ClearCondition()
+  CALL ClearCondition()
+  CALL SetCondition()
+  CALL SetCondition()
+  CALL SetCondition()
+  METH protected virtual bool IsPotentialEnemy((GameObject obj))
+  CALL obj.IsValid()
+  CALL obj.Components.Get<BaseNPC>()
+  CALL IsAlliedType()
+  CALL otherNpc.GetType()
+  METH public bool IsAlliedType((Type npcType))
+  CALL AlliedClasses.Contains()
+  PROP public Vector3? InvestigatePosition
+  PROP public float InvestigateSpeed
+  METH public void Investigate((Vector3 position))
+  CALL SetCondition()
+  METH public void YieldToPlayer((GameObject player))
+  CALL player.IsValid()
+  CALL Agent.IsValid()
+  CALL Agent.MoveTo()
+  METH protected virtual void DrawDebug(())
+  CALL MathX.DegreeToRadian()
+  CALL Rotation.FromAxis()
+  CALL Rotation.FromAxis()
+  CALL GameObject.DebugOverlay.Line()
+  CALL Color.Green.WithAlpha()
+  CALL GameObject.DebugOverlay.Line()
+  CALL Color.Green.WithAlpha()
+  CALL Enemy.IsValid()
+  CALL GameObject.DebugOverlay.Line()
+  CALL GameObject.DebugOverlay.Line()
+  CALL Color.Red.WithAlpha()
+  CALL GameObject.DebugOverlay.Line()
+  CALL Color.Red.WithAlpha()
+  CALL GameObject.DebugOverlay.Text()
+  CALL GetType()
+  METH protected virtual void CustomInitialize(())
+  METH protected virtual void CustomOnThink(())
+  METH protected virtual void CustomOnRemove(())
+  METH public virtual void OnSeeEnemy((BaseNPC enemy))
+  METH public virtual void OnLostEnemy(())
+  METH public virtual void OnKilledEnemy((BaseNPC enemy))
+  METH public virtual void OnHearDanger((Vector3 source))
+  METH public virtual void OnCallForHelp((BaseNPC ally))
+
+>>> Core\ConditionFlags.cs
+CLASS ConditionExt
+  METH public static bool IsSenseCondition((this Condition c))
+  METH public static bool IsInterruptCondition((this Condition c))
+
+
+>>> Core\SenseMemory.cs
+CLASS SenseMemory
+  PROP public Vector3 LastPosition
+  PROP public TimeSince TimeSinceLastUpdate
+  PROP public bool HasRecentData
+  PROP public float DecayTime
+  METH public void Update((Vector3 pos))
+  METH public void Clear(())
+  PROP public bool IsValid
+
+>>> Movement\NPCNavigation.cs
+CLASS NPCNavigation
+  METH public static void MoveTo((this BaseNPC npc, Vector3 target, float speed = 0f))
+  CALL npc.Agent.MoveTo()
+  METH public static bool IsNearDestination((this BaseNPC npc, float tolerance = 48f))
+  CALL Vector3.DistanceBetween()
+  METH public static void RunTo((this BaseNPC npc, Vector3 pos))
+  CALL npc.MoveTo()
+  METH public static void WalkTo((this BaseNPC npc, Vector3 pos))
+  CALL npc.MoveTo()
+
+>>> Relationships\DispositionSystem.cs
+CLASS DispositionSystem
+  METH public static Disposition Evaluate((BaseNPC self, BaseNPC other))
+  CALL other.IsValid()
+  CALL EntityRelations.TryGetValue()
+  CALL ClassRelations.TryGetValue()
+  CALL classMap.TryGetValue()
+  CALL string.IsNullOrEmpty()
+  METH public static void SetClassRelation((string classA, string classB, Disposition disp))
+  CALL ClassRelations.ContainsKey()
+  METH public static void SetEntityRelation((BaseNPC a, BaseNPC b, Disposition disp))
+
+>>> Schedule\AISchedule.cs
+CLASS AISchedule
+  PROP public string Name
+  PROP public List<AITask> Tasks
+  PROP public HashSet<Condition> InterruptConditions
+  PROP public bool ResetOnFail
+  PROP public bool CanShootWhenMoving
+  PROP public Func<BaseNPC, Task> OnFail
+  PROP public Func<BaseNPC, Task> OnFinish
+  METH public void AISchedule((string name))
+  METH public AISchedule Task((string name, Func<BaseNPC, CancellationToken, Task> execute, object data = null))
+  CALL Tasks.Add()
+  METH public AISchedule Interrupt((params Condition[] conditions))
+  CALL InterruptConditions.Add()
+  METH public AISchedule AllowMovementShooting(())
+  METH public bool ShouldInterrupt((BaseNPC npc))
+  CALL InterruptConditions.Any()
+  CALL npc.HasCondition()
+
+
+>>> Schedule\ScheduleRunner.cs
+CLASS ScheduleRunner
+  PROP public BaseNPC Owner
+  PROP public bool IsIdle
+  PROP public string CurrentScheduleName
+  METH public void ScheduleRunner((BaseNPC owner))
+  METH public async Task Execute((AISchedule schedule))
+  CALL Cancel()
+  CALL schedule.ShouldInterrupt()
+  CALL task.ExecuteFunc()
+  CALL schedule.OnFinish()
+  CALL Owner.OnScheduleComplete()
+  CALL schedule.OnFail()
+  CALL Owner.StopMoving()
+  METH public void Cancel(())
+  CALL _currentCts.Cancel()
+  CALL _currentCts.Dispose()
+  METH public AISchedule Wander((string name))
+  CALL new AISchedule(name)
+			.Task("TASK_GET_RANDOM_NODE", async (npc, ct) =>
+			{
+				var randomPos = npc.GuardPosition + new Vector3(
+					Game.Random.Float(-500f, 500f),
+					Game.Random.Float(-500f, 500f),
+					0f
+				);
+				npc.MoveTo(randomPos, npc.Config?.WalkSpeed ?? 100f);
+				await GameTask.DelaySeconds(2f);
+			})
+			.Interrupt()
+  CALL new AISchedule(name)
+			.Task()
+  CALL Game.Random.Float()
+  CALL Game.Random.Float()
+  CALL npc.MoveTo()
+  CALL GameTask.DelaySeconds()
+  METH public AISchedule GotoPosition((string name))
+  CALL new AISchedule(name)
+			.Task("TASK_RUN_PATH", (npc, ct) =>
+			{
+				npc.MoveTo(npc.LastKnownEnemyPosition, npc.Config?.RunSpeed ?? 200f);
+				return AITask.WaitForMovement.ExecuteFunc(npc, ct);
+			})
+			.Task("TASK_FACE_TARGET", (npc, ct) =>
+				npc.FacePosition(npc.LastKnownEnemyPosition, ct))
+			.Interrupt()
+  CALL new AISchedule(name)
+			.Task("TASK_RUN_PATH", (npc, ct) =>
+			{
+				npc.MoveTo(npc.LastKnownEnemyPosition, npc.Config?.RunSpeed ?? 200f);
+				return AITask.WaitForMovement.ExecuteFunc(npc, ct);
+			})
+			.Task()
+  CALL new AISchedule(name)
+			.Task()
+  CALL npc.MoveTo()
+  CALL AITask.WaitForMovement.ExecuteFunc()
+  CALL npc.FacePosition()
+  METH public AISchedule Investigate((string name, Vector3 position))
+  CALL new AISchedule(name)
+			.Task("TASK_MOVE_TO_SOUND", AITask.MoveTo(position).ExecuteFunc)
+			.Task("TASK_FACE_SOUND", (npc, ct) => npc.FacePosition(position, ct))
+			.Task("TASK_WAIT_AT_SOUND", async (npc, ct) =>
+			{
+				await GameTask.DelaySeconds(2f);
+				if (!npc.HasCondition(Condition.SeeEnemy))
+				{
+					npc.ClearCondition(Condition.Alert);
+					npc.Enemy = null;
+				}
+			})
+			.Interrupt()
+  CALL new AISchedule(name)
+			.Task("TASK_MOVE_TO_SOUND", AITask.MoveTo(position).ExecuteFunc)
+			.Task("TASK_FACE_SOUND", (npc, ct) => npc.FacePosition(position, ct))
+			.Task()
+  CALL new AISchedule(name)
+			.Task("TASK_MOVE_TO_SOUND", AITask.MoveTo(position).ExecuteFunc)
+			.Task()
+  CALL new AISchedule(name)
+			.Task()
+  CALL AITask.MoveTo()
+  CALL npc.FacePosition()
+  CALL GameTask.DelaySeconds()
+  CALL npc.HasCondition()
+  CALL npc.ClearCondition()
+  METH public AISchedule ChaseEnemy((string name))
+  CALL new AISchedule(name)
+			.Task("TASK_MOVE_TO_ENEMY", async (npc, ct) =>
+			{
+				if (npc.Enemy.IsValid())
+					npc.MoveTo(npc.Enemy.Transform.Position, npc.Config?.RunSpeed ?? 200f);
+				await GameTask.Yield();
+			})
+			.Task("TASK_WAIT_FOR_MOVEMENT", AITask.WaitForMovement.ExecuteFunc)
+			.Interrupt(Condition.EnemyDead, Condition.LostEnemy, Condition.SeeEnemy)
+			.AllowMovementShooting()
+  CALL new AISchedule(name)
+			.Task("TASK_MOVE_TO_ENEMY", async (npc, ct) =>
+			{
+				if (npc.Enemy.IsValid())
+					npc.MoveTo(npc.Enemy.Transform.Position, npc.Config?.RunSpeed ?? 200f);
+				await GameTask.Yield();
+			})
+			.Task("TASK_WAIT_FOR_MOVEMENT", AITask.WaitForMovement.ExecuteFunc)
+			.Interrupt()
+  CALL new AISchedule(name)
+			.Task("TASK_MOVE_TO_ENEMY", async (npc, ct) =>
+			{
+				if (npc.Enemy.IsValid())
+					npc.MoveTo(npc.Enemy.Transform.Position, npc.Config?.RunSpeed ?? 200f);
+				await GameTask.Yield();
+			})
+			.Task()
+  CALL new AISchedule(name)
+			.Task()
+  CALL npc.Enemy.IsValid()
+  CALL npc.MoveTo()
+  CALL GameTask.Yield()
+  METH public AISchedule MeleeAttack((string name))
+  CALL new AISchedule(name)
+			.Task("TASK_FACE_ENEMY", AITask.FaceEnemy.ExecuteFunc)
+			.Task("TASK_MELEE_SWING", async (npc, ct) =>
+			{
+				npc.CurrentAttack = AttackType.Melee;
+				npc.AttackState = AttackState.Started;
+				await GameTask.DelaySeconds(0.3f);
+				npc.AttackState = AttackState.Executed;
+				// MeleeHandler performs the actual trace + damage
+				await GameTask.DelaySeconds(0.5f);
+				npc.AttackState = AttackState.Done;
+				npc.NextMeleeAttack = npc.Config?.MeleeAttackDelay ?? 1.2f;
+			})
+			.Interrupt()
+  CALL new AISchedule(name)
+			.Task("TASK_FACE_ENEMY", AITask.FaceEnemy.ExecuteFunc)
+			.Task()
+  CALL new AISchedule(name)
+			.Task()
+  CALL GameTask.DelaySeconds()
+  CALL GameTask.DelaySeconds()
+  METH public AISchedule RangeAttack((string name))
+  CALL new AISchedule(name)
+			.Task("TASK_FACE_ENEMY", AITask.FaceEnemy.ExecuteFunc)
+			.Task("TASK_RANGE_FIRE", async (npc, ct) =>
+			{
+				npc.CurrentAttack = AttackType.Range;
+				npc.AttackState = AttackState.Started;
+				await GameTask.DelaySeconds(0.5f);
+				npc.AttackState = AttackState.Executed;
+				await GameTask.DelaySeconds(0.3f);
+				npc.AttackState = AttackState.Done;
+				npc.NextRangeAttack = npc.Config?.RangeAttackDelay ?? 1.5f;
+			})
+			.Interrupt()
+  CALL new AISchedule(name)
+			.Task("TASK_FACE_ENEMY", AITask.FaceEnemy.ExecuteFunc)
+			.Task()
+  CALL new AISchedule(name)
+			.Task()
+  CALL GameTask.DelaySeconds()
+  CALL GameTask.DelaySeconds()
+  METH public AISchedule BackAway((string name))
+  CALL new AISchedule(name)
+			.Task("TASK_BACK_AWAY", async (npc, ct) =>
+			{
+				var awayDir = (npc.Transform.Position - (npc.Enemy?.Transform.Position ?? Vector3.Forward)).Normal;
+				npc.MoveTo(npc.Transform.Position + awayDir * 300f, npc.Config?.RunSpeed ?? 200f);
+				await GameTask.DelaySeconds(0.8f);
+			})
+			.Interrupt()
+  CALL new AISchedule(name)
+			.Task()
+  CALL npc.MoveTo()
+  CALL GameTask.DelaySeconds()
+  METH public AISchedule FindCover((string name))
+  CALL new AISchedule(name)
+			.Task("TASK_FIND_COVER", async (npc, ct) =>
+			{
+				var cover = CoverEvaluator.FindCover(npc);
+				if (cover.HasValue)
+					npc.MoveTo(cover.Value, npc.Config?.RunSpeed ?? 200f);
+				else
+					npc.MoveTo(npc.GuardPosition);
+				await GameTask.Yield();
+			})
+			.Task("TASK_WAIT_FOR_MOVEMENT", AITask.WaitForMovement.ExecuteFunc)
+			.Interrupt()
+  CALL new AISchedule(name)
+			.Task("TASK_FIND_COVER", async (npc, ct) =>
+			{
+				var cover = CoverEvaluator.FindCover(npc);
+				if (cover.HasValue)
+					npc.MoveTo(cover.Value, npc.Config?.RunSpeed ?? 200f);
+				else
+					npc.MoveTo(npc.GuardPosition);
+				await GameTask.Yield();
+			})
+			.Task()
+  CALL new AISchedule(name)
+			.Task()
+  CALL CoverEvaluator.FindCover()
+  CALL npc.MoveTo()
+  CALL npc.MoveTo()
+  CALL GameTask.Yield()
+
+>>> Senses\SensesComponent.cs
+CLASS Senses
+  METH public static bool IsInViewCone((BaseNPC npc, Vector3 targetPos))
+  CALL Vector3.Dot()
+  CALL MathX.DegreeToRadian()
+  CALL MathF.Cos()
+  METH public static bool CanSeePoint((Vector3 from, Vector3 to, BaseNPC self))
+  CALL SceneTrace.Ray(from, to)
+			.IgnoreGameObject(self.GameObject)
+			.Run()
+  CALL SceneTrace.Ray(from, to)
+			.IgnoreGameObject()
+  CALL SceneTrace.Ray()
+  METH public static bool CanSee((BaseNPC npc, GameObject target))
+  CALL target.IsValid()
+  CALL Vector3.DistanceBetween()
+  CALL IsInViewCone()
+  CALL CanSeePoint()
+  METH public static IEnumerable<BaseNPC> FindVisibleNPCs((BaseNPC npc))
+  CALL npc.Scene.GetAllComponents<BaseNPC>()
+			.Where()
+  CALL npc.Scene.GetAllComponents<BaseNPC>()
+  CALL n.IsValid()
+  CALL CanSee()
+  METH public static IEnumerable<GameObject> FindAudibleObjects((BaseNPC npc, float maxDist = 0f))
+  CALL npc.Scene.GetAllObjects()
+			.Where()
+  CALL npc.Scene.GetAllObjects()
+  CALL go.IsValid()
+  CALL Vector3.DistanceBetween()
+  METH public static IEnumerable<GameObject> FindInRadius((BaseNPC npc, float radius))
+  CALL npc.Scene.FindInPhysics(new Sphere(npc.Transform.Position, radius))
+			.Where()
+  CALL npc.Scene.FindInPhysics()
+  CALL obj.IsValid()
+  METH public static List<(Vector3 Position, string Direction)> TraceDirections((
+		BaseNPC npc, int numDirections = 8, float maxDist = 200f))
+  CALL MathX.DegreeToRadian()
+  CALL MathF.Cos()
+  CALL MathF.Sin()
+  CALL SceneTrace.Ray(origin, origin + dir * maxDist)
+				.IgnoreGameObject(npc.GameObject)
+				.Run()
+  CALL SceneTrace.Ray(origin, origin + dir * maxDist)
+				.IgnoreGameObject()
+  CALL SceneTrace.Ray()
+  CALL results.Add()
+
+>>> Sound\NPCSoundSystem.cs
+CLASS NPCSoundSystem
+  PROP private BaseNPC Owner
+  METH public void NPCSoundSystem((BaseNPC owner))
+  METH public SoundHandle Play((string soundPath, float volume = 1f, float pitch = 1f))
+  CALL string.IsNullOrEmpty()
+  CALL Sound.Play()
+  CALL _activeSounds.Add()
+  METH public SoundHandle PlayWithVariance((string soundPath, float volume = 1f))
+  CALL Game.Random.Float()
+  CALL Play()
+  METH public SoundHandle PlayRandom((string[] soundPaths, float volume = 1f))
+  CALL Game.Random.Next()
+  CALL PlayWithVariance()
+  METH public SoundHandle PlayFromTable((string soundTable, float volume = 1f, float pitch = 1f))
+  CALL string.IsNullOrEmpty()
+  CALL soundTable.Split()
+  CALL paths[Game.Random.Next(0, paths.Length)].Trim()
+  CALL Game.Random.Next()
+  CALL string.IsNullOrEmpty()
+  CALL Play()
+  METH public void StopAll(())
+  CALL h?.Stop()
+  CALL _activeSounds.Clear()
+  METH public void Stop((SoundHandle handle))
+  CALL handle?.Stop()
+  CALL _activeSounds.Remove()
+
+>>> Utilities\VJUtils.cs
+CLASS VJConfig
+  PROP public static bool DebugAI
+  PROP public static bool AIEnabled
+  PROP public static bool IgnorePlayers
+  PROP public static bool NPCMelee
+  PROP public static int ReduceVFX
+
+>>> Utilities\VJUtils.cs
+CLASS RandomHelper
+  METH public static int NextInt((int min, int max))
+  CALL Game.Random.Next()
+  METH public static float NextFloat((float min, float max))
+  CALL Game.Random.NextSingle()
+  METH public static T FromList((IList<T> list))
+  CALL Game.Random.Next()
+  METH public static bool Chance((float percent))
+  CALL Game.Random.NextSingle()
+
+>>> Utilities\VJUtils.cs
+CLASS VFXHelper
+  METH public static ParticleEffect PlayParticles((string particleIdent, Vector3 position, Rotation rotation = default, float lifetime = 2f))
+  CALL string.IsNullOrEmpty()
+  CALL go.AddComponent<ParticleEffect>()
+  CALL DelayedDestroy()
+  METH public static ParticleEffect AttachParticles((string particleIdent, GameObject parent))
+  CALL string.IsNullOrEmpty()
+  CALL parent.IsValid()
+  CALL go.AddComponent<ParticleEffect>()
+  METH public static void PlaceDecal((string decalIdent, Vector3 position, Vector3 normal, float size = 32f))
+  CALL string.IsNullOrEmpty()
+  CALL Rotation.LookAt()
+  CALL go.AddComponent<Decal>()
+  CALL DelayedDestroy()
+  METH private static async void DelayedDestroy((GameObject go, float delay))
+  CALL GameTask.DelaySeconds()
+  CALL go?.Destroy()
+
+>>> Utilities\VJUtils.cs
+CLASS DamageTags
+
+>>> Utilities\VJUtils.cs
+CLASS Trajectory
+  METH public static Vector3 Calculate((Vector3 startPos, Vector3 targetPos, string algorithm = "Line",
+		float strength = 2000f, float gravityOverride = 0f))
+  CALL Vector3.DistanceBetween()
+  CALL MathF.Sqrt()
+  CALL Math.Max()
+  METH public static Vector3 CalculateWithPrediction((Vector3 startPos, Vector3 targetPos, Vector3 targetVelocity,
+		float strength = 2000f))
+  CALL Vector3.DistanceBetween()
+
+>>> Utilities\VJUtils.cs
+CLASS VJColors

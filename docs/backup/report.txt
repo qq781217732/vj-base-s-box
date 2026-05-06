@@ -1,0 +1,140 @@
+=== HumanNPC === (35 gaps)
+   1. CanChatMessage
+   2. IsGuard
+   3. AlertTimeout
+   4. PoseParameterLooking_InvertPitch
+   5. PoseParameterLooking_InvertYaw
+   6. PoseParameterLooking_InvertRoll
+   7. PoseParameterLooking_CanReset
+   8. BloodParticle
+   9. Immune_Dissolve
+  10. MeleeAttackAngleRadius
+  11. NextMeleeAttackTime
+  12. NextGrenadeAttackTime
+  13. KilledEnemySoundLast
+  14. HasSoundTrack
+  15. SoundTrackVolume
+  16. SoundTrackPlaybackRate
+  17. MedicBeforeHealSoundChance
+  18. MedicOnHealSoundChance
+  19. MedicReceiveHealSoundChance
+  20. BecomeEnemyToPlayerChance
+  21. MeleeAttackMissSoundChance
+  22. SoundTrackChance
+  23. MedicBeforeHealSoundLevel
+  24. MedicOnHealSoundLevel
+  25. MedicReceiveHealSoundLevel
+  26. MeleeAttackMissSoundLevel
+  27. FollowPlayerPitch
+  28. MedicBeforeHealSoundPitch
+  29. MedicOnHealSoundPitch
+  30. MedicReceiveHealSoundPitch
+  31. BecomeEnemyToPlayerPitch
+  32. MeleeAttackMissSoundPitch
+  33. SuppressingPitch
+  34. DamageByPlayerPitch
+  35. NextWeaponStrafeT
+
+=== CreatureNPC (excl. HumanNPC-only) === (66 gaps)
+   1. HealthRegenParams
+   2. IsGuard
+   3. AlertTimeout
+   4. PoseParameterLooking_InvertPitch
+   5. PoseParameterLooking_InvertYaw
+   6. PoseParameterLooking_InvertRoll
+   7. PoseParameterLooking_CanReset
+   8. BloodParticle
+   9. Immune_Dissolve
+  10. DamageAllyResponse_Cooldown
+  11. MeleeAttackAngleRadius
+  12. NextMeleeAttackTime
+  13. MeleeAttackPlayerSpeed
+  14. MeleeAttackPlayerSpeedWalk
+  15. MeleeAttackPlayerSpeedRun
+  16. MeleeAttackPlayerSpeedTime
+  17. MeleeAttackDSP
+  18. MeleeAttackDSPLimit
+  19. TimeUntilRangeAttackProjectileRelease
+  20. NextRangeAttackTime
+  21. RangeAttackExtraTimers
+  22. LeapAttackDamage
+  23. TimeUntilLeapAttackDamage
+  24. TimeUntilLeapAttackVelocity
+  25. NextLeapAttackTime
+  26. LeapAttackExtraTimers
+  27. KilledEnemySoundLast
+  28. HasSoundTrack
+  29. SoundTrackVolume
+  30. SoundTrackPlaybackRate
+  31. MedicBeforeHealSoundChance
+  32. MedicOnHealSoundChance
+  33. MedicReceiveHealSoundChance
+  34. BecomeEnemyToPlayerChance
+  35. MeleeAttackMissSoundChance
+  36. BeforeRangeAttackSoundChance
+  37. RangeAttackSoundChance
+  38. BeforeLeapAttackSoundChance
+  39. LeapAttackJumpSoundChance
+  40. LeapAttackDamageSoundChance
+  41. LeapAttackDamageMissSoundChance
+  42. SoundTrackChance
+  43. MedicBeforeHealSoundLevel
+  44. MedicOnHealSoundLevel
+  45. MedicReceiveHealSoundLevel
+  46. MeleeAttackMissSoundLevel
+  47. MeleeAttackPlayerSpeedSoundLevel
+  48. BeforeRangeAttackSoundLevel
+  49. RangeAttackSoundLevel
+  50. BeforeLeapAttackSoundLevel
+  51. LeapAttackJumpSoundLevel
+  52. LeapAttackDamageSoundLevel
+  53. LeapAttackDamageMissSoundLevel
+  54. FollowPlayerPitch
+  55. MedicBeforeHealSoundPitch
+  56. MedicOnHealSoundPitch
+  57. MedicReceiveHealSoundPitch
+  58. BecomeEnemyToPlayerPitch
+  59. MeleeAttackMissSoundPitch
+  60. BeforeRangeAttackPitch
+  61. RangeAttackPitch
+  62. BeforeLeapAttackSoundPitch
+  63. LeapAttackJumpSoundPitch
+  64. LeapAttackDamageSoundPitch
+  65. LeapAttackDamageMissSoundPitch
+  66. DamageByPlayerPitch
+
+=== BaseWeapon === (11 gaps)
+   1. NPC_ReloadSoundLevel
+   2. NPC_BeforeFireSoundLevel
+   3. NPC_BeforeFireSoundPitch
+   4. NPC_SecondaryFireSound
+   5. NPC_SecondaryFireSoundLevel
+   6. DryFireSoundLevel
+   7. DryFireSoundPitch
+   8. MeleeWeaponSound_Hit
+   9. MeleeWeaponSound_Miss
+  10. RenderGroup
+  11. NPC_AnimationSet
+
+=== Projectile === (6 gaps)
+   1. Model
+   2. CollisionDecal
+   3. RadiusDamage
+   4. StartupSoundPitch
+   5. OnCollideSoundPitch
+   6. OnRemoveSoundPitch
+
+=== Core/BaseNPC === (1 gaps)
+   1. FootStepPitch
+
+=== TankGunner === (5 gaps)
+   1. Tank_TurningSoundLevel
+   2. Tank_TurningSoundPitch
+   3. Tank_ReloadShellSoundPitch
+   4. Tank_FireShellSoundPitch
+   5. Tank_ReachableHeight
+
+=== TankBase === (0 gaps)
+
+TOTAL: 124 differences across all classes
+Shell cwd was reset to f:\DevProject\Sbox\simple-weapon-base-master\code

@@ -1,0 +1,63 @@
+{
+  "RootObject": {
+    "__guid": "43c5a0e3-1bec-414e-a5b7-101e4f3070c7",
+    "Flags": 0,
+    "Name": "interactionspanel",
+    "Enabled": true,
+    "NetworkMode": 0,
+    "Components": [
+      {
+        "__type": "Sandbox.WorldPanel",
+        "__guid": "e77429f1-f1a2-46f9-a266-6758afc60489",
+        "HorizontalAlign": "Left",
+        "InteractionRange": 0,
+        "LookAtCamera": false,
+        "PanelSize": "1024,512",
+        "RenderOptions": {
+          "GameLayer": true,
+          "OverlayLayer": true,
+          "BloomLayer": false,
+          "AfterUILayer": false
+        },
+        "RenderScale": 1,
+        "VerticalAlign": "Center"
+      },
+      {
+        "__type": "Sandbox.InteractionPanel",
+        "__guid": "127b843f-1d34-4b1e-b2f9-3e0229d52935"
+      }
+    ],
+    "Children": [],
+    "__variables": [],
+    "__properties": {
+      "FixedUpdateFrequency": 50,
+      "MaxFixedUpdates": 5,
+      "NetworkFrequency": 30,
+      "NetworkInterpolation": true,
+      "PhysicsSubSteps": 1,
+      "ThreadedAnimation": true,
+      "TimeScale": 1,
+      "UseFixedUpdate": true,
+      "Metadata": {},
+      "NavMesh": {
+        "Enabled": false,
+        "IncludeStaticBodies": true,
+        "IncludeKeyframedBodies": true,
+        "EditorAutoUpdate": true,
+        "AgentHeight": 64,
+        "AgentRadius": 16,
+        "AgentStepSize": 18,
+        "AgentMaxSlope": 40,
+        "ExcludedBodies": "",
+        "IncludedBodies": ""
+      }
+    }
+  },
+  "ShowInMenu": false,
+  "MenuPath": null,
+  "MenuIcon": null,
+  "DontBreakAsTemplate": false,
+  "ResourceVersion": 1,
+  "__references": [],
+  "__version": 1
+}

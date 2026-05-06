@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "ast-grep": {
+      "command": "C:\\Users\\Katana\\.local\\bin\\uv.exe",
+      "args": [
+        "run",
+        "python",
+        "main.py"
+      ],
+      "cwd": "C:\\Users\\Katana\\.claude\\ast-grep-mcp",
+      "env": {
+        "PATH": "C:\\Users\\Katana\\.local\\bin;C:\\Users\\Katana\\AppData\\Roaming\\npm;%PATH%"
+      }
+    },
+    "sbox-api": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "sbox-api-mcp"
+      ]
+    }
+  }
+}

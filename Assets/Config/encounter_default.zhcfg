@@ -1,0 +1,66 @@
+{
+  "__guid": "e0000000-0000-0000-0000-000000000001",
+  "__type": "ZombieHorde.EncounterConfig",
+  "__version": 1,
+  "GlobalMaxEnemies": 30,
+  "MaxActiveEncounters": 6,
+  "AmbientRefreshInterval": 5.0,
+  "PressureDecayRate": 1.0,
+  "PressureAccumulationRate": 0.5,
+  "HighPressureThreshold": 70.0,
+  "CrossZonePursuitThreshold": 60.0,
+  "SpawnMinSeparation": 80.0,
+  "SpawnInnerRadius": 200.0,
+  "SpawnOuterRadius": 500.0,
+  "DefaultMinPlayerDistance": 0.0,
+  "DefaultMaxPlayerDistance": 50000.0,
+  "DefaultRequireOutOfSight": false,
+  "EnemyBaseHealth": 50.0,
+  "EnemyWalkSpeed": 45.0,
+  "EnemyRunSpeed": 140.0,
+  "EnemyAttackDamage": 6.0,
+  "EnemyAttackSpeed": 1.0,
+  "SightRange": 1500.0,
+  "SightHalfAngle": 60.0,
+  "HearingRange": 800.0,
+  "ProximityRange": 150.0,
+  "SprintProximityBonus": 80.0,
+  "SightMemory": 4.0,
+  "SearchDuration": 5.0,
+  "SpawnGroupTemplates": [
+    {
+      "Name": "ScoutPatrol",
+      "TotalCost": 3,
+      "Entries": [
+        { "EnemyPrefab": { "_type": "prefab", "prefab": "prefabs/zombie_common.prefab" }, "EnemyTypeName": "ZombieHorde.CommonZombie", "Count": 3 }
+      ],
+      "DefaultTask": "Patrol"
+    },
+    {
+      "Name": "WanderPack",
+      "TotalCost": 4,
+      "Entries": [
+        { "EnemyPrefab": { "_type": "prefab", "prefab": "prefabs/zombie_common.prefab" }, "EnemyTypeName": "ZombieHorde.CommonZombie", "Count": 4 }
+      ],
+      "DefaultTask": "Wander"
+    },
+    {
+      "Name": "LightResponse",
+      "TotalCost": 5,
+      "Entries": [
+        { "EnemyPrefab": { "_type": "prefab", "prefab": "prefabs/zombie_common.prefab" }, "EnemyTypeName": "ZombieHorde.CommonZombie", "Count": 4 },
+        { "EnemyPrefab": { "_type": "prefab", "prefab": "prefabs/zombie_uncommon.prefab" }, "EnemyTypeName": "ZombieHorde.UncommonZombie", "Count": 1 }
+      ],
+      "DefaultTask": "MoveToSound"
+    },
+    {
+      "Name": "ChargerWave",
+      "TotalCost": 7,
+      "Entries": [
+        { "EnemyPrefab": { "_type": "prefab", "prefab": "prefabs/zombie_common.prefab" }, "EnemyTypeName": "ZombieHorde.CommonZombie", "Count": 4 },
+        { "EnemyPrefab": { "_type": "prefab", "prefab": "prefabs/zombie_charger.prefab" }, "EnemyTypeName": "ZombieHorde.ChargerZombie", "Count": 1 }
+      ],
+      "DefaultTask": "ChaseTarget"
+    }
+  ]
+}

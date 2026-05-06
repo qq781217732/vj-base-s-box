@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "sbox-docs": {
+      "command": "npx",
+      "args": ["-y", "sbox-mcp-documentation"]
+    }
+  }
+}

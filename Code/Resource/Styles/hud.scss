@@ -1,0 +1,102 @@
+﻿
+$yellow: #ff0;
+$orange: #f70;
+
+$color-primary: #C5E0E3;
+$color-secondary: #90A4A6;
+
+@import "_damageindicator.scss";
+@import "_hitindicator.scss";
+@import "_inventory.scss";
+@import "_healthbar.scss";
+@import "_infobar.scss";
+@import "_pickupfeed.scss";
+@import "_scoreboard.scss";
+@import "_pingmarker.scss";
+@import "_staminabar.scss";
+
+HudRootPanel
+{
+    background-color: rgba( #333, 0 );
+    transition: background-color 0.2s ease-in;
+    transform-origin: 50% 50%;
+
+    &.devcamera
+    {
+        display: none;
+    }
+}
+
+vitals
+{
+    font-size: 64px;
+    color: #ff0;
+    mix-blend-mode: lighten;
+    font-family: Roboto;
+
+    label
+    {
+        text-shadow: 0px 0px 20px #f70a;
+
+        &.danger
+        {
+            color: #f00;
+            text-shadow: 0px 0px 10px #f005;
+        }
+    }
+}
+
+.bottom-left
+{
+    left: 200px;
+}
+
+.top-middle {
+    top: 32px;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+
+    gamehud {
+        font-family: Roboto;
+        font-size: 20px;
+        flex-direction: column;
+        justify-content: center;
+
+        .game-state {
+            font-size: 12px;
+            font-weight: 400;
+            text-transform: uppercase;
+        }
+
+        .game-timer {
+            font-size: 32px;
+        }
+    }
+}
+
+.bottom-right
+{
+    right: 200px;
+}
+
+.bottom-left, .bottom-right
+{
+    mix-blend-mode: lighten;
+    position: absolute;
+    bottom: 100px;
+}
+
+iconpanel
+{
+    font-family: "Material Icons";
+}
+
+.game-end
+{
+
+    inventorybar, .bottom-right, .bottom-left
+    {
+        display: none;
+    }
+}

@@ -1,0 +1,66 @@
+@using Sandbox;
+@using Sandbox.UI;
+@using System.Threading.Tasks;
+@inherits PanelComponent
+@namespace Sandbox
+
+<root class="@(IsInteracting ? "interact" : "")" >
+		
+	<!-- times 90 and plus 10 so that there is a minimal width. Otherwise the rounding doesn't play nice -->
+	<div class="ProgressBar" style="
+	width:@(ProgressionHold * 90 + 10)%;  
+	@(ProgressionHold > 0 ? "opacity: 1;" : "opacity: 0;")
+	"></div>
+
+		<div class="Left"> 
+			<Image class="InteractionGlyph" Texture=@InputTexture/>
+			@if (IsHoldInteraction)
+			{
+				<div class="InteractionHold"> Hold </div>
+			}
+		</div>
+
+		<div class="Right"> 
+			<div class="InteractionTitle"> @InteractionString </div>
+		</div>
+
+</root>
+
+@code
+{
+
+	private Texture InputTexture;
+	public string InteractionString {get; set;}
+	private bool IsInteracting = false;
+	public bool IsHoldInteraction = false;
+	public float ProgressionHold = 0;
+
+
+	/// <summary>
+	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
+	/// </summary>
+	protected override int BuildHash() => System.HashCode.Combine( InputTexture, InteractionString, IsHoldInteraction, ProgressionHold);
+
+	protected override void OnUpdate()
+	{
+		InputTexture = Input.GetGlyph("use", InputGlyphSize.Medium, true);
+	}
+
+	/// <summary>
+    /// Triggers the interaction animation.
+    /// </summary>
+    public async Task TriggerInteractAnimation()
+    {
+        if (IsInteracting)
+            return; // Prevent overlapping animations
+
+        IsInteracting = true;
+        StateHasChanged();
+
+        // Wait for the animation duration (e.g., 300ms)
+        await Task.Delay(100);
+
+        IsInteracting = false;
+        StateHasChanged();
+    }
+}

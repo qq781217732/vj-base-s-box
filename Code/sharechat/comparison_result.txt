@@ -1,0 +1,314 @@
+======================================================================
+  Lua vs C# 方法对比
+======================================================================
+
+──────────────────────────────────────────────────────────────────────
+  VJ Base Creature → CreatureNPC
+  Lua: 50 methods | C#: 34 methods
+  匹配: 5 | 仅Lua: 45 | 仅C#: 29
+
+  [Lua有/C#无] 可能遗漏的方法:
+    - AA_MoveAnimation
+    - BeginDeath
+    - CalcAbsolutePosition
+    - CanFireWeapon
+    - Corpse_Add
+    - CreateDeathCorpse
+    - CustomOnRemove
+    - DeathWeaponDrop
+    - DoMeleeAttackPlayerSpeed
+    - DoWeaponAttackMovementCode
+    - DoingEngineSchedule
+    - Draw
+    - DrawTranslucent
+    - EngineScheduleFinish
+    - FinishDeath
+    - GetAttackSpread
+    - Init
+    - Initialize
+    - IsScheduleFinished
+    - LeapAttackJump
+    - MaintainAlertBehavior
+    - MaintainPropInteraction
+    - MatFootStepQCEvent
+    - OnDeath
+    - OnTakeDamage
+    - OnThink
+    - OnThinkActive
+    - PhysgunPickup
+    - PreInit
+    - ResetEnemy
+    - RunEngineTask
+    - RunTask
+    - SCHEDULE_FACE
+    - SelectSchedule
+    - SetAutomaticFrameAdvance
+    - StartEngineSchedule
+    - StartEngineTask
+    - StartTask
+    - Tank_AngleDiffuse
+    - TaskTime
+    - Think
+    - TranslateActivity
+    - UpdatePoseParamTracking
+    - Use
+    - VJ_CheckAllFourSides
+
+  [C#有/Lua无] C# 新增的方法:
+    + AAIdleWander
+    + AAMoveTo
+    + ApplyBleed
+    + CleanupObject
+    + DamageFlash
+    + ExtraMeleeHit
+    + Flinch
+    + GetFlinchAnimForHitGroup
+    + IsGibDamage
+    + MaintainIdleBehavior
+    + OnCreatureDeath
+    + OnCreatureInit
+    + OnKilled
+    + OnStart
+    + OnUpdate
+    + PlayAllyDeathSound
+    + PlayAmbientSounds
+    + PlayAttackSound
+    + PlayCallForHelpSound
+    + PlayDamageByPlayerSound
+    + PlayDangerSightSound
+    + PlayGrenadeAttackSound
+    + PlayInvestigateSound
+    + PlayKilledEnemySound
+    + ResetFlash
+    + ResetFlinch
+    + RunBleed
+    + RunCombat
+    + SpawnDeathLoot
+
+──────────────────────────────────────────────────────────────────────
+  VJ Base Human → HumanNPC
+  Lua: 8 methods | C#: 27 methods
+  匹配: 0 | 仅Lua: 8 | 仅C#: 27
+
+  [Lua有/C#无] 可能遗漏的方法:
+    - CalcAbsolutePosition
+    - Draw
+    - DrawTranslucent
+    - Initialize
+    - MatFootStepQCEvent
+    - SetAutomaticFrameAdvance
+    - Tank_OnFireShell
+    - Tank_UpdateIdleParticles
+
+  [C#有/Lua无] C# 新增的方法:
+    + BetterWeaponSwitch
+    + CallAlliesForHelp
+    + CheckPlayerSight
+    + CustomOnThink
+    + DoDiamondFormation
+    + DropAllWeapons
+    + DropWeapon
+    + FireWeapon
+    + Follow
+    + GrenadeAttack
+    + GrenadeSchedule
+    + HealthRegenTick
+    + MaintainFollow
+    + MaintainIdleBehavior
+    + MedicCheck
+    + OnCreatureDeath
+    + OnDamaged
+    + OnFollowStarted
+    + OnPlayerSpotted
+    + OnStart
+    + OnUpdate
+    + PickupWeapon
+    + ReloadSchedule
+    + SelectCombatSchedule
+    + ShouldPeekFromCover
+    + StopFollowing
+    + SwitchToBestWeapon
+
+──────────────────────────────────────────────────────────────────────
+  VJ Base Tank → TankNPC
+  Lua: 2 methods | C#: 19 methods
+  匹配: 0 | 仅Lua: 2 | 仅C#: 19
+
+  [Lua有/C#无] 可能遗漏的方法:
+    - PhysicsCollide
+    - PhysicsUpdate
+
+  [C#有/Lua无] C# 新增的方法:
+    + AngleDiffuse
+    + GetGunnerSpawnPosition
+    + GetNearDeathSparkPositions
+    + OnCreatureDeath
+    + OnDestroy
+    + OnKilled
+    + OnStart
+    + OnThinkActive
+    + OnUpdate
+    + PlayMovementSounds
+    + SelectCombatSchedule
+    + SpawnGunner
+    + StopMovementSounds
+    + Tank_Init
+    + Tank_OnInitialDeath
+    + Tank_OnRunOver
+    + Tank_UpdateMoveParticles
+    + TryRunOver
+    + UpdateIdleParticles
+
+──────────────────────────────────────────────────────────────────────
+  VJ Base Tank Gunner → TankNPC
+  Lua: 3 methods | C#: 19 methods
+  匹配: 1 | 仅Lua: 2 | 仅C#: 18
+
+  [Lua有/C#无] 可能遗漏的方法:
+    - Tank_OnDeathCorpse
+    - Tank_UpdateIdleParticles
+
+  [C#有/Lua无] C# 新增的方法:
+    + AngleDiffuse
+    + GetGunnerSpawnPosition
+    + GetNearDeathSparkPositions
+    + OnCreatureDeath
+    + OnDestroy
+    + OnKilled
+    + OnStart
+    + OnThinkActive
+    + OnUpdate
+    + PlayMovementSounds
+    + SelectCombatSchedule
+    + SpawnGunner
+    + StopMovementSounds
+    + Tank_Init
+    + Tank_OnInitialDeath
+    + Tank_OnRunOver
+    + TryRunOver
+    + UpdateIdleParticles
+
+──────────────────────────────────────────────────────────────────────
+  VJ Base NPC Controller → BaseNPC
+  Lua: 7 methods | C#: 48 methods
+  匹配: 0 | 仅Lua: 7 | 仅C#: 48
+
+  [Lua有/C#无] 可能遗漏的方法:
+    - CalcView
+    - Draw
+    - HUD
+    - Initialize
+    - OnRemove
+    - PlayerBindPress
+    - SetupDataTables
+
+  [C#有/Lua无] C# 新增的方法:
+    + ClearCondition
+    + ClearSenseConditions
+    + CustomInitialize
+    + CustomOnRemove
+    + CustomOnThink
+    + DrawDebug
+    + FaceEnemy
+    + FacePosition
+    + FaceTarget
+    + ForceSetEnemy
+    + GatherConditions
+    + GatherEnemyConditions
+    + GetAimPosition
+    + GetAimSpread
+    + HasCondition
+    + Investigate
+    + IsAlliedType
+    + IsPotentialEnemy
+    + MoveTo
+    + OnCallForHelp
+    + OnDamage
+    + OnDamaged
+    + OnDestroy
+    + OnHearDanger
+    + OnKilled
+    + OnKilledEnemy
+    + OnLostEnemy
+    + OnScheduleComplete
+    + OnSeeEnemy
+    + OnStart
+    + OnUpdate
+    + PlaySound
+    + ScaleByDifficulty
+    + SelectAlertSchedule
+    + SelectCombatSchedule
+    + SelectIdealState
+    + SelectIdleSchedule
+    + SelectSchedule
+    + SetBodyGroup
+    + SetCondition
+    + SetMaterialGroup
+    + SetModel
+    + SetTint
+    + SetTurnTarget
+    + ShouldInterruptSchedule
+    + StopAllSounds
+    + StopMoving
+    + YieldToPlayer
+
+======================================================================
+  SWEP vs BaseWeapon 对比
+======================================================================
+  SWEP Lua: 0 methods | C# BaseWeapon: 16 methods
+  匹配: 0 | 仅Lua: 0 | 仅C#: 16
+
+  [BaseWeapon有/SWEP无] C# 新增:
+    + DryFire
+    + FireBullet
+    + GetAimDirection
+    + GetBulletSpawnPosition
+    + GetNPCFireDirection
+    + NPC_CanFire
+    + NPC_Think
+    + OnDeploy
+    + OnEquip
+    + OnStart
+    + PlayMuzzleEffects
+    + PrimaryAttack
+    + Reload
+    + SecondaryAttack
+    + ShellEject
+    + SpawnTracer
+
+======================================================================
+  Lua 中所有 TABLE ENT (按 PrintName)
+======================================================================
+  [ENT] VJ Base Bullseye : base_entity | 5 methods, 11 fields
+  [ENT] Combine Ball : obj_vj_projectile_base | 8 methods, 13 fields
+  [ENT] Crossbow Bolt : obj_vj_projectile_base | 2 methods, 12 fields
+  [ENT] Flare Round : base_anim | 6 methods, 8 fields
+  [ENT] Grenade : obj_vj_projectile_base | 4 methods, 20 fields
+  [ENT] Rifle Grenade : obj_vj_projectile_base | 3 methods, 14 fields
+  [ENT] Tank Shell : obj_vj_projectile_base | 3 methods, 15 fields
+  [ENT] Wooden Board : base_anim | 4 methods, 9 fields
+  [ENT] Flag : prop_vj_animatable | 2 methods, 6 fields
+  [ENT] Campfire : base_anim | 8 methods, 9 fields
+  [ENT] Admin Health Kit : base_anim | 4 methods, 8 fields
+  [ENT] Player Spawnpoint : base_anim | 19 methods, 8 fields
+  [ENT] VJ Base Creature : base_entity | 15 methods, 8 fields
+  [ENT] VJ Base Human : base_entity | 9 methods, 8 fields
+  [ENT] (unnamed) | 9 methods, 7 fields
+  [ENT] VJ Base Tank Gunner : npc_vj_creature_base | 3 methods, 7 fields
+  [ENT] (unnamed) | 10 methods, 5 fields
+  [ENT] VJ Base Tank : npc_vj_creature_base | 2 methods, 7 fields
+  [ENT] (unnamed) | 2 methods, 23 fields
+  [ENT] Aerial NPC : npc_vj_creature_base | 0 methods, 5 fields
+  [ENT] (unnamed) | 2 methods, 7 fields
+  [ENT] Interactive NPC : npc_vj_human_base | 1 methods, 6 fields
+  [ENT] (unnamed) | 5 methods, 32 fields
+  [ENT] Player NPC : npc_vj_human_base | 6 methods, 5 fields
+  [ENT] (unnamed) | 11 methods, 8 fields
+  [ENT] VJ Base NPC Controller : base_entity | 7 methods, 5 fields
+  [ENT] (unnamed) | 4 methods, 6 fields
+  [ENT] VJ Base Gib : base_anim | 1 methods, 6 fields
+  [ENT] (unnamed) | 22 methods, 41 fields
+  [ENT] VJ Base Projectile : base_anim | 5 methods, 5 fields
+  [ENT] VJ Base Spawner : base_anim | 2 methods, 5 fields
+  [ENT] VJ Base Animatable Prop : base_anim | 3 methods, 5 fields
+  [ENT] (unnamed) | 16 methods, 3 fields

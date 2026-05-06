@@ -1,0 +1,1539 @@
+VAR VJBASE_INSTALLED = true
+VAR VJBASE_VERSION = "3.2.0"
+VAR VJ_CVAR_IGNOREPLAYERS = GetConVar("ai_ignoreplayers"):GetInt()
+VAR VJ_CVAR_AI_ENABLED = GetConVar("ai_disabled"):GetInt()
+VAR VJ_RecipientFilter = RecipientFilter()
+VAR VJ = {}
+INCLUDE autorun/vj_controls.lua
+INCLUDE vj_base/enums.lua
+INCLUDE vj_base/convars.lua
+INCLUDE vj_base/debug.lua
+INCLUDE vj_base/funcs.lua
+INCLUDE vj_base/hooks.lua
+INCLUDE vj_base/menu/main.lua
+INCLUDE vj_base/menu/spawn.lua
+INCLUDE vj_base/menu/entity_configures.lua
+INCLUDE vj_base/menu/entity_properties.lua
+INCLUDE vj_base/resources/localization.lua
+INCLUDE vj_base/resources/main.lua
+INCLUDE vj_base/resources/particles.lua
+INCLUDE vj_base/resources/sounds.lua
+INCLUDE vj_base/extensions/corpse.lua
+INCLUDE vj_base/extensions/music.lua
+INCLUDE includes/modules/vj_ai_nodegraph.lua
+INCLUDE includes/modules/vj_ai_schedule.lua
+INCLUDE includes/modules/vj_ai_task.lua
+VAR spawnCategory = "VJ Base"
+VAR VJ_Nodegraph = vj_ai_nodegraph.New()
+VAR memeType = net.ReadUInt(1)
+VAR sd = CreateSound(game.GetWorld(), memeType == 1 and "vj_base/player/areyouthristy.wav" or "vj_base/player
+VAR colorDarkCyan = Color(30, 200, 255)
+VAR VJBASE_ERROR_OUTDATED_GAME = true
+VAR VJBASE_ERROR_INCOMPATIBLE = true
+VAR frame = vgui.Create("DFrame")
+VAR labelTitle = vgui.Create("DLabel", frame)
+VAR labelDesc = vgui.Create("DLabel", frame)
+VAR buttonLink = vgui.Create("DButton", frame)
+VAR buttonClose = vgui.Create("DButton", frame)
+VAR VJ_PICK = VJ.PICK
+VAR VJ_PICKRANDOMTABLE = VJ.PICK
+VAR VJ_STOPSOUND = VJ.STOPSOUND
+VAR VJ_Set = VJ.SET
+VAR VJ_HasValue = VJ.HasValue
+VAR VJ_Color2Byte = VJ.Color2Byte
+VAR VJ_CreateSound = VJ.CreateSound
+VAR VJ_EmitSound = VJ.EmitSound
+VAR VJ_AnimationExists = VJ.AnimExists
+VAR VJ_GetSequenceDuration = VJ.AnimDuration
+VAR VJ_SequenceToActivity = VJ.SequenceToActivity
+VAR VJ_IsCurrentAnimation = VJ.IsCurrentAnim
+VAR VJ_IsProp = VJ.IsProp
+VAR VJ_DestroyCombineTurret = VJ.DamageSpecialEnts
+VAR files = file.Find("vj_base/plugins/*.lua", "LUA")
+VAR fileName = "vj_base/plugins/" .. f
+TABLE VJ
+  FIELD AddClientConVar = function(name, defValue, helpText, min, max, save) 	return CreateClientConVar(name, defValue, save !
+  FIELD AddAddonProperty = VJ.AddPlugin
+VAR Yellow = Color(255, 221, 35)
+VAR blcolor = Color(130, 19, 10)
+VAR bAND = bit.band
+VAR bShiftR = bit.rshift
+FUNC Color8Bit2Color(bits)
+FUNC EFFECT:Init(data)
+FUNC EFFECT:Think()
+FUNC EFFECT:Render()
+VAR origin = data:GetOrigin()
+VAR emitter = ParticleEmitter(origin)
+VAR dust = emitter:Add("particles/smokey", origin)
+FUNC EFFECT:Think()
+FUNC EFFECT:Render()
+VAR origin = data:GetOrigin()
+VAR emitter = ParticleEmitter(origin)
+VAR dust = emitter:Add("particles/smokey", origin)
+FUNC EFFECT:Think()
+FUNC EFFECT:Render()
+VAR origin = data:GetOrigin()
+VAR emitter = ParticleEmitter(origin)
+VAR smoke = emitter:Add("particles/smokey", origin)
+VAR smoke = emitter:Add("particles/smokey", origin)
+VAR flame = emitter:Add("particles/flamelet1", origin)
+FUNC EFFECT:Think()
+FUNC EFFECT:Render()
+VAR ent = data:GetEntity()
+VAR owner = ent:GetOwner()
+VAR muzEnt = ((owner != LocalPlayer()) or owner:ShouldDrawLocalPlayer()) && ent or owner:GetViewModel()
+FUNC EFFECT:Think()
+FUNC EFFECT:Render()
+VAR origin = data:GetOrigin()
+VAR emitter = ParticleEmitter(origin)
+VAR smoke = emitter:Add("particles/smokey", origin)
+VAR smoke = emitter:Add("particles/smokey", origin)
+VAR flame = emitter:Add("particles/flamelet1", origin)
+FUNC EFFECT:Think()
+FUNC EFFECT:Render()
+VAR beamMat = Material("effects/spark")
+VAR beamLength = 0.1
+VAR beamColor = Color(255, 0, 0, 255)
+FUNC EFFECT:Init(data)
+FUNC EFFECT:Think()
+FUNC EFFECT:Render()
+VAR ent = data:GetEntity()
+VAR origin = data:GetOrigin()
+VAR scale = data:GetScale()
+VAR emitter = ParticleEmitter(origin)
+VAR smoke = emitter:Add("particles/smokey", origin)
+VAR heatwave = emitter:Add("sprites/heatwave", origin)
+FUNC EFFECT:Think()
+FUNC EFFECT:Render()
+VAR ent = data:GetEntity()
+VAR origin = data:GetOrigin()
+VAR scale = data:GetScale()
+VAR emitter = ParticleEmitter(origin)
+VAR dust = emitter:Add("particles/smokey", origin)
+FUNC EFFECT:Think()
+FUNC EFFECT:Render()
+TABLE ENT
+  FIELD Base = "base_entity"
+  FIELD Type = "ai"
+  FIELD PrintName = "VJ Base Bullseye"
+  FIELD Author = "DrVrej"
+  FIELD Contact = "http://steamcommunity.com/groups/vrejgaming"
+  FIELD Information = "Target for VJ Base NPCs."
+  FIELD Category = "VJ Base"
+  FIELD IsVJBaseBullseye = true
+  METH Draw()
+  FIELD SolidMovementType = "Dynamic"
+  FIELD CanToggle = false
+  FIELD ToggleDisplayColors = true
+  FIELD ForceEntAsEnemy = false
+  FIELD Activated = true
+VAR sdActivated = "hl1/fvox/activated.wav"
+VAR sdDeactivated = "hl1/fvox/deactivated.wav"
+  METH Initialize()
+  METH AcceptInput(key,activator,caller,data)
+  METH Think()
+  METH OnTakeDamage(dmginfo)
+TABLE ENT
+  FIELD Type = "anim"
+  FIELD Base = "obj_vj_projectile_base"
+  FIELD PrintName = "Combine Ball"
+  FIELD Author = "DrVrej"
+  FIELD Contact = "http://steamcommunity.com/groups/vrejgaming"
+  FIELD Category = "VJ Base"
+  FIELD VJ_ID_Danger = true
+  METH Draw()
+  FIELD Model = "models/effects/combineball.mdl"
+  FIELD CollisionBehavior = VJ.PROJ_COLLISION_PERSIST
+  FIELD CollisionDecal = "FadingScorch"
+  FIELD DirectDamage = 200
+  FIELD DirectDamageType = bit.bor(DMG_DISSOLVE, DMG_BLAST, DMG_SHOCK)
+  FIELD SoundTbl_Idle = "weapons/physcannon/energy_sing_loop4.wav"
+  FIELD SoundTbl_OnCollide = {"weapons/physcannon/energy_bounce1.wav", "weapons/physcannon/energy_bounce2.wav"}
+  FIELD IdleSoundPitch = VJ.SET(100, 100)
+  METH InitPhys()
+  METH SetCoreType(capture)
+VAR colorWhite = Color(255, 255, 255, 255)
+  METH Init()
+  METH OnBounce(data,phys)
+VAR sdHit = {"weapons/physcannon/energy_disintegrate4.wav", "weapons/physcannon/energy_disintegrate5.wav"}
+  METH OnCollision(data,phys)
+  METH GravGunPunt(ply)
+VAR color1 = Color(255, 255, 225, 32)
+VAR color2 = Color(255, 255, 225, 64)
+  METH OnDestroy(data,phys)
+TABLE ENT
+  FIELD Type = "anim"
+  FIELD Base = "obj_vj_projectile_base"
+  FIELD PrintName = "Crossbow Bolt"
+  FIELD Author = "DrVrej"
+  FIELD Contact = "http://steamcommunity.com/groups/vrejgaming"
+  FIELD Category = "VJ Base"
+  FIELD PhysicsSolidMask = MASK_SHOT
+  FIELD Model = "models/crossbow_bolt.mdl"
+  FIELD DoesDirectDamage = true
+  FIELD DirectDamage = 90
+  FIELD CollisionDecal = "Impact.Concrete"
+  FIELD SoundTbl_Idle = "weapons/fx/nearmiss/bulletltor03.wav"
+  FIELD SoundTbl_OnCollide = "weapons/crossbow/hit1.wav"
+  FIELD IdleSoundLevel = 60
+VAR sdHitEnt = {"weapons/crossbow/hitbod1.wav", "weapons/crossbow/hitbod2.wav"} // weapons/crossbow/bolt_skewer1.wa
+  METH InitPhys()
+  METH OnCollision(data,phys)
+TABLE ENT
+  FIELD Type = "anim"
+  FIELD Base = "base_anim"
+  FIELD PrintName = "Flare Round"
+  FIELD Author = "DrVrej"
+  FIELD Contact = "http://steamcommunity.com/groups/vrejgaming"
+  FIELD Information = "Flare that will burn for 1 minute.\nIgnites anything it touches."
+  FIELD Category = "VJ Base"
+  FIELD Spawnable = true
+  FIELD PhysicsSounds = true
+  METH Draw()
+  FIELD FuseTime = 60
+VAR colorTrailRed = Color(155, 0, 0, 150)
+  METH Initialize()
+  METH Use(activator,caller)
+  METH PhysicsCollide(data,physobj)
+  METH OnTakeDamage(dmginfo)
+  METH OnRemove()
+TABLE ENT
+  FIELD Type = "anim"
+  FIELD Base = "obj_vj_projectile_base"
+  FIELD PrintName = "Grenade"
+  FIELD Author = "DrVrej"
+  FIELD Contact = "http://steamcommunity.com/groups/vrejgaming"
+  FIELD Information = "Default VJ grenade, will explode after 3 seconds."
+  FIELD Category = "VJ Base"
+  FIELD Spawnable = true
+  FIELD VJ_ID_Grenade = true
+  FIELD VJ_ID_Grabbable = true
+  FIELD Model = "models/vj_base/weapons/w_grenade.mdl"
+  FIELD ProjectileType = VJ.PROJ_TYPE_PROP
+  FIELD DoesRadiusDamage = true
+  FIELD RadiusDamageRadius = 250
+  FIELD RadiusDamage = 80
+  FIELD RadiusDamageUseRealisticRadius = true
+  FIELD RadiusDamageType = DMG_BLAST
+  FIELD RadiusDamageForce = 90
+  FIELD CollisionBehavior = VJ.PROJ_COLLISION_NONE
+  FIELD CollisionDecal = "Scorch"
+  FIELD SoundTbl_OnCollide = "weapons/hegrenade/he_bounce-1.wav"
+  FIELD FuseTime = 3
+  METH Init()
+  METH OnDamaged(dmginfo)
+  METH OnCollision(data,phys)
+VAR defAngle = Angle(0, 0, 0)
+VAR vecZ4 = Vector(0, 0, 4)
+VAR vezZ100 = Vector(0, 0, 100)
+  METH OnDestroy()
+TABLE ENT
+  FIELD Type = "anim"
+  FIELD Base = "obj_vj_projectile_base"
+  FIELD PrintName = "Rifle Grenade"
+  FIELD Author = "DrVrej"
+  FIELD Contact = "http://steamcommunity.com/groups/vrejgaming"
+  FIELD Category = "VJ Base"
+  FIELD VJ_ID_Danger = true
+  FIELD Model = "models/weapons/ar2_grenade.mdl"
+  FIELD ProjectileType = VJ.PROJ_TYPE_GRAVITY
+  FIELD DoesRadiusDamage = true
+  FIELD RadiusDamageRadius = 150
+  FIELD RadiusDamage = 80
+  FIELD RadiusDamageUseRealisticRadius = true
+  FIELD RadiusDamageType = DMG_BLAST
+  FIELD RadiusDamageForce = 90
+  FIELD CollisionDecal = "Scorch"
+  METH InitPhys()
+  METH Init()
+VAR defAngle = Angle(0, 0, 0)
+  METH OnDestroy(data,phys)
+TABLE ENT
+  FIELD Type = "anim"
+  FIELD Base = "obj_vj_projectile_base"
+  FIELD PrintName = "Tank Shell"
+  FIELD Author = "DrVrej"
+  FIELD Contact = "http://steamcommunity.com/groups/vrejgaming"
+  FIELD Category = "VJ Base"
+  FIELD VJ_ID_Danger = true
+  METH Think()
+  FIELD Model = "models/weapons/w_missile_launch.mdl"
+  FIELD DoesRadiusDamage = true
+  FIELD RadiusDamageRadius = 250
+  FIELD RadiusDamage = 110
+  FIELD RadiusDamageUseRealisticRadius = true
+  FIELD RadiusDamageType = DMG_BLAST
+  FIELD RadiusDamageForce = 90
+  FIELD CollisionDecal = "Scorch"
+  FIELD SoundTbl_Idle = "weapons/rpg/rocket1.wav"
+  FIELD SoundTbl_OnCollide = "ambient/explosions/explode_8.wav"
+  METH Init()
+VAR defAngle = Angle(0, 0, 0)
+  METH OnDestroy(data,phys)
+TABLE ENT
+  FIELD Base = "base_anim"
+  FIELD Type = "anim"
+  FIELD PrintName = "Wooden Board"
+  FIELD Author = "DrVrej"
+  FIELD Contact = "http://steamcommunity.com/groups/vrejgaming"
+  FIELD Information = "Physics entity that VJ NPCs can attack.\nUseful for barricading an area."
+  FIELD Category = "VJ Base"
+  FIELD Spawnable = true
+  FIELD PhysicsSounds = true
+  FIELD VJ_ID_Attackable = true
+  METH Draw()
+  FIELD StartHealth = 50
+  METH Initialize()
+  METH Use(activator,caller)
+  METH OnTakeDamage(dmginfo)
+TABLE ENT
+  FIELD Base = "prop_vj_animatable"
+  FIELD Type = "anim"
+  FIELD PrintName = "Flag"
+  FIELD Author = "DrVrej"
+  FIELD Contact = "http://steamcommunity.com/groups/vrejgaming"
+  FIELD Information = "Extremely based Armenian flag!"
+  FIELD Category = "VJ Base"
+  FIELD PhysicsSounds = true
+  METH Initialize()
+  METH OnRemove()
+TABLE ENT
+  FIELD Base = "base_anim"
+  FIELD Type = "anim"
+  FIELD PrintName = "Campfire"
+  FIELD Author = "DrVrej"
+  FIELD Contact = "http://steamcommunity.com/groups/vrejgaming"
+  FIELD Information = "Gives a warm feeling, especially in cold maps."
+  FIELD Category = "VJ Base"
+  FIELD Spawnable = true
+  METH SetupDataTables()
+  FIELD NextActivationCheckT = 0
+  FIELD CreatedParticles = false
+  METH Draw()
+  METH Think()
+  FIELD IsOn = false
+  METH Initialize()
+  METH CampfireToggle(activate)
+  METH Use(activator,caller,useType,value)
+  METH Touch(entity)
+  METH OnRemove()
+TABLE ENT
+  FIELD Base = "base_anim"
+  FIELD Type = "anim"
+  FIELD PrintName = "Admin Health Kit"
+  FIELD Author = "DrVrej"
+  FIELD Contact = "http://steamcommunity.com/groups/vrejgaming"
+  FIELD Information = "Gives players 1000000 health when picked up."
+  FIELD Category = "VJ Base"
+  FIELD Spawnable = true
+  FIELD AdminOnly = true
+  FIELD PhysicsSounds = true
+VAR textColor = Color(0, 255, 0, 255)
+VAR vec = Vector(90, 90, 90)
+  METH Draw()
+  METH Initialize()
+  METH Use(activator,caller)
+  METH OnTakeDamage(dmginfo)
+TABLE ENT
+  FIELD Base = "base_anim"
+  FIELD Type = "anim"
+  FIELD PrintName = "Player Spawnpoint"
+  FIELD Author = "DrVrej"
+  FIELD Contact = "http://steamcommunity.com/groups/vrejgaming"
+  FIELD Information = "Sets an spawn point for all the players.\nPress USE to toggle it."
+  FIELD Category = "VJ Base"
+  FIELD Spawnable = true
+  FIELD AdminOnly = true
+  METH Draw()
+  FIELD Active = true
+  METH Initialize()
+  METH Use(activator,caller)
+  METH PhysgunPickup(ply)
+INCLUDE shared.lua
+INCLUDE vj_base/ai/core.lua
+INCLUDE vj_base/ai/schedules.lua
+INCLUDE vj_base/ai/base_aa.lua
+  METH TranslateActivity(act)
+VAR attackTimers = { 	[VJ.ATTACK_TYPE_MELEE] = function(self, skipStopAttacks) 		if !skipStopAttacks then 			timer.Crea
+  METH Think()
+VAR curTurnData = self.TurnData
+VAR didTurn = true
+VAR propColBlacklist = {[COLLISION_GROUP_DEBRIS] = true, [COLLISION_GROUP_DEBRIS_TRIGGER] = true, [COLLISION_GROUP_DISSOLVI
+  METH MaintainPropInteraction(customEnts)
+  METH ExecuteMeleeAttack(isPropAttack)
+  METH DoMeleeAttackPlayerSpeed(ent,walkSpeed,runSpeed,speedTime,sdData,extraOptions,customFunc)
+  METH ExecuteRangeAttack()
+  METH ExecuteLeapAttack()
+  METH LeapAttackJump()
+  METH StopAttacks(checkTimers)
+FUNC math_angDif(diff)
+  METH UpdatePoseParamTracking(resetPoses)
+VAR schedule_yield_player = vj_ai_schedule.New("SCHEDULE_YIELD_PLAYER")
+VAR bitsDanger = bit.bor(SOUND_BULLET_IMPACT, SOUND_COMBAT, SOUND_WORLD, SOUND_DANGER) // SOUND_PLAYER
+VAR selfData = funcGetTable(self)
+VAR curTime = CurTime()
+VAR eneValid = IsValid(funcGetEnemy(self))
+VAR sdSrc = self:GetBestSoundHint(bitsDanger)
+VAR allowed = true
+VAR sdOwner = sdSrc.owner
+VAR allowed = false
+VAR allowed = false
+VAR skip = true 				//	end 				//end
+VAR sched = vj_ai_schedule.New("SCHEDULE_HEAR_SOUND") 					//sched:EngTask("TASK_STORE_BESTSOUND_REACTORIGIN_IN_
+  METH ResetEnemy(checkAllies,checkVis)
+  METH OnTakeDamage(dmginfo)
+FUNC DoBleed()
+VAR vecZ500 = Vector(0, 0, 500)
+VAR vecZ4 = Vector(0, 0, 4)
+  METH BeginDeath(dmginfo,hitgroup)
+  METH FinishDeath(dmginfo,hitgroup)
+VAR colorGrey = Color(90, 90, 90)
+  METH CreateDeathCorpse(dmginfo,hitgroup)
+TABLE ENT
+  FIELD Base = "base_entity"
+  FIELD Type = "ai"
+  FIELD PrintName = "VJ Base Creature"
+  FIELD Author = "DrVrej"
+  FIELD Contact = "http://steamcommunity.com/groups/vrejgaming"
+  FIELD Category = "VJ Base"
+  FIELD AutomaticFrameAdvance = false
+  FIELD IsVJBaseSNPC = true
+  FIELD IsVJBaseSNPC_Creature = true
+  METH SetAutomaticFrameAdvance(val)
+  METH MatFootStepQCEvent(data)
+  FIELD RenderGroup = RENDERGROUP_BOTH
+VAR metaEntity = FindMetaTable("Entity")
+VAR funcDrawModel = metaEntity.DrawModel
+  METH Initialize()
+  METH Draw()
+  METH Draw()
+  METH DrawTranslucent()
+  METH CalcAbsolutePosition(pos,ang)
+INCLUDE shared.lua
+INCLUDE vj_base/ai/core.lua
+INCLUDE vj_base/ai/schedules.lua
+INCLUDE vj_base/ai/base_aa.lua
+  METH CanFireWeapon(checkDistance,checkDistanceOnly)
+VAR schedule_yield_player = vj_ai_schedule.New("SCHEDULE_YIELD_PLAYER")
+VAR bitsDanger = bit.bor(SOUND_BULLET_IMPACT, SOUND_COMBAT, SOUND_WORLD, SOUND_DANGER) // SOUND_PLAYER
+VAR selfData = funcGetTable(self)
+VAR curTime = CurTime()
+VAR ene = funcGetEnemy(self)
+VAR eneValid = IsValid(ene)
+VAR sdSrc = self:GetBestSoundHint(bitsDanger)
+VAR allowed = true
+VAR sdOwner = sdSrc.owner
+VAR allowed = false
+VAR allowed = false
+VAR skip = true 				//	end 				//end
+VAR sched = vj_ai_schedule.New("SCHEDULE_HEAR_SOUND") 					//sched:EngTask("TASK_STORE_BESTSOUND_REACTORIGIN_IN_
+VAR wep = funcGetActiveWeapon(self)
+VAR eneData = selfData.EnemyData
+VAR enePos_Eye = ene:EyePos()
+VAR myPos = self:GetPos()
+VAR myPosCentered = myPos + self:OBBCenter()
+VAR moveCheck = PICK(VJ.TraceDirections(self, "Quick", 200, true, false, 8, true))
+VAR inCoverEntLiving = true
+VAR moveCheck = PICK(VJ.TraceDirections(self, "Quick", 50, true, false, 4, true, true))
+VAR nearestPos = VJ.GetNearestPositions(self, inCoverEnt)
+VAR nearestPos = self:NearestPoint(inCoverTrace.HitPos)
+VAR nearestEntPos = nearestEntPos - self:GetForward()*15
+VAR schedule = vj_ai_schedule.New("SCHEDULE_GOTO_POSITION")
+VAR coverRunAnim = self:TranslateActivity(PICK(selfData.AnimTbl_MoveToCover))
+VAR finalAnim = self:TranslateActivity(PICK(selfData.AnimTbl_WeaponAttack))
+VAR animDur = VJ.AnimDuration(self, finalAnim)
+VAR hasAmmo = wep:Clip1() > 0
+VAR finalAnim = false
+VAR finalAnim = self:TranslateActivity(PICK(selfData.AnimTbl_WeaponAim))
+VAR anim_crouch = self:TranslateActivity(PICK(selfData.AnimTbl_WeaponAttackCrouch))
+VAR finalAnim = anim_crouch
+VAR finalAnim = self:TranslateActivity(PICK(selfData.AnimTbl_WeaponAttack))
+VAR moveCheck = PICK(VJ.TraceDirections(self, "Radial", math.random(150, 400), true, false, 12, true))
+  METH ResetEnemy(checkAllies,checkVis)
+  METH OnTakeDamage(dmginfo)
+FUNC DoBleed()
+VAR vecZ500 = Vector(0, 0, 500)
+VAR vecZ4 = Vector(0, 0, 4)
+  METH BeginDeath(dmginfo,hitgroup)
+  METH FinishDeath(dmginfo,hitgroup)
+VAR colorGrey = Color(90, 90, 90)
+  METH CreateDeathCorpse(dmginfo,hitgroup)
+  METH DeathWeaponDrop(dmginfo,hitgroup)
+  METH GetAttackSpread(wep,target)
+TABLE ENT
+  FIELD Base = "base_entity"
+  FIELD Type = "ai"
+  FIELD PrintName = "VJ Base Human"
+  FIELD Author = "DrVrej"
+  FIELD Contact = "http://steamcommunity.com/groups/vrejgaming"
+  FIELD Category = "VJ Base"
+  FIELD AutomaticFrameAdvance = false
+  FIELD IsVJBaseSNPC = true
+  FIELD IsVJBaseSNPC_Human = true
+  METH SetAutomaticFrameAdvance(val)
+  METH MatFootStepQCEvent(data)
+  FIELD RenderGroup = RENDERGROUP_BOTH
+VAR metaEntity = FindMetaTable("Entity")
+VAR funcDrawModel = metaEntity.DrawModel
+  METH Initialize()
+  METH Draw()
+  METH Draw()
+  METH DrawTranslucent()
+  METH CalcAbsolutePosition(pos,ang)
+INCLUDE shared.lua
+INCLUDE vj_base/ai/base_tank.lua
+  METH Tank_OnFireShell(status,statusData)
+  METH Tank_UpdateIdleParticles()
+TABLE ENT
+  FIELD Tank_FacingTarget = false
+  FIELD Tank_ReachableHeight = false
+  FIELD Tank_Status = 0
+  FIELD Tank_Shell_NextFireT = 0
+  FIELD Tank_TurningLerp = nil
+  FIELD Tank_NextIdleParticles = 0
+VAR TANK_SHELL_STATUS_EMPTY = 0
+VAR TANK_SHELL_STATUS_RELOADING = 1
+VAR TANK_SHELL_STATUS_READY = 2
+  FIELD Tank_Shell_Status = TANK_SHELL_STATUS_EMPTY
+VAR vj_npc_range = GetConVar("vj_npc_range")
+VAR vj_npc_reduce_vfx = GetConVar("vj_npc_reduce_vfx")
+VAR metaEntity = FindMetaTable("Entity")
+VAR funcGetTable = metaEntity.GetTable
+  METH Init()
+  METH OnThink()
+  METH OnThinkActive()
+  METH SelectSchedule()
+  METH Tank_PrepareShell()
+  METH Tank_FireShell()
+  METH OnCreateDeathCorpse(dmginfo,hitgroup,corpse)
+  METH CustomOnRemove()
+  METH Tank_PlaySoundSystem(sdSet)
+TABLE ENT
+  FIELD Base = "npc_vj_creature_base"
+  FIELD Type = "ai"
+  FIELD PrintName = "VJ Base Tank Gunner"
+  FIELD Author = "DrVrej"
+  FIELD Contact = "http://steamcommunity.com/groups/vrejgaming"
+  FIELD Category = "VJ Base"
+  FIELD IsVJBaseSNPC_Tank = true
+  FIELD IsVJBaseSNPC_TankGun = true
+  FIELD VJ_ID_Vehicle = true
+INCLUDE shared.lua
+INCLUDE vj_base/ai/base_tank.lua
+  METH Tank_OnDeathCorpse(dmginfo,hitgroup,corpse,status,statusData)
+  METH Tank_UpdateIdleParticles()
+  METH Tank_UpdateMoveParticles()
+TABLE ENT
+  FIELD Tank_IsMoving = false
+  FIELD Tank_Status = 1
+  FIELD Tank_NextLowHealthSparkT = 0
+  FIELD Tank_NextRunOverSoundT = 0
+  FIELD Tank_NextIdleParticles = 0
+VAR runoverException = {npc_antlionguard = true, npc_turret_ceiling = true, npc_combine_camera = true, npc_rollermine = tru
+VAR defAng = Angle(0, 0, 0)
+VAR vj_npc_melee = GetConVar("vj_npc_melee")
+VAR vj_npc_reduce_vfx = GetConVar("vj_npc_reduce_vfx")
+VAR metaEntity = FindMetaTable("Entity")
+VAR funcGetTable = metaEntity.GetTable
+  METH Init()
+  METH OnTouch(ent)
+  METH Tank_RunOver(ent)
+  METH OnThink()
+VAR vec80z = Vector(0, 0, 80)
+VAR FACE_NONE = VJ.FACE_NONE
+  METH OnThinkActive()
+  METH SelectSchedule()
+  METH OnDeath(dmginfo,hitgroup,status)
+VAR vec500z = Vector(0, 0, 500)
+VAR colorGray = Color(90, 90, 90)
+  METH OnCreateDeathCorpse(dmginfo,hitgroup,corpse)
+  METH CustomOnRemove()
+  METH Tank_PlaySoundSystem(sdSet)
+TABLE ENT
+  FIELD Base = "npc_vj_creature_base"
+  FIELD Type = "ai"
+  FIELD PrintName = "VJ Base Tank"
+  FIELD Author = "DrVrej"
+  FIELD Contact = "http://steamcommunity.com/groups/vrejgaming"
+  FIELD Category = "VJ Base"
+  FIELD IsVJBaseSNPC_Tank = true
+  FIELD IsVJBaseSNPC_TankChassis = true
+  FIELD VJ_ID_Vehicle = true
+  METH PhysicsCollide(data,physobj)
+  METH PhysicsUpdate(physobj)
+INCLUDE shared.lua
+TABLE ENT
+  FIELD StartHealth = 150
+  FIELD HullType = HULL_TINY
+  FIELD MovementType = VJ_MOVETYPE_AERIAL
+  FIELD Aerial_AnimTbl_Calm = "mortar_back"
+  FIELD Aerial_AnimTbl_Alerted = "mortar_forward"
+  FIELD VJ_NPC_Class = {"CLASS_COMBINE"}
+  FIELD BloodColor = VJ.BLOOD_COLOR_OIL
+  FIELD HasDeathCorpse = false
+  FIELD HasMeleeAttack = true
+  FIELD AnimTbl_MeleeAttack = ACT_RANGE_ATTACK1
+  FIELD MeleeAttackDistance = 60
+  FIELD MeleeAttackDamageDistance = 80
+  FIELD TimeUntilMeleeAttackDamage = 0.7
+  FIELD NextAnyAttackTime_Melee = false
+  FIELD MeleeAttackDamage = 30
+  FIELD HasExtraMeleeAttackSounds = true
+  FIELD SoundTbl_Breath = "npc/scanner/scanner_combat_loop1.wav"
+  FIELD SoundTbl_Idle = {"npc/scanner/scanner_talk1.wav", "npc/scanner/scanner_talk2.wav"}
+  FIELD SoundTbl_Alert = "npc/scanner/combat_scan5.wav"
+  FIELD SoundTbl_MeleeAttack = "npc/scanner/scanner_electric1.wav"
+  FIELD SoundTbl_MeleeAttackMiss = {"npc/zombie/claw_miss1.wav", "npc/zombie/claw_miss2.wav"}
+  FIELD SoundTbl_Pain = {"npc/scanner/scanner_pain1.wav", "npc/scanner/scanner_pain2.wav"}
+  FIELD SoundTbl_Death = "npc/waste_scanner/grenade_fire.wav"
+VAR spawnPos = Vector(0, 0, 10)
+  METH Init()
+VAR defAng = Angle(0, 0, 0)
+  METH OnDeath(dmginfo,hitgroup,status)
+TABLE ENT
+  FIELD Base = "npc_vj_creature_base"
+  FIELD Type = "ai"
+  FIELD PrintName = "Aerial NPC"
+  FIELD Author = "DrVrej"
+  FIELD Contact = "http://steamcommunity.com/groups/vrejgaming"
+  FIELD Information = "Aerial NPC demo for developers.\nBased on the Mortar Synth from Half-Life 2."
+  FIELD Category = "VJ Base"
+INCLUDE shared.lua
+TABLE ENT
+  FIELD Behavior = VJ_BEHAVIOR_PASSIVE
+  FIELD VJ_NPC_Class = {"CLASS_PLAYER_ALLY"}
+  FIELD AlliedWithPlayerAllies = true
+  FIELD YieldToAlliedPlayers = false
+  FIELD FollowPlayer = false
+  FIELD HasFootstepSounds = false
+  FIELD SoundTbl_Pain = {"vo/npc/male01/pain01.wav", "vo/npc/male01/pain02.wav", "vo/npc/male01/pain03.wav", "vo/npc/male01/
+  METH PreInit()
+  METH OnInput(key,activator,caller,data)
+TABLE ENT
+  FIELD Base = "npc_vj_human_base"
+  FIELD Type = "ai"
+  FIELD PrintName = "Interactive NPC"
+  FIELD Author = "DrVrej"
+  FIELD Contact = "http://steamcommunity.com/groups/vrejgaming"
+  FIELD Information = "Interactive human NPC demo for developers.\nPress USE on it to open the menu!"
+  FIELD Category = "VJ Base"
+  FIELD VJ_ID_Civilian = true
+  METH MatFootStepQCEvent(data)
+VAR ent = net.ReadEntity()
+VAR ply = LocalPlayer()
+VAR welMsgs = { 			"Hi!", 			"Welcome to my shop, how can I help you?", 			"Hello " .. ply:Nick() .. ", You need a
+VAR frame = vgui.Create("DFrame")
+VAR label_wel = vgui.Create("DLabel", frame)
+VAR button_kill = vgui.Create("DButton", frame)
+VAR label_admin = vgui.Create("DLabel", frame)
+VAR button_god = vgui.Create("DButton", frame)
+VAR button_buddha = vgui.Create("DButton", frame)
+VAR button_fp = vgui.Create("DButton", frame)
+VAR button_tp = vgui.Create("DButton", frame)
+VAR button_vj = vgui.Create("DButton", frame)
+VAR button_sd = vgui.Create("DButton", frame)
+INCLUDE shared.lua
+TABLE ENT
+  FIELD StartHealth = 100
+  FIELD BloodColor = VJ.BLOOD_COLOR_RED
+  FIELD UsePoseParameterMovement = true
+  FIELD VJ_NPC_Class = {"CLASS_PLAYER_ALLY"}
+  FIELD AlliedWithPlayerAllies = true
+  FIELD HasMeleeAttack = true
+  FIELD AnimTbl_MeleeAttack = "vjseq_seq_meleeattack01"
+  FIELD WeaponInventory_AntiArmorList = {"weapon_vj_rpg"}
+  FIELD WeaponInventory_MeleeList = {"weapon_vj_crowbar"}
+  FIELD HasGrenadeAttack = true
+  FIELD GrenadeAttackThrowTime = 0.85
+  FIELD GrenadeAttackModel = "models/weapons/w_npcnade.mdl"
+  FIELD AnimTbl_GrenadeAttack = "vjges_gesture_item_throw"
+  FIELD AnimTbl_Medic_GiveHealth = "vjges_gesture_item_drop"
+  FIELD AnimTbl_CallForHelp = {"vjges_gesture_signal_group", "vjges_gesture_signal_forward"}
+  FIELD AnimTbl_DamageAllyResponse = "vjges_gesture_signal_halt"
+  FIELD Weapon_OcclusionDelay = false
+  FIELD FootstepSoundTimerRun = 0.3
+  FIELD FootstepSoundTimerWalk = 0.5
+  FIELD CanFlinch = true
+  FIELD FlinchCooldown = 1
+  FIELD AnimTbl_Flinch = {"vjges_flinch_01", "vjges_flinch_02"}
+  FIELD FlinchHitGroupMap = { 	{HitGroup = HITGROUP_HEAD, Animation = {"vjges_flinch_head_01", "vjges_flinch_head_02"}}, 	{HitGr
+  FIELD HasDeathAnimation = true
+  FIELD AnimTbl_Death = {"vjseq_death_02", "vjseq_death_03", "vjseq_death_04"}
+  FIELD DeathAnimationChance = 2
+  FIELD SoundTbl_FootStep = {"npc/footsteps/hardboot_generic1.wav", "npc/footsteps/hardboot_generic2.wav", "npc/footsteps/hardbo
+  FIELD SoundTbl_IdleDialogue = {"common/wpn_denyselect.wav", "common/wpn_select.wav"}
+  FIELD SoundTbl_IdleDialogueAnswer = {"common/wpn_denyselect.wav", "common/wpn_select.wav"}
+  FIELD SoundTbl_FollowPlayer = "common/wpn_select.wav"
+  FIELD SoundTbl_UnFollowPlayer = "common/wpn_denyselect.wav"
+  FIELD SoundTbl_Death = {"player/pl_pain5.wav", "player/pl_pain6.wav", "player/pl_pain7.wav"}
+  METH PreInit()
+  METH Init()
+  METH OnCreateDeathCorpse(dmginfo,hitgroup,corpse)
+  METH OnGrenadeAttackExecute(status,grenade,overrideEnt,landDir,landingPos)
+FUNC grenade:OnThink()
+  METH OnDeath(dmginfo,hitgroup,status)
+FUNC deathSound(time,snd)
+TABLE ENT
+  FIELD Base = "npc_vj_human_base"
+  FIELD Type = "ai"
+  FIELD PrintName = "Player NPC"
+  FIELD Author = "DrVrej"
+  FIELD Contact = "http://steamcommunity.com/groups/vrejgaming"
+  FIELD Information = "Playermodel human NPC demo for developers.\nPicks a random model from the installed playermodels li
+  FIELD Category = "VJ Base"
+  METH SetupDataTables()
+INCLUDE shared.lua
+  METH Init()
+  METH OnThink()
+  METH OnKeyPressed(key)
+  METH OnKeyBindPressed(key)
+  METH OnStopControlling(keyPressed)
+TABLE ENT
+  FIELD VJC_SavedVars_PLY = nil
+  FIELD VJC_SavedVars_NPC = nil
+  FIELD VJC_Camera_Mode = 1
+  FIELD VJC_Camera_CurZoom = Vector(0, 0, 0)
+  FIELD VJC_Key_Last = BUTTON_CODE_NONE
+  FIELD VJC_Key_LastTime = 0
+  FIELD VJC_NPC_LastPos = Vector(0, 0, 0)
+  FIELD VJC_Removed = false  /* Important
+VAR vecDef = Vector(0, 0, 0)
+VAR math_min = math.min
+VAR math_max = math.max
+  METH Initialize()
+  METH UpdateTransmitState()
+  METH SetControlledNPC(npc)
+  METH StartControlling()
+  METH SendDataToClient(reset)
+VAR vecZ20 = Vector(0, 0, 20)
+  METH Think()
+  METH StartMovement(Dir,Rot)
+  METH ToggleBullseyeTracking()
+  METH ToggleMovementJumping()
+  METH StopControlling(keyPressed)
+  METH OnRemove()
+TABLE ENT
+  FIELD Base = "base_entity"
+  FIELD Type = "anim"
+  FIELD PrintName = "VJ Base NPC Controller"
+  FIELD Author = "DrVrej"
+  FIELD Contact = "http://steamcommunity.com/groups/vrejgaming"
+  FIELD Category = "VJ Base"
+  METH SetupDataTables()
+  FIELD VJC_Camera_Zoom = 100
+VAR vec0 = Vector(0, 0, 0)
+VAR vec1 = Vector(1, 1, 1)
+VAR viewLerpVec = Vector(0, 0, 0)
+VAR viewLerpAng = Angle(0, 0, 0)
+VAR math_clamp = math.Clamp
+  METH Draw()
+  METH Initialize()
+  METH OnRemove()
+  METH CalcView(ply,origin,angles,fov)
+  METH PlayerBindPress(ply,bind,pressed)
+VAR box_roundness = 6
+VAR box_border_thickness = 2
+VAR color_red = VJ.COLOR_RED
+VAR color_orange = VJ.COLOR_ORANGE_VIVID
+VAR color_green = VJ.COLOR_GREEN
+VAR color_cyan_muted = Color(0, 255, 255, 125)
+VAR color_box = Color(0, 0, 0, 150)
+VAR color_box_under = Color(0, 0, 0, 180)
+VAR color_white = VJ.COLOR_WHITE
+VAR mat_icon_melee = Material("vj_base/hud/melee.png")
+VAR mat_icon_range = Material("vj_base/hud/range.png")
+VAR mat_icon_leap = Material("vj_base/hud/leap.png")
+VAR mat_icon_grenade = Material("vj_base/hud/grenade.png")
+VAR mat_icon_gun = Material("vj_base/hud/gun.png")
+VAR mat_icon_camera = Material("vj_base/hud/camera.png")
+VAR mat_icon_zoom = Material("vj_base/hud/camera_zoom.png")
+VAR lerp_hp = 0
+VAR attack_icon_color = {[0] = color_red, [1] = color_green, [2] = color_orange}
+VAR draw_RoundedBox = draw.RoundedBox
+VAR draw_SimpleText = draw.SimpleText
+VAR surface_SetMaterial = surface.SetMaterial
+VAR surface_SetDrawColor = surface.SetDrawColor
+VAR surface_DrawTexturedRect = surface.DrawTexturedRect
+VAR ScrW = ScrW
+  METH HUD()
+INCLUDE shared.lua
+TABLE ENT
+  FIELD CollisionDecal = "Default"
+  FIELD CollisionDecalChance = 3
+  FIELD CollisionSound = {"physics/flesh/flesh_squishy_impact_hard1.wav", "physics/flesh/flesh_squishy_impact_hard2.wav", "ph
+  FIELD CollisionSoundLevel = 60
+  FIELD CollisionSoundPitch = VJ.SET(90, 100)
+  FIELD NextStinkyTime = 0
+VAR stinkyMatTypes = {alienflesh = true, antlion = true, armorflesh = true, bloodyflesh = true, flesh = true, zombieflesh
+VAR defDecals = { 	[VJ.BLOOD_COLOR_RED] = "VJ_Blood_Red", 	[VJ.BLOOD_COLOR_YELLOW] = "VJ_Blood_Yellow", 	[VJ.BLOOD_C
+VAR vj_npc_gib_collision = GetConVar("vj_npc_gib_collision")
+VAR vj_npc_snd_gib = GetConVar("vj_npc_snd_gib")
+VAR vj_npc_gib_vfx = GetConVar("vj_npc_gib_vfx")
+VAR metaEntity = FindMetaTable("Entity")
+VAR funcGetTable = metaEntity.GetTable
+  METH Initialize()
+  METH Think()
+  METH PhysicsCollide(data,phys)
+  METH OnTakeDamage(dmginfo)
+TABLE ENT
+  FIELD Base = "base_anim"
+  FIELD Type = "anim"
+  FIELD PrintName = "VJ Base Gib"
+  FIELD Author = "DrVrej"
+  FIELD Contact = "http://steamcommunity.com/groups/vrejgaming"
+  FIELD Category = "VJ Base"
+  FIELD IsVJBaseCorpse = true
+  FIELD IsVJBaseCorpse_Gib = true
+VAR metaEntity = FindMetaTable("Entity")
+VAR funcDrawModel = metaEntity.DrawModel
+  METH Draw()
+INCLUDE shared.lua
+VAR Projectile = 2012-2026
+TABLE ENT
+  FIELD ProjectileType = VJ.PROJ_TYPE_LINEAR
+  FIELD CollisionBehavior = VJ.PROJ_COLLISION_REMOVE
+  FIELD CollisionFilter = true
+  FIELD CollisionDecal = false
+  FIELD RemoveDelay = 0
+  FIELD DoesRadiusDamage = false
+  FIELD RadiusDamageRadius = 250
+  FIELD RadiusDamageUseRealisticRadius = true
+  FIELD RadiusDamage = 30
+  FIELD RadiusDamageType = DMG_BLAST
+  FIELD RadiusDamageForce = false
+  FIELD RadiusDamageForce_Up = false
+  FIELD RadiusDamageDisableVisibilityCheck = false
+  FIELD DoesDirectDamage = false
+  FIELD DirectDamage = 30
+  FIELD DirectDamageType = DMG_SLASH
+  FIELD HasStartupSounds = true
+  FIELD HasIdleSounds = true
+  FIELD HasOnCollideSounds = true
+  FIELD HasOnRemoveSounds = true
+  FIELD SoundTbl_Startup = false
+  FIELD SoundTbl_Idle = false
+  FIELD SoundTbl_OnCollide = false
+  FIELD SoundTbl_OnRemove = false
+  FIELD StartupSoundChance = 1
+  FIELD IdleSoundChance = 1
+  FIELD OnCollideSoundChance = 1
+  FIELD OnRemoveSoundChance = 1
+  FIELD NextSoundTime_Idle = VJ.SET(0.2, 0.5)
+  FIELD StartupSoundLevel = 80
+  FIELD IdleSoundLevel = 80
+  FIELD OnCollideSoundLevel = 80
+  FIELD OnRemoveSoundLevel = 90
+  FIELD StartupSoundPitch = VJ.SET(90, 100)
+  FIELD IdleSoundPitch = VJ.SET(90, 100)
+  FIELD OnCollideSoundPitch = VJ.SET(90, 100)
+  FIELD OnRemoveSoundPitch = VJ.SET(90, 100)
+  METH PreInit()
+  METH InitPhys()
+  METH Init()
+  METH OnThink()
+  METH OnDamaged(dmginfo)
+  METH OnCollision(data,phys)
+  METH OnCollisionPersist(data,phys)
+  METH OnDealDamage(data,phys,hitEnts)
+  METH OnDestroy(data,phys)
+  METH CustomOnRemove()
+  FIELD Dead = false
+  FIELD NextIdleSoundT = 0
+  FIELD PaintedFinalDecal = false
+  FIELD NextPersistCollisionT = 0
+VAR defVec = Vector(0, 0, 0)
+VAR PICK = VJ.PICK
+VAR PROJ_COLLISION_REMOVE = VJ.PROJ_COLLISION_REMOVE
+VAR PROJ_COLLISION_PERSIST = VJ.PROJ_COLLISION_PERSIST
+  METH Initialize()
+  METH Think()
+  METH OnTakeDamage(dmginfo)
+  METH DealDamage(data,phys)
+  METH StartTouch(ent)
+  METH PhysicsCollide(data,phys)
+  METH Destroy(data,phys)
+  METH OnRemove()
+  METH PlaySound(sdSet)
+  METH OnCollideSoundCode()
+  METH DoDamageCode(data,phys)
+  METH SetDeathVariablesTrue(data,phys,runOnDestroy)
+TABLE ENT
+  FIELD Base = "base_anim"
+  FIELD Type = "anim"
+  FIELD PrintName = "VJ Base Projectile"
+  FIELD Author = "DrVrej"
+  FIELD Contact = "http://steamcommunity.com/groups/vrejgaming"
+  FIELD Category = "VJ Base"
+  FIELD IsVJBaseProjectile = true
+VAR metaEntity = FindMetaTable("Entity")
+VAR funcDrawModel = metaEntity.DrawModel
+  METH Draw()
+INCLUDE shared.lua
+  METH SpawnEntity(spawnKey,spawnTbl,initSpawn)
+  METH Initialize()
+  METH Think()
+  METH OnRemove()
+TABLE ENT
+  FIELD Base = "base_anim"
+  FIELD Type = "anim"
+  FIELD PrintName = "VJ Base Spawner"
+  FIELD Author = "DrVrej"
+  FIELD Contact = "http://steamcommunity.com/groups/vrejgaming"
+  FIELD Category = "VJ Base"
+  FIELD IsVJBaseSpawner = true
+VAR metaEntity = FindMetaTable("Entity")
+VAR funcDrawModel = metaEntity.DrawModel
+  METH Draw()
+INCLUDE shared.lua
+  METH Think()
+TABLE ENT
+  FIELD Base = "base_anim"
+  FIELD Type = "anim"
+  FIELD PrintName = "VJ Base Animatable Prop"
+  FIELD Author = "DrVrej"
+  FIELD Contact = "http://steamcommunity.com/groups/vrejgaming"
+  FIELD Category = "VJ Base"
+  FIELD AutomaticFrameAdvance = true
+VAR metaEntity = FindMetaTable("Entity")
+VAR funcDrawModel = metaEntity.DrawModel
+  METH Draw()
+  METH DrawTranslucent()
+FUNC New()
+VAR setmetatable = setmetatable
+VAR tostring = tostring
+VAR table = table
+VAR MsgC = MsgC
+VAR vj_ai_task = vj_ai_task
+VAR VJ = VJ
+VAR tasksMove = {TASK_WAIT_FOR_MOVEMENT = true, TASK_MOVE_TO_TARGET_RANGE = true, TASK_MOVE_TO_GOAL_RANGE = true, TA
+VAR Schedule = {}
+FUNC Schedule:Init(Name)
+FUNC Schedule:EngTask(taskName,taskData)
+FUNC Schedule:AddTask(taskName,data)
+FUNC Schedule:AddTaskEx(taskName,startFunc,runFunc,data)
+FUNC Schedule:NumTasks()
+FUNC Schedule:GetTask(num)
+FUNC New(Name)
+VAR setmetatable = setmetatable
+VAR MsgC = MsgC
+VAR ai = ai
+VAR VJ = VJ
+VAR TASKSTATUS_NEW = TASKSTATUS_NEW
+VAR TASKSTATUS_RUN_TASK = TASKSTATUS_RUN_TASK
+VAR Task = {}
+VAR TYPE_ENGINE = 1
+VAR TYPE_CUSTOM = 2
+FUNC Task:Init()
+FUNC Task:InitEngine(taskName,taskData)
+FUNC Task:InitCustom(taskName,startFunc,endFunc,taskData)
+FUNC Task:Start(npc)
+FUNC Task:Run(npc)
+FUNC Task:IsEngineType()
+FUNC Task:IsCustomType()
+FUNC New()
+VAR defFlags = FCVAR_ARCHIVE
+VAR numNPC = 0
+VAR numVJ = 0
+VAR numNextBot = 0
+VAR numNPC = numNPC + 1
+VAR numVJ = numVJ + 1
+VAR numNextBot = numNextBot + 1
+VAR cTypes = { 		vjnpcs = "VJ NPCs", 		npcs = "NPCs", 		spawners = "Spawners", 		corpses = "Corpses", 		gibs = "G
+VAR cType = args[1]
+  METH DEBUG_Stress(count,func)
+VAR metaNPC = FindMetaTable("NPC")
+VAR metaVJ = {}
+FUNC __index(self,key)
+FUNC metaVJ:GetIdealMoveSpeed(example)
+VAR mt = table.Merge({}, debug.getmetatable(ent))
+VAR metaOrg = debug.getmetatable(self)
+VAR metaVJ = {}
+FUNC newIndex(ent,key)
+FUNC metaVJ:SetMaxLookDistance(dist)
+VAR mt = table.Merge({}, metaOrg)
+VAR triggerLua = ents.Create("lua_run")
+VAR activator = ACTIVATOR
+VAR D_VJ_INTEREST = 100
+TABLE VJ
+  FIELD DMG_BLEED = 123454
+  FIELD DMG_FORCE_FLINCH = 123455
+VAR VJ_MOVETYPE_GROUND = 1
+VAR VJ_MOVETYPE_AERIAL = 2
+VAR VJ_MOVETYPE_AQUATIC = 3
+VAR VJ_MOVETYPE_STATIONARY = 4
+VAR VJ_MOVETYPE_PHYSICS = 5
+VAR VJ_BEHAVIOR_AGGRESSIVE = 1
+VAR VJ_BEHAVIOR_NEUTRAL = 2
+VAR VJ_BEHAVIOR_PASSIVE = 3
+VAR VJ_BEHAVIOR_PASSIVE_NATURE = 4
+VAR VJ_STATE_NONE = 0
+VAR VJ_STATE_FREEZE = 1
+VAR VJ_STATE_ONLY_ANIMATION = 2
+VAR VJ_STATE_ONLY_ANIMATION_CONSTANT = 3
+VAR VJ_STATE_ONLY_ANIMATION_NOATTACK = 4
+  FIELD ATTACK_TYPE_NONE = false
+  FIELD ATTACK_TYPE_CUSTOM = 1
+  FIELD ATTACK_TYPE_MELEE = 2
+  FIELD ATTACK_TYPE_RANGE = 3
+  FIELD ATTACK_TYPE_LEAP = 4
+  FIELD ATTACK_TYPE_GRENADE = 5
+  FIELD ATTACK_STATE_NONE = 0
+  FIELD ATTACK_STATE_DONE = 1
+  FIELD ATTACK_STATE_STARTED = 2
+  FIELD ATTACK_STATE_EXECUTED = 3
+  FIELD ATTACK_STATE_EXECUTED_HIT = 4
+  FIELD FACE_NONE = false
+  FIELD FACE_ENEMY = 1
+  FIELD FACE_ENEMY_VISIBLE = 2
+  FIELD FACE_ENTITY = 3
+  FIELD FACE_ENTITY_VISIBLE = 4
+  FIELD FACE_POSITION = 5
+  FIELD FACE_POSITION_VISIBLE = 6
+  FIELD ALERT_STATE_NONE = false
+  FIELD ALERT_STATE_READY = 1
+  FIELD ALERT_STATE_ENEMY = true
+  FIELD DANGER_TYPE_ENTITY = 1
+  FIELD DANGER_TYPE_GRENADE = 2
+  FIELD DANGER_TYPE_HINT = 3
+  FIELD WEP_STATE_READY = 0
+  FIELD WEP_STATE_HOLSTERED = 1
+  FIELD WEP_STATE_RELOADING = 2
+  FIELD WEP_ATTACK_STATE_NONE = false
+  FIELD WEP_ATTACK_STATE_AIM = 1
+  FIELD WEP_ATTACK_STATE_AIM_MOVE = 2
+  FIELD WEP_ATTACK_STATE_AIM_OCCLUSION = 3
+  FIELD WEP_ATTACK_STATE_FIRE = 10
+  FIELD WEP_ATTACK_STATE_FIRE_STAND = 11
+  FIELD WEP_INVENTORY_NONE = 0
+  FIELD WEP_INVENTORY_PRIMARY = 1
+  FIELD WEP_INVENTORY_SECONDARY = 2
+  FIELD WEP_INVENTORY_MELEE = 3
+  FIELD WEP_INVENTORY_ANTI_ARMOR = 4
+  FIELD MEM_OVERRIDE_DISPOSITION = "override_disposition"
+  FIELD MEM_OVERRIDE_PRIORITY = "override_priority"
+  FIELD MEM_HOSTILITY_LEVEL = "hostility"
+  FIELD MEM_CACHE_CLASSES = "cache_classes"
+  FIELD MEM_CACHE_DISPOSITION = "cache_disposition"
+  FIELD MEM_CACHE_ENT_TYPE = "cache_ent_type"
+  FIELD ANIM_TYPE_NONE = false
+  FIELD ANIM_TYPE_ACTIVITY = 1
+  FIELD ANIM_TYPE_SEQUENCE = 2
+  FIELD ANIM_TYPE_GESTURE = 3
+  FIELD ANIM_SET_NONE = false
+  FIELD ANIM_SET_COMBINE = 1
+  FIELD ANIM_SET_METROCOP = 2
+  FIELD ANIM_SET_REBEL = 3
+  FIELD ANIM_SET_PLAYER = 4
+  FIELD ANIM_SET_CUSTOM = 10
+  FIELD BLOOD_COLOR_NONE = false
+  FIELD BLOOD_COLOR_RED = "Red"
+  FIELD BLOOD_COLOR_YELLOW = "Yellow"
+  FIELD BLOOD_COLOR_GREEN = "Green"
+  FIELD BLOOD_COLOR_ORANGE = "Orange"
+  FIELD BLOOD_COLOR_BLUE = "Blue"
+  FIELD BLOOD_COLOR_PURPLE = "Purple"
+  FIELD BLOOD_COLOR_WHITE = "White"
+  FIELD BLOOD_COLOR_OIL = "Oil"
+  FIELD DIFFICULTY_NEANDERTHAL = -5
+  FIELD DIFFICULTY_PUNY = -4
+  FIELD DIFFICULTY_TRIVIAL = -3
+  FIELD DIFFICULTY_EASY = -2
+  FIELD DIFFICULTY_BEGINNER = -1
+  FIELD DIFFICULTY_NORMAL = 0
+  FIELD DIFFICULTY_DIFFICULT = 1
+  FIELD DIFFICULTY_HARD = 2
+  FIELD DIFFICULTY_EXPERT = 3
+  FIELD DIFFICULTY_INSANE = 4
+  FIELD DIFFICULTY_IMPOSSIBLE = 5
+  FIELD DIFFICULTY_LUNATIC = 6
+  FIELD DIFFICULTY_NIGHTMARE = 7
+  FIELD DIFFICULTY_HELL_ON_EARTH = 8
+  FIELD DIFFICULTY_TOTAL_ANNIHILATION = 9
+  FIELD DIFFICULTY_EXTINCTION = 10
+  FIELD PROJ_TYPE_LINEAR = 0
+  FIELD PROJ_TYPE_GRAVITY = 1
+  FIELD PROJ_TYPE_PROP = 2
+  FIELD PROJ_COLLISION_NONE = false
+  FIELD PROJ_COLLISION_REMOVE = 1
+  FIELD PROJ_COLLISION_PERSIST = 2
+  FIELD KILLICON_TYPE_FONT = -2
+  FIELD KILLICON_TYPE_ALIAS = -1
+  FIELD KILLICON_DEFAULT = "HUD/killicons/default"
+  FIELD KILLICON_PROJECTILE = "vj_base/hud/range.png"
+  FIELD KILLICON_GRENADE = "vj_base/hud/grenade.png"
+  FIELD COLOR_LOGO_ORANGE = Color(244, 102, 34)
+  FIELD COLOR_LOGO_ORANGE_LIGHT = Color(255, 163, 121)
+  FIELD COLOR_SERVER = Color(156, 241, 255, 200)
+  FIELD COLOR_CLIENT = Color(255, 241, 122, 200)
+  FIELD COLOR_BLACK = Color(0, 0, 0)
+  FIELD COLOR_WHITE = Color(255, 255, 255)
+  FIELD COLOR_RED = Color(255, 0, 0)
+  FIELD COLOR_RED_LIGHT = Color(255, 130, 130)
+  FIELD COLOR_GREEN = Color(0, 255, 0)
+  FIELD COLOR_BLUE = Color(0, 0, 255)
+  FIELD COLOR_BLUE_SKY = Color(135, 206, 235)
+  FIELD COLOR_CYAN = Color(0, 255, 255)
+  FIELD COLOR_YELLOW = Color(255, 255, 0)
+  FIELD COLOR_ORANGE = Color(255, 165, 0)
+  FIELD COLOR_ORANGE_VIVID = Color(255, 100, 0)
+  FIELD COLOR_PURPLE = Color(128, 0, 128)
+  FIELD COLOR_PINK = Color(255, 192, 203)
+VAR COND_BEHIND_ENEMY = 29
+VAR COND_BETTER_WEAPON_AVAILABLE = 46
+VAR COND_CAN_MELEE_ATTACK1 = 23
+VAR COND_CAN_MELEE_ATTACK2 = 24
+VAR COND_CAN_RANGE_ATTACK1 = 21
+VAR COND_CAN_RANGE_ATTACK2 = 22
+VAR COND_ENEMY_DEAD = 30
+VAR COND_ENEMY_FACING_ME = 28
+VAR COND_ENEMY_OCCLUDED = 13
+VAR COND_ENEMY_TOO_FAR = 27
+VAR COND_ENEMY_UNREACHABLE = 31
+VAR COND_ENEMY_WENT_NULL = 12
+VAR COND_FLOATING_OFF_GROUND = 61
+VAR COND_GIVE_WAY = 48
+VAR COND_HAVE_ENEMY_LOS = 15
+VAR COND_HAVE_TARGET_LOS = 16
+VAR COND_HEALTH_ITEM_AVAILABLE = 47
+VAR COND_HEAR_BUGBAIT = 52
+VAR COND_HEAR_BULLET_IMPACT = 56
+VAR COND_HEAR_COMBAT = 53
+VAR COND_HEAR_DANGER = 50
+VAR COND_HEAR_MOVE_AWAY = 58
+VAR COND_HEAR_PHYSICS_DANGER = 57
+VAR COND_HEAR_PLAYER = 55
+VAR COND_HEAR_SPOOKY = 59
+VAR COND_HEAR_THUMPER = 51
+VAR COND_HEAR_WORLD = 54
+VAR COND_HEAVY_DAMAGE = 18
+VAR COND_IDLE_INTERRUPT = 2
+VAR COND_IN_PVS = 1
+VAR COND_LIGHT_DAMAGE = 17
+VAR COND_LOST_ENEMY = 11
+VAR COND_LOST_PLAYER = 33
+VAR COND_LOW_PRIMARY_AMMO = 3
+VAR COND_MOBBED_BY_ENEMIES = 62
+VAR COND_NEW_ENEMY = 26
+VAR COND_NO_CUSTOM_INTERRUPTS = 70
+VAR COND_NO_HEAR_DANGER = 60
+VAR COND_NO_PRIMARY_AMMO = 4
+VAR COND_NO_SECONDARY_AMMO = 5
+VAR COND_NO_WEAPON = 6
+VAR COND_NONE = 0
+VAR COND_NOT_FACING_ATTACK = 40
+VAR COND_NPC_FREEZE = 67
+VAR COND_NPC_UNFREEZE = 68
+VAR COND_PHYSICS_DAMAGE = 19
+VAR COND_PLAYER_ADDED_TO_SQUAD = 64
+VAR COND_PLAYER_PUSHING = 66
+VAR COND_PLAYER_REMOVED_FROM_SQUAD = 65
+VAR COND_PROVOKED = 25
+VAR COND_RECEIVED_ORDERS = 63
+VAR COND_REPEATED_DAMAGE = 20
+VAR COND_SCHEDULE_DONE = 36
+VAR COND_SEE_DISLIKE = 9
+VAR COND_SEE_ENEMY = 10
+VAR COND_SEE_FEAR = 8
+VAR COND_SEE_HATE = 7
+VAR COND_SEE_NEMESIS = 34
+VAR COND_SEE_PLAYER = 32
+VAR COND_SMELL = 37
+VAR COND_TALKER_RESPOND_TO_QUESTION = 69
+VAR COND_TARGET_OCCLUDED = 14
+VAR COND_TASK_FAILED = 35
+VAR COND_TOO_CLOSE_TO_ATTACK = 38
+VAR COND_TOO_FAR_TO_ATTACK = 39
+VAR COND_WAY_CLEAR = 49
+VAR COND_WEAPON_BLOCKED_BY_FRIEND = 42
+VAR COND_WEAPON_HAS_LOS = 41
+VAR COND_WEAPON_PLAYER_IN_SPREAD = 43
+VAR COND_WEAPON_PLAYER_NEAR_TARGET = 44
+VAR COND_WEAPON_SIGHT_OCCLUDED = 45 -------------------------------------------------------------------------------------------------
+FUNC metaEntity:CalculateProjectile(algorithmType,startPos,targetPos,strength)
+VAR CurTime = CurTime
+VAR IsValid = IsValid
+VAR GetConVar = GetConVar
+VAR tonumber = tonumber
+VAR string_StartWith = string.StartWith
+VAR table_remove = table.remove
+VAR vj_npc_wep_ply_pickup = GetConVar("vj_npc_wep_ply_pickup")
+VAR metaEntity = FindMetaTable("Entity")
+VAR funcGetClass = metaEntity.GetClass
+VAR funcGetTable = metaEntity.GetTable
+VAR entInfos = { 	-- Resistance NPCs 	npc_citizen = {classNPC = "CLASS_PLAYER_ALLY", func = function(ent) 		if ent:
+VAR ignoredNPCs = {npc_cranedriver = true, npc_missiledefense = true, monster_generic = true, monster_furniture = true
+VAR dangerEnts = {m9k_thrown_nitrox = true, m9k_nitro_vapor = true, m9k_nervegasnade = true, m9k_released_poison = tr
+VAR grenadeEnts = {npc_grenade_frag = true, grenade_hand = true, obj_spore = true, obj_grenade = true, obj_handgrenade
+VAR grenadeGrabbableEnts = {npc_grenade_frag = true, obj_spore = true, obj_handgrenade = true, obj_cpt_grenade = true, cw_grena
+VAR attackableEnts = {prop_physics = true, prop_physics_multiplayer = true, prop_physics_respawnable = true, func_breakab
+VAR destructibleEnts = {func_breakable_surf = true, sent_sakariashelicopter = true}
+VAR entClass = funcGetClass(ent)
+VAR entData = funcGetTable(ent)
+VAR entInfo = entInfos[entClass]
+VAR isNPC = ent:IsNPC()
+VAR entIsVJ = entData.IsVJBaseSNPC
+VAR entInfoClass = false
+VAR entInfoClass = entInfo.classNPC
+VAR classOverride = entInfo.func(ent)
+VAR entInfoClass = classOverride
+VAR cvSeePlys = !VJ_CVAR_IGNOREPLAYERS
+VAR entEneCount = 1
+VAR entIsNature = false
+VAR entIsNature = true
+VAR otherClass = funcGetClass(other)
+VAR otherData = funcGetTable(other)
+VAR entEneCount = entEneCount + 1
+VAR points = {}
+VAR result = VJ.PICK(points)
+VAR VJ_RecipientFilter = RecipientFilter()
+VAR ent = data.Entity
+VAR isPly = ent:IsPlayer()
+VAR isNPC = ent:IsNPC()
+VAR quiet = (string_StartWith(data.OriginalSoundName, "player/footsteps") and (isPly && (ent:Crouching() or ent:
+VAR funcCustom = ent.OnFireBullet
+FUNC VJ_NPCPLY_DEATH(ent,attacker,inflictor)
+VAR VJ_CVAR_IGNOREPLAYERS = false
+VAR getPlys = player.GetAll()
+VAR getAll = ents.GetAll()
+VAR ent = getAll[x]
+VAR VJ_CVAR_IGNOREPLAYERS = true
+VAR relationEnts = ent.RelationshipEnts 					//local
+VAR relationData = ent.RelationshipMemory
+VAR it = 1
+VAR relationEnt = relationEnts[it]
+VAR it = it + 1
+VAR VJ_CVAR_AI_ENABLED = tonumber(newValue)
+VAR badACTs = {[ACT_WALK] = true, [ACT_WALK_AIM] = true, [ACT_RUN] = true, [ACT_RUN_AIM] = true}
+  METH AA_MoveAnimation()
+TABLE ENT
+  FIELD DamageAllyResponse = false
+  FIELD CombatDamageResponse = false
+  FIELD YieldToAlliedPlayers = false
+  METH SCHEDULE_FACE(faceType,customFunc)
+  METH MaintainAlertBehavior(alwaysChase)
+  METH OnDamaged(dmginfo,hitgroup,status)
+  METH Tank_AngleDiffuse(ang1,ang2)
+VAR str1111 = "1111"
+VAR str1 = "1"
+  METH VJ_CheckAllFourSides(checkDist,returnPos,sides)
+  METH DoWeaponAttackMovementCode(override,moveType)
+  METH IsScheduleFinished(schedule)
+  METH StartTask(task)
+  METH RunTask(task)
+  METH TaskTime()
+  METH StartEngineTask(iTaskID,taskData)
+  METH RunEngineTask(iTaskID,taskData)
+  METH StartEngineSchedule(scheduleID)
+  METH EngineScheduleFinish()
+  METH DoingEngineSchedule()
+  METH Corpse_Add(ent)
+VAR IsValid = IsValid
+VAR table_remove = table.remove
+VAR vj_npc_snd_track_volume = GetConVar("vj_npc_snd_track_volume")
+FUNC VJ_Music_Tick()
+VAR ent = net.ReadEntity()
+VAR sdFile = net.ReadString()
+VAR sdVol = net.ReadFloat()
+VAR sdPlayback = net.ReadFloat()
+FUNC VJ_NPC_SETTINGS_AI(panel)
+FUNC VJ_NPC_SETTINGS_ATTACKS(panel)
+FUNC VJ_NPC_SETTINGS_GENERAL(panel)
+FUNC VJ_NPC_SETTINGS_SOUND(panel)
+FUNC VJ_NPC_SETTINGS_DEV(panel)
+FUNC VJ_NPC_SETTINGS_CONTROLLER(panel)
+FUNC bindList:OnRowSelected(panel2,rowIndex,row)
+FUNC VJ_NPC_SETTINGS_PERFORMANCE(panel)
+FUNC vid:DoClick()
+FUNC VJ_NPC_SETTINGS_CLIENT(panel)
+FUNC VJ_WEAPON_SETTINGS_CLIENT(panel)
+VAR vj_npc_admin_properties = GetConVar("vj_npc_admin_properties")
+VAR ent = net.ReadEntity()
+VAR obj = ents.Create("obj_vj_controller")
+VAR ent = net.ReadEntity()
+VAR ent = net.ReadEntity()
+VAR ent = net.ReadEntity()
+VAR ent = net.ReadEntity()
+VAR ent = net.ReadEntity()
+VAR ent = net.ReadEntity()
+VAR ent = net.ReadEntity()
+VAR ent = net.ReadEntity()
+VAR dmg = DamageInfo()
+VAR ent = net.ReadEntity()
+VAR colorYellow = Color(255, 215, 0)
+VAR colorBlack = Color(0, 0, 0)
+VAR colorRed = Color(231, 76, 60)
+VAR colorDarkGreen = Color(0, 102, 0)
+VAR colorDarkBlue = Color(0, 0, 102)
+FUNC VJ_MAIN_ABOUT(panel)
+FUNC gitButton:DoClick()
+FUNC docButton:DoClick()
+FUNC changelogButton:DoClick()
+FUNC incompButton:DoClick()
+FUNC discordButton:DoClick()
+FUNC steamButton:DoClick()
+FUNC youtubeButton:DoClick()
+FUNC patreonButton:DoClick()
+FUNC VJ_MAIN_CLIENT(panel)
+FUNC langCombo:OnSelect(index,value,data)
+FUNC VJ_MAIN_CLEANUP(panel)
+FUNC VJ_MAIN_SERVER(panel)
+FUNC VJ_MAIN_PLUGINS(panel)
+FUNC changelogButton:DoClick()
+FUNC docButton:DoClick()
+FUNC tutorialButton:DoClick()
+VAR roottree = tree:AddNode(vjTreeName, vjIcon)
+FUNC roottree:DoClick()
+VAR EntList = list.Get(vjList)
+VAR CatInfoList = list.Get("VJBASE_CATEGORY_INFO")
+VAR Categories = {}
+VAR Category = v.Category or "Uncategorized"
+VAR Category = "Default"
+VAR Tab = Categories[Category] or {}
+VAR icon = list.HasEntry("VJBASE_CATEGORY_INFO", CategoryName) and CatInfoList[CategoryName].icon or vjIcon
+VAR icon = "vj_base/icons/vrejgaming.png"
+VAR node = roottree:AddNode(CategoryName, icon)
+VAR CatPropPanel = vgui.Create("ContentContainer", pnlContent)
+VAR generalHeader = vgui.Create("ContentHeader", roottree.PropPanel)
+VAR catHeader = vgui.Create("ContentHeader", CatPropPanel) 			//catHeader:SetText(CategoryName) 			//CatPropPanel:Ad
+FUNC node:DoClick()
+VAR hometree = tree:AddNode("Home", "icon16/monkey.png")
+FUNC hometree:DoClick()
+VAR Header1 = vgui.Create("DLabel")
+VAR Text1 = vgui.Create("DLabel")
+VAR tooltree = tree:AddNode("Tools", "icon16/bullet_wrench.png")
+FUNC tooltree:DoClick()
+VAR ToolList = spawnmenu.GetTools()
+VAR node = tooltree:AddNode("Default", "icon16/bullet_wrench.png")
+VAR CatPropPanel = vgui.Create("ContentContainer", pnlContent)
+VAR Header = vgui.Create("ContentHeader", tooltree.PropPanel)
+FUNC tooltree:DoClick()
+VAR results = {}
+VAR entities = {}
+FUNC searchList(lname,lctype)
+VAR name = v.PrintName
+VAR name_c = v.ClassName
+VAR entry = { 					text = v.PrintName or v.ClassName, 					icon = spawnmenu.CreateContentIcon(v.ScriptedEntityTy
+VAR ctrl = vgui.Create("SpawnmenuContentPanel")
+VAR sidebar = ctrl.ContentNavBar
+VAR label = vgui.Create( "DLabel", self )
+VAR DComboBox = vgui.Create( "DComboBox", self )
+VAR CustomIcons = list.Get( "ContentCategoryIcons" )
+VAR groupedWeps = {}
+VAR cat = (v.category or ""):lower()
+FUNC DComboBox:OnSelect(index,value)
+FUNC InternalSpawnNPC(NPCData,ply,Position,Normal,Class,Equipment,SpawnFlagsSaved,NoDropToFloor)
+TABLE VJ
+  FIELD CreateDupe_Entity = function( ply, data ) 	if ( IsValid( ply ) && !gamemode.Call( "PlayerSpawnSENT", ply, data.Class ) )
+VAR ent = ents.Create( data.Class )
+VAR entTable = list.GetEntry( "SpawnableEntities", data.EntityName )
+  FIELD CreateDupe_Weapon = function( ply, data ) 	if ( IsValid( ply ) && !gamemode.Call( "PlayerSpawnSWEP", ply, data.Class, li
+VAR ent = ents.Create( data.Class )
+VAR fontName = "Roboto"
+
+VAR SNDLVL_IDLE = 60
+VAR SNDLVL_NORM = 75 //local
+VAR SNDLVL_TALKING = 80
+VAR SNDLVL_GUNFIRE = 140  //local
+VAR PITCH_LOW = 95
+VAR PITCH_NORM = 100 //local
+VAR PITCH_HIGH = 120
+VAR PITCH_RANDOM = {90, 110}
+
+
+FUNC SWEP:OnAnimEvent(pos,ang,event,options)
+FUNC SWEP:NPC_SecondaryFire_BeforeTimer(eneEnt,fireTime)
+FUNC SWEP:OnSecondaryAttack()
+
+VAR fireAnim = ACT_VM_SECONDARYATTACK
+FUNC SWEP:PrimaryAttack()
+FUNC SWEP:SecondaryAttack()
+FUNC SWEP:OnPrimaryAttack(status,statusData)
+VAR sdLoadDone = {"weapons/crossbow/bolt_load1.wav", "weapons/crossbow/bolt_load2.wav"}
+FUNC SWEP:OnReload(status)
+
+FUNC SWEP:OnPrimaryAttack(status,statusData)
+FUNC SWEP:OnSecondaryAttack()
+
+FUNC SWEP:OnAnimEvent(pos,ang,event,options)
+
+FUNC SWEP:OnPrimaryAttack(status,statusData)
+FUNC SWEP:PrimaryAttackEffects(owner)
+FUNC SWEP:OnReload(status)
+FUNC SWEP:OnSecondaryAttack()
+FUNC SWEP:OnPrimaryAttack(status,statusData)
+FUNC SWEP:OnSecondaryAttack()
+FUNC SWEP:OnReload(status)
+
+VAR defaultConvars = TOOL:BuildConVarList()
+FUNC ControlPanel(panel)
+FUNC reset:DoClick()
+FUNC tutorial:DoClick()
+FUNC typeCombo:OnSelect(index,value,data)
+FUNC TOOL.BuildCPanel(panel)
+FUNC TOOL:LeftClick(tr)
+VAR defaultConvars = TOOL:BuildConVarList()
+FUNC ControlPanel(panel)
+FUNC reset:DoClick()
+FUNC wepText:OnGetFocus()
+FUNC wepSelList:OnRowSelected(rowIndex,row)
+FUNC wepSelList:DoDoubleClick(lineID,line)
+FUNC TOOL.BuildCPanel(panel)
+FUNC ApplyWeapon(ply,ent,data)
+VAR ent = tr.Entity
+VAR equipment = self:GetClientInfo("weaponclass")
+FUNC TOOL.BuildCPanel(panel)
+FUNC TOOL:LeftClick(tr)
+FUNC TOOL:RightClick(tr)
+FUNC TOOL:Reload(tr)
+VAR defaultConvars = TOOL:BuildConVarList()
+FUNC ControlPanel(panel)
+FUNC reset:DoClick()
+FUNC tutorial:DoClick()
+FUNC TOOL.BuildCPanel(panel)
+FUNC TOOL:LeftClick(tr)
+FUNC TOOL:RightClick(tr)
+FUNC TOOL:Reload(tr)
+FUNC ControlPanel(panel)
+FUNC selectedList:OnRowSelected(rowIndex,row)
+FUNC selectedList:DoDoubleClick(lineID,line)
+FUNC unselectButton:DoClick()
+VAR wep = LocalPlayer():GetActiveWeapon()
+VAR ent = net.ReadEntity()
+VAR entName = language.GetPhrase(net.ReadString())
+VAR VJ_TOOL_MOVER_ENTS = VJ_TOOL_MOVER_ENTS or {}
+VAR editType = 0
+VAR editType = 1
+VAR getPanel = controlpanel.Get("vj_tool_mover")
+VAR moveType = net.ReadBit()
+VAR movePos = net.ReadVector()
+VAR wep = LocalPlayer():GetActiveWeapon()
+VAR getPanel = controlpanel.Get("vj_tool_mover")
+VAR entsCount = #VJ_TOOL_MOVER_ENTS
+FUNC TOOL.BuildCPanel(panel)
+VAR wep = ply:GetActiveWeapon()
+VAR editType = net.ReadBit()
+VAR entCount = net.ReadUInt(MAX_EDICT_BITS)
+VAR ent = net.ReadEntity()
+VAR wep = ply:GetActiveWeapon()
+VAR moveType = net.ReadBit()
+VAR movePos = net.ReadVector()
+VAR moveTypeVJ = moveType == 1 and "TASK_RUN_PATH" or "TASK_WALK_PATH"
+VAR moveTypeReg = moveType == 1 and SCHED_FORCED_GO_RUN or SCHED_FORCED_GO
+VAR entCount = net.ReadUInt(MAX_EDICT_BITS)
+VAR ent = net.ReadEntity()
+FUNC TOOL:LeftClick(tr)
+FUNC TOOL:RightClick(tr)
+FUNC TOOL:Reload(tr)
+FUNC TOOL.BuildCPanel(panel)
+FUNC TOOL:LeftClick(tr)
+FUNC TOOL:RightClick(tr)
+VAR defaultConvars = TOOL:BuildConVarList()
+FUNC ControlPanel(panel)
+FUNC reset:DoClick()
+FUNC tutorial:DoClick()
+FUNC classList:OnRowSelected(rowIndex,row)
+FUNC classList:DoDoubleClick(lineID,line)
+FUNC InsertToTable(val)
+FUNC classTextEntry:OnEnter(value)
+FUNC button:DoClick()
+FUNC button:DoClick()
+FUNC button:DoClick()
+FUNC button:DoClick()
+FUNC button:DoClick()
+FUNC button:DoClick()
+FUNC TOOL.BuildCPanel(panel)
+VAR wep = LocalPlayer():GetActiveWeapon()
+VAR entName = language.GetPhrase(net.ReadString())
+VAR classCount = net.ReadUInt(9)
+VAR VJ_TOOL_RELATIONSHIP_LIST = {}
+VAR getPanel = controlpanel.Get("vj_tool_relationship")
+VAR wep = LocalPlayer():GetActiveWeapon()
+VAR ent = net.ReadEntity()
+VAR entName = language.GetPhrase(net.ReadString())
+VAR applyType = net.ReadBit()
+VAR wep = ply:GetActiveWeapon()
+VAR ent = net.ReadEntity()
+VAR classtbl = net.ReadTable()
+FUNC TOOL:LeftClick(tr)
+FUNC TOOL:RightClick(tr)
+FUNC TOOL:Reload(tr)
+FUNC TOOL.BuildCPanel(panel)
+FUNC TOOL:LeftClick(tr)
+FUNC TOOL:RightClick(tr)
+FUNC TOOL:Reload(tr)
+VAR defaultConvars = TOOL:BuildConVarList()
+FUNC ControlPanel(panel)
+FUNC reset:DoClick()
+FUNC tutorial:DoClick()
+FUNC selectedNPC:OnGetFocus()
+FUNC npcSelList:OnRowSelected(rowIndex,row)
+FUNC npcSelList:DoDoubleClick(lineID,line)
+FUNC selectedWep:OnGetFocus()
+FUNC wepSelList:OnRowSelected(rowIndex,row)
+FUNC wepSelList:DoDoubleClick(lineID,line)
+FUNC addButton:DoClick()
+FUNC spawnList:OnRowSelected(rowIndex,row)
+FUNC spawnList:DoDoubleClick(lineID,line)
+VAR wep = LocalPlayer():GetActiveWeapon()
+VAR spawnPos = net.ReadVector()
+VAR spawnType = net.ReadBit()
+FUNC TOOL.BuildCPanel(panel)
+VAR spawnSounds = {"garrysmod/save_load1.wav", "garrysmod/save_load2.wav", "garrysmod/save_load3.wav", "garrysmod/save
+VAR wep = ply:GetActiveWeapon()
+VAR spawnPos = net.ReadVector()
+VAR spawnType = net.ReadBit()
+VAR spawnEntries = net.ReadType()
+VAR spawner = ents.Create("obj_vj_spawner_base")
+VAR spawnAng = ply:GetAngles()
+VAR relClass = v.Relationship.Class
+VAR relClass = nil
+FUNC TOOL:LeftClick(tr)
+FUNC TOOL:RightClick(tr)
+FUNC SWEP:OnReload(status)
+FUNC SWEP:OnHolster(newWep)
+FUNC SWEP:CustomOnRemove()
+FUNC SWEP:DecideAnimationLength(anim,override,decrease)
+VAR metaEntity = FindMetaTable("Entity")
+VAR funcDrawModel = metaEntity.DrawModel
+VAR funcGetTable = metaEntity.GetTable
+VAR metaNPC = FindMetaTable("NPC")
+VAR funcGetActiveWeapon = metaNPC.GetActiveWeapon
+VAR metaAngle = FindMetaTable("Angle")
+VAR vj_wep_muzzleflash = GetConVar("vj_wep_muzzleflash")
+VAR vj_wep_muzzleflash_light = GetConVar("vj_wep_muzzleflash_light")
+VAR vj_wep_shells = GetConVar("vj_wep_shells")
+VAR oldShells = {VJ_Weapon_PistolShell1 = "ShellEject", VJ_Weapon_RifleShell1 = "RifleShellEject", VJ_Weapon_Shotgun
+FUNC SWEP:Initialize()
+FUNC SWEP:GetCapabilities()
+FUNC SWEP:SetDefaultValues(holdType)
+FUNC SWEP:Equip(newOwner)
+FUNC SWEP:EquipAmmo(ply)
+FUNC SWEP:Deploy()
+VAR commonAttachmentNames = {     muzzle = true,     muzzleA = true,     muzzle_flash = true,     muzzle_flash1 = true,     muzz
+FUNC SWEP:GetBulletPos()
+VAR plyDmg = selfData.Primary.PlayerDamage
+VAR ene = owner:GetEnemy()
+VAR spawnPos = selfData.GetBulletPos(self)
+VAR aimPos = ownerData.GetAimPosition(owner, ene, spawnPos, 0)
+VAR spread = ownerData.GetAimSpread(owner, ene, aimPos, selfData.NPC_CustomSpread or 1) // owner:GetPos():Distanc
+VAR spawnPos = selfData.GetBulletPos(self)
+VAR anim = VJ.PICK(selfData.AnimTbl_PrimaryFire)
+VAR animTime = VJ.AnimDuration(owner:GetViewModel(), anim)
+FUNC SWEP:PrimaryAttackEffects(owner)
+FUNC SWEP:CanSecondaryAttack()
+FUNC SWEP:SecondaryAttack()
+FUNC SWEP:DoIdleAnimation()
+FUNC SWEP:TranslateActivity(act)
+FUNC SWEP:FireAnimationEvent(pos,ang,event,options)
+FUNC SWEP:Reload()
+FUNC SWEP:NPC_Reload()
+FUNC SWEP:Holster(newWep)
+FUNC SWEP:OnDrop()
+FUNC SWEP:OwnerChanged()
+FUNC SWEP:CanBePickedUpByNPCs()
+FUNC SWEP:GetWeaponCustomPosition(owner,selfData)
+FUNC SWEP:MaintainWorldModel(selfData,owner)
+FUNC SWEP:SetupDataTables()
+FUNC SWEP:DrawWorldModel()
+FUNC SWEP:OnRemove()
+FUNC SWEP:SetupWeaponHoldTypeForAI(holdType)

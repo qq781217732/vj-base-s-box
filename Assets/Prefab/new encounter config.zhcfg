@@ -1,0 +1,46 @@
+{
+  "GlobalMaxEnemies": 5,
+  "MaxActiveEncounters": 6,
+  "AmbientRefreshInterval": 5,
+  "PressureDecayRate": 1,
+  "PressureAccumulationRate": 0.5,
+  "HighPressureThreshold": 70,
+  "CrossZonePursuitThreshold": 60,
+  "SpawnMinSeparation": 80,
+  "SpawnInnerRadius": 200,
+  "SpawnOuterRadius": 500,
+  "DefaultMinPlayerDistance": 1000,
+  "DefaultMaxPlayerDistance": 5000,
+  "DefaultRequireOutOfSight": true,
+  "EnemyBaseHealth": 50,
+  "EnemyWalkSpeed": 45,
+  "EnemyRunSpeed": 120,
+  "EnemyAttackDamage": 6,
+  "EnemyAttackSpeed": 10,
+  "SightRange": 2500,
+  "SightHalfAngle": 90,
+  "HearingRange": 800,
+  "ProximityRange": 150,
+  "SprintProximityBonus": 80,
+  "SightMemory": 4,
+  "SearchDuration": 5,
+  "SpawnGroupTemplates": [
+    {
+      "Name": "WanderPack",
+      "TotalCost": 4,
+      "Entries": [
+        {
+          "EnemyPrefab": {
+            "_type": "gameobject",
+            "prefab": "prefab/zombie_common.prefab"
+          },
+          "EnemyTypeName": "ZombieHorde.CommonZombie",
+          "Count": 10
+        }
+      ],
+      "DefaultTask": "ScoutPatrol"
+    }
+  ],
+  "__references": [],
+  "__version": 0
+}
