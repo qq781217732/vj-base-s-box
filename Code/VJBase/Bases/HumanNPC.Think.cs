@@ -368,43 +368,166 @@ public partial class HumanNPC
                 MaintainIdleBehavior(2);
                 // lua:3603: //return — Allow other behaviors (COND_PLAYER_PUSHING) to run
             }
-            // ═══ C2: Has valid weapon (lua:3604-3816) — ALL SKIP (wep is null, Phase 3) ═══
+            // ═══ C2: Has valid weapon (lua:3604-3816) ═══
             else
             {
-                if (wep == null) goto goto_conditions; // compiler guard (dead code)
+                if (wep == null) goto goto_conditions; // compiler guard (wep is null from stub)
 
-                Weapon_UnarmedBehavior_Active = false;                      // lua:3605
+                // lua:3605
+                Weapon_UnarmedBehavior_Active = false;
 
+                // lua:3607-3609: Position calculations
                 // SKIP: lua:3607 — enePos_Eye = ene:EyePos() — Phase 3 eye position
                 var myPos = WorldPosition;                                  // lua:3608
-                // SKIP: lua:3609 — myPosCentered = myPos + OBBCenter() — Phase 3 OBB
-                var myPosCentered = myPos; // stub
+                // SKIP: lua:3609 — myPosCentered = myPos + OBBCenter() — Phase 3 OBB/GetBonePosition
+                var myPosCentered = myPos;
 
-                // --- lua:3611-3620: Retreat from too-close enemy ---
-                // SKIP: lua:3612 — DoCoverTrace(myPosCentered, enePos_Eye), wep.IsMeleeWeapon, ene.Behavior — Phase 3 weapon + cover
-                // SKIP: lua:3613 — VJ.TraceDirections(self, "Quick", 200, ...) — Phase 3 utility
-                // SKIP: lua:3616 — GetWeaponState/SetWeaponState — Phase 3 weapon state
-                // SKIP: lua:3618 — SCHEDULE_GOTO_POSITION("TASK_RUN_PATH", lambda) — Phase 3
-                // SKIP: lua:3619 — goto goto_conditions — Phase 3
+                // ═══ C2a: Retreat from too-close enemy (lua:3611-3620) ═══
+                // lua:3612: if eneData.Distance <= Weapon_RetreatDistance && !wep.IsMeleeWeapon
+                //          && curTime > TakingCoverT && curTime > NextChaseTime && !AttackType
+                //          && !IsFollowing && ene.Behavior != VJ_BEHAVIOR_PASSIVE
+                //          && !DoCoverTrace(myPosCentered, enePos_Eye)
+                // SKIP: lua:3612 — wep.IsMeleeWeapon, ene.Behavior, DoCoverTrace — Phase 3 weapon + cover
+                {
+                    // SKIP: lua:3613 — moveCheck = PICK(VJ.TraceDirections(self, "Quick", 200, true, false, 8, true)) — Phase 3 utility
+                    // SKIP: lua:3614 — if moveCheck then
+                    // SKIP: lua:3615 — SetLastPosition(moveCheck) — Phase 3
+                    // SKIP: lua:3616 — GetWeaponState() == VJ.WEP_STATE_RELOADING → SetWeaponState() — Phase 3 weapon state
+                    // SKIP: lua:3617 — TakingCoverT = curTime + 2
+                    // SKIP: lua:3618 — SCHEDULE_GOTO_POSITION("TASK_RUN_PATH", function(x) x:EngTask("TASK_FACE_ENEMY", 0) x.CanShootWhenMoving = true x.TurnData = {Type = VJ.FACE_ENEMY} end)
+                    // SKIP: lua:3619 — goto goto_conditions
+                }
 
-                // --- lua:3623-3651: CanFireWeapon checks + occlusion ---
-                // SKIP: lua:3623-3629 — CanFireWeapon(false,false) / (true,true) — Phase 3 weapon
-                // SKIP: lua:3625-3626 — Weapon_MaxDistance / NextWeaponAttackT check → MaintainAlertBehavior
-                // SKIP: lua:3631 — DoCoverTrace(EyePos, enePos_Eye, true) occlusion check
-                // SKIP: lua:3632 — TakingCoverT guard
-                // SKIP: lua:3633-3650 — Weapon_OcclusionDelay / GetWeaponState / LastHiddenZoneT / GetUp / MaintainAlertBehavior / WeaponAttackState
-                // SKIP: lua:3642 — goto goto_checkwep — Phase 3
-                // SKIP: lua:3651 — goto goto_conditions — Phase 3
+                // ═══ C2b: CanFireWeapon checks + occlusion (lua:3623-3651) ═══
+                // lua:3623: if CanFireWeapon(false, false) && GetState() != VJ_STATE_ONLY_ANIMATION_NOATTACK then
+                // SKIP: lua:3623 — CanFireWeapon(false, false) — Phase 3 weapon
+                {
+                    // lua:3625: if eneData.Distance > Weapon_MaxDistance or curTime < NextWeaponAttackT then
+                    // SKIP: lua:3625 — Weapon_MaxDistance, NextWeaponAttackT — Phase 3 weapon config
+                    // SKIP: lua:3626 — MaintainAlertBehavior() — Phase 3
+                    // SKIP: lua:3627 — AllowWeaponOcclusionDelay = false
 
-                // SKIP: lua:3654 — ::goto_checkwep:: label (C#: goto_checkwep:)
-            goto_checkwep:
-                _ = 0; // label anchor — Phase 3 weapon combat loop will start here
-                // SKIP: lua:3655-3816 — VJ weapon combat loop — Phase 3 weapon system
-                // C2c-i (lua:3655-3670): if wep.IsVJBaseWeapon → aim turning (FInAimCone, SetTurnTarget, UpdatePoseParamTracking)
-                // C2c-ii (lua:3673-3734): cover/obstruction check (DoCoverTrace ×2, friendly-in-LOS reposition, behind-cover reposition, VJ.GetNearestPositions / NearestPoint, custom GOTO_POSITION schedule)
-                // C2c-iii (lua:3737-3794): weapon attack (melee vs ranged, TranslateActivity/PICK/AnimExists/AnimDuration/PlayAnim, crouch fire, ammo check)
-                // C2c-iv (lua:3797-3806): random strafing while shooting (VJ.TraceDirections Radial, OnWeaponStrafe)
-                // C2c-v (lua:3808-3816): non-VJ weapons → SetSchedule(SCHED_RANGE_ATTACK1)
+                    // lua:3629: elseif CanFireWeapon(true, true) then
+                    // SKIP: lua:3629 — CanFireWeapon(true, true) — Phase 3 weapon
+                    {
+                        // lua:3631: if DoCoverTrace(EyePos, enePos_Eye, true) then
+                        // SKIP: lua:3631 — DoCoverTrace(EyePos, enePos_Eye, true) — Phase 3 cover + eye position
+                        {
+                            // SKIP: lua:3632 — TakingCoverT > curTime → return — Phase 3
+                            // lua:3633: if GetWeaponState() != VJ.WEP_STATE_RELOADING then
+                            // SKIP: lua:3633 — GetWeaponState() — Phase 3 weapon state
+                            {
+                                // lua:3635-3638: Occlusion delay
+                                // SKIP: lua:3635 — Weapon_OcclusionDelay && WeaponAttackState != VJ.WEP_ATTACK_STATE_AIM_OCCLUSION && !wep.IsMeleeWeapon && AllowWeaponOcclusionDelay && (curTime - WeaponLastShotTime) <= 4.5 && eneData.Distance > Weapon_OcclusionDelayMinDist
+                                // SKIP: lua:3636 — WeaponAttackState = VJ.WEP_ATTACK_STATE_AIM_OCCLUSION
+                                // SKIP: lua:3637 — MaintainIdleBehavior(2) → ACT_IDLE_ANGRY
+                                // SKIP: lua:3638 — NextChaseTime = curTime + math.Rand(Weapon_OcclusionDelayTime.a, Weapon_OcclusionDelayTime.b)
+
+                                // lua:3640-3641: Hidden zone stand-up
+                                // SKIP: lua:3640 — curTime < LastHiddenZoneT && !DoCoverTrace(myPosCentered + GetUp()*30, enePos_Eye + GetUp()*30, true) — Phase 3 cover + GetUp
+                                // SKIP: lua:3641 — MaintainIdleBehavior(2) → ACT_IDLE_ANGRY
+                                // SKIP: lua:3642 — goto goto_checkwep
+
+                                // lua:3643-3649: Everything failed → chase
+                                // SKIP: lua:3645-3646 — WeaponAttackState >= VJ.WEP_ATTACK_STATE_FIRE && CurrentScheduleName != "SCHEDULE_ALERT_CHASE" → WeaponAttackState = VJ.WEP_ATTACK_STATE_NONE
+                                // SKIP: lua:3648 — MaintainAlertBehavior() — Phase 3
+                            }
+                            // SKIP: lua:3651 — goto goto_conditions
+                        }
+                        // lua:3653: -- I can see the enemy...
+                        // ═══ C2c: Enemy visible — weapon combat loop (lua:3654-3816) ═══
+                        // lua:3654: ::goto_checkwep::
+                    goto_checkwep:
+                        _ = 0;
+
+                        // lua:3655: if wep.IsVJBaseWeapon then — VJ Base weapons
+                        // SKIP: lua:3655 — wep.IsVJBaseWeapon — Phase 3 weapon interface
+                        {
+                            // ═══ C2c-i: Aim turning (lua:3656-3670) ═══
+                            // lua:3657: if !HasPoseParameterLooking then
+                            // SKIP: lua:3657-3669 — HasPoseParameterLooking, FInAimCone, SetTurnTarget("Enemy"), GetAngles():Forward(), Dot, UpdatePoseParamTracking(true) — Phase 3 animation + turning
+                            // lua:3671: // self:MaintainAlertBehavior() — commented out
+
+                            // ═══ C2c-ii: Cover/obstruction check (lua:3673-3734) ═══
+                            // lua:3673-3676: inCover + wepInCover via DoCoverTrace
+                            // SKIP: lua:3673 — DoCoverTrace(myPosCentered, enePos_Eye, false, {SetLastHiddenTime = true}) — Phase 3 cover
+                            // SKIP: lua:3675 — DoCoverTrace(wep:GetBulletPos(), enePos_Eye, false) — Phase 3 weapon + cover
+                            // lua:3679-3682: inCoverEntLiving = IsValid(inCoverEnt) && inCoverEnt.VJ_ID_Living
+                            // SKIP: lua:3679-3682 — inCoverEnt.VJ_ID_Living — Phase 3 entity flags
+
+                            // lua:3683: if !wep.IsMeleeWeapon then — ranged weapons only
+                            // SKIP: lua:3683 — wep.IsMeleeWeapon — Phase 3 weapon interface
+                            {
+                                // lua:3685-3693: Friendly in line of fire → move
+                                // SKIP: lua:3685 — inCoverEntLiving && WeaponAttackState == VJ.WEP_ATTACK_STATE_FIRE_STAND && IsValid(wepInCoverEnt) && wepInCoverEnt:IsNPC() && Disposition checks — Phase 3
+                                // SKIP: lua:3686 — moveCheck = PICK(VJ.TraceDirections(self, "Quick", 50, ...)) — Phase 3 utility
+                                // SKIP: lua:3688-3692 — StopMoving / IsGuard guard data / SetLastPosition / SCHEDULE_GOTO_POSITION("TASK_WALK_PATH", lambda) — Phase 3
+
+                                // lua:3697-3734: Behind cover logic
+                                // SKIP: lua:3697 — if inCover then
+                                // SKIP: lua:3699 — curTime < TakingCoverT → goto goto_conditions
+                                // SKIP: lua:3701 — curTime > NextMoveOnGunCoveredT && distance > 150 || wepInCover → reposition
+                                // SKIP: lua:3703-3710 — nearestPos/nearestEntPos via VJ.GetNearestPositions / NearestPoint — Phase 3 utility
+                                // SKIP: lua:3716-3727 — custom vj_ai_schedule.New("SCHEDULE_GOTO_POSITION") + TranslateActivity(PICK(AnimTbl_MoveToCover)) + AnimExists + SetMovementActivity + StartSchedule — Phase 3 animation + schedule
+                                // SKIP: lua:3730 — NextMoveOnGunCoveredT = curTime + 2
+                                // SKIP: lua:3731 — return
+                            }
+
+                            // ═══ C2c-iii: Weapon attack (lua:3737-3794) ═══
+                            // lua:3737: if curTime > NextWeaponAttackT && curTime > NextWeaponAttackT_Base then
+                            // SKIP: lua:3737 — NextWeaponAttackT, NextWeaponAttackT_Base — Phase 3 weapon timers
+                            {
+                                // lua:3739-3751: Melee weapons
+                                // SKIP: lua:3739 — wep.IsMeleeWeapon — Phase 3 weapon
+                                // SKIP: lua:3740 — OnWeaponAttack() — Phase 3 weapon callback
+                                // SKIP: lua:3741 — TranslateActivity(PICK(AnimTbl_WeaponAttack)) — Phase 3 animation
+                                // SKIP: lua:3742-3743 — AnimExists + AnimDuration — Phase 3 animation
+                                // SKIP: lua:3744 — wep.NPC_NextPrimaryFire = animDur — Phase 3 weapon
+                                // SKIP: lua:3745 — wep:NPCShoot_Primary() — Phase 3 weapon
+                                // SKIP: lua:3746 — VJ.EmitSound(self, wep.NPC_BeforeFireSound, ...) — Phase 3 sound
+                                // SKIP: lua:3747 — NextMeleeWeaponAttackT = curTime + animDur
+                                // SKIP: lua:3748 — WeaponAttackAnim = finalAnim
+                                // SKIP: lua:3749 — PlayAnim(finalAnim, "LetAttacks", false, true) — Phase 3 animation
+                                // SKIP: lua:3750 — WeaponAttackState = VJ.WEP_ATTACK_STATE_FIRE_STAND
+
+                                // lua:3753-3793: Ranged weapons
+                                // SKIP: lua:3754 — AllowWeaponOcclusionDelay = true
+                                // SKIP: lua:3755 — hasAmmo = wep:Clip1() > 0 — Phase 3 weapon
+                                // SKIP: lua:3756-3757 — !hasAmmo && WeaponAttackState != VJ.WEP_ATTACK_STATE_AIM → WeaponAttackAnim = ACT_INVALID
+                                // SKIP: lua:3760 — VJ.IsCurrentAnim(self, TranslateActivity(WeaponAttackAnim)) — Phase 3 animation
+                                // SKIP: lua:3763 — GetActivity() != WeaponAttackAnim && GetActivity() != ACT_TRANSITION — Phase 3 animation
+                                // SKIP: lua:3764 — OnWeaponAttack() — Phase 3 weapon callback
+                                // SKIP: lua:3765-3766 — WeaponAttackState == VJ.WEP_ATTACK_STATE_AIM_OCCLUSION → WeaponAttackState = VJ.WEP_ATTACK_STATE_NONE
+                                // SKIP: lua:3768 — WeaponLastShotTime = curTime
+                                // SKIP: lua:3772-3775 — !hasAmmo → MaintainIdleBehavior(2) + WeaponAttackState = VJ.WEP_ATTACK_STATE_AIM
+                                // SKIP: lua:3778-3783 — TranslateActivity(PICK(AnimTbl_WeaponAttackCrouch)) vs TranslateActivity(PICK(AnimTbl_WeaponAttack)) — Phase 3 animation
+                                // SKIP: lua:3779 — crouch condition: Weapon_CanCrouchAttack && !inCover && !wepInCover && distance > 500 && AnimExists + random + DoCoverTrace — Phase 3
+                                // SKIP: lua:3786-3792 — AnimExists + VJ.EmitSound + PlayAnim + WeaponAttackAnim + WeaponAttackState + NextWeaponAttackT_Base — Phase 3 animation + sound
+                            }
+
+                            // ═══ C2c-iv: Random strafing while shooting (lua:3797-3806) ═══
+                            // lua:3797: if Weapon_Strafe && !inCover && !IsGuard && !IsFollowing && !wep.IsMeleeWeapon
+                            //          && (!wep.NPC_StandingOnly) && WeaponAttackState == VJ.WEP_ATTACK_STATE_FIRE_STAND
+                            //          && curTime > NextWeaponStrafeT && (curTime - eneData.TimeAcquired) > 2
+                            //          && eneData.Distance < (Weapon_MaxDistance / 1.25)
+                            // SKIP: lua:3797 — all weapon/cover/state checks — Phase 3 weapon + cover
+                            {
+                                // SKIP: lua:3798 — OnWeaponStrafe() != false — Phase 3 weapon callback
+                                // SKIP: lua:3799 — moveCheck = PICK(VJ.TraceDirections(self, "Radial", math.random(150, 400), true, false, 12, true)) — Phase 3 utility
+                                // SKIP: lua:3801-3803 — StopMoving / SetLastPosition / SCHEDULE_GOTO_POSITION(random walk/run, lambda with FACE_ENEMY) — Phase 3
+                                // SKIP: lua:3806 — NextWeaponStrafeT = curTime + math.Rand(Weapon_StrafeCooldown.a, Weapon_StrafeCooldown.b)
+                            }
+
+                            // ═══ C2c-v: Non-VJ weapons (lua:3808-3816) ═══
+                            // lua:3808: else — None VJ Base weapons
+                            // SKIP: lua:3809 — SetTurnTarget("Enemy") — Phase 3 turning
+                            // SKIP: lua:3810 — WeaponAttackState = VJ.WEP_ATTACK_STATE_FIRE_STAND
+                            // SKIP: lua:3811 — OnWeaponAttack() — Phase 3 weapon callback
+                            // SKIP: lua:3812 — WeaponLastShotTime = curTime
+                            // SKIP: lua:3814 — self:SetSchedule(SCHED_RANGE_ATTACK1) — Source engine schedule, no S&Box equivalent
+                        }
+                    }
+                }
             }
         }
 
