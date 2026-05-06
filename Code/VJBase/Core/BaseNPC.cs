@@ -159,8 +159,6 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     // ═══ INPCConditions state (was NPCConditions.cs Dictionary<GameObject, HashSet>) ═══
     private HashSet<Condition> _conditions = new();
     private List<Condition> _activeIgnoreConditions = new();
-    private Dictionary<GameObject, float> _ignoreEnemyUntil = new();
-
     // ═══ AI State ═══
     public virtual void SetState(VJState state, float time = 0) { AIState = state; }
     public virtual VJState GetState() => AIState;
@@ -643,8 +641,8 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
         UpdateEnemyMemory(ent, ent.WorldPosition);
 
         // core.lua:2053: self:IgnoreEnemyUntil(ent, 0)
-        // Phase 3: Source engine API, S&Box equivalent = ignore enemy for a duration
-        _ignoreEnemyUntil[ent] = Time.Now;
+        // Clears Source engine's built-in reaction delay after first SetEnemy.
+        // S&Box NavMeshAgent has no enemy reaction timer — no-op.
 
         // core.lua:2054: self:SetNPCState(NPC_STATE_COMBAT)
         SetNPCState((int)NPCState.Combat);
