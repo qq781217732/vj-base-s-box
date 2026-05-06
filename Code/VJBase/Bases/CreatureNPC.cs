@@ -12,4 +12,11 @@ public partial class CreatureNPC : BaseNPC
 	public bool IsVJBaseSNPC { get; set; } = true;
 	public bool IsVJBaseSNPC_Creature { get; set; } = true;
 	public bool AutomaticFrameAdvance { get; set; }
+
+	public CreatureNPC()
+	{
+		// Creature-specific sound defaults (npc_vj_creature_base/init.lua)
+		SoundTbl_MeleeAttackExtra = new() { "Zombie.AttackHit" };
+		SoundTbl_Impact = new() { "VJ.Impact.Flesh_Alien" };
+	}
 }

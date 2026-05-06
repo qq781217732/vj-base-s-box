@@ -31,6 +31,25 @@ public partial class HumanNPC : CreatureNPC
     public bool DisableChasingEnemy { get; set; }
     public bool HasGrenadeAttack { get; set; }
 
+    public HumanNPC()
+    {
+        // Human-specific sound defaults (npc_vj_human_base/init.lua)
+        HasExtraMeleeAttackSounds = true;
+        HasSuppressingSounds = true;
+        HasWeaponReloadSounds = true;
+        HasGrenadeAttackSounds = true;
+        HasDangerSightSounds = true;
+        IdleSoundChance = 3;
+        NextSoundTime_Idle = (8f, 25f);
+        NextSoundTime_Suppressing = (7f, 15f);
+        FootstepSoundTimerWalk = 0.5f;
+        FootstepSoundTimerRun = 0.25f;
+        SoundTbl_FootStep = new() { "VJ.Footstep.Human" };
+        SoundTbl_MeleeAttackExtra = new() { "Flesh.ImpactHard" };
+        SoundTbl_MeleeAttackMiss = new() { "Zombie.AttackMiss" };
+        SoundTbl_Impact = new() { "Flesh.BulletImpact" };
+    }
+
     // Note: Behavior is defined on BaseNPC, default Aggressive
     // HumanNPC sets it via constructor if needed
 

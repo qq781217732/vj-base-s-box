@@ -275,6 +275,24 @@ public virtual void StartEngineTask(int taskId, float taskData)
 
 > AA 字段（11 个状态 + 10 个配置）从 `CreatureNPC.cs` 搬到 `BaseNPC` 层。`DoAA_*` 覆写从 CreatureNPC 移到 BaseNPC.AA.cs。
 
+### 7.1c PlaySoundSystem → BaseNPC.Sound.cs（35 分支 + 辅助方法）
+
+| 状态 | 内容 | 备注 |
+|------|------|------|
+| ✅ | `PlaySoundSystem(sdSet, customSD, sdType)` | core.lua:2944-3375, 35 分支完整实现 |
+| ✅ | `CreateSound(sdFile, sdLevel, sdPitch)` | funcs.lua:74-87 → `Sound.Play()` + `handle.Parent` + `handle.Pitch` |
+| ✅ | `EmitSound(sdFile, sdLevel, sdPitch)` | funcs.lua:89-98 → `Sound.Play(sdFile, WorldPosition)` |
+| ✅ | `StopSD(SoundHandle)` | funcs.lua:70-72 → `handle.Stop()` |
+| ✅ | `GetSoundPitch(object)` | core.lua:940-961, 完整替换旧 stub |
+| ✅ | `GetSoundDuration(sdSet)` | SoundDuration fallback — 硬编码 2/3/3.5s（Phase 3 改进） |
+| ✅ | `StopAllSounds()` | 停止全部 8 个活跃 SoundHandle |
+| ✅ | `OnPlaySound` / `OnCreateSound` / `OnEmitSound` | virtual 回调 |
+| ⚠️ | `SoundLevel` 映射 | 接收参数但未用于 S&Box 衰减 — Phase 3 待调整 |
+| ⚠️ | `PlayFootstepSound` / `PlayIdleSound` | Phase 3 辅助音效系统（非 PlaySoundSystem，独立的 think 循环音效） |
+| ✅ | 音效配置字段 | 全部 ~200 字段（Has* / SoundTbl_* / *SoundChance / *SoundLevel / *SoundPitch / NextSoundTime_*） |
+
+> S&Box API 映射：`CreateSound` → `Sound.Play()` + Parent 手动绑定；`EmitSound` → `Sound.Play(position)` 不 parent；`math.random(1, chance)` → `Game.Random.Next(1, chance + 1)` 防 throw。
+
 ### 7.2 接口体系
 
 | 接口 | 方法数 | 实现 | 状态 |
@@ -326,20 +344,20 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | `BaseNPC.Relationships.cs` | Disposition 回落逻辑 | 完整实现 D_NU/D_VJ_INTEREST 分支 |
 | `BaseNPC.Relationships.cs` | `ent.VJ_NPC_Class` 跨实体读取 | `ent.Components.Get<BaseNPC>()?.VJ_NPC_Class` |
 | `BaseNPC.Relationships.cs` | 实体类型检测用 Tags | 改为组件检测 `Get<BaseNPC>()`/`Get<PlayerBase>()` |
+| `BaseNPC.Relationships.cs` | `PlaySoundSystem("LostEnemy")` / `("Investigate")` / `("OnPlayerSight")` — 3 处 | `BaseNPC.Sound.cs` — PlaySoundSystem 完整翻译 35 分支 |
+| `BaseNPC.cs` | alert sounds (DoEnemyAlert) | PlaySoundSystem("Alert") + cooldown timer |
+| `BaseNPC.cs` | DoEnemyAlert NPCState fix (Lua:2080-2083) | 补回 NPCState 检查，阻止 combat→alert→combat 切换 |
+| `CreatureNPC.Think.cs` | Breath sounds 空壳 (仅 timer 无播放) | StopSD + CreateSound + CurrentBreathSound 存储 |
+| `Core/` (新文件) | 整个 `PlaySoundSystem` 系统从未翻译 | `BaseNPC.Sound.cs` — 音效配置字段 + 35 分支 PlaySoundSystem + StopAllSounds + GetSoundPitch + 回调 |
 
 #### 剩余待填
 | 文件 | 行/位置 | SKIP 内容 | 归属系统 |
 |------|---------|----------|----------|
 | `BaseNPC.Relationships.cs` | 行 126 | `FL_NOTARGET` 标志检查 | 标志系统 |
-| `BaseNPC.Relationships.cs` | 行 142 | `PlaySoundSystem("LostEnemy")` | 音效 |
 | `BaseNPC.Relationships.cs` | 行 242 | 非 VJ NPC 反向关系 | 关系系统 |
 | `BaseNPC.Relationships.cs` | 行 269-270 | `GetMoveType()` + `m_vecSmoothedVelocity` | Source 引擎 API |
 | `BaseNPC.Relationships.cs` | 行 287 | `ent.CanBeEngaged` 回调 | 实体属性 |
-| `BaseNPC.Relationships.cs` | 行 336-337 | 调查系统（声音 + 手电筒） | 感知/音效 |
-| `BaseNPC.Relationships.cs` | 行 358-359 | `OnPlayerSight` + `PlaySoundSystem` 回调 | 事件/音效 |
 | `BaseNPC.Relationships.cs` | 行 192 | `AlliedWithPlayerAllies` + `IsDefaultNPC` 完整逻辑 | 关系系统 |
-| `BaseNPC.cs` | 行 405 | `OnAlert` 回调 | 事件系统 |
-| `BaseNPC.cs` | 行 408 | alert sounds | 音效 |
 | `BaseNPC.cs` | 行 376 | `UpdateEnemyMemory(ent, ent:GetPos())` | 敌人记忆 |
 | `BaseNPC.cs` | 行 379 | `IgnoreEnemyUntil(ent, 0)` | Source 引擎 API |
 | `BaseNPC.Schedule.cs` | — | `m_hOpeningDoor` door system | 门系统 |
@@ -352,6 +370,8 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | `BaseNPC.AA.cs` | 98-101 | `MASK_WATER` trace + aquatic 可达性检查 | 水系统 |
 | `BaseNPC.AA.cs` | — | `WorldSpaceCenter()` 仅返回 origin，缺 OBB 中心偏移 | 实体包围盒 |
 | `BaseNPC.AA.cs` | — | `AA_MoveAnimation` 动画选表/PlayAnim/ACT_* | 动画系统 |
+| `BaseNPC.Sound.cs` | — | `SoundLevel` (dB) 未映射到 S&Box 衰减 (`Distance`/`Decibels`) | 音效 |
+| `BaseNPC.Sound.cs` | — | `GetSoundDuration()` 硬编码 fallback，非真实音效文件时长 | 音效 |
 
 ### 7.5 新增文件清单
 
@@ -365,6 +385,7 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | `Core/EngineAITaskSystem.cs` | Phase 3 重写（Movement/Face/Wait 任务） | ~280 | ✅ |
 | `Core/EngineConstants.cs` | TASK_* 字符串常量 + MoveTasks 集合 | ~75 | ✅ |
 | `Core/BaseNPC.AA.cs` | base_aa.lua 5 方法机械翻译 | ~421 | ✅ 4/5 完整翻译，1 Phase 3 stub |
+| `Core/BaseNPC.Sound.cs` | core.lua:2944-3375 PlaySoundSystem + 音效配置字段 | ~1050 | ✅ 35 分支 + 辅助方法全部翻译 |
 
 ### 7.5b 已删除文件
 
@@ -380,19 +401,19 @@ public virtual void StartEngineTask(int taskId, float taskData)
 
 ### 7.6 MaintainRelationships 翻译完成度
 
-> core.lua:2127-2426，300 行，9 个功能块。**2026-05-06 会话完成 7/9 块。**
+> core.lua:2127-2426，300 行，9 个功能块。**2026-05-06 会话完成 9/9 块。**
 
 | 功能块 | Lua 行 | 状态 | 备注 |
 |--------|--------|------|------|
 | 入口守卫 | 2128-2132 | ✅ | PassiveNature 返回、RelationshipEnts 空检查 |
 | 清理无效实体 | 2160-2174 | ✅ | IsValid 清理 + `Alive(ent)` 组件化检查 + AddEntityRelationship(D_NU) |
-| 距离裁剪 | 2178-2185 | ✅ | 超出 SightDist → ResetEnemy（LostEnemy 声音 SKIP） |
+| 距离裁剪 | 2178-2185 | ✅ | 超出 SightDist → ResetEnemy + PlaySoundSystem("LostEnemy") |
 | 友军识别 | 2212-2257 | ✅ | CLASS_* 对比 via `ent.Components.Get<BaseNPC>()?.VJ_NPC_Class` |
 | HandlePerceivedRelationship | 2263-2272 | ✅ | 组件化调用 `ent.Components.Get<BaseNPC>()?.HandlePerceivedRelationship` |
 | 玩家推挤 | 2300-2319 | ✅ | 核心碰撞检测 OK（m_vecSmoothedVelocity → Rigidbody.Velocity，Phase 3 优化） |
 | 敌人检测 | 2347-2358 | ✅ | **选最近可见敌人 → ForceSetEnemy** + AddEntityRelationship(D_HT) |
-| 调查系统 | 2379-2408 | ❌ SKIP | 声音检测 + 手电筒，依赖 Phase 3 音效/输入系统 |
-| OnPlayerSight | 2412-2424 | ✅ | 检测逻辑完成，但 `OnPlayerSight(ent)` 回调 + `PlaySoundSystem` SKIP |
+| 调查系统 | 2379-2408 | ✅ | 声音检测 + 手电筒 + PlaySoundSystem("Investigate") |
+| OnPlayerSight | 2412-2424 | ✅ | 检测逻辑 + `OnPlayerSight(ent)` 回调 + PlaySoundSystem("OnPlayerSight") |
 
 **本会话关键新增：**
 - `BaseNPC.Alive(ent)` — 查 VJ NPC 的 Dead 标志，非 VJ 默认活着
@@ -508,7 +529,7 @@ Source C++:  f:/DevProject/Sbox/source-sdk-2013/
 
 ```
 1. ✅ MaintainRelationships 机械翻译  ← 已完成
-   core.lua:2127-2426 → BaseNPC.Relationships.cs (390 行，7/9 功能块)
+   core.lua:2127-2426 → BaseNPC.Relationships.cs (390 行，9/9 功能块)
 
 2. ✅ 编译验证  ← 已通过
 
@@ -517,15 +538,17 @@ Source C++:  f:/DevProject/Sbox/source-sdk-2013/
 
 4. ✅ BaseNPC.AA.cs  ← 已完成
    base_aa.lua 5 方法机械翻译 (421 行)，字段从 CreatureNPC 搬到 BaseNPC
-   base_aa.lua → AA_MoveTo/AA_ChaseEnemy/AA_StopMoving
 
-5. 调查系统填坑
-   MaintainRelationships 里声音 + 手电筒检测
+5. ✅ 调查系统填坑  ← 已完成
+   MaintainRelationships 里声音 + 手电筒检测 (bcd6ed7)
 
-6. 转向系统
-   TurnData FACE_POSITION/ENTITY/VISIBLE 全部 SKIP
+6. ✅ 转向系统  ← 已完成
+   TurnData + MaintainTurnTarget (fdb90cf, c39dafc)
 
-7. 动画系统
+7. ✅ 音效系统  ← 已完成
+   PlaySoundSystem 35 分支 + BaseNPC.Sound.cs (~1050 行)
+
+8. 动画系统
    16 个 M 标记动画方法仍是 return 0/false
 ```
 
@@ -545,7 +568,7 @@ cd f:/DevProject/Sbox/testzombie/Code && grep -rn "SKIP:" VJBase/
 ---
 
 *最后更新：2026-05-06*
-*翻译阶段：~45%，P0 全部完成。下一步：调查/转向/动画。*
+*翻译阶段：~55%，P0 + 音效全部完成。下一步：动画。*
 
 ---
 

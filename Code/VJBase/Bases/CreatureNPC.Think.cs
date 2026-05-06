@@ -9,13 +9,7 @@ namespace VJBase;
 public partial class CreatureNPC
 {
     // ═══ Additional Fields ═══
-    public bool HasBreathSound { get; set; }
-    public bool HasSounds { get; set; } = true;
-    public int BreathSoundLevel { get; set; }
-    public float BreathSoundPitch { get; set; } = 100;
-    public float NextSoundTime_Breath { get; set; } = 10;
     public float NextProcessTime { get; set; } = 0.1f;
-    public List<string> SoundTbl_Breath { get; set; } = new();
     // ═══ Think — main AI loop ═══
     public virtual void Think()
     {
@@ -24,9 +18,15 @@ public partial class CreatureNPC
         if (doHeavyProcesses)
             NextProcessT = curTime + NextProcessTime;
 
-        // Breath sounds (Phase 3)
+        // Breath sounds — core.lua creature init:1879-1889
         if (!Dead && HasBreathSound && HasSounds && curTime > NextBreathSoundT)
         {
+            var pickedSD = PickSound(SoundTbl_Breath);
+            if (pickedSD != null)
+            {
+                StopSD(CurrentBreathSound);
+                CurrentBreathSound = CreateSound(pickedSD, BreathSoundLevel, GetSoundPitch(BreathSoundPitch));
+            }
             NextBreathSoundT = curTime + NextSoundTime_Breath;
         }
 

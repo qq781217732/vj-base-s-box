@@ -156,7 +156,7 @@ public partial class BaseNPC
             {
                 if (GetEnemy() == ent)
                 {
-                    // SKIP: PlaySoundSystem("LostEnemy") — Phase 3 sound system
+                    PlaySoundSystem("LostEnemy");
                     ResetEnemy(true, false);
                 }
                 continue;
@@ -405,7 +405,7 @@ public partial class BaseNPC
                             NextInvestigationMove = Time.Now + 2f;
                         }
                         OnInvestigate?.Invoke(ent);
-                        // SKIP: PlaySoundSystem("Investigate") — Phase 3 sound system
+                        PlaySoundSystem("Investigate");
                     }
                     // core.lua:2402 — Flashlight investigation
                     else if (entTypeVal == ENT_TYPE_PLAYER && distanceToEnt < 350f && IsEntityShiningFlashlightOnMe(ent, myPos, entPos))
@@ -436,7 +436,7 @@ public partial class BaseNPC
                 if (shouldFire)
                 {
                     // SKIP: self:OnPlayerSight(ent) — Phase 3 event system
-                    // SKIP: self:PlaySoundSystem("OnPlayerSight") — Phase 3 sound system
+                    PlaySoundSystem("OnPlayerSight");
                     if (OnPlayerSightOnlyOnce)
                         HasOnPlayerSight = false;
                     else
