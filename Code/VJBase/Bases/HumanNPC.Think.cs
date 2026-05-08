@@ -1580,11 +1580,12 @@ public partial class HumanNPC
         // ---- Death animation + delay → FinishDeath (lua:4274-4297) ----
         // lua:4275 — deathTime = self.DeathDelayTime
         float deathTime = DeathDelayTime;
-        // lua:4276 — combine ball → HasDeathAnimation = false
-        // SKIP: lua:4276 — dmgInflictor:GetClass()=="prop_combine_ball" — Phase 3 entity type
-        // lua:4277 — if self.HasDeathAnimation && VJ_CVAR_AI_ENABLED && !DMG_REMOVENORAGDOLL && !DMG_DISSOLVE && NavType!=CLIMB && random <= DeathAnimationChance
-        // SKIP: lua:4277 — DMG_* bit checks / VJ_CVAR_AI_ENABLED / NavType!=CLIMB — Phase 3 damage constants + convar + nav system
-        if (HasDeathAnimation && Game.Random.Next(1, Math.Max(1, DeathAnimationChance) + 1) == 1)
+        // lua:4276 — combine ball → covered by Dissolve tag check below
+        // lua:4277 — HasDeathAnimation && !DMG_REMOVENORAGDOLL && !DMG_DISSOLVE && NavType!=CLIMB
+        if (HasDeathAnimation
+            && !dmginfo.Tags.Has(VJDamageTags.Dissolve)
+            && GetNavType() != (int)NavType.Climb
+            && Game.Random.Next(1, Math.Max(1, DeathAnimationChance) + 1) == 1)
         {
             // lua:4278 — self:RemoveAllGestures()
             RemoveAllGestures();
@@ -1630,10 +1631,13 @@ public partial class HumanNPC
             CreateDeathLoot(dmginfo, hitgroup);
         }
 
-        // lua:4308 — if bit.band(self.SavedDmgInfo.type, DMG_REMOVENORAGDOLL) == 0 then self:DeathWeaponDrop(dmginfo, hitgroup) self:CreateDeathCorpse(dmginfo, hitgroup) end
-        // SKIP: lua:4308 — DMG_REMOVENORAGDOLL constant — Phase 3 damage constants; assume always true
-        DeathWeaponDrop(dmginfo, hitgroup);
-        CreateDeathCorpse(dmginfo, hitgroup);
+        // lua:4308 — if not DMG_REMOVENORAGDOLL && not DMG_DISSOLVE then DeathWeaponDrop + CreateDeathCorpse
+        // S&Box: DMG_REMOVENORAGDOLL ≈ dissolve damage; check via Tags
+        if (!dmginfo.Tags.Has(VJDamageTags.Dissolve))
+        {
+            DeathWeaponDrop(dmginfo, hitgroup);
+            CreateDeathCorpse(dmginfo, hitgroup);
+        }
 
         // lua:4309 — self:Remove()
         // SKIP: lua:4309 — self:Remove() — S&Box GameObject.Destroy() instead; Phase 3 entity removal lifecycle
@@ -1650,17 +1654,17 @@ public partial class HumanNPC
         // lua:4317 — if !self.SavedDmgInfo then
         if (SavedDmgInfo == null)
         {
-            // lua:4318-4328 — SavedDmgInfo snapshot
+            // lua:4318-4328 — SavedDmgInfo snapshot (GMod resets dmginfo after tick)
             SavedDmgInfo = new SavedDmgInfoData
             {
                 dmginfo = dmginfo,
-                // SKIP: lua:4320 — dmginfo:GetAttacker() — Source engine CTakeDamageInfo API
-                // SKIP: lua:4321 — dmginfo:GetInflictor() — Source engine CTakeDamageInfo API
-                // SKIP: lua:4322 — dmginfo:GetDamage() — Source engine CTakeDamageInfo API
-                // SKIP: lua:4323 — dmginfo:GetDamagePosition() — Source engine CTakeDamageInfo API
-                // SKIP: lua:4324 — dmginfo:GetDamageType() — Source engine CTakeDamageInfo API
-                // SKIP: lua:4325 — dmginfo:GetDamageForce() — Source engine CTakeDamageInfo API
-                // SKIP: lua:4326 — dmginfo:GetAmmoType() — Source engine CTakeDamageInfo API
+                attacker = dmginfo.Attacker,        // lua:4320 — GetAttacker()
+                inflictor = dmginfo.Weapon,          // lua:4321 — GetInflictor() → S&Box Weapon
+                amount = dmginfo.Damage,             // lua:4322 — GetDamage()
+                pos = dmginfo.Position,              // lua:4323 — GetDamagePosition()
+                // lua:4324 — GetDamageType() → S&Box no DMG_* bitmask; use Tags for type checks
+                // lua:4325 — GetDamageForce() → S&Box no direct force on DamageInfo
+                // lua:4326 — GetAmmoType() → S&Box no ammo type on DamageInfo
                 hitgroup = hitgroup,
             };
         }

@@ -573,10 +573,12 @@ public partial class CreatureNPC
         // lua:3288 — deathTime = self.DeathDelayTime
         float deathTime = DeathDelayTime;
         // lua:3289 — combine ball → HasDeathAnimation = false
-        // SKIP: lua:3289 — dmgInflictor:GetClass()=="prop_combine_ball" — Phase 3 entity type
-        // lua:3290 — if self.HasDeathAnimation && VJ_CVAR_AI_ENABLED && !DMG_REMOVENORAGDOLL && !DMG_DISSOLVE && NavType!=CLIMB && random <= DeathAnimationChance
-        // SKIP: lua:3290 — DMG_* bit checks / VJ_CVAR_AI_ENABLED / NavType!=CLIMB — Phase 3 damage constants + convar + nav system
-        if (HasDeathAnimation && Game.Random.Next(1, Math.Max(1, DeathAnimationChance) + 1) == 1)
+        //   Covered by Dissolve tag check below (combine ball deals DMG_DISSOLVE)
+        // lua:3290 — HasDeathAnimation && !DMG_REMOVENORAGDOLL && !DMG_DISSOLVE && NavType!=CLIMB
+        if (HasDeathAnimation
+            && !dmginfo.Tags.Has(VJDamageTags.Dissolve)
+            && GetNavType() != (int)NavType.Climb
+            && Game.Random.Next(1, Math.Max(1, DeathAnimationChance) + 1) == 1)
         {
             // lua:3291 — self:RemoveAllGestures()
             RemoveAllGestures();
@@ -620,9 +622,10 @@ public partial class CreatureNPC
             CreateDeathLoot(dmginfo, hitgroup);
         }
 
-        // lua:3321 — if bit.band(self.SavedDmgInfo.type, DMG_REMOVENORAGDOLL) == 0 then self:CreateDeathCorpse(dmginfo, hitgroup) end
-        // SKIP: lua:3321 — DMG_REMOVENORAGDOLL constant — Phase 3 damage constants; assume always true for now
-        CreateDeathCorpse(dmginfo, hitgroup);
+        // lua:3321 — if not DMG_REMOVENORAGDOLL && not DMG_DISSOLVE then CreateDeathCorpse
+        // S&Box: DMG_REMOVENORAGDOLL ≈ dissolve/removal damage; check via Tags
+        if (!dmginfo.Tags.Has(VJDamageTags.Dissolve))
+            CreateDeathCorpse(dmginfo, hitgroup);
 
         // lua:3322 — self:Remove()
         // SKIP: lua:3322 — self:Remove() — S&Box GameObject.Destroy() instead; Phase 3 entity removal lifecycle
@@ -635,17 +638,17 @@ public partial class CreatureNPC
         // lua:3330 — if !self.SavedDmgInfo then
         if (SavedDmgInfo == null)
         {
-            // lua:3331-3341 — SavedDmgInfo snapshot
+            // lua:3331-3341 — SavedDmgInfo snapshot (GMod resets dmginfo after tick)
             SavedDmgInfo = new SavedDmgInfoData
             {
                 dmginfo = dmginfo,
-                // SKIP: lua:3333 — dmginfo:GetAttacker() — Source engine CTakeDamageInfo API
-                // SKIP: lua:3334 — dmginfo:GetInflictor() — Source engine CTakeDamageInfo API
-                // SKIP: lua:3335 — dmginfo:GetDamage() — Source engine CTakeDamageInfo API
-                // SKIP: lua:3336 — dmginfo:GetDamagePosition() — Source engine CTakeDamageInfo API
-                // SKIP: lua:3337 — dmginfo:GetDamageType() — Source engine CTakeDamageInfo API
-                // SKIP: lua:3338 — dmginfo:GetDamageForce() — Source engine CTakeDamageInfo API
-                // SKIP: lua:3339 — dmginfo:GetAmmoType() — Source engine CTakeDamageInfo API
+                attacker = dmginfo.Attacker,        // lua:3333 — GetAttacker()
+                inflictor = dmginfo.Weapon,          // lua:3334 — GetInflictor() → S&Box Weapon
+                amount = dmginfo.Damage,             // lua:3335 — GetDamage()
+                pos = dmginfo.Position,              // lua:3336 — GetDamagePosition()
+                // lua:3337 — GetDamageType() → S&Box no DMG_* bitmask; use Tags for type checks
+                // lua:3338 — GetDamageForce() → S&Box no direct force on DamageInfo
+                // lua:3339 — GetAmmoType() → S&Box no ammo type on DamageInfo
                 hitgroup = hitgroup,
             };
         }
