@@ -1220,7 +1220,9 @@ public partial class HumanNPC
         {
             var rb = dmgInflictor.Components.Get<Rigidbody>();
             // SKIP: lua:3929 — GetClass()=="prop_ragdoll" — Phase 3 entity type
-            // Fallback: any non-NPC physics object with low velocity blocks damage
+            // Fallback: non-NPC physics object with low velocity (covers ragdolls + ground debris)
+            // NOTE: broader than Lua (catches non-ragdoll props too). Acceptable Phase 1 gap.
+            // TODO Phase 3: add IsRagdoll check via ModelPhysics/Ragdoll component.
             if (rb != null && rb.Velocity.Length <= 100
                 && dmgInflictor.Components.Get<BaseNPC>() == null)
                 return 0;

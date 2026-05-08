@@ -887,23 +887,37 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
             if (ally.Behavior == VJBehavior.PassiveNature) continue;
             if (ally.VJ_NPC_Class.Any(c => ene.Components.Get<BaseNPC>()?.VJ_NPC_Class.Contains(c) ?? false)) continue;
             if (ally.GetEnemy().IsValid()) continue; // already has enemy
+            // lua:2449 — if guarding and enemy not visible, skip
+            if (ally.IsGuard && !Visible(ene)) continue;
 
-            float distToCaller = myPos.Distance(ent.WorldPosition);
-            if (distToCaller <= ally.SightDistance)
+            // lua:2451-2452 — don't call help if ally likes the enemy (and enemy isn't a player)
+            bool eneIsPlayer = ene.Components.Get<PlayerBase>().IsValid();
+            if (!eneIsPlayer && ally.Disposition(ene) == (int)VJBase.Disposition.Like) continue;
+
+            // lua:2455 — if ally too far from ENEMY → move toward caller; else → attack
+            float allyToEneDist = ent.WorldPosition.Distance(ene.WorldPosition);
+            if (allyToEneDist > ally.SightDistance)
             {
-                // Ally can see far enough — tell them to attack our enemy
-                ally.ForceSetEnemy(ene, false);
-                ally.MaintainAlertBehavior(false);
+                // lua:2457-2463 — ally can't reach enemy, move toward caller
+                if (ally.IsFollowing || ally.IsBusy()) continue;
+                ally.SetLastPosition(myPos + WorldRotation.Right * VJUtility.Rand(-50, 50)
+                    + WorldRotation.Forward * VJUtility.Rand(-50, 50));
+                ally.SCHEDULE_GOTO_POSITION("TASK_RUN_PATH", s =>
+                {
+                    s.CanShootWhenMoving = true;
+                    s.TurnData = new TurnData { Type = VJFaceStatus.Enemy };
+                });
                 ally.NextWanderTime = curTime + 8;
             }
             else
             {
-                // Ally is too far — move toward caller first
-                ally.SetLastPosition(myPos);
-                ally.SCHEDULE_GOTO_POSITION("TASK_RUN_PATH", s =>
-                {
-                    s.CanShootWhenMoving = true;
-                });
+                // lua:2467-2481 — enemy is close enough, tell ally to attack
+                // lua:2469-2470 — player-specific: override friendly disposition
+                // SKIP: lua:2469-2470 — SetRelationshipMemory(MEM_OVERRIDE_DISPOSITION, D_HT) — Phase 3 relationship memory
+                ally.ForceSetEnemy(ene, true);
+                // lua:2473-2481 — chase gate + visible→FaceTarget, !visible→PlaySound+AlertBehavior
+                // SKIP: lua:2473-2481 — NextChaseTime gate / SetTarget / SCHEDULE_FACE / PlaySoundSystem("ReceiveOrder") — Phase 3
+                ally.MaintainAlertBehavior(false);
                 ally.NextWanderTime = curTime + 8;
             }
         }
