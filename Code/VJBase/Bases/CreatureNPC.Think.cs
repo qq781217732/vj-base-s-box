@@ -252,7 +252,7 @@ public partial class CreatureNPC
                 // SKIP: lua:2465 — ent.VJ_ID_Attackable / ent.VJ_ID_Destructible — Phase 3 entity flags
                 var delta = new Vector3(ent.WorldPosition.x - myPos.x, ent.WorldPosition.y - myPos.y, 0);
                 bool inAngle = traceDir.Dot(delta.Normal) > MathF.Cos(MathF.PI / 180f * MeleeAttackDamageAngleRadius);
-                if (isLiving && Disposition(ent) != VJBase.Disposition.Like && inAngle)
+                if (isLiving && Disposition(ent) != (int)VJBase.Disposition.Like && inAngle)
                 {
                     // lua:2466: prop attack living distance check
                     // SKIP: lua:2466 — VJ.GetNearestDistance(self, ent, true) > MeleeAttackDistance — Phase 3 utility
@@ -413,7 +413,7 @@ public partial class CreatureNPC
                 // lua:2681 — disposition check
                 bool isLiving = ent.Components.Get<BaseNPC>()?.IsVJBaseSNPC ?? false;
                 // SKIP: lua:2681 — ent.VJ_ID_Attackable / ent.VJ_ID_Destructible — Phase 3 entity flags
-                if (isLiving && Disposition(ent) != VJBase.Disposition.Like)
+                if (isLiving && Disposition(ent) != (int)VJBase.Disposition.Like)
                 {
                     if (OnLeapAttackExecute("PreDamage", ent)) continue;
                     var dmgAmount = ScaleByDifficulty(LeapAttackDamage);
