@@ -1,5 +1,6 @@
 using System;
 using Sandbox;
+using SWB.Player;
 
 namespace VJBase;
 
@@ -745,6 +746,168 @@ public partial class HumanNPC
             ScheduleAttackTimers();
         }
         return grenade;
+    }
+
+    // ═══ ResetEnemy — human_base/init.lua:3840-3916 ═══
+    /// <summary>
+    /// Human override of ResetEnemy (replaces core.lua version).
+    /// Lua signature: ENT:ResetEnemy(checkAllies, checkVis)
+    /// C# maps checkAllies→param1, checkVis→param2 via base virtual signature.
+    /// </summary>
+    protected override void ResetEnemy(bool checkAllies, bool checkVis)
+    {
+        // lua:3841 — selfData = funcGetTable(self) → this
+        // lua:3842 — if selfData.Dead or (selfData.VJ_IsBeingControlled && selfData.VJ_TheControllerBullseye == funcGetEnemy(self)) then selfData.EnemyData.Reset = false return false end
+        // SKIP: lua:3842 — Dead || (VJ_IsBeingControlled && VJ_TheControllerBullseye == GetEnemy()) — Phase 3 tool system
+        //        (VJ_TheControllerBullseye not ported; Dead guard partially — Dead NPCs shouldn't be in Think anyway)
+
+        // lua:3843 — ene = funcGetEnemy(self)
+        var ene = GetEnemy();
+        // lua:3844 — eneValid = IsValid(ene)
+        bool eneValid = ene.IsValid();
+        // lua:3845 — eneData = selfData.EnemyData
+        var eneData = Enemy;
+        // lua:3846 — curTime = CurTime()
+        float curTime = Time.Now;
+
+        // ---- Block 1: Ally enemy inheritance (lua:3847-3861) ----
+        // lua:3847 — if checkAllies then
+        if (checkAllies)
+        {
+            // lua:3848 — getAllies = self:Allies_Check(1000)
+            // SKIP: lua:3848 — Allies_Check(1000) returns allies list — Phase 3 ally system (stub returns void)
+            // lua:3849 — if getAllies then
+            // lua:3850-3859 — for _, ally in ipairs(getAllies) do
+            //   allyEne = funcGetEnemy(ally)
+            //   if IsValid(allyEne) && (curTime - ally.EnemyData.VisibleTime) < selfData.EnemyTimeout
+            //      && allyEne:Alive() && self:GetPos():Distance(allyEne:GetPos()) <= self:GetMaxLookDistance()
+            //      && self:CheckRelationship(allyEne) == D_HT then
+            //     selfData.AllowWeaponOcclusionDelay = false
+            //     self:ForceSetEnemy(allyEne, false)
+            //     eneData.VisibleTime = curTime
+            //     eneData.Reset = false
+            //     return false
+            // SKIP: lua:3847-3861 — full ally-enemy-inheritance block — Phase 3 ally system
+        }
+
+        // ---- Block 2: VisibleCount / reachable enemies guard (lua:3862-3874) ----
+        // lua:3862 — if checkVis then
+        if (checkVis)
+        {
+            // lua:3864 — curEnemies = eneData.VisibleCount // selfData.CurrentReachableEnemies
+            // SKIP: lua:3864 — VisibleCount // CurrentReachableEnemies (Lua integer divide) — Phase 3 reachability
+            // lua:3865 — if (eneValid && (curEnemies - 1) >= 1) or (!eneValid && curEnemies >= 1) then
+            // SKIP: lua:3865 — reachable enemies guard — Phase 3
+            // lua:3866 — self:MaintainRelationships() — Select a new enemy
+            // SKIP: lua:3866 — MaintainRelationships — Phase 3
+            // lua:3869-3872 — if eneData.VisibleCount > 0 then eneData.Reset = false return false end
+            // SKIP: lua:3869-3872 — VisibleCount > 0 guard — Phase 3
+        }
+
+        // ---- Block 3: Debug print (lua:3876) ----
+        // lua:3876 — if selfData.VJ_DEBUG && GetConVar("vj_npc_debug_resetenemy"):GetInt() == 1 then VJ.DEBUG_Print(self, "ResetEnemy", tostring(ene)) end
+        // SKIP: lua:3876 — VJ_DEBUG + convar + VJ.DEBUG_Print — Phase 3 debug system
+
+        // ---- Block 4: Reset state + alert timeout timer (lua:3877-3879) ----
+        // lua:3877 — eneData.Reset = true
+        eneData.Reset = true;
+        // lua:3878 — self:SetNPCState(NPC_STATE_ALERT)
+        SetNPCState((int)NPCState.Alert);
+        // lua:3879 — timer.Create("alert_reset" .. self:EntIndex(), math.Rand(selfData.AlertTimeout.a, selfData.AlertTimeout.b), 1, function()
+        //   if !IsValid(funcGetEnemy(self)) then selfData.Alerted = false self:SetNPCState(NPC_STATE_IDLE) end end)
+        // SKIP: lua:3879 — timer.Create (Source engine one-shot named timer) — Phase 3 timer system
+        //        Equivalent: NextAlertResetT = curTime + AlertTimeout random; poll in Think → if no enemy → Alerted=false, SetNPCState(Idle)
+
+        // ---- Block 5: OnResetEnemy callback (lua:3880) ----
+        // lua:3880 — self:OnResetEnemy()
+        OnResetEnemy();
+
+        // ---- Block 6: Move to last known position (lua:3881-3915) ----
+        // lua:3881 — moveToEnemy = false
+        Vector3? moveToEnemy = null;
+        // lua:3882 — if eneValid then
+        if (eneValid)
+        {
+            // lua:3883 — if !selfData.IsFollowing && !selfData.IsGuard && !selfData.IsVJBaseSNPC_Tank && !selfData.VJ_IsBeingControlled
+            //   && selfData.LastHiddenZone_CanWander == true && !selfData.Weapon_UnarmedBehavior_Active
+            //   && selfData.Behavior != VJ_BEHAVIOR_PASSIVE && selfData.Behavior != VJ_BEHAVIOR_PASSIVE_NATURE
+            //   && !self:IsBusy() && !self:Visible(ene) && self:GetEnemyLastKnownPos() != defPos then
+            // SKIP: lua:3883a — IsVJBaseSNPC_Tank cross-entity check — Phase 3 tank flag (always false for HumanNPC)
+            bool canMoveToEnemy = !IsFollowing
+                && !IsGuard
+                // && !IsVJBaseSNPC_Tank // SKIP (always false for HumanNPC, TankNPC has its own override)
+                && !VJ_IsBeingControlled
+                && LastHiddenZone_CanWander == true
+                && !Weapon_UnarmedBehavior_Active
+                && Behavior != VJBehavior.Passive
+                && Behavior != VJBehavior.PassiveNature
+                && !IsBusy()
+                && !Visible(ene);
+            if (canMoveToEnemy)
+            {
+                // SKIP: lua:3883b — GetEnemyLastKnownPos() != defPos — Phase 3 enemy memory (returns Vector3.Zero stub)
+                // lua:3884 — moveToEnemy = self:GetEnemyLastKnownPos()
+                var lastKnownPos = GetEnemyLastKnownPos();
+                if (lastKnownPos != Vector3.Zero)
+                    moveToEnemy = lastKnownPos;
+            }
+
+            // lua:3886 — self:MarkEnemyAsEluded(ene)
+            MarkEnemyAsEluded(ene);
+            // lua:3887 — //self:ClearEnemyMemory(ene) — commented out in Lua
+            // lua:3888 — self:AddEntityRelationship(ene, D_NU, 10)
+            AddEntityRelationship(ene, (int)VJBase.Disposition.Neutral, 10);
+        }
+
+        // ---- Block 7: LastHiddenZone cleanup (lua:3891-3892) ----
+        // lua:3891 — selfData.LastHiddenZone_CanWander = curTime > selfData.LastHiddenZoneT and true or false
+        LastHiddenZone_CanWander = curTime > LastHiddenZoneT;
+        // lua:3892 — selfData.LastHiddenZoneT = 0
+        LastHiddenZoneT = 0;
+
+        // ---- Block 8: Clear dead non-player enemy memory (lua:3894-3898) ----
+        // lua:3895 — if eneValid && !ene:IsPlayer() && !ene:Alive() then
+        if (eneValid && !ene.Components.Get<PlayerBase>().IsValid() && !Alive(ene))
+        {
+            // lua:3897 — self:ClearEnemyMemory(ene)
+            ClearEnemyMemory(ene);
+        }
+
+        // ---- Block 9: Cover schedule stuck-loop fix (lua:3899-3902) ----
+        // lua:3900 — if selfData.CurrentScheduleName == "SCHEDULE_COVER_ENEMY" or selfData.CurrentScheduleName == "SCHEDULE_COVER_ENEMY_FAIL" then
+        if (CurrentScheduleName == "SCHEDULE_COVER_ENEMY" || CurrentScheduleName == "SCHEDULE_COVER_ENEMY_FAIL")
+        {
+            // lua:3901 — self:StopMoving()
+            StopMoving();
+        }
+
+        // ---- Block 10: Wander time + SetEnemy(null) (lua:3903-3904) ----
+        // lua:3903 — selfData.NextWanderTime = curTime + math.Rand(3, 5)
+        NextWanderTime = curTime + 3 + (float)Game.Random.NextDouble() * 2;
+        // lua:3904 — self:SetEnemy(NULL)
+        SetEnemy(null);
+
+        // ---- Block 11: GOTO last known position (lua:3905-3915) ----
+        // lua:3905 — if moveToEnemy then
+        if (moveToEnemy.HasValue)
+        {
+            // lua:3906 — self:SetLastPosition(moveToEnemy)
+            SetLastPosition(moveToEnemy.Value);
+            // lua:3907-3914 — self:SCHEDULE_GOTO_POSITION("TASK_WALK_PATH", function(schedule) ... end)
+            SCHEDULE_GOTO_POSITION("TASK_WALK_PATH", schedule =>
+            {
+                // lua:3908 — //if eneValid then schedule:EngTask("TASK_FORGET", ene) end — commented out
+                // lua:3909 — //schedule:EngTask("TASK_IGNORE_OLD_ENEMIES", 0) — commented out
+                // lua:3910 — schedule.ResetOnFail = true
+                schedule.ResetOnFail = true;
+                // lua:3911 — schedule.CanShootWhenMoving = true
+                schedule.CanShootWhenMoving = true;
+                // lua:3912 — schedule.CanBeInterrupted = true
+                schedule.CanBeInterrupted = true;
+                // lua:3913 — schedule.TurnData = {Type = VJ.FACE_ENEMY}
+                schedule.TurnData = new TurnData { Type = VJFaceStatus.Enemy };
+            });
+        }
     }
 
     // ═══ OnTakeDamage — human_base/init.lua:3918-4172 ═══

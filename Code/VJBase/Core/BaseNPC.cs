@@ -125,6 +125,10 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public float NextWanderTime { get; set; }
     public float NextChaseTime { get; set; }
     public VJAlertState Alerted { get; set; } = VJAlertState.None;
+    public (float a, float b) AlertTimeout { get; set; } = (15, 20);
+    public float EnemyTimeout { get; set; } = 15;
+    public int CurrentReachableEnemies { get; set; }
+    public float NextAlertResetT { get; set; }
     public bool Flinching { get; set; }
     public float NextFlinchT { get; set; }
     public float HealthRegenDelayT { get; set; }
@@ -722,6 +726,10 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public virtual void SetRelationshipMemory(GameObject ent, string key, object value) { }
     public virtual float GetMaxLookDistance() => SightDistance;
     public virtual int CheckRelationship(GameObject ent) => (int)VJBase.Disposition.Neutral;
+    public virtual void OnResetEnemy() { }
+    public virtual void MarkEnemyAsEluded(GameObject ent) { }
+    public virtual void ClearEnemyMemory(GameObject ent) { }
+    public virtual Vector3 GetEnemyLastKnownPos() => Vector3.Zero;
 
     // ═══ Cleanup ═══
     protected override void OnDestroy()
