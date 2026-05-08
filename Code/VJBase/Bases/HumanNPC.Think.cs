@@ -1199,7 +1199,7 @@ public partial class HumanNPC
     /// Damage callback. Returns 0 to block damage, 1 to allow.
     /// hitgroup: LastDamageHitGroup (pre-extracted, matches Lua:3932).
     /// </summary>
-    public virtual int OnTakeDamage(DamageInfo dmgInfo, int hitgroup)
+    public override int OnTakeDamage(DamageInfo dmgInfo, int hitgroup)
     {
         // ---- Block A: Entry guards (lua:3918-3923) ----
         // lua:3919-3920 — dmgAttacker = dmginfo:GetAttacker() / IsValid guard

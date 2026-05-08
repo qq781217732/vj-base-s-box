@@ -323,8 +323,9 @@ public partial class CreatureNPC
                             // SKIP: lua:2517 — SetDamageForce — Phase 3 (S&Box: apply force separately on Rigidbody)
                             dmgInfo.Attacker = GameObject;
                             // SKIP: lua:2520 — VJ.DamageSpecialEnts — Phase 3 damage utility
-                            // SKIP: lua:2521 — ent:TakeDamage(dmgInfo) — S&Box damage via IDamageable.OnDamage, Phase 3
-                            // ent.TakeDamage(dmgInfo);
+                            // lua:2521 — ent:TakeDamage(dmgInfo) → S&Box IDamageable
+                            foreach (var d in ent.Components.GetAll<IDamageable>())
+                                d.OnDamage(dmgInfo);
                         }
                         // lua:2524-2541: Bleeding damage
                         if (MeleeAttackBleedEnemy && isLiving && Game.Random.Next(1, MeleeAttackBleedEnemyChance + 1) == 1)
@@ -429,11 +430,13 @@ public partial class CreatureNPC
                     {
                         var dmgInfo = new DamageInfo();
                         dmgInfo.Damage = dmgAmount;
-                        // SKIP: lua:2690 — SetDamageType(LeapAttackDamageType) — Phase 3 damage type mapping
+                        // lua:2690 — SetDamageType(LeapAttackDamageType) → S&Box Tags
+                        dmgInfo.Tags.Add(MapDamageTypeToTag(LeapAttackDamageType));
                         // SKIP: lua:2691 — SetDamageForce — Phase 3 damage force
                         dmgInfo.Attacker = GameObject;
-                        // SKIP: lua:2692 — ent:TakeDamage(dmgInfo) — S&Box damage via IDamageable.OnDamage, Phase 3
-                        // ent.TakeDamage(dmgInfo);
+                        // lua:2692 — ent:TakeDamage(dmgInfo) → S&Box IDamageable
+                        foreach (var d in ent.Components.GetAll<IDamageable>())
+                            d.OnDamage(dmgInfo);
                     }
                     // SKIP: lua:2694-2695 — ent:IsPlayer() / ViewPunch — Phase 3 player system
                     hitRegistered = true;

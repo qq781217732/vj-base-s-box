@@ -9,7 +9,7 @@ namespace VJBase;
 /// Base NPC — ported from vj_base/ai/core.lua.
 /// Shared data fields, AI utilities, and lifecycle methods for all VJ NPCs.
 /// </summary>
-public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttributes
+public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttributes, Component.IDamageable
 {
     // ═══ Core Data Fields ═══
     public bool IsVJBaseSNPC { get; set; } = true;
@@ -858,6 +858,20 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
             SetIdealYawAndUpdate(targetYaw);
             turnData.LastYaw = targetYaw;
         }
+    }
+
+    // ═══ IDamageable — S&Box damage bridge ═══
+    public void OnDamage( in Sandbox.DamageInfo info )
+    {
+        if ( Dead ) return;
+        OnTakeDamage( info, 0 );
+    }
+
+    /// <summary>OnTakeDamage — base implementation. Override in derived types for full immunity/flinch/death logic.</summary>
+    public virtual int OnTakeDamage( DamageInfo dmgInfo, int hitgroup )
+    {
+        CurrentHealth -= dmgInfo.Damage;
+        return 1; // allow damage
     }
 
     // ═══ Damage ═══
