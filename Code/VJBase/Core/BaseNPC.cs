@@ -147,6 +147,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public float NextFlinchT { get; set; }
     public float HealthRegenDelayT { get; set; }
     public float NextCombineBallDmgT { get; set; }
+    public float CurrentHealth { get; set; } // Phase 3→HealthComponent; current basic tracking
     public bool Dead { get; set; }
     public GameObject OpeningDoor { get; set; } // m_hOpeningDoor — set when interacting with a door
     public bool GibbedOnDeath { get; set; }

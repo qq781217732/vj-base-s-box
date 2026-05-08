@@ -64,7 +64,7 @@ public partial class HumanNPC
 
         // lua:2187-2191: Health setup
         var hp = ScaleByDifficulty(StartHealth); // lua:2189: convar override or ScaleByDifficulty
-        // SKIP: lua:2190 — SetHealth(hp) — S&Box health via HealthComponent
+        CurrentHealth = hp; // lua:2190 — SetHealth(hp) → basic float tracking (Phase 3→HealthComponent)
         StartHealth = (int)hp; // lua:2191: StartHealth = hp
 
         // lua:2193-2194: Init() callback + ApplyBackwardsCompatibility
@@ -1311,7 +1311,7 @@ public partial class HumanNPC
         // lua:3980-3990 — selfData.SavedDmgInfo = { dmginfo, attacker, inflictor, amount, pos, type, force, ammoType, hitgroup }
         // SKIP: lua:3980-3990 — SavedDmgInfo snapshot table (GMod resets dmginfo after tick) — Phase 3
         // lua:3991 — self:SetHealth(self:Health() - dmginfo:GetDamage())
-        // SKIP: lua:3991 — SetHealth(Health() - damage) — Phase 3 HealthComponent
+        CurrentHealth -= dmgInfo.Damage;
         // lua:3992 — VJ_DEBUG damage print
         // SKIP: lua:3992 — VJ_DEBUG && vj_npc_debug_damage:GetInt()==1 → VJ.DEBUG_Print — Phase 3 debug
         // lua:3993-3995 — healthRegen = selfData.HealthRegenParams; if healthRegen.Enabled && healthRegen.ResetOnDmg then HealthRegenDelayT = ...
@@ -1462,13 +1462,15 @@ public partial class HumanNPC
 
         // ---- Block O: Death (lua:4160-4171) ----
         // lua:4160 — if self:Health() <= 0 && !selfData.Dead then
-        // SKIP: lua:4160 — Health() <= 0 && !Dead — Phase 3 HealthComponent
-        // lua:4161 — self:RemoveEFlags(EFL_NO_DISSOLVE)
-        // SKIP: lua:4161 — RemoveEFlags(EFL_NO_DISSOLVE) — Phase 3 flags system
-        // lua:4162-4168 — if IsDamageType(DMG_DISSOLVE) or prop_combine_ball then dissolve DamageInfo + TakeDamageInfo
-        // SKIP: lua:4162-4168 — dissolve damage path — Phase 3 damage system
-        // lua:4169 — self:BeginDeath(dmginfo, hitgroup)
-        BeginDeath(dmgInfo, hitgroup);
+        if (CurrentHealth <= 0 && !Dead)
+        {
+            // lua:4161 — self:RemoveEFlags(EFL_NO_DISSOLVE)
+            // SKIP: lua:4161 — RemoveEFlags(EFL_NO_DISSOLVE) — Phase 3 flags system
+            // lua:4162-4168 — if IsDamageType(DMG_DISSOLVE) or prop_combine_ball then dissolve DamageInfo
+            // SKIP: lua:4162-4168 — dissolve damage path — Phase 3 damage system
+            // lua:4169 — self:BeginDeath(dmginfo, hitgroup)
+            BeginDeath(dmgInfo, hitgroup);
+        }
 
         // lua:4171 — return 1
         return 1;
