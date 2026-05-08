@@ -166,6 +166,105 @@ public partial class HumanNPC
 
     public virtual VJWepState GetWeaponState() => WeaponState;
 
+    // ═══ DoChangeWeapon — human_base/init.lua:2470-2518 ═══
+    /// <summary>
+    /// Give or switch weapon. wep = weapon class string (nil = setup current only).
+    /// invSwitch = true to switch without removing previous weapon.
+    /// Returns the active weapon (null if none).
+    /// </summary>
+    public virtual GameObject DoChangeWeapon(string wep = null, bool invSwitch = false)
+    {
+        // lua:2471 — wep = wep or nil (C# null default)
+        // lua:2472 — invSwitch = invSwitch or false (C# false default)
+        // lua:2473 — curWep = funcGetActiveWeapon(self)
+        var curWep = GetActiveWeapon(); // Phase 3 stub: returns null
+
+        // ---- Block 1: Weapon disabled → remove (lua:2476-2479) ----
+        // lua:2476 — if self.Weapon_Disabled && IsValid(curWep) then
+        if (Weapon_Disabled && curWep.IsValid())
+        {
+            // lua:2477 — curWep:Remove()
+            // SKIP: lua:2477 — curWep:Remove() — Phase 3 weapon entity removal
+            // lua:2478 — return NULL
+            return null;
+        }
+
+        // ---- Block 2: Give or switch weapon (lua:2482-2494) ----
+        // lua:2482 — if wep != nil then
+        if (wep != null)
+        {
+            // lua:2483 — if invSwitch then
+            if (invSwitch)
+            {
+                // lua:2484 — self:SelectWeapon(wep)
+                // SKIP: lua:2484 — self:SelectWeapon(wep) — Phase 3 weapon selection
+                // lua:2485 — VJ.EmitSound(self, sdWepSwitch, 70)
+                // SKIP: lua:2485 — VJ.EmitSound(sdWepSwitch, 70) — Phase 3 weapon sound
+                // lua:2486 — curWep = wep
+                curWep = null; // wep is string, curWep is GameObject — Phase 3: resolve via weapon system
+            }
+            // lua:2487 — else
+            else
+            {
+                // lua:2488 — if IsValid(curWep) && self.WeaponInventoryStatus <= VJ.WEP_INVENTORY_PRIMARY then
+                if (curWep.IsValid() && WeaponInventoryStatus <= VJWepInventory.Primary)
+                {
+                    // lua:2489 — curWep:Remove()
+                    // SKIP: lua:2489 — curWep:Remove() — Phase 3 weapon entity removal
+                }
+                // lua:2491 — curWep = self:Give(wep)
+                // SKIP: lua:2491 — self:Give(wep) — Phase 3 weapon Give (Source engine NPC:Give)
+                // lua:2492 — self.WeaponInventory.Primary = curWep
+                WeaponInventory.Primary = curWep;
+            }
+        }
+
+        // ---- Block 3: Setup valid weapon (lua:2497-2516) ----
+        // lua:2497 — if IsValid(curWep) then
+        if (curWep.IsValid())
+        {
+            // lua:2498 — self.WeaponAttackAnim = ACT_INVALID
+            WeaponAttackAnim = null; // Phase 3: ACT_INVALID = -1, in C# null = no valid animation
+            // lua:2499 — self:SetWeaponState() — reset state
+            SetWeaponState();
+            // lua:2500 — if invSwitch then
+            if (invSwitch)
+            {
+                // lua:2501 — if curWep.IsVJBaseWeapon then curWep:Equip(self) end
+                // SKIP: lua:2501 — curWep.IsVJBaseWeapon + Equip() — Phase 3 weapon interface
+            }
+            // lua:2502 — else
+            else
+            {
+                // lua:2503 — self.WeaponInventoryStatus = VJ.WEP_INVENTORY_PRIMARY
+                WeaponInventoryStatus = VJWepInventory.Primary;
+                // lua:2505-2509 — Replace old primary if different
+                var curPrimary = WeaponInventory.Primary;
+                if (curWep != WeaponInventory.Primary)
+                {
+                    // lua:2507 — if IsValid(curPrimary) then curPrimary:Remove() end
+                    // SKIP: lua:2507 — curPrimary:Remove() — Phase 3 weapon entity removal
+                    // lua:2508 — self.WeaponInventory.Primary = curWep
+                    WeaponInventory.Primary = curWep;
+                }
+            }
+            // lua:2511 — self:UpdateAnimationTranslations(curWep:GetHoldType())
+            // SKIP: lua:2511 — UpdateAnimationTranslations(curWep:GetHoldType()) — Phase 3 animation system
+            // lua:2512 — self:OnWeaponChange(curWep, self.WeaponEntity, invSwitch)
+            OnWeaponChange(curWep, WeaponEntity, invSwitch);
+            // lua:2513 — self.WeaponEntity = curWep
+            WeaponEntity = curWep;
+        }
+        // lua:2514 — else
+        else
+        {
+            // lua:2515 — self.WeaponInventoryStatus = VJ.WEP_INVENTORY_NONE
+            WeaponInventoryStatus = VJWepInventory.None;
+        }
+        // lua:2517 — return curWep
+        return curWep;
+    }
+
     // ═══ SCHEDULE_ALERT_CHASE — human_base/init.lua:2340 ═══
     public virtual void SCHEDULE_ALERT_CHASE(bool doLOSChase)
     {
