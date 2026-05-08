@@ -457,7 +457,286 @@ public partial class CreatureNPC
         }
     }
 
-    // ═══ Death ═══
-    public virtual void BeginDeath(object dmginfo, int hitgroup) { Dead = true; }
-    public virtual void FinishDeath(object dmginfo, int hitgroup) { }
-}
+    // ═══ BeginDeath — creature_base/init.lua:3188-3311 ═══
+    public virtual void BeginDeath(DamageInfo dmginfo, int hitgroup)
+    {
+        // lua:3189 — self.Dead = true
+        Dead = true;
+        // lua:3190 — self.DoNotDuplicate = true
+        DoNotDuplicate = true;
+        // lua:3191 — self:SetSaveValue("m_lifeState", 1) — LIFE_DYING
+        SetSaveValue("m_lifeState", 1);
+        // lua:3192 — self:OnDeath(dmginfo, hitgroup, "Init")
+        OnDeath(dmginfo, hitgroup, "Init");
+
+        // lua:3193 — if self.MedicData.Status then self:ResetMedicBehavior() end
+        if (Medic.Status != "false" && Medic.Status != null)
+            ResetMedicBehavior();
+        // lua:3194 — if self.IsFollowing then self:ResetFollowBehavior() end
+        if (IsFollowing) ResetFollowBehavior();
+
+        // lua:3195 — dmgInflictor = dmginfo:GetInflictor()
+        // SKIP: lua:3195 — dmginfo:GetInflictor() — Source engine CTakeDamageInfo API
+        // lua:3196 — dmgAttacker = dmginfo:GetAttacker()
+        // SKIP: lua:3196 — dmginfo:GetAttacker() — Source engine CTakeDamageInfo API
+        // lua:3197 — myPos = self:GetPos()
+        Vector3 myPos = WorldPosition;
+
+        // ---- Ally death response (lua:3199-3249) ----
+        // lua:3199 — if VJ_CVAR_AI_ENABLED then
+        // SKIP: lua:3199 — VJ_CVAR_AI_ENABLED convar check — Phase 3 convar system (assume enabled)
+        {
+            // lua:3200 — responseDist = math_max(800, self:OBBMaxs():Distance(self:OBBMins()) * 12)
+            // SKIP: lua:3200 — OBBMaxs/OBBMins — Phase 3 collision bounds
+            float responseDist = 800;
+            // lua:3201 — allies = self:Allies_Check(responseDist)
+            // SKIP: lua:3201 — Allies_Check returns void in C# — Phase 3 ally system (returns list)
+            // lua:3202 — if allies then
+            // lua:3203 — doBecomeEnemyToPlayer = (self.BecomeEnemyToPlayer && dmgAttacker:IsPlayer() && !VJ_CVAR_IGNOREPLAYERS) or false
+            // SKIP: lua:3203 — dmgAttacker:IsPlayer() / VJ_CVAR_IGNOREPLAYERS — Phase 3 DamageInfo + convar
+            // lua:3204 — responseType = self.DeathAllyResponse
+            var responseType = DeathAllyResponse;
+            // lua:3205 — movedAllyNum = 0
+            int movedAllyNum = 0;
+            // lua:3206 — for _, ally in ipairs(allies) do
+            // SKIP: lua:3206-3248 — full for-loop over allies — Phase 3 ally system (Allies_Check returns void)
+            //        OnAllyKilled(ally) / PlaySoundSystem("AllyDeath") / Allies_Bring / DoReadyAlert / SetTurnTarget
+            //        BecomeEnemyToPlayer chain: SetRelationshipMemory / OnBecomeEnemyToPlayer / ResetFollowBehavior
+            //        AddEntityRelationship / CanChatMessage / PrintMessage / PlaySoundSystem("BecomeEnemyToPlayer")
+        }
+
+        // ---- Blood decal (lua:3253-3261) ----
+        // lua:3253 — if self.Bleeds && self.HasBloodDecal then
+        if (Bleeds && HasBloodDecal)
+        {
+            // lua:3254 — bloodDecal = PICK(self.BloodDecal)
+            var bloodDecal = VJUtility.PICK(BloodDecal);
+            // lua:3255 — if bloodDecal then
+            if (bloodDecal != null)
+            {
+                // lua:3256 — decalPos = myPos + vecZ4
+                // lua:3257 — self:SetLocalPos(decalPos)
+                // lua:3258 — tr = util.TraceLine({start=decalPos, endpos=decalPos-vecZ500, filter=self})
+                // lua:3259 — util.Decal(bloodDecal, tr.HitPos+tr.HitNormal, tr.HitPos-tr.HitNormal)
+                // SKIP: lua:3256-3259 — TraceLine + util.Decal blood decal — Phase 3 decal system
+            }
+        }
+
+        // ---- Cleanup (lua:3263-3268) ----
+        // lua:3263 — self:RemoveTimers()
+        RemoveTimers();
+        // lua:3264 — self:StopAllSounds()
+        StopAllSounds();
+        // lua:3265 — self.AttackType = VJ.ATTACK_TYPE_NONE
+        AttackType = VJAttackType.None;
+        // lua:3266 — self.HasMeleeAttack = false
+        HasMeleeAttack = false;
+        // lua:3267 — self.HasRangeAttack = false
+        HasRangeAttack = false;
+        // lua:3268 — self.HasLeapAttack = false
+        HasLeapAttack = false;
+
+        // ---- Attacker check (lua:3269-3272) ----
+        // lua:3269 — if IsValid(dmgAttacker) then
+        // SKIP: lua:3269-3272 — dmgAttacker:GetClass()=="npc_barnacle" / AddFrags — Phase 3 DamageInfo + Source engine score
+
+        // lua:3273 — gamemode.Call("OnNPCKilled", self, dmgAttacker, dmgInflictor)
+        // SKIP: lua:3273 — gamemode.Call("OnNPCKilled") — S&Box has no gamemode.Call; use Scene event
+
+        // ---- Post-death setup (lua:3274-3277) ----
+        // lua:3274 — self:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
+        // SKIP: lua:3274 — SetCollisionGroup(COLLISION_GROUP_DEBRIS) — Phase 3 collision groups
+        // lua:3275 — self:GibOnDeath(dmginfo, hitgroup)
+        GibOnDeath(dmginfo, hitgroup);
+        // lua:3276 — self:PlaySoundSystem("Death")
+        PlaySoundSystem("Death");
+        // lua:3277 — //AA_StopMoving() commented out
+
+        // ---- I/O events (lua:3280-3285) ----
+        // lua:3280 — if IsValid(dmgAttacker) then
+        // SKIP: lua:3280-3285 — TriggerOutput / Fire("KilledNPC") — Phase 3 I/O system (TriggerOutput stub exists)
+
+        // ---- Death animation + delay → FinishDeath (lua:3288-3310) ----
+        // lua:3288 — deathTime = self.DeathDelayTime
+        float deathTime = DeathDelayTime;
+        // lua:3289 — combine ball → HasDeathAnimation = false
+        // SKIP: lua:3289 — dmgInflictor:GetClass()=="prop_combine_ball" — Phase 3 entity type
+        // lua:3290 — if self.HasDeathAnimation && VJ_CVAR_AI_ENABLED && !DMG_REMOVENORAGDOLL && !DMG_DISSOLVE && NavType!=CLIMB && random <= DeathAnimationChance
+        // SKIP: lua:3290 — DMG_* bit checks / VJ_CVAR_AI_ENABLED — Phase 3 damage constants + convar
+        if (HasDeathAnimation && DeathAnimationChance > 0)
+        {
+            // lua:3291 — self:RemoveAllGestures()
+            RemoveAllGestures();
+            // lua:3292 — self:OnDeath(dmginfo, hitgroup, "DeathAnim")
+            OnDeath(dmginfo, hitgroup, "DeathAnim");
+            // lua:3293 — chosenAnim = PICK(self.AnimTbl_Death)
+            // SKIP: lua:3293-3295 — PICK(AnimTbl_Death) / AnimDurationEx / PlayAnim — Phase 3 animation
+            // lua:3296 — deathTime = deathTime + animTime
+            // lua:3297 — self.DeathAnimationCodeRan = true
+            DeathAnimationCodeRan = true;
+        }
+        // lua:3298 — else
+        else
+        {
+            // lua:3300 — self:SetSaveValue("m_lifeState", 2) — LIFE_DEAD
+            SetSaveValue("m_lifeState", 2);
+        }
+
+        // lua:3302-3310 — if deathTime > 0 then timer.Simple → FinishDeath else FinishDeath
+        // SKIP: lua:3302-3306 — timer.Simple(deathTime, ...) — Source engine timer; Phase 3 async/Task.Delay
+        // Fallback: call FinishDeath immediately (revisit when async delay system is in place)
+        FinishDeath(dmginfo, hitgroup);
+    }
+
+    // ═══ FinishDeath — creature_base/init.lua:3313-3325 ═══
+    public virtual void FinishDeath(DamageInfo dmginfo, int hitgroup)
+    {
+        // lua:3314 — VJ_DEBUG + GetConVar debug print
+        // SKIP: lua:3314 — VJ_DEBUG / GetConVar — Phase 3 debug system
+
+        // lua:3315 — self:SetSaveValue("m_lifeState", 2) — LIFE_DEAD
+        SetSaveValue("m_lifeState", 2);
+        // lua:3316 — //SetNPCState(NPC_STATE_DEAD) — commented out
+        // lua:3317 — self:OnDeath(dmginfo, hitgroup, "Finish")
+        OnDeath(dmginfo, hitgroup, "Finish");
+
+        // lua:3318 — if self.DropDeathLoot then
+        if (DropDeathLoot)
+        {
+            // lua:3319 — self:CreateDeathLoot(dmginfo, hitgroup)
+            CreateDeathLoot(dmginfo, hitgroup);
+        }
+
+        // lua:3321 — if bit.band(self.SavedDmgInfo.type, DMG_REMOVENORAGDOLL) == 0 then self:CreateDeathCorpse(dmginfo, hitgroup) end
+        // SKIP: lua:3321 — DMG_REMOVENORAGDOLL constant — Phase 3 damage constants; assume always true for now
+        CreateDeathCorpse(dmginfo, hitgroup);
+
+        // lua:3322 — self:Remove()
+        // SKIP: lua:3322 — self:Remove() — S&Box GameObject.Destroy() instead; Phase 3 entity removal lifecycle
+    }
+
+    // ═══ CreateDeathCorpse — creature_base/init.lua:3327-3487 ═══
+    public virtual GameObject CreateDeathCorpse(DamageInfo dmginfo, int hitgroup)
+    {
+        // ---- SavedDmgInfo guard (lua:3328-3342) ----
+        // lua:3330 — if !self.SavedDmgInfo then
+        if (SavedDmgInfo == null)
+        {
+            // lua:3331-3341 — SavedDmgInfo snapshot
+            SavedDmgInfo = new SavedDmgInfoData
+            {
+                dmginfo = dmginfo,
+                // SKIP: lua:3333 — dmginfo:GetAttacker() — Source engine CTakeDamageInfo API
+                // SKIP: lua:3334 — dmginfo:GetInflictor() — Source engine CTakeDamageInfo API
+                // SKIP: lua:3335 — dmginfo:GetDamage() — Source engine CTakeDamageInfo API
+                // SKIP: lua:3336 — dmginfo:GetDamagePosition() — Source engine CTakeDamageInfo API
+                // SKIP: lua:3337 — dmginfo:GetDamageType() — Source engine CTakeDamageInfo API
+                // SKIP: lua:3338 — dmginfo:GetDamageForce() — Source engine CTakeDamageInfo API
+                // SKIP: lua:3339 — dmginfo:GetAmmoType() — Source engine CTakeDamageInfo API
+                hitgroup = hitgroup,
+            };
+        }
+
+        // ---- Corpse gate (lua:3344) ----
+        // lua:3344 — if self.HasDeathCorpse && self.HasDeathRagdoll != false then
+        if (!HasDeathCorpse || HasDeathRagdoll == false) return null;
+
+        // ---- Model selection (lua:3345-3348) ----
+        // lua:3345 — corpseMdl = self:GetModel()
+        // SKIP: lua:3345 — self:GetModel() — Phase 3 model access
+        // lua:3346 — corpseMdlCustom = PICK(self.DeathCorpseModel)
+        // SKIP: lua:3346-3348 — PICK(DeathCorpseModel) / corpseMdl override — Phase 3
+        // lua:3349 — corpseClass = "prop_physics"
+        // SKIP: lua:3349 — corpseClass selection — Phase 3
+
+        // ---- Entity class selection (lua:3350-3357) ----
+        // lua:3350 — if self.DeathCorpseEntityClass then corpseClass = self.DeathCorpseEntityClass
+        // lua:3351-3357 — else IsValidRagdoll/IsValidProp/IsValidModel checks
+        // SKIP: lua:3350-3357 — DeathCorpseEntityClass / util.IsValidRagdoll / util.IsValidProp / util.IsValidModel — Phase 3 entity creation
+
+        // ---- Entity creation (lua:3358-3364) ----
+        // lua:3358 — corpse = ents.Create(corpseClass)
+        // SKIP: lua:3358 — ents.Create — Phase 3 GameObject creation (GameObject.CreateObject/prefab)
+        // lua:3359-3364 — corpse:SetModel/SetPos/SetAngles/Spawn/Activate
+        // SKIP: lua:3359-3364 — SetModel/SetPos/SetAngles/Spawn/Activate — Phase 3
+        GameObject corpse = null; // Phase 3: create GameObject via prefab or new GameObject()
+
+        // ---- Copy appearance (lua:3365-3383) ----
+        // SKIP: lua:3365 — corpse:SetSkin(self:GetSkin()) — Phase 3 ModelRenderer
+        // SKIP: lua:3366-3367 — for bodygroup loop + corpse:SetBodygroup — Phase 3 ModelRenderer
+        // SKIP: lua:3368 — corpse:SetColor(self:GetColor()) — Phase 3 Renderer.Tint
+        // SKIP: lua:3369 — corpse:SetMaterial(self:GetMaterial()) — Phase 3 ModelRenderer
+        // SKIP: lua:3370-3383 — submaterial copy loop — Phase 3
+
+        // ---- Corpse metadata (lua:3386-3391) ----
+        // lua:3386 — corpse.FadeCorpseType = (corpse:GetClass()=="prop_ragdoll" and "FadeAndRemove") or "kill"
+        // SKIP: lua:3386 — FadeCorpseType + GetClass() — Phase 3
+        // lua:3387 — corpse.IsVJBaseCorpse = true
+        // SKIP: lua:3387 — IsVJBaseCorpse flag — Phase 3 entity flags
+        // lua:3388 — corpse.DamageInfo = dmginfo
+        // SKIP: lua:3388 — DamageInfo assignment — Phase 3
+        // lua:3389 — corpse.ChildEnts = self.DeathCorpse_ChildEnts or {}
+        // SKIP: lua:3389-3391 — ChildEnts / BloodData — Phase 3
+
+        // ---- Blood pool (lua:3392-3394) ----
+        // lua:3392-3394 — if self.Bleeds && self.HasBloodPool && vj_npc_blood_pool:GetInt()==1 then self:SpawnBloodPool(...)
+        if (Bleeds && HasBloodPool)
+        {
+            // SKIP: lua:3393 — vj_npc_blood_pool convar — Phase 3
+            SpawnBloodPool(dmginfo, hitgroup, corpse);
+        }
+
+        // ---- Collision (lua:3397-3404) ----
+        // SKIP: lua:3397 — corpse:SetCollisionGroup(self.DeathCorpseCollisionType) — Phase 3 collision
+        // SKIP: lua:3398-3399 — ai_serverragdolls convar + undo.ReplaceEntity — Phase 3
+        // SKIP: lua:3400-3403 — VJ.Corpse_Add / undo.ReplaceEntity / cleanup.ReplaceEntity — Phase 3
+
+        // ---- On fire (lua:3407-3413) ----
+        // lua:3407 — if self:IsOnFire() then
+        if (IsOnFire())
+        {
+            // lua:3408 — corpse:Ignite(math.Rand(8, 10), 0)
+            // SKIP: lua:3408 — corpse:Ignite — Phase 3 (S&Box Prop.Ignite exists but different API)
+            // lua:3409-3411 — if !self.Immune_Fire then corpse:SetColor(colorGrey)
+            // SKIP: lua:3409-3411 — SetColor(colorGrey) fire darkening — Phase 3 ModelRenderer
+        }
+
+        // ---- Dissolve (lua:3416-3418) ----
+        // SKIP: lua:3416-3418 — DMG_DISSOLVE / prop_combine_ball check + corpse:Dissolve — Phase 3 (S&Box no dissolve)
+
+        // ---- Bone physics (lua:3422-3448) ----
+        // SKIP: lua:3422-3448 — useLocalVel / dmgForce calculation / phys loop:
+        //        corpse:GetPhysicsObjectCount / GetPhysicsObjectNum / GetSurfaceArea
+        //        self:GetBonePosition / corpse:TranslatePhysBoneToBone
+        //        childPhysObj:SetAngles/SetPos/SetVelocity — Phase 3 physics (ModelPhysics)
+
+        // ---- Health & stink (lua:3451-3456) ----
+        // SKIP: lua:3451-3455 — corpse:Health()/SetMaxHealth/SetHealth (totalSurface/60) — Phase 3 HealthComponent
+        // lua:3456 — VJ.Corpse_AddStinky(corpse, true)
+        VJUtility.Corpse_AddStinky(corpse, true);
+
+        // ---- Fade (lua:3458-3460) ----
+        // SKIP: lua:3458 — if self.DeathCorpseFade then corpse:Fire(corpse.FadeCorpseType, nil, self.DeathCorpseFade) — Phase 3
+        // SKIP: lua:3459 — vj_npc_corpse_fade convar + corpse:Fire — Phase 3
+        // lua:3460 — self:OnCreateDeathCorpse(dmginfo, hitgroup, corpse)
+        OnCreateDeathCorpse(dmginfo, hitgroup, corpse);
+
+        // ---- Dissolve children (lua:3461-3465) ----
+        // SKIP: lua:3461 — corpse:IsFlagSet(FL_DISSOLVING) — Phase 3 flags + Dissolve
+        // SKIP: lua:3462-3464 — for child in ChildEnts → child:Dissolve — Phase 3
+
+        // ---- CallOnRemove (lua:3466-3476) ----
+        // SKIP: lua:3466-3476 — corpse:CallOnRemove callback + child cleanup loop:
+        //        child:GetClass()=="prop_ragdoll" → Fire("FadeAndRemove") else Fire("kill")
+        //        — Phase 3 (S&Box: Component.OnDestroy / DestroyAsync lifecycle)
+        // lua:3477 — hook.Call("CreateEntityRagdoll", nil, self, corpse)
+        // SKIP: lua:3477 — hook.Call — S&Box has no global hook system
+
+        // lua:3478 — return corpse
+        return corpse;
+
+        // ---- Else (no corpse) branch (lua:3480-3486) — NOT reached in this path ----
+        // The Lua else branch (lines 3480-3486) handles: remove child ents
+        // In C#, if HasDeathCorpse is false or HasDeathRagdoll is false, we return null above (line 3344 gate).
+        // The else branch cleanup is implicitly handled by the GameObject.Destroy lifecycle.
+    }

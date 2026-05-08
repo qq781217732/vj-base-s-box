@@ -136,6 +136,39 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public bool Dead { get; set; }
     public bool GibbedOnDeath { get; set; }
     public bool DeathAnimationCodeRan { get; set; }
+
+    // ═══ Death / Corpse Config — creature_base + human_base init.lua:204-236 ═══
+    public bool DoNotDuplicate { get; set; }
+    public bool HasDeathAnimation { get; set; }
+    public float? DeathAnimationTime { get; set; }
+    public int DeathAnimationChance { get; set; } = 1;
+    public float DeathAnimationDecreaseLengthAmount { get; set; }
+    public List<string> AnimTbl_Death { get; set; } = new();
+    public bool HasDeathCorpse { get; set; } = true;
+    public bool? HasDeathRagdoll { get; set; }
+    public string DeathCorpseEntityClass { get; set; }
+    public List<string> DeathCorpseModel { get; set; }
+    public bool DeathCorpseSetBoneAngles { get; set; } = true;
+    public bool DeathCorpseApplyForce { get; set; } = true;
+    public float DeathCorpseFade { get; set; }
+    public List<int> DeathCorpseSubMaterials { get; set; }
+    public List<GameObject> DeathCorpse_ChildEnts { get; set; } = new();
+    public float DeathDelayTime { get; set; }
+    public object DeathAllyResponse { get; set; } = true;
+    public int DeathAllyResponse_MoveLimit { get; set; } = 4;
+    public bool DropDeathLoot { get; set; } = true;
+
+    // ═══ Blood / Effects — creature_base init.lua:174-182 ═══
+    public bool Bleeds { get; set; } = true;
+    public bool HasBloodParticle { get; set; } = true;
+    public bool HasBloodDecal { get; set; } = true;
+    public List<string> BloodDecal { get; set; } = new();
+    public List<string> BloodParticle { get; set; } = new();
+    public bool HasBloodPool { get; set; } = true;
+
+    // ═══ Saved Damage Info — creature_base + human_base init.lua:3331-3341 ═══
+    public SavedDmgInfoData SavedDmgInfo { get; set; }
+
     public float TakingCoverT { get; set; }
     public float NextOnPlayerSightT { get; set; }
     public bool LastHiddenZone_CanWander { get; set; } = true;
@@ -417,6 +450,36 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
             _ => VJDamageTags.Generic,
         };
     }
+
+    // ═══ Damage Category Helpers — check DamageInfo.Tags against immunity categories ═══
+    public virtual bool IsBulletDamage(DamageInfo dmg) =>
+        dmg.Tags.Has(VJDamageTags.Bullet) || dmg.Tags.Has(VJDamageTags.Airboat)
+        || dmg.Tags.Has(VJDamageTags.Buckshot) || dmg.Tags.Has(VJDamageTags.Sniper);
+
+    public virtual bool IsFireDamage(DamageInfo dmg) =>
+        dmg.Tags.Has(VJDamageTags.Burn) || dmg.Tags.Has(VJDamageTags.SlowBurn);
+
+    public virtual bool IsToxicDamage(DamageInfo dmg) =>
+        dmg.Tags.Has(VJDamageTags.Poison) || dmg.Tags.Has(VJDamageTags.Acid)
+        || dmg.Tags.Has(VJDamageTags.Radiation) || dmg.Tags.Has(VJDamageTags.NerveGas)
+        || dmg.Tags.Has(VJDamageTags.Paralyze);
+
+    public virtual bool IsExplosiveDamage(DamageInfo dmg) =>
+        dmg.Tags.Has(VJDamageTags.Blast) || dmg.Tags.Has(VJDamageTags.Explosion)
+        || dmg.Tags.Has(VJDamageTags.BlastSurface) || dmg.Tags.Has(VJDamageTags.MissileDefense);
+
+    public virtual bool IsElectricDamage(DamageInfo dmg) =>
+        dmg.Tags.Has(VJDamageTags.Shock) || dmg.Tags.Has(VJDamageTags.Physgun)
+        || dmg.Tags.Has(VJDamageTags.EnergyBeam);
+
+    public virtual bool IsMeleeDamage(DamageInfo dmg) =>
+        dmg.Tags.Has(VJDamageTags.Slash) || dmg.Tags.Has(VJDamageTags.Club);
+
+    public virtual bool IsDissolveDamage(DamageInfo dmg) =>
+        dmg.Tags.Has(VJDamageTags.Dissolve);
+
+    public virtual bool IsSonicDamage(DamageInfo dmg) =>
+        dmg.Tags.Has(VJDamageTags.Sonic);
 
     /// <summary>ProcessAttackTimers — called from Think to check and fire delayed attack callbacks.</summary>
     public virtual void ProcessAttackTimers(float curTime)
@@ -700,7 +763,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     }
 
     // ═══ Damage ═══
-    public virtual void Flinch(object dmginfo, int hitgroup) { Flinching = true; }
+    public virtual void Flinch(DamageInfo dmginfo, int hitgroup) { Flinching = true; }
     public virtual int GetLastDamageHitGroup() => 0;
     public virtual float GetLastDamageTime() => 0;
     public virtual int GetTotalDamageCount() => 0;
@@ -711,14 +774,14 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
 
     // ═══ Death / Gib ═══
     public virtual bool IsGibDamage(int dmgType) => false;
-    public virtual void GibOnDeath(object dmginfo, int hitgroup) { GibbedOnDeath = true; }
+    public virtual void GibOnDeath(DamageInfo dmginfo, int hitgroup) { GibbedOnDeath = true; }
 
     // ═══ Phase 3 engine stubs (called by OnTakeDamage) ═══
     public virtual bool IsOnFire() => false;
     public virtual int WaterLevel() => 0;
     public virtual void Extinguish() { }
-    public virtual void SpawnBloodParticles(object dmginfo, int hitgroup) { }
-    public virtual void SpawnBloodDecals(object dmginfo, int hitgroup) { }
+    public virtual void SpawnBloodParticles(DamageInfo dmginfo, int hitgroup) { }
+    public virtual void SpawnBloodDecals(DamageInfo dmginfo, int hitgroup) { }
     public virtual void TriggerOutput(string output, GameObject activator) { }
     public virtual void MarkTookDamageFromEnemy(GameObject attacker) { }
     public virtual void SetSaveValue(string key, object value) { }
@@ -732,6 +795,17 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public virtual void ClearEnemyMemory(GameObject ent) { }
     public virtual void MaintainAlertBehavior(bool alwaysChase) { }
     public virtual Vector3 GetEnemyLastKnownPos() => Vector3.Zero;
+
+    // ═══ Death Callbacks (Phase 3 stubs) ═══
+    public virtual void OnDeath(DamageInfo dmginfo, int hitgroup, string status) { }
+    public virtual void OnAllyKilled(GameObject ally) { }
+    public virtual void OnCreateDeathCorpse(DamageInfo dmginfo, int hitgroup, GameObject corpse) { }
+    public virtual void RemoveTimers() { }
+    public virtual void CreateDeathLoot(DamageInfo dmginfo, int hitgroup) { }
+    public virtual void ResetMedicBehavior() { }
+    public virtual void RemoveAllGestures() { }
+    public virtual void SpawnBloodPool(DamageInfo dmginfo, int hitgroup, GameObject corpse) { }
+    public virtual string GetCorpseFadeType(GameObject corpse) => "kill";
 
     // ═══ Cleanup ═══
     protected override void OnDestroy()
@@ -1056,4 +1130,18 @@ public class GuardData
 {
     public object Position { get; set; }
     public object Direction { get; set; }
+}
+
+/// <summary>Saved damage info snapshot — creature_base init.lua:3331-3341</summary>
+public class SavedDmgInfoData
+{
+    public object dmginfo { get; set; }
+    public GameObject attacker { get; set; }
+    public GameObject inflictor { get; set; }
+    public float amount { get; set; }
+    public Vector3 pos { get; set; } = Vector3.Zero;
+    public int type { get; set; }
+    public Vector3 force { get; set; } = Vector3.Zero;
+    public object ammoType { get; set; }
+    public int hitgroup { get; set; }
 }

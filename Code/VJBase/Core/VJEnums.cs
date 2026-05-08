@@ -27,6 +27,20 @@ public static class VJDamageTags
     public const string Physgun      = "vj.physgun";
     public const string ForceFlinch  = "vj.force_flinch";
     public const string CrossbowBolt = "vj.crossbow_bolt";
+    // Immunity sub-types (for Is*Damage helpers)
+    public const string Dissolve      = "vj.dissolve";
+    public const string Sonic         = "vj.sonic";
+    public const string SlowBurn      = "vj.slow_burn";
+    public const string Acid          = "vj.acid";
+    public const string Radiation     = "vj.radiation";
+    public const string NerveGas      = "vj.nerve_gas";
+    public const string Paralyze      = "vj.paralyze";
+    public const string Airboat       = "vj.airboat";
+    public const string Buckshot      = "vj.buckshot";
+    public const string Sniper        = "vj.sniper";
+    public const string BlastSurface  = "vj.blast_surface";
+    public const string MissileDefense = "vj.missile_defense";
+    public const string EnergyBeam    = "vj.energy_beam";
 }
 
 // ═══ Source Engine NPCState — VJ calls SetNPCState(NPC_STATE_COMBAT) in ForceSetEnemy ═══

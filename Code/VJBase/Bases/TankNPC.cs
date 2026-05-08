@@ -34,14 +34,7 @@ public partial class TankNPC : CreatureNPC
     public bool VJ_ID_Boss { get; set; }
     public float TurningSpeed { get; set; }
     public int HullType { get; set; }
-    public bool Bleeds { get; set; }
-    public bool Immune_Dissolve { get; set; }
-    public bool Immune_Toxic { get; set; }
-    public bool Immune_Bullet { get; set; }
-    public bool HasPainSounds { get; set; }
-    public bool DisableWandering { get; set; }
     public bool CanReceiveOrders { get; set; }
-    public string DeathAllyResponse { get; set; }
     public bool DamageAllyResponse { get; set; }
     public bool CombatDamageResponse { get; set; }
     public bool YieldToAlliedPlayers { get; set; }
@@ -88,7 +81,7 @@ public partial class TankNPC : CreatureNPC
     public virtual void Tank_UpdateMoveParticles() { }
 
     // ═══ Death Sequence ═══
-    public virtual bool Tank_OnInitialDeath(object dmginfo, int hitgroup) => false;
+    public virtual bool Tank_OnInitialDeath(DamageInfo dmginfo, int hitgroup) => false;
 
     // ═══ SelectSchedule (tank-specific) ═══
     public override void SelectSchedule()
@@ -102,19 +95,22 @@ public partial class TankNPC : CreatureNPC
     }
 
     // ═══ OnDamaged — filter damage by type (base_tank.lua:35-49) ═══
-    public virtual void OnDamaged(object dmginfo, int hitgroup, string status)
+    public virtual void OnDamaged(DamageInfo dmginfo, int hitgroup, string status)
     {
         // lua:37-41: Init — skip gravity gun and crossbow bolt damage
         if (status == "Init")
         {
-            // SKIP: lua:37-41 — dmginfo:GetInflictor() / IsDamageType(DMG_PHYSGUN) / GetClass("crossbow_bolt") — Source damage system, Phase 3
+            if (dmginfo.Tags.Has(VJDamageTags.Physgun))
+                dmginfo.Damage = 0;
+            // SKIP: lua:39 — dmgInflictor:GetClass() == "crossbow_bolt" — Phase 3 entity type system
         }
-        // lua:43-48: PreDamage — filter melee damage unless from boss
-        else if (status == "PreDamage")
+        // lua:43-48: PreDamage — filter melee damage unless from boss and strong enough
+        else if (status == "PreDamage" && (IsMeleeDamage(dmginfo) || dmginfo.Tags.Has(VJDamageTags.Generic)))
         {
-            // SKIP: lua:43 — IsDamageType(DMG_SLASH) or IsDamageType(DMG_CLUB) or IsDamageType(DMG_GENERIC) — Source damage types, Phase 3
-            // lua:44: damage >= 30 AND attacker is boss → halve damage
-            // SKIP: lua:44-48 — dmginfo:GetDamage() / GetAttacker().VJ_ID_Boss / SetDamage — Source damage system, Phase 3
+            if (dmginfo.Damage >= 30 && dmginfo.Attacker?.Components.Get<TankNPC>()?.VJ_ID_Boss == true)
+                dmginfo.Damage /= 2;
+            else
+                dmginfo.Damage = 0;
         }
     }
 

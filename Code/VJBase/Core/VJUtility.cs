@@ -54,4 +54,13 @@ public static class VJUtility
 
     /// <summary>VJ.IsCurrentAnim — checks if entity is currently playing animation (Phase 3)</summary>
     public static bool IsCurrentAnim(GameObject ent, string anim) => false;
+
+    /// <summary>VJ.Corpse_Add — Add entity to VJ corpse list (Phase 3 corpse limit system)</summary>
+    public static void Corpse_Add(GameObject corpse) { }
+
+    /// <summary>VJ.Corpse_AddStinky — Add entity to stinky entity list (Phase 3)</summary>
+    public static void Corpse_AddStinky(GameObject corpse, bool checkMat = true) { }
+
+    /// <summary>VJ.AnimDurationEx — Calculate animation duration with override (Phase 3)</summary>
+    public static float AnimDurationEx(GameObject ent, string anim, object overrideVal, float decrease = 0) => 0f;
 }

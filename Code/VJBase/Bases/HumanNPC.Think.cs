@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Sandbox;
 using SWB.Player;
 
@@ -54,12 +55,12 @@ public partial class HumanNPC
         // lua:2176-2179: LookupAttachment("eyes"/"forward") → CAP_ANIMATEDFACE
         // SKIP: lua:2176-2179 — Source engine attachment-based capability
         // lua:2180-2182: Passive → Weapon_Disabled + Weapon_IgnoreSpawnMenu
-        // lua:2183-2184: elseif CapabilitiesAdd(capBitsWeapons) — SKIP (Source engine bit-flag caps)
         if (Behavior == VJBehavior.Passive || Behavior == VJBehavior.PassiveNature)
         {
             Weapon_Disabled = true;
             Weapon_IgnoreSpawnMenu = true;
         }
+        // lua:2183-2184 — elseif !Weapon_Disabled && !Weapon_IgnoreSpawnMenu then CapabilitiesAdd(capBitsWeapons) — SKIP (Source engine bit-flag caps)
 
         // lua:2187-2191: Health setup
         var hp = ScaleByDifficulty(StartHealth); // lua:2189: convar override or ScaleByDifficulty
@@ -201,7 +202,8 @@ public partial class HumanNPC
                 // lua:2485 — VJ.EmitSound(self, sdWepSwitch, 70)
                 // SKIP: lua:2485 — VJ.EmitSound(sdWepSwitch, 70) — Phase 3 weapon sound
                 // lua:2486 — curWep = wep
-                curWep = null; // wep is string, curWep is GameObject — Phase 3: resolve via weapon system
+                // wep is string (class name), IsValid(string)→false; null.IsValid()→false — same fallthrough to else→None
+                curWep = null; // Phase 3: resolve class name → GameObject via weapon system
             }
             // lua:2487 — else
             else
@@ -1172,22 +1174,21 @@ public partial class HumanNPC
 
     // ═══ OnTakeDamage — human_base/init.lua:3918-4172 ═══
     /// <summary>
-    /// Source engine damage callback. Returns 0 to block damage, 1 to allow.
-    /// dmginfo: Source CTakeDamageInfo (Phase 3 → S&Box DamageInfo).
-    /// hitgroup: LastDamageHitGroup (pre-extracted from engine, matches Lua:3932).
+    /// Damage callback. Returns 0 to block damage, 1 to allow.
+    /// hitgroup: LastDamageHitGroup (pre-extracted, matches Lua:3932).
     /// </summary>
-    public virtual int OnTakeDamage(object dmginfo, int hitgroup)
+    public virtual int OnTakeDamage(DamageInfo dmgInfo, int hitgroup)
     {
         // ---- Block A: Entry guards (lua:3918-3923) ----
-        // lua:3919 — dmgAttacker = dmginfo:GetAttacker()
-        // SKIP: lua:3919 — dmginfo:GetAttacker() — Source engine CTakeDamageInfo API
-        // lua:3920 — if !IsValid(dmgAttacker) then dmgAttacker = false end
-        // SKIP: lua:3920 — IsValid(dmgAttacker) guard — Phase 3 S&Box DamageInfo
+        // lua:3919-3920 — dmgAttacker = dmginfo:GetAttacker() / IsValid guard
+        var dmgAttacker = dmgInfo.Attacker;
         // lua:3923 — Don't take bullet damage from friendly NPCs
-        // SKIP: lua:3923 — dmgAttacker && dmginfo:IsBulletDamage() && dmgAttacker:IsNPC()
-        //        && dmgAttacker:Disposition(self) != D_HT
-        //        && (dmgAttacker:GetClass() == self:GetClass() || self:Disposition(dmgAttacker) == D_LI)
-        //        → return 0 — Phase 3 DamageInfo + entity type system
+        if (dmgAttacker.IsValid()
+            && IsBulletDamage(dmgInfo)
+            && dmgAttacker.Components.Get<BaseNPC>() is { } attackerBase
+            && attackerBase.Disposition(GameObject) != (int)VJBase.Disposition.Hate
+            && (VJ_NPC_Class.Any(c => attackerBase.VJ_NPC_Class.Contains(c)) || Disposition(dmgAttacker) == (int)VJBase.Disposition.Like))
+            return 0;
 
         // ---- Block B: Inflictor + ragdoll guard (lua:3925-3929) ----
         // lua:3925 — dmgInflictor = dmginfo:GetInflictor()
@@ -1202,9 +1203,9 @@ public partial class HumanNPC
         // lua:3931 — selfData = funcGetTable(self) → in C#: this
         // lua:3932 — hitgroup = self:GetLastDamageHitGroup() → passed as parameter
         // lua:3933
-        OnDamaged(dmginfo, hitgroup, "Init");
-        // lua:3934 — if selfData.GodMode or dmginfo:GetDamage() <= 0 then return 0 end
-        // SKIP: lua:3934 — GodMode || dmginfo:GetDamage() <= 0 → return 0 — Phase 3 godmode + DamageInfo
+        OnDamaged(dmgInfo, hitgroup, "Init");
+        // lua:3934 — GodMode or zero/negative damage → block
+        if (GodMode || dmgInfo.Damage <= 0) return 0;
 
         // ---- Block D: Fire entity detection (lua:3936-3942) ----
         // lua:3936 — dmgType = dmginfo:GetDamageType()
@@ -1225,18 +1226,18 @@ public partial class HumanNPC
         // SKIP: lua:3945-3946 — dmgAttacker.VJ_ID_Boss cross-entity read → goto skip_immunity — Phase 3 boss flag system
 
         // ---- Block F: Immunity chain (lua:3949-3951) ----
-        // lua:3950 — if isFireEnt && !selfData.AllowIgnition then self:Extinguish() return 0 end
-        // SKIP: lua:3950 — AllowIgnition fire guard → Extinguish() + return 0 — Phase 3 fire immunity
+        // lua:3950 — fire entity with ignition disabled → extinguish and block
+        if (isFireEnt && !AllowIgnition) { Extinguish(); return 0; }
         // lua:3951 — Full immunity OR-chain (8 types)
-        // SKIP: lua:3951 — Immune_Fire && (DMG_BURN||DMG_SLOWBURN||isFireEnt)
-        //        || Immune_Toxic && (DMG_ACID||DMG_RADIATION||DMG_POISON||DMG_NERVEGAS||DMG_PARALYZE)
-        //        || Immune_Bullet && (dmginfo:IsBulletDamage()||DMG_BULLET||DMG_AIRBOAT||DMG_BUCKSHOT||DMG_SNIPER)
-        //        || Immune_Explosive && (DMG_BLAST||DMG_BLAST_SURFACE||DMG_MISSILEDEFENSE)
-        //        || Immune_Dissolve && dmginfo:IsDamageType(DMG_DISSOLVE)
-        //        || Immune_Electricity && (DMG_SHOCK||DMG_ENERGYBEAM||DMG_PHYSGUN)
-        //        || Immune_Melee && (DMG_CLUB||DMG_SLASH)
-        //        || Immune_Sonic && DMG_SONIC → return 0
-        //        — Phase 3 DamageInfo.Tags (use VJDamageTags constants)
+        if ((Immune_Fire && (IsFireDamage(dmgInfo) || isFireEnt))
+            || (Immune_Toxic && IsToxicDamage(dmgInfo))
+            || (Immune_Bullet && IsBulletDamage(dmgInfo))
+            || (Immune_Explosive && IsExplosiveDamage(dmgInfo))
+            || (Immune_Dissolve && IsDissolveDamage(dmgInfo))
+            || (Immune_Electricity && IsElectricDamage(dmgInfo))
+            || (Immune_Melee && IsMeleeDamage(dmgInfo))
+            || (Immune_Sonic && IsSonicDamage(dmgInfo)))
+            return 0;
 
         // ---- Block G: skip_immunity label + combine ball (lua:3953-3964) ----
         // lua:3953 — ::skip_immunity::
@@ -1258,7 +1259,7 @@ public partial class HumanNPC
             if (Bleeds)
             {
                 // lua:3968 — self:OnBleed(dmginfo, hitgroup)
-                OnBleed(dmginfo, hitgroup);
+                OnBleed(dmgInfo, hitgroup);
                 // lua:3970 — if selfData.HasBloodParticle && !isFireEnt then self:SpawnBloodParticles(dmginfo, hitgroup) end
                 // SKIP: lua:3970 — HasBloodParticle && !isFireEnt → SpawnBloodParticles(dmginfo, hitgroup) — Phase 3 blood effects
                 // lua:3971 — if selfData.HasBloodDecal then self:SpawnBloodDecals(dmginfo, hitgroup) end
@@ -1274,9 +1275,9 @@ public partial class HumanNPC
 
         // ---- Block J: PreDamage + damage application (lua:3977-4000) ----
         // lua:3977 — self:OnDamaged(dmginfo, hitgroup, "PreDamage")
-        OnDamaged(dmginfo, hitgroup, "PreDamage");
-        // lua:3978 — if dmginfo:GetDamage() <= 0 then return 0 end
-        // SKIP: lua:3978 — dmginfo:GetDamage() <= 0 → return 0 — Phase 3 DamageInfo
+        OnDamaged(dmgInfo, hitgroup, "PreDamage");
+        // lua:3978 — only take damage if above 0
+        if (dmgInfo.Damage <= 0) return 0;
         // lua:3980-3990 — selfData.SavedDmgInfo = { dmginfo, attacker, inflictor, amount, pos, type, force, ammoType, hitgroup }
         // SKIP: lua:3980-3990 — SavedDmgInfo snapshot table (GMod resets dmginfo after tick) — Phase 3
         // lua:3991 — self:SetHealth(self:Health() - dmginfo:GetDamage())
@@ -1288,7 +1289,7 @@ public partial class HumanNPC
         // lua:3997-3998 — self:SetSaveValue("m_iDamageCount", ...) / self:SetSaveValue("m_flLastDamageTime", curTime)
         // SKIP: lua:3997-3998 — SetSaveValue (Source engine save/restore) — Phase 3 persistence
         // lua:3999 — self:OnDamaged(dmginfo, hitgroup, "PostDamage")
-        OnDamaged(dmginfo, hitgroup, "PostDamage");
+        OnDamaged(dmgInfo, hitgroup, "PostDamage");
         // lua:4000 — DoBleed()
         DoBleed();
 
@@ -1317,7 +1318,7 @@ public partial class HumanNPC
                 // lua:4016 — if !isFireEnt then
                 // SKIP: lua:4016 — !isFireEnt guard — Phase 3 fire system
                 // lua:4017 — self:Flinch(dmginfo, hitgroup)
-                Flinch(dmginfo, hitgroup);
+                Flinch(dmgInfo, hitgroup);
 
                 // ---- M2: Player attacker → BecomeEnemyToPlayer (lua:4020-4052) ----
                 // lua:4021 — if dmgAttacker && dmgAttacker:IsPlayer() then
@@ -1430,10 +1431,322 @@ public partial class HumanNPC
         // lua:4162-4168 — if IsDamageType(DMG_DISSOLVE) or prop_combine_ball then dissolve DamageInfo + TakeDamageInfo
         // SKIP: lua:4162-4168 — dissolve damage path — Phase 3 damage system
         // lua:4169 — self:BeginDeath(dmginfo, hitgroup)
-        // SKIP: lua:4169 — BeginDeath(dmginfo, hitgroup) — Phase 3 death system (stub in CreatureNPC.Think.cs)
+        BeginDeath(dmginfo, hitgroup);
 
         // lua:4171 — return 1
         return 1;
+    }
+
+    // ═══ BeginDeath — human_base/init.lua:4177-4298 ═══
+    /// <summary>
+    /// Human override of BeginDeath. Full override (no base call) matching Lua pattern.
+    /// Adds human-specific weapon cleanup; omits creature-only HasRangeAttack/HasLeapAttack reset.
+    /// </summary>
+    public override void BeginDeath(DamageInfo dmginfo, int hitgroup)
+    {
+        // lua:4178 — self.Dead = true
+        Dead = true;
+        // lua:4179 — self.DoNotDuplicate = true
+        DoNotDuplicate = true;
+        // lua:4180 — self:SetSaveValue("m_lifeState", 1) — LIFE_DYING
+        SetSaveValue("m_lifeState", 1);
+        // lua:4181 — self:OnDeath(dmginfo, hitgroup, "Init")
+        OnDeath(dmginfo, hitgroup, "Init");
+
+        // lua:4182 — if self.MedicData.Status then self:ResetMedicBehavior() end
+        if (Medic.Status != "false" && Medic.Status != null)
+            ResetMedicBehavior();
+        // lua:4183 — if self.IsFollowing then self:ResetFollowBehavior() end
+        if (IsFollowing) ResetFollowBehavior();
+
+        // lua:4184 — dmgInflictor = dmginfo:GetInflictor()
+        // SKIP: lua:4184 — dmginfo:GetInflictor() — Source engine CTakeDamageInfo API
+        // lua:4185 — dmgAttacker = dmginfo:GetAttacker()
+        // SKIP: lua:4185 — dmginfo:GetAttacker() — Source engine CTakeDamageInfo API
+        // lua:4186 — myPos = self:GetPos()
+        Vector3 myPos = WorldPosition;
+
+        // ---- Ally death response (lua:4188-4238) ----
+        // lua:4188 — if VJ_CVAR_AI_ENABLED then
+        // SKIP: lua:4188 — VJ_CVAR_AI_ENABLED convar check — Phase 3 convar system (assume enabled)
+        {
+            // lua:4189 — responseDist = math_max(800, self:OBBMaxs():Distance(self:OBBMins()) * 12)
+            // SKIP: lua:4189 — OBBMaxs/OBBMins — Phase 3 collision bounds
+            // lua:4190 — allies = self:Allies_Check(responseDist)
+            // SKIP: lua:4190 — Allies_Check returns void in C# — Phase 3 ally system
+            // lua:4191 — if allies then
+            // lua:4192 — doBecomeEnemyToPlayer = (BecomeEnemyToPlayer && dmgAttacker:IsPlayer() && !VJ_CVAR_IGNOREPLAYERS) or false
+            // SKIP: lua:4192 — dmgAttacker:IsPlayer() / VJ_CVAR_IGNOREPLAYERS — Phase 3 DamageInfo + convar
+            // lua:4193 — responseType = self.DeathAllyResponse
+            var responseType = DeathAllyResponse;
+            // lua:4194 — movedAllyNum = 0
+            // lua:4195-4237 — for _, ally in ipairs(allies) do
+            // SKIP: lua:4195-4237 — full ally response loop:
+            //        OnAllyKilled(ally) / PlaySoundSystem("AllyDeath") — lua:4196-4197
+            //        Bring ally (Allies_Bring) — lua:4202-4206
+            //        Alert ally (DoReadyAlert + SetTurnTarget) — lua:4209-4215
+            //        BecomeEnemyToPlayer chain — lua:4220-4235
+            //        Phase 3 ally system + relationship memory + chat messages
+        }
+
+        // ---- Blood decal (lua:4241-4250) ----
+        // lua:4242 — if self.Bleeds && self.HasBloodDecal then
+        if (Bleeds && HasBloodDecal)
+        {
+            // lua:4243 — bloodDecal = PICK(self.BloodDecal)
+            var bloodDecal = VJUtility.PICK(BloodDecal);
+            // lua:4244 — if bloodDecal then
+            if (bloodDecal != null)
+            {
+                // lua:4245-4248 — decalPos / TraceLine / util.Decal
+                // SKIP: lua:4245-4248 — TraceLine + util.Decal blood decal — Phase 3 decal system
+            }
+        }
+
+        // ---- Cleanup (lua:4252-4255) ----
+        // lua:4252 — self:RemoveTimers()
+        RemoveTimers();
+        // lua:4253 — self:StopAllSounds()
+        StopAllSounds();
+        // lua:4254 — self.AttackType = VJ.ATTACK_TYPE_NONE
+        AttackType = VJAttackType.None;
+        // lua:4255 — self.HasMeleeAttack = false
+        HasMeleeAttack = false;
+        // NOTE: human_base does NOT reset HasRangeAttack/HasLeapAttack (human attacks use weapons, not creature attacks)
+
+        // ---- Attacker check (lua:4256-4259) ----
+        // lua:4256 — if IsValid(dmgAttacker) then
+        // SKIP: lua:4256-4259 — dmgAttacker:GetClass()=="npc_barnacle" / vj_npc_ply_frag / AddFrags — Phase 3 DamageInfo + Source engine
+
+        // lua:4260 — gamemode.Call("OnNPCKilled", self, dmgAttacker, dmgInflictor)
+        // SKIP: lua:4260 — gamemode.Call("OnNPCKilled") — S&Box has no gamemode.Call
+
+        // ---- Post-death setup (lua:4261-4264) ----
+        // lua:4261 — self:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
+        // SKIP: lua:4261 — SetCollisionGroup(COLLISION_GROUP_DEBRIS) — Phase 3 collision groups
+        // lua:4262 — self:GibOnDeath(dmginfo, hitgroup)
+        GibOnDeath(dmginfo, hitgroup);
+        // lua:4263 — self:PlaySoundSystem("Death")
+        PlaySoundSystem("Death");
+        // lua:4264 — //AA_StopMoving() commented out
+
+        // ---- I/O events (lua:4266-4272) ----
+        // SKIP: lua:4266-4272 — TriggerOutput / Fire("KilledNPC") — Phase 3 I/O system
+
+        // ---- Death animation + delay → FinishDeath (lua:4274-4297) ----
+        // lua:4275 — deathTime = self.DeathDelayTime
+        float deathTime = DeathDelayTime;
+        // lua:4276 — combine ball → HasDeathAnimation = false
+        // SKIP: lua:4276 — dmgInflictor:GetClass()=="prop_combine_ball" — Phase 3 entity type
+        // lua:4277 — if self.HasDeathAnimation && VJ_CVAR_AI_ENABLED && !DMG_REMOVENORAGDOLL && !DMG_DISSOLVE && NavType!=CLIMB && random <= DeathAnimationChance
+        // SKIP: lua:4277 — DMG_* bit checks / VJ_CVAR_AI_ENABLED / NavType — Phase 3 damage constants + convar
+        if (HasDeathAnimation && DeathAnimationChance > 0)
+        {
+            // lua:4278 — self:RemoveAllGestures()
+            RemoveAllGestures();
+            // lua:4279 — self:OnDeath(dmginfo, hitgroup, "DeathAnim")
+            OnDeath(dmginfo, hitgroup, "DeathAnim");
+            // lua:4280-4283 — PICK(AnimTbl_Death) / AnimDurationEx / PlayAnim
+            // SKIP: lua:4280-4283 — PICK/AnimDurationEx/PlayAnim — Phase 3 animation
+            // lua:4284 — self.DeathAnimationCodeRan = true
+            DeathAnimationCodeRan = true;
+        }
+        // lua:4285 — else
+        else
+        {
+            // lua:4287 — self:SetSaveValue("m_lifeState", 2) — LIFE_DEAD
+            SetSaveValue("m_lifeState", 2);
+        }
+
+        // lua:4289-4297 — if deathTime > 0 then timer.Simple → FinishDeath else FinishDeath
+        // SKIP: lua:4289-4294 — timer.Simple(deathTime, ...) — Source engine timer; Phase 3 async/Task.Delay
+        // Fallback: call FinishDeath immediately
+        FinishDeath(dmginfo, hitgroup);
+    }
+
+    // ═══ FinishDeath — human_base/init.lua:4300-4310 ═══
+    /// <summary>
+    /// Human override: adds DeathWeaponDrop before CreateDeathCorpse.
+    /// </summary>
+    public override void FinishDeath(DamageInfo dmginfo, int hitgroup)
+    {
+        // lua:4301 — VJ_DEBUG + GetConVar debug print
+        // SKIP: lua:4301 — VJ_DEBUG / GetConVar — Phase 3 debug system
+
+        // lua:4302 — self:SetSaveValue("m_lifeState", 2) — LIFE_DEAD
+        SetSaveValue("m_lifeState", 2);
+        // lua:4303 — //SetNPCState(NPC_STATE_DEAD) — commented out
+        // lua:4304 — self:OnDeath(dmginfo, hitgroup, "Finish")
+        OnDeath(dmginfo, hitgroup, "Finish");
+
+        // lua:4305 — if self.DropDeathLoot then
+        if (DropDeathLoot)
+        {
+            // lua:4306 — self:CreateDeathLoot(dmginfo, hitgroup)
+            CreateDeathLoot(dmginfo, hitgroup);
+        }
+
+        // lua:4308 — if bit.band(self.SavedDmgInfo.type, DMG_REMOVENORAGDOLL) == 0 then self:DeathWeaponDrop(dmginfo, hitgroup) self:CreateDeathCorpse(dmginfo, hitgroup) end
+        // SKIP: lua:4308 — DMG_REMOVENORAGDOLL constant — Phase 3 damage constants; assume always true
+        DeathWeaponDrop(dmginfo, hitgroup);
+        CreateDeathCorpse(dmginfo, hitgroup);
+
+        // lua:4309 — self:Remove()
+        // SKIP: lua:4309 — self:Remove() — S&Box GameObject.Destroy() instead; Phase 3 entity removal lifecycle
+    }
+
+    // ═══ CreateDeathCorpse — human_base/init.lua:4314-4482 ═══
+    /// <summary>
+    /// Human override: adds WeaponEntity tracking in ChildEnts, dissolve weapon handling,
+    /// and weapon cleanup in the no-corpse else path.
+    /// </summary>
+    public override GameObject CreateDeathCorpse(DamageInfo dmginfo, int hitgroup)
+    {
+        // ---- SavedDmgInfo guard (lua:4317-4329) ----
+        // lua:4317 — if !self.SavedDmgInfo then
+        if (SavedDmgInfo == null)
+        {
+            // lua:4318-4328 — SavedDmgInfo snapshot
+            SavedDmgInfo = new SavedDmgInfoData
+            {
+                dmginfo = dmginfo,
+                // SKIP: lua:4320 — dmginfo:GetAttacker() — Source engine CTakeDamageInfo API
+                // SKIP: lua:4321 — dmginfo:GetInflictor() — Source engine CTakeDamageInfo API
+                // SKIP: lua:4322 — dmginfo:GetDamage() — Source engine CTakeDamageInfo API
+                // SKIP: lua:4323 — dmginfo:GetDamagePosition() — Source engine CTakeDamageInfo API
+                // SKIP: lua:4324 — dmginfo:GetDamageType() — Source engine CTakeDamageInfo API
+                // SKIP: lua:4325 — dmginfo:GetDamageForce() — Source engine CTakeDamageInfo API
+                // SKIP: lua:4326 — dmginfo:GetAmmoType() — Source engine CTakeDamageInfo API
+                hitgroup = hitgroup,
+            };
+        }
+
+        // ---- Corpse gate (lua:4331) ----
+        // lua:4331 — if self.HasDeathCorpse && self.HasDeathRagdoll != false then
+        if (!HasDeathCorpse || HasDeathRagdoll == false)
+        {
+            // lua:4474 — if IsValid(self.WeaponEntity) then self.WeaponEntity:Remove() end
+            // SKIP: lua:4474 — WeaponEntity:Remove() — Phase 3 weapon entity removal lifecycle
+            // lua:4475-4480 — remove child ents (DeathCorpse_ChildEnts loop)
+            // SKIP: lua:4475-4480 — child ent removal — Phase 3 entity lifecycle
+            return null;
+        }
+
+        // ---- Model selection (lua:4332-4335) ----
+        // lua:4332 — corpseMdl = self:GetModel()
+        // SKIP: lua:4332 — self:GetModel() — Phase 3 model access
+        // lua:4333-4334 — corpseMdlCustom = PICK(self.DeathCorpseModel) → override
+        // SKIP: lua:4333-4334 — PICK(DeathCorpseModel) — Phase 3
+
+        // ---- Entity class selection (lua:4335-4345) ----
+        // lua:4335 — corpseClass = "prop_physics"
+        // SKIP: lua:4335-4344 — DeathCorpseEntityClass / IsValidRagdoll / IsValidProp / IsValidModel / WeaponEntity:Remove — Phase 3
+        // lua:4343 — if model invalid → WeaponEntity:Remove() + return false
+        // SKIP: lua:4343 — WeaponEntity:Remove() — Phase 3
+
+        // ---- Entity creation (lua:4346-4364) ----
+        // SKIP: lua:4346-4364 — ents.Create/SetModel/SetPos/SetAngles/Spawn/Activate — Phase 3
+        GameObject corpse = null; // Phase 3: create GameObject
+
+        // ---- Copy appearance (lua:4365-4383) ----
+        // SKIP: lua:4365-4383 — SetSkin/bodygroup loop/SetColor/SetMaterial/submaterials — Phase 3 ModelRenderer
+
+        // ---- Corpse metadata (lua:4386-4391) ----
+        // SKIP: lua:4386 — FadeCorpseType — Phase 3
+        // SKIP: lua:4387 — IsVJBaseCorpse — Phase 3 entity flags
+        // SKIP: lua:4388 — DamageInfo — Phase 3
+        // SKIP: lua:4389 — ChildEnts — Phase 3
+        // SKIP: lua:4390 — BloodData — Phase 3
+
+        // ---- Blood pool (lua:4392-4394) ----
+        // lua:4392-4394 — if self.Bleeds && self.HasBloodPool && vj_npc_blood_pool:GetInt()==1 then self:SpawnBloodPool(...)
+        if (Bleeds && HasBloodPool)
+        {
+            // SKIP: lua:4393 — vj_npc_blood_pool convar — Phase 3
+            SpawnBloodPool(dmginfo, hitgroup, corpse);
+        }
+
+        // ---- Collision (lua:4397-4404) ----
+        // SKIP: lua:4397-4404 — SetCollisionGroup / undo.ReplaceEntity / Corpse_Add / cleanup.ReplaceEntity — Phase 3
+
+        // ---- On fire (lua:4407-4413) ----
+        // lua:4407 — if self:IsOnFire() then
+        if (IsOnFire())
+        {
+            // lua:4408 — corpse:Ignite(math.Rand(8, 10), 0)
+            // SKIP: lua:4408 — corpse:Ignite — Phase 3
+            // lua:4409-4411 — if !self.Immune_Fire then corpse:SetColor(colorGrey)
+            // SKIP: lua:4409-4411 — SetColor(colorGrey) fire darkening — Phase 3 ModelRenderer
+        }
+
+        // ---- Dissolve (lua:4416-4418) ----
+        // SKIP: lua:4416-4418 — DMG_DISSOLVE / prop_combine_ball + corpse:Dissolve — Phase 3
+
+        // ---- Bone physics (lua:4422-4448) ----
+        // SKIP: lua:4422-4448 — useLocalVel / dmgForce / phys loop / GetBonePosition / SetVelocity — Phase 3 physics
+
+        // ---- Health & stink (lua:4451-4456) ----
+        // SKIP: lua:4451-4455 — corpse:Health()/SetMaxHealth/SetHealth (totalSurface/60) — Phase 3 HealthComponent
+        // lua:4456 — VJ.Corpse_AddStinky(corpse, true)
+        VJUtility.Corpse_AddStinky(corpse, true);
+
+        // ---- WeaponEntity → ChildEnts (HUMAN ONLY: lua:4458) ----
+        // lua:4458 — if IsValid(self.WeaponEntity) then corpse.ChildEnts[#corpse.ChildEnts+1] = self.WeaponEntity end
+        // SKIP: lua:4458 — WeaponEntity → corpse.ChildEnts — Phase 3 entity arrays
+
+        // ---- Fade (lua:4459-4460) ----
+        // SKIP: lua:4459 — DeathCorpseFade + corpse:Fire — Phase 3
+        // SKIP: lua:4460 — vj_npc_corpse_fade convar — Phase 3
+
+        // lua:4461 — self:OnCreateDeathCorpse(dmginfo, hitgroup, corpse)
+        OnCreateDeathCorpse(dmginfo, hitgroup, corpse);
+
+        // ---- Dissolve weapon + children (HUMAN ONLY: lua:4462-4471) ----
+        // lua:4462 — if corpse:IsFlagSet(FL_DISSOLVING) then
+        // SKIP: lua:4462 — IsFlagSet(FL_DISSOLVING) — Phase 3 flags
+        // lua:4463-4465 — if IsValid(WeaponEntity) then WeaponEntity:Dissolve(0, 1)
+        // SKIP: lua:4463-4465 — WeaponEntity:Dissolve — Phase 3 (S&Box no dissolve)
+        // lua:4466-4470 — for child in ChildEnts → child:Dissolve
+        // SKIP: lua:4466-4470 — child dissolve loop — Phase 3
+
+        // ---- CallOnRemove (lua:4472-4480) ----
+        // SKIP: lua:4472-4480 — CallOnRemove / child cleanup / hook.Call("CreateEntityRagdoll") — Phase 3
+
+        // lua:4481 — return corpse
+        return corpse;
+    }
+
+    // ═══ DeathWeaponDrop — human_base/init.lua:4484-4513 ═══
+    /// <summary>
+    /// Drop the active weapon on death. Human-only (no creature equivalent).
+    /// </summary>
+    public override void DeathWeaponDrop(DamageInfo dmginfo, int hitgroup)
+    {
+        // lua:4485 — activeWep = funcGetActiveWeapon(self)
+        var activeWep = GetActiveWeapon(); // Phase 3 stub: returns null
+        // lua:4486 — if !self.DropWeaponOnDeath or !IsValid(activeWep) then return end
+        if (!DropWeaponOnDeath || !activeWep.IsValid()) return;
+
+        // lua:4488-4490 — Save original pos & ang
+        // SKIP: lua:4488-4490 — activeWep:GetPos() / activeWep:GetAngles() — Phase 3 weapon transform
+
+        // lua:4491 — self:DropWeapon(activeWep, nil, self:GetForward())
+        // SKIP: lua:4491 — DropWeapon(activeWep, nil, GetForward) — Phase 3 weapon drop system
+
+        // lua:4492-4495 — if activeWep.WorldModel_UseCustomPosition then restore pos/ang
+        // SKIP: lua:4492-4495 — WorldModel_UseCustomPosition + SetPos/SetAngles — Phase 3 weapon model
+
+        // lua:4496 — phys = activeWep:GetPhysicsObject()
+        // SKIP: lua:4496 — GetPhysicsObject() — Phase 3 physics (Rigidbody component)
+        // lua:4497 — if IsValid(phys) then
+        // SKIP: lua:4497-4508 — physics block:
+        //        DMG_DISSOLVE/prop_combine_ball → EnableGravity(false)+SetVelocity
+        //        else → dmgForce calculation + SetMass(1)+ApplyForceCenter — Phase 3 physics
+
+        // lua:4510 — self.WeaponEntity = activeWep
+        WeaponEntity = activeWep;
+        // lua:4512 — self:OnDeathWeaponDrop(dmginfo, hitgroup, activeWep)
+        OnDeathWeaponDrop(dmginfo, hitgroup, activeWep);
     }
 
     // ═══ GetAttackSpread — human_base/init.lua:4515 ═══

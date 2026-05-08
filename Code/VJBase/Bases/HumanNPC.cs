@@ -148,13 +148,10 @@ public partial class HumanNPC : CreatureNPC
     public List<string> AnimTbl_TakingCover { get; set; } = new();
     public bool Passive_AlliesRunOnDamage { get; set; } = true;
 
-    // ═══ Blood / Effects (ported from init.lua:3967-3971) ═══
-    public bool Bleeds { get; set; } = true;
-    public bool HasBloodParticle { get; set; } = true;
-    public bool HasBloodDecal { get; set; } = true;
+    // ═══ Death / Weapon Drop (ported from human_base init.lua:233) ═══
+    public bool DropWeaponOnDeath { get; set; } = true;
 
     // ═══ Misc Damage Fields (ported from OnTakeDamage) ═══
-    public object SavedDmgInfo { get; set; }
     public bool CanEat { get; set; }
     public object EatingData { get; set; }
     public bool CanChatMessage { get; set; }
@@ -178,11 +175,16 @@ public partial class HumanNPC : CreatureNPC
     public virtual bool OnWeaponStrafe() => true;
     public virtual void OnWeaponReload() { }
 
-    // ═══ Damage Callbacks (stubs — Phase 3) ═══
-    public virtual void OnDamaged(object dmginfo, int hitgroup, string status) { }
-    public virtual void OnBleed(object dmginfo, int hitgroup) { }
-    public virtual void OnSetEnemyFromDamage(object dmginfo, int hitgroup) { }
-    public virtual void OnBecomeEnemyToPlayer(object dmginfo, int hitgroup) { }
+    // ═══ Damage Callbacks ═══
+    public virtual void OnDamaged(DamageInfo dmginfo, int hitgroup, string status) { }
+    public virtual void OnBleed(DamageInfo dmginfo, int hitgroup) { }
+    public virtual void OnSetEnemyFromDamage(DamageInfo dmginfo, int hitgroup) { }
+    public virtual void OnBecomeEnemyToPlayer(DamageInfo dmginfo, int hitgroup) { }
     public virtual void ResetFollowBehavior() { }
     public virtual void ResetEatingBehavior(string reason) { }
+
+    // ═══ Death Weapon Drop (human_base init.lua:4484-4513) ═══
+    public virtual void DeathWeaponDrop(DamageInfo dmginfo, int hitgroup) { }
+    public virtual void OnDeathWeaponDrop(DamageInfo dmginfo, int hitgroup, GameObject wep) { }
+    public virtual void DropWeapon(GameObject wep, object unused, Vector3 velocity) { }
 }

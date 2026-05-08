@@ -275,7 +275,7 @@ public virtual void StartEngineTask(int taskId, float taskData)
 
 ## 7. 当前状态清单
 
-> 最后更新：2026-05-08（HumanNPC 18/18 方法全部完成 + OnTakeDamage 逐行展开 + 6 新方法翻译 + 15 编译错误诊断）
+> 最后更新：2026-05-08（HumanNPC 18/18 + 死亡序列 4 方法全部完成）
 
 ### 7.1a schedules.lua → BaseNPC.Schedule.cs（32 个方法）
 
@@ -351,7 +351,10 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | ✅ | `CheckForDangers` | 3356-3403 | ~50 行。7 真调用（Visible/OnDangerDetected/PlaySoundSystem×2/HasCondition×3/SCHEDULE_COVER_ORIGIN），5 SKIP（VJ_ID_* 标志/GetOwner/GetClass — Phase 3 entity flags）。新增 HumanNPC: CanDetectDangers/DangerDetectionDistance/CanRedirectGrenades，BaseNPC: OnDangerDetected 回调 |
 | ✅ | `CanFireWeapon` | 3476-3510 | ~35 行。6 真调用（OnWeaponCanFire/WeaponEntity/GetWeaponState/Enemy.Distance），2 SKIP（IsMeleeWeapon/IsCurrentAnim — Phase 3 weapon+animation）。新增 HumanNPC Weapon_MinDistance=10f，BaseNPC 签名修正 |
 | ❌ | `UpdatePoseParamTracking` | 3426-3467 | 纯动画（90% 依赖 Source SetPoseParameter/GetPoseParameter/EyePos/GetAimPosition）— 跳过，Phase 3 |
-| ❌ | `BeginDeath` / `FinishDeath` / `CreateDeathCorpse` / `DeathWeaponDrop` | 4177-4513 | ~330 行死亡序列 — 最后未翻译大块 |
+| ✅ | `BeginDeath` | 4177-4298 | ~122 行机械翻译（human override），12 块，~22 SKIP |
+| ✅ | `FinishDeath` | 4300-4310 | ~11 行机械翻译（human override，加 DeathWeaponDrop） |
+| ✅ | `CreateDeathCorpse` | 4314-4482 | ~168 行机械翻译（human override，加 WeaponEntity 跟踪） |
+| ✅ | `DeathWeaponDrop` | 4484-4513 | ~30 行机械翻译（human only，8 SKIP） |
 | ✅ | `GetAttackSpread` | 4515 | 1 行 `=> 0f`（Lua `return end` 等效） |
 | ❌ | `ExecuteMeleeAttack` (覆写) | 2993-3058 | ~65 行，与 CreatureNPC 版差异小 — 跳过，Phase 3 |
 | ✅ | `attackTimers` local table | 2536-2560 | 已由 BaseNPC.ScheduleAttackTimers + ProcessAttackTimers 替代 |
@@ -737,9 +740,9 @@ Source C++:  f:/DevProject/Sbox/source-sdk-2013/
     16 个 M 标记动画方法仍是 return 0/false
     TranslateActivity / UpdatePoseParamTracking / ExecuteMeleeAttack(覆写) 跳过
 
-20. 死亡序列（下一优先，~330 行）
-    BeginDeath / FinishDeath / CreateDeathCorpse / DeathWeaponDrop
-    CreatureNPC init.lua:4177-4513 + human override
+20. ✅ 死亡序列 ← 2026-05-08
+    BeginDeath / FinishDeath / CreateDeathCorpse / DeathWeaponDrop (~330 行)
+    CreatureNPC base + HumanNPC override 全部翻译完成
 
 21. 编译错误修复（15 个错误，5 类）
     详见 2026-05-08 编译报告
@@ -761,7 +764,7 @@ cd f:/DevProject/Sbox/testzombie/Code && grep -rn "SKIP:" VJBase/
 ---
 
 *最后更新：2026-05-08*
-*翻译阶段：~80%。HumanNPC 18/18 方法全部完成。剩余：死亡序列（~330 行）+ 动画系统（16 M 方法）+ 15 个编译错误（5 类，14 个历史遗留）。下一步：编译错误修复 → 死亡序列。*
+*翻译阶段：~85%。HumanNPC 18/18 方法 + 死亡序列 4 方法全部完成。剩余：动画系统（16 M 方法）+ 15 个编译错误（5 类，14 个历史遗留）。下一步：编译错误修复 → 动画系统。*
 
 ---
 
