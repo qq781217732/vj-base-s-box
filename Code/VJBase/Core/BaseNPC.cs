@@ -848,6 +848,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public virtual void RemoveTimers() { }
     public virtual void CreateDeathLoot(DamageInfo dmginfo, int hitgroup) { }
     public virtual void ResetMedicBehavior() { }
+    public virtual void ResetFollowBehavior() { }
     public virtual void RemoveAllGestures() { }
     public virtual void SpawnBloodPool(DamageInfo dmginfo, int hitgroup, GameObject corpse) { }
     public virtual string GetCorpseFadeType(GameObject corpse) => "kill";

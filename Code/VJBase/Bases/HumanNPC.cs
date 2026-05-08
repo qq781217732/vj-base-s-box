@@ -167,7 +167,6 @@ public partial class HumanNPC : CreatureNPC
     public virtual void OnBleed(DamageInfo dmginfo, int hitgroup) { }
     public virtual void OnSetEnemyFromDamage(DamageInfo dmginfo, int hitgroup) { }
     public virtual void OnBecomeEnemyToPlayer(DamageInfo dmginfo, int hitgroup) { }
-    public virtual void ResetFollowBehavior() { }
     public virtual void ResetEatingBehavior(string reason) { }
 
     // ═══ Death Weapon Drop (human_base init.lua:4484-4513) ═══
