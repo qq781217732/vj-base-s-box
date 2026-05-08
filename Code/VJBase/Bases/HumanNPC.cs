@@ -119,19 +119,6 @@ public partial class HumanNPC : CreatureNPC
     public bool Weapon_CanCrouchAttack { get; set; } = true;
     public int Weapon_CrouchAttackChance { get; set; } = 2;
 
-    // ═══ Damage Immunity (ported from init.lua:3944-3951 + shared defaults) ═══
-    public bool GodMode { get; set; }
-    public bool ForceDamageFromBosses { get; set; }
-    public bool AllowIgnition { get; set; } = true;
-    public bool Immune_Fire { get; set; }
-    public bool Immune_Explosive { get; set; }
-    public bool Immune_Electricity { get; set; }
-    public bool Immune_Melee { get; set; }
-    public bool Immune_Sonic { get; set; }
-    public bool Immune_Bullet { get; set; }
-    public bool Immune_Toxic { get; set; }
-    public bool Immune_Dissolve { get; set; }
-
     // ═══ Damage Response Config (ported from init.lua:4020-4135) ═══
     public int BecomeEnemyToPlayer { get; set; }
     public int DamageByPlayerDispositionLevel { get; set; } = 1;

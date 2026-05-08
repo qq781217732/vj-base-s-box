@@ -169,6 +169,19 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public int DeathAllyResponse_MoveLimit { get; set; } = 4;
     public bool DropDeathLoot { get; set; } = true;
 
+    // ═══ Damage Immunity — core.lua + human_base init.lua:3944-3951 ═══
+    public bool Immune_Fire { get; set; }
+    public bool Immune_Explosive { get; set; }
+    public bool Immune_Electricity { get; set; }
+    public bool Immune_Melee { get; set; }
+    public bool Immune_Sonic { get; set; }
+    public bool Immune_Bullet { get; set; }
+    public bool Immune_Toxic { get; set; }
+    public bool Immune_Dissolve { get; set; }
+    public bool GodMode { get; set; }
+    public bool ForceDamageFromBosses { get; set; }
+    public bool AllowIgnition { get; set; } = true;
+
     // ═══ Blood / Effects — creature_base init.lua:174-182 ═══
     public bool Bleeds { get; set; } = true;
     public bool HasBloodParticle { get; set; } = true;
