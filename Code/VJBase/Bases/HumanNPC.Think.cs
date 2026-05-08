@@ -272,6 +272,74 @@ public partial class HumanNPC
         NextChaseTime = curTime + (Enemy.Distance > 2000 ? 1f : 0.1f);
     }
 
+    // ═══ CanFireWeapon — human_base/init.lua:3476-3510 ═══
+    /// <summary>
+    /// Returns whether this NPC can fire its weapon right now.
+    /// checkDistance: also check range/distance constraints.
+    /// checkDistanceOnly: only check distance, skip attack-busy/activity checks.
+    /// </summary>
+    public override bool CanFireWeapon(bool checkDistance, bool checkDistanceOnly)
+    {
+        // lua:3477 — if self:OnWeaponCanFire() == false then return false end
+        if (OnWeaponCanFire() == false) return false;
+
+        // lua:3478 — hasDist = false
+        bool hasDist = false;
+        // lua:3479 — hasChecks = false
+        bool hasChecks = false;
+        // lua:3480 — selfData = funcGetTable(self) → this
+        // lua:3481 — curWep = selfData.WeaponEntity
+        var curWep = WeaponEntity;
+
+        // lua:3483 — if selfData.PauseAttacks or !IsValid(curWep) or self:GetWeaponState() != VJ.WEP_STATE_READY then return false end
+        if (PauseAttacks || !curWep.IsValid() || GetWeaponState() != VJWepState.Ready) return false;
+
+        // lua:3484 — if selfData.VJ_IsBeingControlled then
+        if (VJ_IsBeingControlled)
+        {
+            // lua:3485 — checkDistance = false
+            checkDistance = false;
+            // lua:3486-3488 — if checkDistanceOnly then return true end
+            if (checkDistanceOnly) return true;
+        }
+        // lua:3489 — else
+        else
+        {
+            // lua:3490 — enemyDist = selfData.EnemyData.Distance
+            float enemyDist = Enemy.Distance;
+            // lua:3491 — if checkDistance && CurTime() > selfData.NextWeaponAttackT then
+            if (checkDistance && Time.Now > NextWeaponAttackT)
+            {
+                // lua:3492 — if curWep.IsMeleeWeapon then
+                // SKIP: lua:3492 — curWep.IsMeleeWeapon — Phase 3 weapon interface (always false → takes elseif)
+                // lua:3493-3496 — Melee: if VJ.IsCurrentAnim(self, WeaponAttackAnim) or enemyDist < Weapon_MaxDistance then hasDist = true end
+                // SKIP: lua:3494 — VJ.IsCurrentAnim(self, WeaponAttackAnim) — Phase 3 animation (VJUtility stub false)
+                // lua:3497-3499 — elseif (ranged): enemyDist < Weapon_MaxDistance && enemyDist > Weapon_MinDistance then hasDist = true
+                if (enemyDist < Weapon_MaxDistance && enemyDist > Weapon_MinDistance)
+                {
+                    hasDist = true;
+                }
+                // Phase 3: restore melee branch above the elseif
+                //   if (curWep.IsMeleeWeapon) {
+                //     if (VJUtility.IsCurrentAnim(GameObject, WeaponAttackAnim) || enemyDist < Weapon_MaxDistance) hasDist = true; }
+                //   else if (enemyDist < Weapon_MaxDistance && enemyDist > Weapon_MinDistance) { hasDist = true; }
+            }
+            // lua:3501-3503 — if checkDistanceOnly then return hasDist end
+            if (checkDistanceOnly) return hasDist;
+        }
+
+        // lua:3505 — if !selfData.AttackType && !self:IsBusy("Activities") then
+        if (AttackType == VJAttackType.None && !IsBusy("Activities"))
+        {
+            // lua:3506 — hasChecks = true
+            hasChecks = true;
+            // lua:3507 — if !checkDistance then return true end
+            if (!checkDistance) return true;
+        }
+        // lua:3509 — return hasDist && hasChecks
+        return hasDist && hasChecks;
+    }
+
     // ═══ SelectSchedule — human_base/init.lua:3520-3838 ═══
     public override void SelectSchedule()
     {

@@ -93,6 +93,7 @@ public partial class HumanNPC : CreatureNPC
     public (float a, float b) Weapon_OcclusionDelayTime { get; set; } = (3f, 5f);
     public float Weapon_OcclusionDelayMinDist { get; set; } = 100f;
     public float Weapon_MaxDistance { get; set; } = 3000f;
+    public float Weapon_MinDistance { get; set; } = 10f;
     public float Weapon_RetreatDistance { get; set; } = 150f;
     public float? Weapon_AimTurnDiff { get; set; } // null = disabled (Lua: false)
     public float Weapon_AimTurnDiff_Def { get; set; } = 1f;

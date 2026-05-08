@@ -269,7 +269,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
 
     // ═══ Phase 3 stubs — called by SelectSchedule ═══
     /// <summary>CanFireWeapon — human init.lua:3476. Returns false (conservative) until Phase 3.</summary>
-    public virtual bool CanFireWeapon(bool checkState, bool checkLOS) => false;
+    public virtual bool CanFireWeapon(bool checkDistance, bool checkDistanceOnly) => false;
 
     /// <summary>DoCoverTrace — human init.lua:1294. Returns true = "behind cover" (conservative default).</summary>
     public virtual bool DoCoverTrace(Vector3 start, Vector3 end, bool checkForEntity = false, object options = null)
