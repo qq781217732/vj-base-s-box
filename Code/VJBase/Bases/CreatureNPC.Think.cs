@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Sandbox;
 
 namespace VJBase;
@@ -244,11 +245,12 @@ public partial class CreatureNPC
             {
                 // lua:2463: ent == self or ent:GetClass() == myClass → skip self, skip same NPC type
                 if (ent == GameObject) continue;
-                // SKIP: GetClass() comparison — Source-specific, Phase 3 replace with component type check
+                var entBase1 = ent.Components.Get<BaseNPC>();
+                if (entBase1 != null && entBase1.VJ_NPC_Class.Any(c => VJ_NPC_Class.Contains(c))) continue;
                 // SKIP: lua:2463 — ent.IsVJBaseBullseye && ent.VJ_IsBeingControlled — Phase 3 bullseye system
                 // SKIP: lua:2464 — ent:IsPlayer() with VJ_IsControllingNPC / Alive / VJ_CVAR_IGNOREPLAYERS — Phase 3 player system
                 // lua:2465 — disposition check
-                bool isLiving = ent.Components.Get<BaseNPC>()?.IsVJBaseSNPC ?? false;
+                bool isLiving = entBase1?.IsVJBaseSNPC ?? false;
                 // SKIP: lua:2465 — ent.VJ_ID_Attackable / ent.VJ_ID_Destructible — Phase 3 entity flags
                 var delta = new Vector3(ent.WorldPosition.x - myPos.x, ent.WorldPosition.y - myPos.y, 0);
                 bool inAngle = traceDir.Dot(delta.Normal) > MathF.Cos(MathF.PI / 180f * MeleeAttackDamageAngleRadius);
