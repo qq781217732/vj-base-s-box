@@ -12,6 +12,17 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
 {
     // ═══ Core Data Fields ═══
     public bool IsVJBaseSNPC { get; set; } = true;
+    // ═══ VJ_ID_* Entity Flags ═══
+    public bool VJ_ID_Danger { get; set; }
+    public bool VJ_ID_Grenade { get; set; }
+    public bool VJ_ID_Grabbable { get; set; }
+    public bool VJ_ID_Living { get; set; } = true;
+    public bool VJ_ID_Attackable { get; set; } = true;
+    public bool VJ_ID_Destructible { get; set; }
+    public bool VJ_ID_Boss { get; set; }
+    // ═══ VJ_ST_* State Flags ═══
+    public bool VJ_ST_Grabbed { get; set; }
+    public bool VJ_ST_Eating { get; set; }
     public float NPCClass { get; set; }
     public float MaxYawSpeed { get; set; }
     public bool VJ_DEBUG { get; set; }
@@ -481,6 +492,26 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
 
     public virtual bool IsSonicDamage(DamageInfo dmg) =>
         dmg.Tags.Has(VJDamageTags.Sonic);
+
+    /// <summary>Check entity flags across BaseNPC + VJEntityFlags components.</summary>
+    public static bool HasEntityFlag(GameObject ent, string flag)
+    {
+        var npc = ent?.Components.Get<BaseNPC>();
+        var ext = ent?.Components.Get<VJEntityFlags>();
+        return flag switch
+        {
+            "VJ_ID_Danger" => (npc?.VJ_ID_Danger ?? false) || (ext?.VJ_ID_Danger ?? false),
+            "VJ_ID_Grenade" => (npc?.VJ_ID_Grenade ?? false) || (ext?.VJ_ID_Grenade ?? false),
+            "VJ_ID_Grabbable" => (npc?.VJ_ID_Grabbable ?? false) || (ext?.VJ_ID_Grabbable ?? false),
+            "VJ_ID_Living" => (npc?.VJ_ID_Living ?? false) || (ext?.VJ_ID_Living ?? false),
+            "VJ_ID_Attackable" => (npc?.VJ_ID_Attackable ?? false) || (ext?.VJ_ID_Attackable ?? false),
+            "VJ_ID_Destructible" => (npc?.VJ_ID_Destructible ?? false) || (ext?.VJ_ID_Destructible ?? false),
+            "VJ_ID_Boss" => (npc?.VJ_ID_Boss ?? false) || (ext?.VJ_ID_Boss ?? false),
+            "VJ_ST_Grabbed" => (npc?.VJ_ST_Grabbed ?? false) || (ext?.VJ_ST_Grabbed ?? false),
+            "VJ_ST_Eating" => (npc?.VJ_ST_Eating ?? false) || (ext?.VJ_ST_Eating ?? false),
+            _ => false,
+        };
+    }
 
     /// <summary>ProcessAttackTimers — called from Think to check and fire delayed attack callbacks.</summary>
     public virtual void ProcessAttackTimers(float curTime)

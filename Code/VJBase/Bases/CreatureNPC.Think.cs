@@ -249,18 +249,19 @@ public partial class CreatureNPC
                 if (entBase1 != null && entBase1.VJ_NPC_Class.Any(c => VJ_NPC_Class.Contains(c))) continue;
                 // SKIP: lua:2463 — ent.IsVJBaseBullseye && ent.VJ_IsBeingControlled — Phase 3 bullseye system
                 // SKIP: lua:2464 — ent:IsPlayer() with VJ_IsControllingNPC / Alive / VJ_CVAR_IGNOREPLAYERS — Phase 3 player system
-                // lua:2465 — disposition check
+                // lua:2465 — disposition check + attackable/destructible flags
                 bool isLiving = entBase1?.IsVJBaseSNPC ?? false;
-                // SKIP: lua:2465 — ent.VJ_ID_Attackable / ent.VJ_ID_Destructible — Phase 3 entity flags
+                bool isAttackable = BaseNPC.HasEntityFlag(ent, "VJ_ID_Attackable");
+                bool isDestructible = BaseNPC.HasEntityFlag(ent, "VJ_ID_Destructible");
                 var delta = new Vector3(ent.WorldPosition.x - myPos.x, ent.WorldPosition.y - myPos.y, 0);
                 bool inAngle = traceDir.Dot(delta.Normal) > MathF.Cos(MathF.PI / 180f * MeleeAttackDamageAngleRadius);
-                if (isLiving && Disposition(ent) != (int)VJBase.Disposition.Like && inAngle)
+                if ((isLiving || isAttackable || isDestructible) && Disposition(ent) != (int)VJBase.Disposition.Like && inAngle)
                 {
                     // lua:2466: prop attack living distance check
                     // SKIP: lua:2466 — VJ.GetNearestDistance(self, ent, true) > MeleeAttackDistance — Phase 3 utility
                     var applyDmg = true;
-                    // SKIP: lua:2468 — ent.VJ_ID_Attackable prop detection — Phase 3 entity flags
-                    bool isProp = false;
+                    // lua:2468 — VJ_ID_Attackable → isProp
+                    bool isProp = isAttackable;
                     // lua:2469: OnMeleeAttackExecute("PreDamage")
                     if (OnMeleeAttackExecute("PreDamage", ent, isProp)) continue;
                     var dmgAmount = ScaleByDifficulty(MeleeAttackDamage);
@@ -414,10 +415,11 @@ public partial class CreatureNPC
                 if (entBase2 != null && entBase2.VJ_NPC_Class.Any(c => VJ_NPC_Class.Contains(c))) continue;
                 // SKIP: lua:2679 — ent.IsVJBaseBullseye && ent.VJ_IsBeingControlled — Phase 3 bullseye
                 // SKIP: lua:2680 — ent:IsPlayer() / VJ_IsControllingNPC / Alive / VJ_CVAR_IGNOREPLAYERS — Phase 3 player
-                // lua:2681 — disposition check
+                // lua:2681 — disposition check + attackable/destructible flags
                 bool isLiving = entBase2?.IsVJBaseSNPC ?? false;
-                // SKIP: lua:2681 — ent.VJ_ID_Attackable / ent.VJ_ID_Destructible — Phase 3 entity flags
-                if (isLiving && Disposition(ent) != (int)VJBase.Disposition.Like)
+                bool isAttackable = BaseNPC.HasEntityFlag(ent, "VJ_ID_Attackable");
+                bool isDestructible = BaseNPC.HasEntityFlag(ent, "VJ_ID_Destructible");
+                if ((isLiving || isAttackable || isDestructible) && Disposition(ent) != (int)VJBase.Disposition.Like)
                 {
                     if (OnLeapAttackExecute("PreDamage", ent)) continue;
                     var dmgAmount = ScaleByDifficulty(LeapAttackDamage);

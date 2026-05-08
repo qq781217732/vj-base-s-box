@@ -460,16 +460,12 @@ public partial class HumanNPC
         foreach (var ent in nearby)
         {
             // lua:3361 — if (ent.VJ_ID_Danger or ent.VJ_ID_Grenade) && self:Visible(ent) then
-            // SKIP: lua:3361 — ent.VJ_ID_Danger / ent.VJ_ID_Grenade — Phase 3 entity flags system
-            //        No component-based equivalent yet; stub: always false
-            bool isDanger = false; // Phase 3: ent.Components.Get<???>()?.VJ_ID_Danger
-            bool isGrenade = false; // Phase 3: ent.Components.Get<???>()?.VJ_ID_Grenade
+            bool isDanger = BaseNPC.HasEntityFlag(ent, "VJ_ID_Danger");
+            bool isGrenade = BaseNPC.HasEntityFlag(ent, "VJ_ID_Grenade");
             if ((isDanger || isGrenade) && Visible(ent))
             {
-                // lua:3362 — owner = ent:GetOwner()
-                // SKIP: lua:3362 — ent:GetOwner() — Phase 3 entity ownership system
-                // lua:3363 — if !(IsValid(owner) && owner.IsVJBaseSNPC && ((self:GetClass() == owner:GetClass()) or (self:Disposition(owner) == D_LI))) then
-                // SKIP: lua:3363 — owner.IsVJBaseSNPC + GetClass() + Disposition — Phase 3 ownership + entity type
+                // lua:3362-3363 — owner check (friendly fire guard)
+                // SKIP: lua:3362 — ent:GetOwner() — Phase 3 spawn ownership
                 {
                     // lua:3364 — if ent.VJ_ID_Danger then regDangerDetected = ent continue end
                     if (isDanger)
@@ -477,24 +473,31 @@ public partial class HumanNPC
                         regDangerDetected = ent;
                         continue;
                     }
-                    // lua:3365 — local funcCustom = self.OnDangerDetected; if funcCustom && funcCustom(self, VJ.DANGER_TYPE_GRENADE, ent) then continue end
+                    // lua:3365 — OnDangerDetected custom callback
                     if (OnDangerDetected(VJDangerType.Grenade, ent)) continue;
-                    // lua:3366 — curTime = CurTime()
+                    // lua:3366-3369 — curTime + sound + timers
                     float curTime = Time.Now;
-                    // lua:3367 — if !self:PlaySoundSystem("GrenadeSight") then self:PlaySoundSystem("DangerSight") end
                     if (PlaySoundSystem("GrenadeSight") == 0f)
                         PlaySoundSystem("DangerSight");
-                    // lua:3368 — selfData.NextDangerDetectionT = curTime + 4
                     NextDangerDetectionT = curTime + 4;
-                    // lua:3369 — selfData.TakingCoverT = curTime + 4
                     TakingCoverT = curTime + 4;
-                    // lua:3371-3374 — Grenade redirect attempt
-                    // SKIP: lua:3371 — CanRedirectGrenades && HasGrenadeAttack && ent.VJ_ID_Grabbable && !ent.VJ_ST_Grabbed
-                    //        && ent:GetVelocity():Length() < 400 && VJ.GetNearestDistance(self, ent) < 100 && self:GrenadeAttack(ent, true)
-                    //        → NextGrenadeAttackSoundT = curTime + 3; return
-                    //        Phase 3 entity flags (VJ_ID_Grabbable, VJ_ST_Grabbed) + physics (GetVelocity)
-                    // lua:3376-3379 — SCHEDULE_COVER_ORIGIN("TASK_RUN_PATH", ...)
-                    // SKIP: lua:3376-3379 — SCHEDULE_COVER_ORIGIN with FACE_ENEMY turn — Phase 3 cover system
+                    // lua:3371-3374 — Grenade redirect: grab and throw back
+                    if (CanRedirectGrenades && HasGrenadeAttack
+                        && BaseNPC.HasEntityFlag(ent, "VJ_ID_Grabbable")
+                        && !BaseNPC.HasEntityFlag(ent, "VJ_ST_Grabbed")
+                        && (ent.Components.Get<Rigidbody>()?.Velocity.Length ?? 9999) < 400
+                        && VJUtility.GetNearestDistance(GameObject, ent, false) < 100
+                        && GrenadeAttack(ent, true))
+                    {
+                        NextGrenadeAttackSoundT = curTime + 3;
+                        return;
+                    }
+                    // lua:3376-3379 — take cover from grenade
+                    SCHEDULE_COVER_ORIGIN("TASK_RUN_PATH", schedule =>
+                    {
+                        schedule.CanShootWhenMoving = true;
+                        schedule.TurnData = new TurnData { Type = VJFaceStatus.Enemy };
+                    });
                     return;
                 }
             }
@@ -1432,7 +1435,7 @@ public partial class HumanNPC
         // lua:4162-4168 — if IsDamageType(DMG_DISSOLVE) or prop_combine_ball then dissolve DamageInfo + TakeDamageInfo
         // SKIP: lua:4162-4168 — dissolve damage path — Phase 3 damage system
         // lua:4169 — self:BeginDeath(dmginfo, hitgroup)
-        BeginDeath(dmginfo, hitgroup);
+        BeginDeath(dmgInfo, hitgroup);
 
         // lua:4171 — return 1
         return 1;
