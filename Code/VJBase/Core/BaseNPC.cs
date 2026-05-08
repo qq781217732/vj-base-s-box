@@ -244,6 +244,52 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public bool TurningUseAllAxis { get; set; }
     public bool ConstantlyFaceEnemy { get; set; }
 
+    /// <summary>
+    /// Configure S&Box Components based on VJ movement type.
+    /// Ground→NavMeshAgent, Aerial/Aquatic→AA system, Stationary→off, Physics→Rigidbody.
+    /// </summary>
+    public virtual void DoChangeMovementType(VJMoveType movType)
+    {
+        MovementType = movType;
+        var agent = Components.Get<NavMeshAgent>();
+        var rb = Components.Get<Rigidbody>();
+
+        switch (movType)
+        {
+            case VJMoveType.Ground:
+                if (agent != null)
+                {
+                    agent.Enabled = true;
+                    agent.UpdatePosition = true;
+                    agent.UpdateRotation = true;
+                }
+                if (rb != null) rb.Enabled = false;
+                // lua:2296 — CapabilitiesAdd(CAP_MOVE_JUMP):
+                //   TODO Phase 3 animation: check AnimExists(ACT_JUMP/pj_npc_human_jump/PoseParamMovement)
+                // lua:2298 — CapabilitiesAdd(CAP_MOVE_SHOOT):
+                //   TODO: controlled by Weapon_CanMoveFire in SelectSchedule C2 block
+                break;
+
+            case VJMoveType.Aerial:
+            case VJMoveType.Aquatic:
+                if (agent != null) { agent.Stop(); agent.Enabled = false; }
+                if (rb != null) rb.Enabled = false;
+                // lua:2302 — AddFlags(FL_FLY) → AA system uses direct Position, no gravity needed
+                //   TODO Phase 3: altitude clamping / water avoidance in AA
+                break;
+
+            case VJMoveType.Stationary:
+                if (agent != null) { agent.Stop(); agent.Enabled = false; }
+                //   TODO: Transform.Parent != null → rb.isKinematic = true (follow parent)
+                break;
+
+            case VJMoveType.Physics:
+                if (agent != null) { agent.Stop(); agent.Enabled = false; }
+                if (rb != null) rb.Enabled = true;
+                break;
+        }
+    }
+
     // ═══ Perception Config ═══
     public float SightDistance { get; set; } = 6500;
     public float SightAngle { get; set; } = 156;
@@ -350,8 +396,11 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     /// <summary>PlayIdleSound — core.lua:2836. Phase 3 sound system.</summary>
     public virtual void PlayIdleSound(float? delayA = null, float? delayB = null, bool hasEnemy = false) { }
 
-    /// <summary>GetActiveWeapon — Source engine NPC:GetActiveWeapon. Returns null until Phase 3 weapon system.</summary>
+    /// <summary>GetActiveWeapon — Source engine NPC:GetActiveWeapon. Base returns null. HumanNPC overrides to return WeaponEntity.</summary>
     public virtual GameObject GetActiveWeapon() => null;
+
+    /// <summary>CheckWeaponState — called from Think to sync weapon state. No-op in base.</summary>
+    public virtual void CheckWeaponState() { }
 
     /// <summary>GetBestSoundHint — Source engine NPC:GetBestSoundHint. Returns null until Phase 3 sound system.</summary>
     public virtual object GetBestSoundHint(int soundMask) => null;

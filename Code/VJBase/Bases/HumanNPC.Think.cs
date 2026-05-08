@@ -104,65 +104,6 @@ public partial class HumanNPC
         // SKIP: lua:2269-2279 — hook.Add("Think", self, funcAnimThink) — Phase 3 animation hook system
     }
 
-    // ═══ DoChangeMovementType — human_base/init.lua:2287-2319 ═══
-    /// <summary>
-    /// Configure S&Box Components based on VJ movement type.
-    /// Ground→NavMeshAgent, Aerial/Aquatic→AA system, Stationary→off, Physics→Rigidbody.
-    /// </summary>
-    public virtual void DoChangeMovementType(VJMoveType movType)
-    {
-        // lua:2288-2289
-        MovementType = movType;
-        var agent = Components.Get<NavMeshAgent>();
-        var rb = Components.Get<Rigidbody>();
-
-        switch (movType)
-        {
-            // ---- lua:2291-2298: Ground — enable NavMesh walking ----
-            case VJMoveType.Ground:
-                if (agent != null)
-                {
-                    agent.Enabled = true;
-                    agent.UpdatePosition = true;
-                    agent.UpdateRotation = true;
-                }
-                if (rb != null) rb.Enabled = false;
-                // lua:2295 — CapabilitiesAdd(CAP_MOVE_GROUND) → no S&Box equiv; NavMeshAgent handles it
-                // lua:2296 — CapabilitiesAdd(CAP_MOVE_JUMP):
-                //   TODO Phase 3 animation: check AnimExists(ACT_JUMP / pj_npc_human_jump / PoseParamMovement)
-                //   before enabling jump capability
-                // lua:2298 — CapabilitiesAdd(CAP_MOVE_SHOOT):
-                //   TODO: controlled by Weapon_CanMoveFire flag in SelectSchedule C2 block
-                break;
-
-            // ---- lua:2300-2305: Aerial/Aquatic — AA system takes over ----
-            case VJMoveType.Aerial:
-            case VJMoveType.Aquatic:
-                if (agent != null) { agent.Stop(); agent.Enabled = false; }
-                if (rb != null) rb.Enabled = false;
-                // lua:2301 — SetGroundEntity(NULL) → AA_MoveTo directly sets Position, no ground needed
-                // lua:2302 — AddFlags(FL_FLY) → no gravity: AA system uses direct Position manipulation
-                // lua:2305 — CapabilitiesAdd(CAP_MOVE_FLY):
-                //   TODO Phase 3: flight-specific features (water avoidance in AA, altitude clamping)
-                //   Current AA_MoveTo/AA_IdleWander handle aquatic movement in their own branches
-                break;
-
-            // ---- lua:2307-2312: Stationary — disable all movement ----
-            case VJMoveType.Stationary:
-                if (agent != null) { agent.Stop(); agent.Enabled = false; }
-                // lua:2310-2312 — if parented to another entity, use MOVETYPE_FLY to follow:
-                //   TODO: check Transform.Parent != null → rb.isKinematic = true (follow parent physics)
-                break;
-
-            // ---- lua:2314-2317: Physics — full Rigidbody simulation ----
-            case VJMoveType.Physics:
-                if (agent != null) { agent.Stop(); agent.Enabled = false; }
-                if (rb != null) rb.Enabled = true;
-                // lua:2315 — CapabilitiesRemove(capBitsShared) → no equiv; Rigidbody handles all physics
-                break;
-        }
-    }
-
     // ═══ ProcessAttackTimers override — adds grenade execution ═══
     public override void ProcessAttackTimers(float curTime)
     {
@@ -833,22 +774,31 @@ public partial class HumanNPC
                                 // SKIP: lua:3779 — crouch condition: Weapon_CanCrouchAttack && !inCover && !wepInCover && distance > 500 && AnimExists + random + DoCoverTrace — Phase 3
                                 // SKIP: lua:3786-3792 — AnimExists + VJ.EmitSound + PlayAnim + WeaponAttackAnim + WeaponAttackState + NextWeaponAttackT_Base — Phase 3 animation + sound
                             }
+                            }  // C2c-iii
 
                             // ═══ C2c-iv: Random strafing while shooting (lua:3797-3806) ═══
                             // lua:3797: if Weapon_Strafe && !inCover && !IsGuard && !IsFollowing && !wep.IsMeleeWeapon
                             //          && (!wep.NPC_StandingOnly) && WeaponAttackState == VJ.WEP_ATTACK_STATE_FIRE_STAND
                             //          && curTime > NextWeaponStrafeT && (curTime - eneData.TimeAcquired) > 2
                             //          && eneData.Distance < (Weapon_MaxDistance / 1.25)
-                            // SKIP: lua:3797 — all weapon/cover/state checks — Phase 3 weapon + cover
+                            if (Weapon_Strafe
+                                // SKIP: !inCover — Phase 3 cover system
+                                && !IsGuard
+                                && !IsFollowing
+                                && !IsWeaponMelee(wep)
+                                // SKIP: wep.NPC_StandingOnly, WeaponAttackState == FIRE_STAND, NextWeaponStrafeT, TimeAcquired — Phase 3 weapon state
+                                )
                             {
                                 // SKIP: lua:3798 — OnWeaponStrafe() != false — Phase 3 weapon callback
                                 // SKIP: lua:3799 — moveCheck = PICK(VJ.TraceDirections(self, "Radial", math.random(150, 400), true, false, 12, true)) — Phase 3 utility
                                 // SKIP: lua:3801-3803 — StopMoving / SetLastPosition / SCHEDULE_GOTO_POSITION(random walk/run, lambda with FACE_ENEMY) — Phase 3
                                 // SKIP: lua:3806 — NextWeaponStrafeT = curTime + math.Rand(Weapon_StrafeCooldown.a, Weapon_StrafeCooldown.b)
                             }
-
+                        }
+                        // lua:3808: else — None VJ Base weapons
+                        else
+                        {
                             // ═══ C2c-v: Non-VJ weapons (lua:3808-3816) ═══
-                            // lua:3808: else — None VJ Base weapons
                             // SKIP: lua:3809 — SetTurnTarget("Enemy") — Phase 3 turning
                             // SKIP: lua:3810 — WeaponAttackState = VJ.WEP_ATTACK_STATE_FIRE_STAND
                             // SKIP: lua:3811 — OnWeaponAttack() — Phase 3 weapon callback
