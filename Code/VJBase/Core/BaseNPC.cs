@@ -834,6 +834,9 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
             bool sameClass = ally.VJ_NPC_Class.Any(c => VJ_NPC_Class.Contains(c));
             bool isFriendly = ally.Disposition(GameObject) == (int)VJBase.Disposition.Like;
             if (!sameClass && !isFriendly) continue;
+            // lua:2447 — don't call passive-nature or same-class-as-enemy allies
+            if (ally.Behavior == VJBehavior.PassiveNature) continue;
+            if (ally.VJ_NPC_Class.Any(c => ene.Components.Get<BaseNPC>()?.VJ_NPC_Class.Contains(c) ?? false)) continue;
             if (ally.GetEnemy().IsValid()) continue; // already has enemy
 
             float distToCaller = myPos.Distance(ent.WorldPosition);
@@ -925,7 +928,8 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
             entBase.NextWanderTime = curTime + 8;
             it++;
 
-            // Move ally: unarmed humans take cover, others goto caller position
+            // lua:2569-2579 — formation (Random/Diamond) + move command
+            entBase.SetLastPosition(myPos);
             var human = ent.Components.Get<HumanNPC>();
             if (human != null && !human.WeaponEntity.IsValid())
             {
