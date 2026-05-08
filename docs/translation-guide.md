@@ -501,6 +501,10 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | 45 | **DoChangeMovementType 重构** — Source MoveType→NavMeshAgent/Rigidbody, 提升至 BaseNPC | ✅ 2026-05-09 |
 | 46 | **武器系统 Phase 1** — IVJBaseWeapon 接口 + VJBaseWeapon Component + GetActiveWeapon/DoChangeWeapon/SetWeaponState/CanFireWeapon/PlayReloadAnimation/SelectSchedule C2 填坑, ~18 SKIP 消除 | ✅ 2026-05-09 |
 | 47 | **死亡序列 DMG_REMOVENORAGDOLL** — SavedDmgInfo 真实字段 + Tags.Has(Dissolve) + NavType!=Climb (CreatureNPC+HumanNPC) | ✅ 2026-05-09 |
+| 48 | **对照审查: DMG_REMOVENORAGDOLL/DMG_DISSOLVE 拆分** — 合并为一个 Tag 阻止了 dissolve 伤害的合法尸体创建 | ✅ 2026-05-09 |
+| 49 | **对照审查: VJ_ID_Boss 窄化** — `Components.Get<TankNPC>()`→`HasEntityFlag` 通用检测 | ✅ 2026-05-09 |
+| 50 | **对照审查: Allies_CallHelp 4处遗漏** — IsGuard+Visible守卫, Disposition守卫, 距离判断修正(ally→caller改为ally→ene), GOTO偏移 | ✅ 2026-05-09 |
+| 51 | **对照审查: Block O Health 守卫** — 无条件调 BeginDeath→加 `CurrentHealth<=0 && !Dead` 守卫 | ✅ 2026-05-09 |
 
 ### 7.4 SKIP 总表（Phase 3+ 填坑清单）
 
