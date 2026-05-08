@@ -577,6 +577,7 @@ public partial class CreatureNPC
         // lua:3290 — HasDeathAnimation && !DMG_REMOVENORAGDOLL && !DMG_DISSOLVE && NavType!=CLIMB
         if (HasDeathAnimation
             && !dmginfo.Tags.Has(VJDamageTags.Dissolve)
+            && !dmginfo.Tags.Has(VJDamageTags.RemoveNoRagdoll)
             && GetNavType() != (int)NavType.Climb
             && Game.Random.Next(1, Math.Max(1, DeathAnimationChance) + 1) == 1)
         {
@@ -622,9 +623,9 @@ public partial class CreatureNPC
             CreateDeathLoot(dmginfo, hitgroup);
         }
 
-        // lua:3321 — if not DMG_REMOVENORAGDOLL && not DMG_DISSOLVE then CreateDeathCorpse
-        // S&Box: DMG_REMOVENORAGDOLL ≈ dissolve/removal damage; check via Tags
-        if (!dmginfo.Tags.Has(VJDamageTags.Dissolve))
+        // lua:3321 — if not DMG_REMOVENORAGDOLL then CreateDeathCorpse
+        // Note: Lua only checks DMG_REMOVENORAGDOLL (not DMG_DISSOLVE) for corpse creation
+        if (!dmginfo.Tags.Has(VJDamageTags.RemoveNoRagdoll))
             CreateDeathCorpse(dmginfo, hitgroup);
 
         // lua:3322 — self:Remove()

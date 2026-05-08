@@ -122,17 +122,14 @@ public partial class HumanNPC
     {
         WeaponState = state;
 
+        // lua:2526-2530 — if time >= 0 then timer.Create else timer.Remove
         if (time >= 0)
         {
             NextWeaponStateChangeT = Time.Now + time;
         }
-        else if (state != VJWepState.Ready)
-        {
-            NextWeaponStateChangeT = Time.Now + 1.0f;
-        }
         else
         {
-            NextWeaponStateChangeT = 0;
+            NextWeaponStateChangeT = 0; // equivalent to timer.Remove — state persists until next explicit SetWeaponState
         }
     }
 
@@ -595,7 +592,7 @@ public partial class HumanNPC
         else
         {
             // lua:3581-3582: Get active weapon + enemy data
-            var wep = GetActiveWeapon(); // SKIP: returns null — Phase 3 weapon system
+            var wep = GetActiveWeapon(); // returns WeaponEntity (null until DoChangeWeapon initializes)
             var eneData = Enemy;
 
             // ═══ C1: No valid weapon (lua:3585-3603) ═══
@@ -650,7 +647,7 @@ public partial class HumanNPC
                     && curTime > NextChaseTime
                     && AttackType == VJAttackType.None
                     && !IsFollowing
-                    // SKIP: ene.Behavior != VJ_BEHAVIOR_PASSIVE — Phase 3 (Behavior enum exists, check works)
+                    && eneData.Target?.Components.Get<BaseNPC>()?.Behavior != VJBehavior.Passive
                     // SKIP: !DoCoverTrace(myPosCentered, enePos_Eye) — Phase 3 cover system
                     )
                 {
@@ -1584,6 +1581,7 @@ public partial class HumanNPC
         // lua:4277 — HasDeathAnimation && !DMG_REMOVENORAGDOLL && !DMG_DISSOLVE && NavType!=CLIMB
         if (HasDeathAnimation
             && !dmginfo.Tags.Has(VJDamageTags.Dissolve)
+            && !dmginfo.Tags.Has(VJDamageTags.RemoveNoRagdoll)
             && GetNavType() != (int)NavType.Climb
             && Game.Random.Next(1, Math.Max(1, DeathAnimationChance) + 1) == 1)
         {
@@ -1631,9 +1629,9 @@ public partial class HumanNPC
             CreateDeathLoot(dmginfo, hitgroup);
         }
 
-        // lua:4308 — if not DMG_REMOVENORAGDOLL && not DMG_DISSOLVE then DeathWeaponDrop + CreateDeathCorpse
-        // S&Box: DMG_REMOVENORAGDOLL ≈ dissolve damage; check via Tags
-        if (!dmginfo.Tags.Has(VJDamageTags.Dissolve))
+        // lua:4308 — if not DMG_REMOVENORAGDOLL then DeathWeaponDrop + CreateDeathCorpse
+        // Note: Lua only checks DMG_REMOVENORAGDOLL (not DMG_DISSOLVE) for corpse creation
+        if (!dmginfo.Tags.Has(VJDamageTags.RemoveNoRagdoll))
         {
             DeathWeaponDrop(dmginfo, hitgroup);
             CreateDeathCorpse(dmginfo, hitgroup);

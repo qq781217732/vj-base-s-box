@@ -28,7 +28,8 @@ public static class VJDamageTags
     public const string ForceFlinch  = "vj.force_flinch";
     public const string CrossbowBolt = "vj.crossbow_bolt";
     // Immunity sub-types (for Is*Damage helpers)
-    public const string Dissolve      = "vj.dissolve";
+    public const string Dissolve         = "vj.dissolve";
+    public const string RemoveNoRagdoll  = "vj.remove_no_ragdoll"; // DMG_REMOVENORAGDOLL
     public const string Sonic         = "vj.sonic";
     public const string SlowBurn      = "vj.slow_burn";
     public const string Acid          = "vj.acid";
