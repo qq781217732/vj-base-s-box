@@ -340,6 +340,99 @@ public partial class HumanNPC
         return hasDist && hasChecks;
     }
 
+    // ═══ CheckForDangers — human_base/init.lua:3356-3403 ═══
+    /// <summary>
+    /// Scans for nearby danger entities (grenades, bombs, etc.) and reacts:
+    /// redirect/throw grenades, or take cover.
+    /// </summary>
+    public virtual void CheckForDangers()
+    {
+        // lua:3357 — selfData = funcGetTable(self) → this
+        // lua:3358 — if !selfData.CanDetectDangers or selfData.AttackType == VJ.ATTACK_TYPE_GRENADE or selfData.NextDangerDetectionT > CurTime() then return end
+        if (!CanDetectDangers || AttackType == VJAttackType.Grenade || NextDangerDetectionT > Time.Now) return;
+
+        // lua:3359 — regDangerDetected = false (non-grenade danger found; grenades take priority)
+        GameObject regDangerDetected = null;
+
+        // lua:3360 — for _, ent in ipairs(ents.FindInSphere(self:GetPos(), selfData.DangerDetectionDistance)) do
+        var nearby = Game.ActiveScene.FindInPhysics(new Sphere(WorldPosition, DangerDetectionDistance));
+        foreach (var ent in nearby)
+        {
+            // lua:3361 — if (ent.VJ_ID_Danger or ent.VJ_ID_Grenade) && self:Visible(ent) then
+            // SKIP: lua:3361 — ent.VJ_ID_Danger / ent.VJ_ID_Grenade — Phase 3 entity flags system
+            //        No component-based equivalent yet; stub: always false
+            bool isDanger = false; // Phase 3: ent.Components.Get<???>()?.VJ_ID_Danger
+            bool isGrenade = false; // Phase 3: ent.Components.Get<???>()?.VJ_ID_Grenade
+            if ((isDanger || isGrenade) && Visible(ent))
+            {
+                // lua:3362 — owner = ent:GetOwner()
+                // SKIP: lua:3362 — ent:GetOwner() — Phase 3 entity ownership system
+                // lua:3363 — if !(IsValid(owner) && owner.IsVJBaseSNPC && ((self:GetClass() == owner:GetClass()) or (self:Disposition(owner) == D_LI))) then
+                // SKIP: lua:3363 — owner.IsVJBaseSNPC + GetClass() + Disposition — Phase 3 ownership + entity type
+                {
+                    // lua:3364 — if ent.VJ_ID_Danger then regDangerDetected = ent continue end
+                    if (isDanger)
+                    {
+                        regDangerDetected = ent;
+                        continue;
+                    }
+                    // lua:3365 — local funcCustom = self.OnDangerDetected; if funcCustom && funcCustom(self, VJ.DANGER_TYPE_GRENADE, ent) then continue end
+                    if (OnDangerDetected(2, ent)) continue; // 2 = DANGER_TYPE_GRENADE
+                    // lua:3366 — curTime = CurTime()
+                    float curTime = Time.Now;
+                    // lua:3367 — if !self:PlaySoundSystem("GrenadeSight") then self:PlaySoundSystem("DangerSight") end
+                    if (!PlaySoundSystem("GrenadeSight"))
+                        PlaySoundSystem("DangerSight");
+                    // lua:3368 — selfData.NextDangerDetectionT = curTime + 4
+                    NextDangerDetectionT = curTime + 4;
+                    // lua:3369 — selfData.TakingCoverT = curTime + 4
+                    TakingCoverT = curTime + 4;
+                    // lua:3371-3374 — Grenade redirect attempt
+                    // SKIP: lua:3371 — CanRedirectGrenades && HasGrenadeAttack && ent.VJ_ID_Grabbable && !ent.VJ_ST_Grabbed
+                    //        && ent:GetVelocity():Length() < 400 && VJ.GetNearestDistance(self, ent) < 100 && self:GrenadeAttack(ent, true)
+                    //        → NextGrenadeAttackSoundT = curTime + 3; return
+                    //        Phase 3 entity flags (VJ_ID_Grabbable, VJ_ST_Grabbed) + physics (GetVelocity)
+                    // lua:3376-3379 — SCHEDULE_COVER_ORIGIN("TASK_RUN_PATH", ...)
+                    // SKIP: lua:3376-3379 — SCHEDULE_COVER_ORIGIN with FACE_ENEMY turn — Phase 3 cover system
+                    return;
+                }
+            }
+        }
+
+        // lua:3384 — if regDangerDetected or funcHasCondition(self, COND_HEAR_DANGER) or funcHasCondition(self, COND_HEAR_PHYSICS_DANGER) or funcHasCondition(self, COND_HEAR_MOVE_AWAY) then
+        if (regDangerDetected != null
+            || HasCondition(Condition.HearDanger)
+            || HasCondition(Condition.HearPhysicsDanger)
+            || HasCondition(Condition.HearMoveAway))
+        {
+            // lua:3385-3392 — OnDangerDetected custom callback
+            if (regDangerDetected != null)
+            {
+                // lua:3388 — if funcCustom(self, VJ.DANGER_TYPE_ENTITY, regDangerDetected) then return end
+                if (OnDangerDetected(1, regDangerDetected)) return; // 1 = DANGER_TYPE_ENTITY
+            }
+            else
+            {
+                // lua:3390 — if funcCustom(self, VJ.DANGER_TYPE_HINT, nil) then return end
+                if (OnDangerDetected(3, null)) return; // 3 = DANGER_TYPE_HINT
+            }
+            // lua:3393 — self:PlaySoundSystem("DangerSight")
+            PlaySoundSystem("DangerSight");
+            // lua:3394 — curTime = CurTime()
+            float curTime = Time.Now;
+            // lua:3395 — selfData.NextDangerDetectionT = curTime + 4
+            NextDangerDetectionT = curTime + 4;
+            // lua:3396 — selfData.TakingCoverT = curTime + 4
+            TakingCoverT = curTime + 4;
+            // lua:3397-3400 — self:SCHEDULE_COVER_ORIGIN("TASK_RUN_PATH", function(x) ... end)
+            SCHEDULE_COVER_ORIGIN("TASK_RUN_PATH", schedule =>
+            {
+                schedule.CanShootWhenMoving = true;
+                schedule.TurnData = new TurnData { Type = VJFaceStatus.Enemy };
+            });
+        }
+    }
+
     // ═══ SelectSchedule — human_base/init.lua:3520-3838 ═══
     public override void SelectSchedule()
     {

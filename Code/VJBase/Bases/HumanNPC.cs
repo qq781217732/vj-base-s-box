@@ -159,6 +159,10 @@ public partial class HumanNPC : CreatureNPC
     public object EatingData { get; set; }
     public bool CanChatMessage { get; set; }
 
+    public bool CanDetectDangers { get; set; } = true;
+    public float DangerDetectionDistance { get; set; } = 400f;
+    public bool CanRedirectGrenades { get; set; } = true;
+
     // ═══ Idle / Wander Config ═══
     public bool IdleAlwaysWander { get; set; }
 
