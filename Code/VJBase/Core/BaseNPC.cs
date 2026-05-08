@@ -148,6 +148,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public float HealthRegenDelayT { get; set; }
     public float NextCombineBallDmgT { get; set; }
     public bool Dead { get; set; }
+    public GameObject OpeningDoor { get; set; } // m_hOpeningDoor — set when interacting with a door
     public bool GibbedOnDeath { get; set; }
     public bool DeathAnimationCodeRan { get; set; }
 

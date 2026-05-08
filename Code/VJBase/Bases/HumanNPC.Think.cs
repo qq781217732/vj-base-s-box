@@ -1203,13 +1203,18 @@ public partial class HumanNPC
             return 0;
 
         // ---- Block B: Inflictor + ragdoll guard (lua:3925-3929) ----
-        // lua:3925 — dmgInflictor = dmginfo:GetInflictor()
-        // SKIP: lua:3925 — dmginfo:GetInflictor() — Source engine CTakeDamageInfo API
-        // lua:3926 — if !IsValid(dmgInflictor) then dmgInflictor = false end
-        // SKIP: lua:3926 — IsValid(dmgInflictor) guard — Phase 3 S&Box DamageInfo
-        // lua:3929 — Attempt to avoid taking damage when walking on ragdolls
-        // SKIP: lua:3929 — dmgInflictor && dmgInflictor:GetClass() == "prop_ragdoll"
-        //        && dmgInflictor:GetVelocity():Length() <= 100 → return 0 — Phase 3 entity type + physics
+        // lua:3925-3926 — dmgInflictor = dmginfo:GetInflictor() → S&Box: Weapon
+        var dmgInflictor = dmgInfo.Weapon;
+        // lua:3929 — ragdoll damage avoidance (walking over corpses)
+        if (dmgInflictor.IsValid())
+        {
+            var rb = dmgInflictor.Components.Get<Rigidbody>();
+            // SKIP: lua:3929 — GetClass()=="prop_ragdoll" — Phase 3 entity type
+            // Fallback: any non-NPC physics object with low velocity blocks damage
+            if (rb != null && rb.Velocity.Length <= 100
+                && dmgInflictor.Components.Get<BaseNPC>() == null)
+                return 0;
+        }
 
         // ---- Block C: Init + Guard (lua:3931-3934) ----
         // lua:3931 — selfData = funcGetTable(self) → in C#: this

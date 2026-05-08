@@ -29,8 +29,8 @@ public partial class BaseNPC
         var cur = CurrentSchedule;
         if (cur != null)
         {
-            // SKIP: IsValid(self:GetInternalVariable("m_hOpeningDoor")) — Phase 3 door system
-            if (schedule.Name == cur.Name && GetMoveDelay() > 0)
+            // lua:360 — same schedule + opening door or move delay → skip
+            if (schedule.Name == cur.Name && (OpeningDoor.IsValid() || GetMoveDelay() > 0))
                 return;
 
             if (!Dead)
