@@ -1036,23 +1036,32 @@ public partial class HumanNPC
         float curTime = Time.Now;
 
         // ---- Block 1: Ally enemy inheritance (lua:3847-3861) ----
-        // lua:3847 — if checkAllies then
         if (checkAllies)
         {
             // lua:3848 — getAllies = self:Allies_Check(1000)
-            // SKIP: lua:3848 — Allies_Check(1000) returns allies list — Phase 3 ally system (stub returns void)
-            // lua:3849 — if getAllies then
-            // lua:3850-3859 — for _, ally in ipairs(getAllies) do
-            //   allyEne = funcGetEnemy(ally)
-            //   if IsValid(allyEne) && (curTime - ally.EnemyData.VisibleTime) < selfData.EnemyTimeout
-            //      && allyEne:Alive() && self:GetPos():Distance(allyEne:GetPos()) <= self:GetMaxLookDistance()
-            //      && self:CheckRelationship(allyEne) == D_HT then
-            //     selfData.AllowWeaponOcclusionDelay = false
-            //     self:ForceSetEnemy(allyEne, false)
-            //     eneData.VisibleTime = curTime
-            //     eneData.Reset = false
-            //     return false
-            // SKIP: lua:3847-3861 — full ally-enemy-inheritance block — Phase 3 ally system
+            var getAllies = Allies_Check(1000);
+            // lua:3849-3859 — inherit ally's enemy if visible and hostile
+            if (getAllies != null)
+            {
+                foreach (var ally in getAllies)
+                {
+                    var allyBase = ally.Components.Get<BaseNPC>();
+                    if (allyBase == null) continue;
+                    var allyEne = allyBase.GetEnemy();
+                    if (!allyEne.IsValid()) continue;
+                    if ((curTime - allyBase.Enemy.VisibleTime) >= EnemyTimeout) continue;
+                    var allyEneBase = allyEne.Components.Get<BaseNPC>();
+                    if (allyEneBase != null && allyEneBase.Dead) continue;
+                    if (WorldPosition.Distance(allyEne.WorldPosition) > SightDistance) continue;
+                    if (CheckRelationship(allyEne) != (int)VJBase.Disposition.Hate) continue;
+
+                    AllowWeaponOcclusionDelay = false;
+                    ForceSetEnemy(allyEne, false);
+                    eneData.VisibleTime = curTime;
+                    eneData.Reset = false;
+                    return;
+                }
+            }
         }
 
         // ---- Block 2: VisibleCount / reachable enemies guard (lua:3862-3874) ----
@@ -1367,60 +1376,67 @@ public partial class HumanNPC
 
                 // ---- M4: No enemy response — ally alert + damage response (lua:4078-4128) ----
                 // lua:4078 — if !isPassive && !IsValid(funcGetEnemy(self)) then
-                // SKIP: lua:4078 — !isPassive && !GetEnemy() guard — Phase 3
-                // lua:4079 — canMove = true
-                // lua:4082-4102 — DamageAllyResponse:
-                //   if selfData.DamageAllyResponse && curTime > selfData.NextDamageAllyResponseT && !selfData.IsFollowing then
-                //     responseDist = math_max(800, self:OBBMaxs():Distance(self:OBBMins()) * 12)
-                //     allies = self:Allies_Check(responseDist)
-                //     if allies != false then
-                //       if !isFireEnt then self:Allies_Bring("Diamond", responseDist, allies, 4) end
-                //       for _, ally in ipairs(allies) do ally:DoReadyAlert() end
-                //       if !isFireEnt && !self:IsBusy("Activities") then
-                //         self:DoReadyAlert()
-                //         anim = self:PlayAnim(selfData.AnimTbl_DamageAllyResponse, true, false, true)
-                //         if anim != ACT_INVALID then canMove = false; selfData.NextFlinchT = curTime + 1 end
-                //       end
-                //       selfData.NextDamageAllyResponseT = curTime + math.Rand(selfData.DamageAllyResponse_Cooldown.a, selfData.DamageAllyResponse_Cooldown.b)
-                // lua:4104-4128 — DamageResponse:
-                //   dmgResponse = selfData.DamageResponse
-                //   if dmgResponse && curTime > selfData.TakingCoverT && !self:IsBusy("Activities") then
-                //     -- Attempt to find who damaged me
-                //     if dmgAttacker && dmgAttacker.VJ_ID_Living && (dmgResponse == true or dmgResponse == "OnlySearch") then
-                //       sightDist = math_min(math_max(sightDist / 2, sightDist <= 1000 and sightDist or 1000), sightDist)
-                //       if self:GetPos():Distance(dmgAttacker:GetPos()) <= sightDist && self:Visible(dmgAttacker) then
-                //         dispLvl = self:CheckRelationship(dmgAttacker)
-                //         if dispLvl == D_HT or dispLvl == D_NU then
-                //           self:OnSetEnemyFromDamage(dmginfo, hitgroup)
-                //           selfData.NextCallForHelpT = curTime + 1
-                //           self:ForceSetEnemy(dmgAttacker, true)
-                //           self:MaintainAlertBehavior()
-                //           canMove = false
-                //     -- If all else failed then take cover!
-                //     if canMove && (dmgResponse == true or dmgResponse == "OnlyMove") && !selfData.IsFollowing && selfData.MovementType != VJ_MOVETYPE_STATIONARY && dmginfo:GetDamageCustom() != VJ.DMG_BLEED then
-                //       self:SCHEDULE_COVER_ORIGIN("TASK_RUN_PATH", function(x) x.CanShootWhenMoving = true x.TurnData = {Type = VJ.FACE_ENEMY} end)
-                //       selfData.TakingCoverT = curTime + 5
-                // SKIP: lua:4078-4128 — full M4 ally-response + damage-response block — Phase 3 ally system + damage response
+                if (!isPassive && !GetEnemy().IsValid())
+                {
+                    // lua:4082-4102 — DamageAllyResponse: alert nearby allies
+                    if (DamageAllyResponse && curTime > NextDamageAllyResponseT && !IsFollowing)
+                    {
+                        // SKIP: lua:4083 — OBBMaxs/OBBMins distance calc — Phase 3 collision bounds
+                        float responseDist = 800;
+                        var allies = Allies_Check(responseDist);
+                        if (allies != null)
+                        {
+                            // lua:4086 — bring allies in Diamond formation
+                            if (!isFireEnt) Allies_Bring("Diamond", responseDist, allies, 4);
+                            // lua:4089-4090 — alert each ally
+                            foreach (var ally in allies)
+                            {
+                                ally.Components.Get<BaseNPC>()?.DoReadyAlert();
+                            }
+                            // lua:4092-4098 — alert self + play response animation
+                            if (!isFireEnt && !IsBusy("Activities"))
+                            {
+                                DoReadyAlert();
+                                // SKIP: lua:4094 — PlayAnim(AnimTbl_DamageAllyResponse) — Phase 3 animation
+                                // lua:4096 — if anim valid: NextFlinchT = curTime + 1
+                            }
+                            // lua:4100 — cooldown
+                            NextDamageAllyResponseT = curTime + VJUtility.Rand(DamageAllyResponse_Cooldown.a, DamageAllyResponse_Cooldown.b);
+                        }
+                    }
+                    // lua:4104-4128 — DamageResponse: find attacker or take cover
+                    // SKIP: lua:4104-4128 — DamageResponse (VJ_ID_Living/sightDist/Visible/ForceSetEnemy/cover) — Phase 3 player + cover system
+                }
 
                 // ---- M5: Passive NPC run away (lua:4130-4134) ----
                 // lua:4131-4134 — elseif isPassive && curTime > selfData.TakingCoverT then if selfData.DamageResponse && !self:IsBusy() then self:SCHEDULE_COVER_ORIGIN("TASK_RUN_PATH") end end
                 // SKIP: lua:4131-4134 — isPassive run-away via SCHEDULE_COVER_ORIGIN — Phase 3 passive behavior
             }
 
-            // ---- M6: Passive allies signal danger (lua:4138-4151) — OUTSIDE stillAlive block ----
+            // ---- M6: Passive allies signal danger (lua:4138-4151) ----
             // lua:4139 — if isPassive && curTime > selfData.TakingCoverT then
-            // SKIP: lua:4139 — isPassive + TakingCoverT guard — Phase 3
-            // lua:4140-4149 — if selfData.Passive_AlliesRunOnDamage then
-            //   allies = self:Allies_Check(math_max(800, self:OBBMaxs():Distance(self:OBBMins()) * 20))
-            //   if allies != false then
-            //     for _, ally in ipairs(allies) do
-            //       ally.TakingCoverT = curTime + math.Rand(6, 7)
-            //       ally:SCHEDULE_COVER_ORIGIN("TASK_RUN_PATH")
-            //       ally:PlaySoundSystem("Alert")
-            //     end
-            //   end
-            // lua:4150 — selfData.TakingCoverT = curTime + math.Rand(6, 7)
-            // SKIP: lua:4138-4151 — full M6 passive-allies-signal block — Phase 3 ally system
+            if (isPassive && curTime > TakingCoverT)
+            {
+                // lua:4140 — if selfData.Passive_AlliesRunOnDamage then
+                if (Passive_AlliesRunOnDamage)
+                {
+                    // SKIP: lua:4140 — OBBMaxs/OBBMins * 20 distance — Phase 3 collision bounds
+                    var allies = Allies_Check(800);
+                    if (allies != null)
+                    {
+                        foreach (var ally in allies)
+                        {
+                            var allyBase = ally.Components.Get<BaseNPC>();
+                            if (allyBase == null) continue;
+                            allyBase.TakingCoverT = curTime + VJUtility.Rand(6, 7);
+                            allyBase.SCHEDULE_COVER_ORIGIN("TASK_RUN_PATH");
+                            allyBase.PlaySoundSystem("Alert");
+                        }
+                    }
+                }
+                // lua:4150 — selfData.TakingCoverT = curTime + math.Rand(6, 7)
+                TakingCoverT = curTime + VJUtility.Rand(6, 7);
+            }
         }
 
         // ---- Block N: Stop eating (lua:4154-4158) ----
@@ -1463,34 +1479,40 @@ public partial class HumanNPC
         // lua:4183 — if self.IsFollowing then self:ResetFollowBehavior() end
         if (IsFollowing) ResetFollowBehavior();
 
-        // lua:4184 — dmgInflictor = dmginfo:GetInflictor()
-        // SKIP: lua:4184 — dmginfo:GetInflictor() — Source engine CTakeDamageInfo API
-        // lua:4185 — dmgAttacker = dmginfo:GetAttacker()
-        // SKIP: lua:4185 — dmginfo:GetAttacker() — Source engine CTakeDamageInfo API
+        // lua:4184-4185 — dmgInflictor/dmgAttacker
+        // SKIP: lua:4184 — dmginfo:GetInflictor() — use dmginfo.Weapon (S&Box equivalent)
         // lua:4186 — myPos = self:GetPos()
         Vector3 myPos = WorldPosition;
 
         // ---- Ally death response (lua:4188-4238) ----
-        // lua:4188 — if VJ_CVAR_AI_ENABLED then
-        // SKIP: lua:4188 — VJ_CVAR_AI_ENABLED convar check — Phase 3 convar system (assume enabled)
         {
             // lua:4189 — responseDist = math_max(800, self:OBBMaxs():Distance(self:OBBMins()) * 12)
             // SKIP: lua:4189 — OBBMaxs/OBBMins — Phase 3 collision bounds
+            float responseDist = 800;
             // lua:4190 — allies = self:Allies_Check(responseDist)
-            // SKIP: lua:4190 — Allies_Check returns void in C# — Phase 3 ally system
-            // lua:4191 — if allies then
-            // lua:4192 — doBecomeEnemyToPlayer = (BecomeEnemyToPlayer && dmgAttacker:IsPlayer() && !VJ_CVAR_IGNOREPLAYERS) or false
-            // SKIP: lua:4192 — dmgAttacker:IsPlayer() / VJ_CVAR_IGNOREPLAYERS — Phase 3 DamageInfo + convar
-            // lua:4193 — responseType = self.DeathAllyResponse
-            var responseType = DeathAllyResponse;
-            // lua:4194 — movedAllyNum = 0
-            // lua:4195-4237 — for _, ally in ipairs(allies) do
-            // SKIP: lua:4195-4237 — full ally response loop:
-            //        OnAllyKilled(ally) / PlaySoundSystem("AllyDeath") — lua:4196-4197
-            //        Bring ally (Allies_Bring) — lua:4202-4206
-            //        Alert ally (DoReadyAlert + SetTurnTarget) — lua:4209-4215
-            //        BecomeEnemyToPlayer chain — lua:4220-4235
-            //        Phase 3 ally system + relationship memory + chat messages
+            var allies = Allies_Check(responseDist);
+            if (allies != null)
+            {
+                // lua:4192 — doBecomeEnemyToPlayer (player attacker hostility)
+                // SKIP: lua:4192 — IsPlayer()/VJ_CVAR_IGNOREPLAYERS — Phase 3 player + convar
+                var responseType = DeathAllyResponse;
+                foreach (var ally in allies)
+                {
+                    var allyBase = ally.Components.Get<BaseNPC>();
+                    if (allyBase == null) continue;
+                    // lua:4196-4197 — OnAllyKilled callback + PlaySoundSystem("AllyDeath")
+                    allyBase.OnAllyKilled(GameObject);
+                    allyBase.PlaySoundSystem("AllyDeath");
+                    // lua:4202-4206 — bring ally
+                    if (responseType != "OnlyAlert")
+                        Allies_Bring("Diamond", responseDist, new List<GameObject> { ally }, 4);
+                    // lua:4209-4215 — alert ally
+                    allyBase.DoReadyAlert();
+                    allyBase.SetTurnTarget("Enemy");
+                    // lua:4220-4235 — BecomeEnemyToPlayer chain
+                    // SKIP: lua:4220-4235 — BecomeEnemyToPlayer/SetRelationshipMemory/CanChatMessage — Phase 3 player + relationship memory
+                }
+            }
         }
 
         // ---- Blood decal (lua:4241-4250) ----

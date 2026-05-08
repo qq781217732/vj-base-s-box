@@ -34,7 +34,6 @@ public partial class TankNPC : CreatureNPC
     public bool VJ_ID_Boss { get; set; }
     public float TurningSpeed { get; set; }
     public int HullType { get; set; }
-    public bool CanReceiveOrders { get; set; }
     public bool DamageAllyResponse { get; set; }
     public bool CombatDamageResponse { get; set; }
     public bool YieldToAlliedPlayers { get; set; }

@@ -249,13 +249,14 @@ public partial class CreatureNPC
                 if (entBase1 != null && entBase1.VJ_NPC_Class.Any(c => VJ_NPC_Class.Contains(c))) continue;
                 // SKIP: lua:2463 — ent.IsVJBaseBullseye && ent.VJ_IsBeingControlled — Phase 3 bullseye system
                 // SKIP: lua:2464 — ent:IsPlayer() with VJ_IsControllingNPC / Alive / VJ_CVAR_IGNOREPLAYERS — Phase 3 player system
-                // lua:2465 — disposition check + attackable/destructible flags
-                bool isLiving = entBase1?.IsVJBaseSNPC ?? false;
-                bool isAttackable = BaseNPC.HasEntityFlag(ent, "VJ_ID_Attackable");
-                bool isDestructible = BaseNPC.HasEntityFlag(ent, "VJ_ID_Destructible");
+                // lua:2465 — ((VJ_ID_Living && Disp != D_LI) || VJ_ID_Attackable || VJ_ID_Destructible) && angle
+                // Phase 3: isLiving → ent.Components.Get<VJEntityFlags>()?.IsLiving (IsVJBaseSNPC proxy only covers NPCs, not players/props)
+                bool isLiving = false;
+                bool isAttackable = false; // Phase 3: VJEntityFlags.IsAttackable
+                bool isDestructible = false; // Phase 3: VJEntityFlags.IsDestructible
                 var delta = new Vector3(ent.WorldPosition.x - myPos.x, ent.WorldPosition.y - myPos.y, 0);
                 bool inAngle = traceDir.Dot(delta.Normal) > MathF.Cos(MathF.PI / 180f * MeleeAttackDamageAngleRadius);
-                if ((isLiving || isAttackable || isDestructible) && Disposition(ent) != (int)VJBase.Disposition.Like && inAngle)
+                if (((isLiving && Disposition(ent) != (int)VJBase.Disposition.Like) || isAttackable || isDestructible) && inAngle)
                 {
                     // lua:2466: prop attack living distance check
                     // SKIP: lua:2466 — VJ.GetNearestDistance(self, ent, true) > MeleeAttackDistance — Phase 3 utility
@@ -415,11 +416,12 @@ public partial class CreatureNPC
                 if (entBase2 != null && entBase2.VJ_NPC_Class.Any(c => VJ_NPC_Class.Contains(c))) continue;
                 // SKIP: lua:2679 — ent.IsVJBaseBullseye && ent.VJ_IsBeingControlled — Phase 3 bullseye
                 // SKIP: lua:2680 — ent:IsPlayer() / VJ_IsControllingNPC / Alive / VJ_CVAR_IGNOREPLAYERS — Phase 3 player
-                // lua:2681 — disposition check + attackable/destructible flags
-                bool isLiving = entBase2?.IsVJBaseSNPC ?? false;
-                bool isAttackable = BaseNPC.HasEntityFlag(ent, "VJ_ID_Attackable");
-                bool isDestructible = BaseNPC.HasEntityFlag(ent, "VJ_ID_Destructible");
-                if ((isLiving || isAttackable || isDestructible) && Disposition(ent) != (int)VJBase.Disposition.Like)
+                // lua:2681 — (VJ_ID_Living && Disp != D_LI) || VJ_ID_Attackable || VJ_ID_Destructible
+                // Phase 3: isLiving → ent.Components.Get<VJEntityFlags>()?.IsLiving (IsVJBaseSNPC proxy only covers NPCs, not players/props)
+                bool isLiving = false;
+                bool isAttackable = false; // Phase 3: VJEntityFlags.IsAttackable
+                bool isDestructible = false; // Phase 3: VJEntityFlags.IsDestructible
+                if ((isLiving && Disposition(ent) != (int)VJBase.Disposition.Like) || isAttackable || isDestructible)
                 {
                     if (OnLeapAttackExecute("PreDamage", ent)) continue;
                     var dmgAmount = ScaleByDifficulty(LeapAttackDamage);
@@ -488,26 +490,32 @@ public partial class CreatureNPC
         Vector3 myPos = WorldPosition;
 
         // ---- Ally death response (lua:3199-3249) ----
-        // lua:3199 — if VJ_CVAR_AI_ENABLED then
-        // SKIP: lua:3199 — VJ_CVAR_AI_ENABLED convar check — Phase 3 convar system (assume enabled)
+        // lua:3200 — responseDist = math_max(800, self:OBBMaxs():Distance(self:OBBMins()) * 12)
+        // SKIP: lua:3200 — OBBMaxs/OBBMins — Phase 3 collision bounds
+        float responseDist = 800;
+        // lua:3201 — allies = self:Allies_Check(responseDist)
+        var allies = Allies_Check(responseDist);
+        if (allies != null)
         {
-            // lua:3200 — responseDist = math_max(800, self:OBBMaxs():Distance(self:OBBMins()) * 12)
-            // SKIP: lua:3200 — OBBMaxs/OBBMins — Phase 3 collision bounds
-            float responseDist = 800;
-            // lua:3201 — allies = self:Allies_Check(responseDist)
-            // SKIP: lua:3201 — Allies_Check returns void in C# — Phase 3 ally system (returns list)
-            // lua:3202 — if allies then
-            // lua:3203 — doBecomeEnemyToPlayer = (self.BecomeEnemyToPlayer && dmgAttacker:IsPlayer() && !VJ_CVAR_IGNOREPLAYERS) or false
-            // SKIP: lua:3203 — dmgAttacker:IsPlayer() / VJ_CVAR_IGNOREPLAYERS — Phase 3 DamageInfo + convar
-            // lua:3204 — responseType = self.DeathAllyResponse
+            // lua:3203 — doBecomeEnemyToPlayer (player attacker hostility)
+            // SKIP: lua:3203 — IsPlayer() / VJ_CVAR_IGNOREPLAYERS — Phase 3 player detection + convar
             var responseType = DeathAllyResponse;
-            // lua:3205 — movedAllyNum = 0
-            int movedAllyNum = 0;
-            // lua:3206 — for _, ally in ipairs(allies) do
-            // SKIP: lua:3206-3248 — full for-loop over allies — Phase 3 ally system (Allies_Check returns void)
-            //        OnAllyKilled(ally) / PlaySoundSystem("AllyDeath") / Allies_Bring / DoReadyAlert / SetTurnTarget
-            //        BecomeEnemyToPlayer chain: SetRelationshipMemory / OnBecomeEnemyToPlayer / ResetFollowBehavior
-            //        AddEntityRelationship / CanChatMessage / PrintMessage / PlaySoundSystem("BecomeEnemyToPlayer")
+            foreach (var ally in allies)
+            {
+                var allyBase = ally.Components.Get<BaseNPC>();
+                if (allyBase == null) continue;
+                // lua:3210-3212 — OnAllyKilled callback + PlaySoundSystem("AllyDeath")
+                allyBase.OnAllyKilled(GameObject);
+                allyBase.PlaySoundSystem("AllyDeath");
+                // lua:3217-3221 — bring ally to death location
+                if (responseType != "OnlyAlert")
+                    Allies_Bring("Diamond", responseDist, new List<GameObject> { ally }, 4);
+                // lua:3226-3227 — alert ally
+                allyBase.DoReadyAlert();
+                allyBase.SetTurnTarget("Enemy");
+                // lua:3233-3241 — BecomeEnemyToPlayer chain (player attacker hostility)
+                // SKIP: lua:3233-3241 — BecomeEnemyToPlayer/SetRelationshipMemory/ResetFollowBehavior — Phase 3 player + relationship memory
+            }
         }
 
         // ---- Blood decal (lua:3253-3261) ----
@@ -745,3 +753,4 @@ public partial class CreatureNPC
         // In C#, if HasDeathCorpse is false or HasDeathRagdoll is false, we return null above (line 3344 gate).
         // The else branch cleanup is implicitly handled by the GameObject.Destroy lifecycle.
     }
+}

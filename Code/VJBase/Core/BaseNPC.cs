@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Sandbox;
 
 namespace VJBase;
@@ -32,6 +33,8 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public VJState AIState { get; set; } = VJState.None;
     public float NextProcessT { get; set; }
     public bool IsFollowing { get; set; }
+    public bool IsGuard { get; set; }
+    public bool CanReceiveOrders { get; set; } = true;
     public bool PauseAttacks { get; set; }
     public float AnimLockTime { get; set; }
     public float AnimPlaybackRate { get; set; } = 1;
@@ -261,7 +264,6 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public bool YieldToAlliedPlayers { get; set; }
     public bool CanInvestigate { get; set; } = true;
     public bool DisableWandering { get; set; }
-    public bool IsGuard { get; set; }
     public bool HasOnPlayerSight { get; set; }
     public float OnPlayerSightDistance { get; set; } = 1000;
     public int OnPlayerSightDispositionLevel { get; set; }
@@ -813,9 +815,134 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public virtual float GetLastDamageTime() => 0;
     public virtual int GetTotalDamageCount() => 0;
 
-    // ═══ Allies ═══
-    public virtual void Allies_CallHelp(float dist) { }
-    public virtual void Allies_Check(float dist) { }
+    // ═══ Allies — core.lua:2438-2584 ═══
+
+    /// <summary>Allies_CallHelp — alert nearby allies to our enemy. core.lua:2438-2498</summary>
+    public virtual void Allies_CallHelp(float dist = 800)
+    {
+        var ene = GetEnemy();
+        if (!ene.IsValid() || Dead) return;
+        var myPos = WorldPosition;
+        float curTime = Time.Now;
+
+        foreach (var ent in Scene.FindInPhysics(new Sphere(myPos, dist)))
+        {
+            var ally = ent.Components.Get<BaseNPC>();
+            if (ally == null || ent == GameObject || !ally.IsVJBaseSNPC || !ally.CanReceiveOrders || ally.Dead)
+                continue;
+            bool sameClass = ally.VJ_NPC_Class.Any(c => VJ_NPC_Class.Contains(c));
+            bool isFriendly = ally.Disposition(GameObject) == (int)VJBase.Disposition.Like;
+            if (!sameClass && !isFriendly) continue;
+            if (ally.GetEnemy().IsValid()) continue; // already has enemy
+
+            float distToCaller = myPos.Distance(ent.WorldPosition);
+            if (distToCaller <= ally.SightDistance)
+            {
+                // Ally can see far enough — tell them to attack our enemy
+                ally.ForceSetEnemy(ene, false);
+                ally.MaintainAlertBehavior(false);
+                ally.NextWanderTime = curTime + 8;
+            }
+            else
+            {
+                // Ally is too far — move toward caller first
+                ally.SetLastPosition(myPos);
+                ally.SCHEDULE_GOTO_POSITION("TASK_RUN_PATH", s =>
+                {
+                    s.CanShootWhenMoving = true;
+                });
+                ally.NextWanderTime = curTime + 8;
+            }
+        }
+
+        PlaySoundSystem("CallForHelp");
+        NextWanderTime = curTime + 8;
+    }
+
+    /// <summary>Allies_Check — find friendly NPCs within range. core.lua:2507-2527</summary>
+    /// <returns>List of ally GameObjects, or null if none found.</returns>
+    public virtual List<GameObject> Allies_Check(float dist = 800)
+    {
+        var allies = new List<GameObject>();
+        bool isPassive = Behavior == VJBehavior.Passive || Behavior == VJBehavior.PassiveNature;
+
+        foreach (var ent in Scene.FindInPhysics(new Sphere(WorldPosition, dist)))
+        {
+            var entBase = ent.Components.Get<BaseNPC>();
+            if (ent == GameObject || entBase == null || !entBase.IsVJBaseSNPC || !entBase.CanReceiveOrders || entBase.Dead)
+                continue;
+            bool sameClass = entBase.VJ_NPC_Class.Any(c => VJ_NPC_Class.Contains(c));
+            bool isFriendly = entBase.Disposition(GameObject) == (int)VJBase.Disposition.Like
+                           || entBase.Behavior == VJBehavior.PassiveNature;
+            if (!sameClass && !isFriendly) continue;
+
+            if (isPassive)
+            {
+                if (entBase.Behavior == VJBehavior.Passive || entBase.Behavior == VJBehavior.PassiveNature)
+                    allies.Add(ent);
+            }
+            else
+            {
+                allies.Add(ent);
+            }
+        }
+        return allies.Count > 0 ? allies : null;
+    }
+
+    /// <summary>Allies_Bring — move allies into formation around caller. core.lua:2542-2584</summary>
+    public virtual bool Allies_Bring(string formation = "Random", float dist = 800,
+        List<GameObject> allies = null, int limit = 3, bool onlyVis = false)
+    {
+        var myPos = WorldPosition;
+        float curTime = Time.Now;
+        int it = 0;
+
+        var ents = allies;
+        if (ents == null)
+        {
+            ents = new List<GameObject>();
+            foreach (var e in Scene.FindInPhysics(new Sphere(myPos, dist)))
+                ents.Add(e);
+        }
+
+        foreach (var ent in ents)
+        {
+            var entBase = ent.Components.Get<BaseNPC>();
+            if (ent == GameObject || entBase == null || !entBase.IsVJBaseSNPC || !entBase.CanReceiveOrders || entBase.Dead)
+                continue;
+            bool sameClass = entBase.VJ_NPC_Class.Any(c => VJ_NPC_Class.Contains(c));
+            bool isFriendly = entBase.Disposition(GameObject) == (int)VJBase.Disposition.Like;
+            if (!sameClass && !isFriendly) continue;
+            if (entBase.Behavior == VJBehavior.Passive || entBase.Behavior == VJBehavior.PassiveNature) continue;
+            if (entBase.IsFollowing || entBase.IsGuard) continue;
+            if (curTime <= entBase.TakingCoverT) continue;
+            if (onlyVis && !Visible(ent)) continue;
+            if (entBase.GetEnemy().IsValid()) continue;
+            if (myPos.Distance(ent.WorldPosition) >= dist) continue;
+
+            NextWanderTime = curTime + 8;
+            entBase.NextWanderTime = curTime + 8;
+            it++;
+
+            // Move ally: unarmed humans take cover, others goto caller position
+            var human = ent.Components.Get<HumanNPC>();
+            if (human != null && !human.WeaponEntity.IsValid())
+            {
+                human.SCHEDULE_COVER_ORIGIN("TASK_RUN_PATH");
+            }
+            else
+            {
+                entBase.SCHEDULE_GOTO_POSITION("TASK_WALK_PATH", s =>
+                {
+                    s.CanShootWhenMoving = true;
+                    s.TurnData = new TurnData { Type = VJFaceStatus.Enemy };
+                });
+            }
+
+            if (limit != 0 && it >= limit) return true;
+        }
+        return it > 0;
+    }
 
     // ═══ Death / Gib ═══
     public virtual bool IsGibDamage(int dmgType) => false;
@@ -830,7 +957,6 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public virtual void TriggerOutput(string output, GameObject activator) { }
     public virtual void MarkTookDamageFromEnemy(GameObject attacker) { }
     public virtual void SetSaveValue(string key, object value) { }
-    public virtual void Allies_Bring(string formation, float dist, object allies, int count) { }
     public virtual void SetRelationshipMemory(GameObject ent, string key, object value) { }
     public virtual float GetMaxLookDistance() => SightDistance;
     public virtual int CheckRelationship(GameObject ent) => (int)VJBase.Disposition.Neutral;
