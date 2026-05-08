@@ -184,7 +184,6 @@ public partial class HumanNPC : CreatureNPC
     public virtual void ResetEatingBehavior(string reason) { }
 
     // ═══ Death Weapon Drop (human_base init.lua:4484-4513) ═══
-    public virtual void DeathWeaponDrop(DamageInfo dmginfo, int hitgroup) { }
     public virtual void OnDeathWeaponDrop(DamageInfo dmginfo, int hitgroup, GameObject wep) { }
     public virtual void DropWeapon(GameObject wep, object unused, Vector3 velocity) { }
 }

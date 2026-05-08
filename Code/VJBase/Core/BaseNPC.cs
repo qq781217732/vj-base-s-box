@@ -236,6 +236,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public bool AlliedWithPlayerAllies { get; set; }
     public bool YieldToAlliedPlayers { get; set; }
     public bool CanInvestigate { get; set; } = true;
+    public bool DisableWandering { get; set; }
     public bool IsGuard { get; set; }
     public bool HasOnPlayerSight { get; set; }
     public float OnPlayerSightDistance { get; set; } = 1000;

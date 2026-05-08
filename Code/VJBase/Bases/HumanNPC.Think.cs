@@ -1721,7 +1721,7 @@ public partial class HumanNPC
     /// <summary>
     /// Drop the active weapon on death. Human-only (no creature equivalent).
     /// </summary>
-    public override void DeathWeaponDrop(DamageInfo dmginfo, int hitgroup)
+    public virtual void DeathWeaponDrop(DamageInfo dmginfo, int hitgroup)
     {
         // lua:4485 — activeWep = funcGetActiveWeapon(self)
         var activeWep = GetActiveWeapon(); // Phase 3 stub: returns null
