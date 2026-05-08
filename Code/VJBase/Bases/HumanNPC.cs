@@ -113,6 +113,7 @@ public partial class HumanNPC : CreatureNPC
     public float NextMoveOnGunCoveredT { get; set; }
     public float NextMeleeWeaponAttackT { get; set; }
     public float NextDangerDetectionT { get; set; }
+    public float NextWeaponStateChangeT { get; set; }
 
     // ═══ Animation Config (ported from init.lua:130,303) ═══
     public bool HasPoseParameterLooking { get; set; } = true;
@@ -152,6 +153,39 @@ public partial class HumanNPC : CreatureNPC
 
     // ═══ Animation Config — human_base/init.lua ═══
     public Dictionary<int, object> AnimationTranslations { get; set; } = new();
+
+    // ═══ Weapon Helpers (Phase 1) ═══
+    /// <summary>GetActiveWeapon — overrides BaseNPC to return WeaponEntity.</summary>
+    public override GameObject GetActiveWeapon() => WeaponEntity;
+
+    /// <summary>Check if a GameObject has a VJ Base weapon component.</summary>
+    public static bool IsWeaponVJBase(GameObject wep)
+        => wep?.Components.Get<IVJBaseWeapon>()?.IsVJBaseWeapon ?? false;
+
+    /// <summary>Check if a GameObject is a VJ Base melee weapon.</summary>
+    public static bool IsWeaponMelee(GameObject wep)
+    {
+        var ivj = wep?.Components.Get<IVJBaseWeapon>();
+        return ivj != null && ivj.IsVJBaseWeapon && ivj.IsMeleeWeapon;
+    }
+
+    /// <summary>Get IVJBaseWeapon component from a GameObject, if any.</summary>
+    public static IVJBaseWeapon GetWeaponComponent(GameObject wep)
+        => wep?.Components.Get<IVJBaseWeapon>();
+
+    /// <summary>CheckWeaponState — syncs weapon entity and handles timer-based state reset.</summary>
+    public override void CheckWeaponState()
+    {
+        var active = GetActiveWeapon();
+        if (active != WeaponEntity)
+            DoChangeWeapon();
+
+        if (NextWeaponStateChangeT > 0 && Time.Now > NextWeaponStateChangeT)
+        {
+            WeaponState = VJWepState.Ready;
+            NextWeaponStateChangeT = 0;
+        }
+    }
 
     // ═══ Virtual Callbacks (stubs — override in derived types) ═══
     public virtual bool OnGrenadeAttack(string status, object customEnt, string landDir = null) => false;
