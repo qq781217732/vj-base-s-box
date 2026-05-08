@@ -105,43 +105,61 @@ public partial class HumanNPC
     }
 
     // ═══ DoChangeMovementType — human_base/init.lua:2287-2319 ═══
+    /// <summary>
+    /// Configure S&Box Components based on VJ movement type.
+    /// Ground→NavMeshAgent, Aerial/Aquatic→AA system, Stationary→off, Physics→Rigidbody.
+    /// </summary>
     public virtual void DoChangeMovementType(VJMoveType movType)
     {
         // lua:2288-2289
         MovementType = movType;
+        var agent = Components.Get<NavMeshAgent>();
+        var rb = Components.Get<Rigidbody>();
 
-        if (movType == VJMoveType.Ground)
+        switch (movType)
         {
-            // SKIP: lua:2291 — RemoveFlags(FL_FLY) — Source engine flags
-            // SKIP: lua:2292 — CapabilitiesRemove(CAP_MOVE_FLY) — Source engine caps
-            // SKIP: lua:2293 — SetNavType(NAV_GROUND) — handled by NavMeshAgent in S&Box
-            // SKIP: lua:2294 — SetMoveType(MOVETYPE_STEP) — S&Box physics handles this
-            // SKIP: lua:2295 — CapabilitiesAdd(CAP_MOVE_GROUND) — Source engine caps
-            // SKIP: lua:2296 — CapabilitiesAdd(CAP_MOVE_JUMP) — Source engine caps (AnimExists ACT_JUMP/pj_npc_human_jump/PoseParamMovement)
-            // SKIP: lua:2298 — CapabilitiesAdd(CAP_MOVE_SHOOT) if !Weapon_Disabled && Weapon_CanMoveFire
-        }
-        else if (movType == VJMoveType.Aerial || movType == VJMoveType.Aquatic)
-        {
-            // SKIP: lua:2300 — CapabilitiesRemove(capBitsGround) — Source engine caps
-            // SKIP: lua:2301 — SetGroundEntity(NULL) — Source engine ground entity
-            // SKIP: lua:2302 — AddFlags(FL_FLY) — Source engine flags
-            // SKIP: lua:2303 — SetNavType(NAV_FLY) — handled by AA system
-            // SKIP: lua:2304 — SetMoveType(MOVETYPE_STEP) — AA system handles this
-            // SKIP: lua:2305 — CapabilitiesAdd(CAP_MOVE_FLY) — Source engine caps
-        }
-        else if (movType == VJMoveType.Stationary)
-        {
-            // SKIP: lua:2307 — RemoveFlags(FL_FLY) — Source engine flags
-            // SKIP: lua:2308 — CapabilitiesRemove(capBitsShared) — Source engine caps
-            // SKIP: lua:2309 — SetNavType(NAV_NONE)
-            // SKIP: lua:2310-2312 — GetParent check / SetMoveType(MOVETYPE_FLY)
-        }
-        else if (movType == VJMoveType.Physics)
-        {
-            // SKIP: lua:2314 — RemoveFlags(FL_FLY) — Source engine flags
-            // SKIP: lua:2315 — CapabilitiesRemove(capBitsShared) — Source engine caps
-            // SKIP: lua:2316 — SetNavType(NAV_NONE)
-            // SKIP: lua:2317 — SetMoveType(MOVETYPE_VPHYSICS)
+            // ---- lua:2291-2298: Ground — enable NavMesh walking ----
+            case VJMoveType.Ground:
+                if (agent != null)
+                {
+                    agent.Enabled = true;
+                    agent.UpdatePosition = true;
+                    agent.UpdateRotation = true;
+                }
+                if (rb != null) rb.Enabled = false;
+                // lua:2295 — CapabilitiesAdd(CAP_MOVE_GROUND) → no S&Box equiv; NavMeshAgent handles it
+                // lua:2296 — CapabilitiesAdd(CAP_MOVE_JUMP):
+                //   TODO Phase 3 animation: check AnimExists(ACT_JUMP / pj_npc_human_jump / PoseParamMovement)
+                //   before enabling jump capability
+                // lua:2298 — CapabilitiesAdd(CAP_MOVE_SHOOT):
+                //   TODO: controlled by Weapon_CanMoveFire flag in SelectSchedule C2 block
+                break;
+
+            // ---- lua:2300-2305: Aerial/Aquatic — AA system takes over ----
+            case VJMoveType.Aerial:
+            case VJMoveType.Aquatic:
+                if (agent != null) { agent.Stop(); agent.Enabled = false; }
+                if (rb != null) rb.Enabled = false;
+                // lua:2301 — SetGroundEntity(NULL) → AA_MoveTo directly sets Position, no ground needed
+                // lua:2302 — AddFlags(FL_FLY) → no gravity: AA system uses direct Position manipulation
+                // lua:2305 — CapabilitiesAdd(CAP_MOVE_FLY):
+                //   TODO Phase 3: flight-specific features (water avoidance in AA, altitude clamping)
+                //   Current AA_MoveTo/AA_IdleWander handle aquatic movement in their own branches
+                break;
+
+            // ---- lua:2307-2312: Stationary — disable all movement ----
+            case VJMoveType.Stationary:
+                if (agent != null) { agent.Stop(); agent.Enabled = false; }
+                // lua:2310-2312 — if parented to another entity, use MOVETYPE_FLY to follow:
+                //   TODO: check Transform.Parent != null → rb.isKinematic = true (follow parent physics)
+                break;
+
+            // ---- lua:2314-2317: Physics — full Rigidbody simulation ----
+            case VJMoveType.Physics:
+                if (agent != null) { agent.Stop(); agent.Enabled = false; }
+                if (rb != null) rb.Enabled = true;
+                // lua:2315 — CapabilitiesRemove(capBitsShared) → no equiv; Rigidbody handles all physics
+                break;
         }
     }
 
@@ -162,7 +180,19 @@ public partial class HumanNPC
     public virtual void SetWeaponState(VJWepState state = VJWepState.Ready, float time = -1)
     {
         WeaponState = state;
-        // Phase 3: timer-based state reset
+
+        if (time >= 0)
+        {
+            NextWeaponStateChangeT = Time.Now + time;
+        }
+        else if (state != VJWepState.Ready)
+        {
+            NextWeaponStateChangeT = Time.Now + 1.0f;
+        }
+        else
+        {
+            NextWeaponStateChangeT = 0;
+        }
     }
 
     public virtual VJWepState GetWeaponState() => WeaponState;
@@ -178,14 +208,14 @@ public partial class HumanNPC
         // lua:2471 — wep = wep or nil (C# null default)
         // lua:2472 — invSwitch = invSwitch or false (C# false default)
         // lua:2473 — curWep = funcGetActiveWeapon(self)
-        var curWep = GetActiveWeapon(); // Phase 3 stub: returns null
+        var curWep = GetActiveWeapon();
 
         // ---- Block 1: Weapon disabled → remove (lua:2476-2479) ----
         // lua:2476 — if self.Weapon_Disabled && IsValid(curWep) then
         if (Weapon_Disabled && curWep.IsValid())
         {
             // lua:2477 — curWep:Remove()
-            // SKIP: lua:2477 — curWep:Remove() — Phase 3 weapon entity removal
+            curWep.Destroy();
             // lua:2478 — return NULL
             return null;
         }
@@ -197,13 +227,25 @@ public partial class HumanNPC
             // lua:2483 — if invSwitch then
             if (invSwitch)
             {
-                // lua:2484 — self:SelectWeapon(wep)
-                // SKIP: lua:2484 — self:SelectWeapon(wep) — Phase 3 weapon selection
+                // lua:2484 — self:SelectWeapon(wep) → search inventory slots, then children
+                GameObject targetWep = null;
+                if (WeaponInventory.Primary?.Name == wep)
+                    targetWep = WeaponInventory.Primary;
+                else if (WeaponInventory.AntiArmor?.Name == wep)
+                    targetWep = WeaponInventory.AntiArmor;
+                else if (WeaponInventory.Melee?.Name == wep)
+                    targetWep = WeaponInventory.Melee;
+                if (targetWep == null)
+                {
+                    foreach (var child in GameObject.Children)
+                    {
+                        if (child.Name == wep) { targetWep = child; break; }
+                    }
+                }
                 // lua:2485 — VJ.EmitSound(self, sdWepSwitch, 70)
                 // SKIP: lua:2485 — VJ.EmitSound(sdWepSwitch, 70) — Phase 3 weapon sound
                 // lua:2486 — curWep = wep
-                // wep is string (class name), IsValid(string)→false; null.IsValid()→false — same fallthrough to else→None
-                curWep = null; // Phase 3: resolve class name → GameObject via weapon system
+                curWep = targetWep; // null if not found → falls through to Block 3 else → None
             }
             // lua:2487 — else
             else
@@ -212,10 +254,12 @@ public partial class HumanNPC
                 if (curWep.IsValid() && WeaponInventoryStatus <= VJWepInventory.Primary)
                 {
                     // lua:2489 — curWep:Remove()
-                    // SKIP: lua:2489 — curWep:Remove() — Phase 3 weapon entity removal
+                    curWep.Destroy();
                 }
-                // lua:2491 — curWep = self:Give(wep)
-                // SKIP: lua:2491 — self:Give(wep) — Phase 3 weapon Give (Source engine NPC:Give)
+                // lua:2491 — curWep = self:Give(wep) → create weapon GameObject as child of NPC
+                curWep = new GameObject(GameObject, true, wep);
+                var wepComp = curWep.Components.Create<VJBaseWeapon>();
+                wepComp.Equip(GameObject);
                 // lua:2492 — self.WeaponInventory.Primary = curWep
                 WeaponInventory.Primary = curWep;
             }
@@ -226,14 +270,18 @@ public partial class HumanNPC
         if (curWep.IsValid())
         {
             // lua:2498 — self.WeaponAttackAnim = ACT_INVALID
-            WeaponAttackAnim = null; // Phase 3: ACT_INVALID = -1, in C# null = no valid animation
+            WeaponAttackAnim = null;
             // lua:2499 — self:SetWeaponState() — reset state
             SetWeaponState();
             // lua:2500 — if invSwitch then
             if (invSwitch)
             {
                 // lua:2501 — if curWep.IsVJBaseWeapon then curWep:Equip(self) end
-                // SKIP: lua:2501 — curWep.IsVJBaseWeapon + Equip() — Phase 3 weapon interface
+                var ivj = curWep.Components.Get<IVJBaseWeapon>();
+                if (ivj != null && ivj.IsVJBaseWeapon)
+                {
+                    ivj.Equip(GameObject);
+                }
             }
             // lua:2502 — else
             else
@@ -242,10 +290,11 @@ public partial class HumanNPC
                 WeaponInventoryStatus = VJWepInventory.Primary;
                 // lua:2505-2509 — Replace old primary if different
                 var curPrimary = WeaponInventory.Primary;
-                if (curWep != WeaponInventory.Primary)
+                if (curWep != curPrimary)
                 {
                     // lua:2507 — if IsValid(curPrimary) then curPrimary:Remove() end
-                    // SKIP: lua:2507 — curPrimary:Remove() — Phase 3 weapon entity removal
+                    if (curPrimary.IsValid())
+                        curPrimary.Destroy();
                     // lua:2508 — self.WeaponInventory.Primary = curWep
                     WeaponInventory.Primary = curWep;
                 }
@@ -412,18 +461,20 @@ public partial class HumanNPC
             if (checkDistance && Time.Now > NextWeaponAttackT)
             {
                 // lua:3492 — if curWep.IsMeleeWeapon then
-                // SKIP: lua:3492 — curWep.IsMeleeWeapon — Phase 3 weapon interface (always false → takes elseif)
-                // lua:3493-3496 — Melee: if VJ.IsCurrentAnim(self, WeaponAttackAnim) or enemyDist < Weapon_MaxDistance then hasDist = true end
-                // SKIP: lua:3494 — VJ.IsCurrentAnim(self, WeaponAttackAnim) — Phase 3 animation (VJUtility stub false)
+                if (IsWeaponMelee(curWep))
+                {
+                    // lua:3493-3496 — Melee: if VJ.IsCurrentAnim(self, WeaponAttackAnim) or enemyDist < Weapon_MaxDistance then hasDist = true end
+                    // SKIP: lua:3494 — VJ.IsCurrentAnim(self, WeaponAttackAnim) — Phase 3 animation (VJUtility stub false)
+                    if (enemyDist < Weapon_MaxDistance)
+                    {
+                        hasDist = true;
+                    }
+                }
                 // lua:3497-3499 — elseif (ranged): enemyDist < Weapon_MaxDistance && enemyDist > Weapon_MinDistance then hasDist = true
-                if (enemyDist < Weapon_MaxDistance && enemyDist > Weapon_MinDistance)
+                else if (enemyDist < Weapon_MaxDistance && enemyDist > Weapon_MinDistance)
                 {
                     hasDist = true;
                 }
-                // Phase 3: restore melee branch above the elseif
-                //   if (curWep.IsMeleeWeapon) {
-                //     if (VJUtility.IsCurrentAnim(GameObject, WeaponAttackAnim) || enemyDist < Weapon_MaxDistance) hasDist = true; }
-                //   else if (enemyDist < Weapon_MaxDistance && enemyDist > Weapon_MinDistance) { hasDist = true; }
             }
             // lua:3501-3503 — if checkDistanceOnly then return hasDist end
             if (checkDistanceOnly) return hasDist;
@@ -637,7 +688,6 @@ public partial class HumanNPC
             // ═══ C2: Has valid weapon (lua:3604-3816) ═══
             else
             {
-                if (wep == null) goto goto_conditions; // compiler guard (wep is null from stub)
 
                 // lua:3605
                 Weapon_UnarmedBehavior_Active = false;
@@ -653,14 +703,24 @@ public partial class HumanNPC
                 //          && curTime > TakingCoverT && curTime > NextChaseTime && !AttackType
                 //          && !IsFollowing && ene.Behavior != VJ_BEHAVIOR_PASSIVE
                 //          && !DoCoverTrace(myPosCentered, enePos_Eye)
-                // SKIP: lua:3612 — wep.IsMeleeWeapon, ene.Behavior, DoCoverTrace — Phase 3 weapon + cover
+                if (eneData.Distance <= Weapon_RetreatDistance
+                    && !IsWeaponMelee(wep)
+                    && curTime > TakingCoverT
+                    && curTime > NextChaseTime
+                    && AttackType == VJAttackType.None
+                    && !IsFollowing
+                    // SKIP: ene.Behavior != VJ_BEHAVIOR_PASSIVE — Phase 3 (Behavior enum exists, check works)
+                    // SKIP: !DoCoverTrace(myPosCentered, enePos_Eye) — Phase 3 cover system
+                    )
                 {
                     // SKIP: lua:3613 — moveCheck = PICK(VJ.TraceDirections(self, "Quick", 200, true, false, 8, true)) — Phase 3 utility
                     // SKIP: lua:3614 — if moveCheck then
                     // SKIP: lua:3615 — SetLastPosition(moveCheck) — Phase 3
-                    // SKIP: lua:3616 — GetWeaponState() == VJ.WEP_STATE_RELOADING → SetWeaponState() — Phase 3 weapon state
-                    // SKIP: lua:3617 — TakingCoverT = curTime + 2
-                    // SKIP: lua:3618 — SCHEDULE_GOTO_POSITION("TASK_RUN_PATH", function(x) x:EngTask("TASK_FACE_ENEMY", 0) x.CanShootWhenMoving = true x.TurnData = {Type = VJ.FACE_ENEMY} end)
+                    // lua:3616 — GetWeaponState() == VJ.WEP_STATE_RELOADING → SetWeaponState()
+                    if (GetWeaponState() == VJWepState.Reloading)
+                        SetWeaponState();
+                    // SKIP: lua:3617 — TakingCoverT = curTime + 2 — Phase 3 cover timer
+                    // SKIP: lua:3618 — SCHEDULE_GOTO_POSITION("TASK_RUN_PATH", ...) — Phase 3 cover schedule
                     // SKIP: lua:3619 — goto goto_conditions
                 }
 
@@ -707,7 +767,7 @@ public partial class HumanNPC
                         _ = 0;
 
                         // lua:3655: if wep.IsVJBaseWeapon then — VJ Base weapons
-                        // SKIP: lua:3655 — wep.IsVJBaseWeapon — Phase 3 weapon interface
+                        if (IsWeaponVJBase(wep))
                         {
                             // ═══ C2c-i: Aim turning (lua:3656-3670) ═══
                             // lua:3657: if !HasPoseParameterLooking then
@@ -722,7 +782,7 @@ public partial class HumanNPC
                             // SKIP: lua:3679-3682 — inCoverEnt.VJ_ID_Living — Phase 3 entity flags
 
                             // lua:3683: if !wep.IsMeleeWeapon then — ranged weapons only
-                            // SKIP: lua:3683 — wep.IsMeleeWeapon — Phase 3 weapon interface
+                            if (!IsWeaponMelee(wep))
                             {
                                 // lua:3685-3693: Friendly in line of fire → move
                                 // SKIP: lua:3685 — inCoverEntLiving && WeaponAttackState == VJ.WEP_ATTACK_STATE_FIRE_STAND && IsValid(wepInCoverEnt) && wepInCoverEnt:IsNPC() && Disposition checks — Phase 3
@@ -744,19 +804,22 @@ public partial class HumanNPC
                             // SKIP: lua:3737 — NextWeaponAttackT, NextWeaponAttackT_Base — Phase 3 weapon timers
                             {
                                 // lua:3739-3751: Melee weapons
-                                // SKIP: lua:3739 — wep.IsMeleeWeapon — Phase 3 weapon
-                                // SKIP: lua:3740 — OnWeaponAttack() — Phase 3 weapon callback
-                                // SKIP: lua:3741 — TranslateActivity(PICK(AnimTbl_WeaponAttack)) — Phase 3 animation
-                                // SKIP: lua:3742-3743 — AnimExists + AnimDuration — Phase 3 animation
-                                // SKIP: lua:3744 — wep.NPC_NextPrimaryFire = animDur — Phase 3 weapon
-                                // SKIP: lua:3745 — wep:NPCShoot_Primary() — Phase 3 weapon
-                                // SKIP: lua:3746 — VJ.EmitSound(self, wep.NPC_BeforeFireSound, ...) — Phase 3 sound
-                                // SKIP: lua:3747 — NextMeleeWeaponAttackT = curTime + animDur
-                                // SKIP: lua:3748 — WeaponAttackAnim = finalAnim
-                                // SKIP: lua:3749 — PlayAnim(finalAnim, "LetAttacks", false, true) — Phase 3 animation
-                                // SKIP: lua:3750 — WeaponAttackState = VJ.WEP_ATTACK_STATE_FIRE_STAND
-
+                                if (IsWeaponMelee(wep))
+                                {
+                                    // SKIP: lua:3740 — OnWeaponAttack() — Phase 3 weapon callback
+                                    // SKIP: lua:3741 — TranslateActivity(PICK(AnimTbl_WeaponAttack)) — Phase 3 animation
+                                    // SKIP: lua:3742-3743 — AnimExists + AnimDuration — Phase 3 animation
+                                    // SKIP: lua:3744 — wep.NPC_NextPrimaryFire = animDur — Phase 3 weapon
+                                    // SKIP: lua:3745 — wep:NPCShoot_Primary() — Phase 3 weapon
+                                    // SKIP: lua:3746 — VJ.EmitSound(self, wep.NPC_BeforeFireSound, ...) — Phase 3 sound
+                                    // SKIP: lua:3747 — NextMeleeWeaponAttackT = curTime + animDur
+                                    // SKIP: lua:3748 — WeaponAttackAnim = finalAnim
+                                    // SKIP: lua:3749 — PlayAnim(finalAnim, "LetAttacks", false, true) — Phase 3 animation
+                                    // SKIP: lua:3750 — WeaponAttackState = VJ.WEP_ATTACK_STATE_FIRE_STAND
+                                }
                                 // lua:3753-3793: Ranged weapons
+                                else
+                                {
                                 // SKIP: lua:3754 — AllowWeaponOcclusionDelay = true
                                 // SKIP: lua:3755 — hasAmmo = wep:Clip1() > 0 — Phase 3 weapon
                                 // SKIP: lua:3756-3757 — !hasAmmo && WeaponAttackState != VJ.WEP_ATTACK_STATE_AIM → WeaponAttackAnim = ACT_INVALID
@@ -1795,18 +1858,29 @@ public partial class HumanNPC
         // SKIP: lua:2563 — PlayAnim(anims, true, false, "Visible") — Phase 3 animation
         // lua:2564 — if anim != ACT_INVALID then
         // SKIP: lua:2564 — ACT_INVALID comparison — Phase 3 animation
-        // lua:2565 — wep = self.WeaponEntity
-        // lua:2566 — if wep.IsVJBaseWeapon then wep:NPC_Reload() end
-        // SKIP: lua:2566 — IsVJBaseWeapon + NPC_Reload() — Phase 3 weapon interface
-        // lua:2567-2573 — timer.Create("wep_reload_reset", animDur, ...) reload-complete
-        // SKIP: lua:2567-2573 — timer.Create + SetClip1 + GetMaxClip1 + OnReload + SetWeaponState — Phase 3 timer + weapon
-        // lua:2574 — self.AllowWeaponOcclusionDelay = false
-        AllowWeaponOcclusionDelay = false;
-        // lua:2576-2578 — if !VJ_IsBeingControlled && animType == ANIM_TYPE_GESTURE then StopMoving() end
-        // SKIP: lua:2576 — animType == ANIM_TYPE_GESTURE — Phase 3 animation
-        // lua:2579 — return true (reload animation ran successfully)
-        // lua:2581 — return false (animation invalid)
-        return false; // Phase 3: PlayAnim returns real animation
+        {
+            // lua:2565 — wep = self.WeaponEntity
+            var wep = WeaponEntity;
+            // lua:2566 — if wep.IsVJBaseWeapon then wep:NPC_Reload() end
+            if (wep.IsValid())
+            {
+                var wepComp = wep.Components.Get<IVJBaseWeapon>();
+                if (wepComp != null && wepComp.IsVJBaseWeapon)
+                {
+                    wepComp.NPC_Reload();
+                }
+            }
+            // lua:2567-2573 — timer.Create("wep_reload_reset", animDur, ...) reload-complete
+            // SKIP: lua:2567-2573 — timer.Create + SetClip1 + GetMaxClip1 + OnReload + SetWeaponState — Phase 3 timer + weapon
+            // lua:2574 — self.AllowWeaponOcclusionDelay = false
+            AllowWeaponOcclusionDelay = false;
+            // lua:2576-2578 — if !VJ_IsBeingControlled && animType == ANIM_TYPE_GESTURE then StopMoving() end
+            // SKIP: lua:2576 — animType == ANIM_TYPE_GESTURE — Phase 3 animation
+            // lua:2579 — return true
+            return true;
+        }
+        // lua:2581 — return false (animation invalid, reached if PlayAnim returned ACT_INVALID)
+        // Phase 3: return false only when PlayAnim returns ACT_INVALID; currently always enters the block
     }
 
     // ═══ attackTimers (local table) — human_base/init.lua:2536-2560 ═══
