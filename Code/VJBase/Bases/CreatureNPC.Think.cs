@@ -321,6 +321,7 @@ public partial class CreatureNPC
                             // lua:2516 — SetDamageType → S&Box Tags
                             dmgInfo.Tags.Add(MapDamageTypeToTag(MeleeAttackDamageType));
                             // SKIP: lua:2517 — SetDamageForce — Phase 3 (S&Box: apply force separately on Rigidbody)
+                            // SKIP: lua:2518 — SetInflictor(self) — S&Box DamageInfo has no Inflictor; Weapon=null means attacker-is-inflictor (correct for melee)
                             dmgInfo.Attacker = GameObject;
                             // SKIP: lua:2520 — VJ.DamageSpecialEnts — Phase 3 damage utility
                             // lua:2521 — ent:TakeDamage(dmgInfo) → S&Box IDamageable
@@ -432,6 +433,7 @@ public partial class CreatureNPC
                     {
                         var dmgInfo = new DamageInfo();
                         dmgInfo.Damage = dmgAmount;
+                        // SKIP: lua:2688 — SetInflictor(self) — S&Box DamageInfo has no Inflictor; Weapon=null correct for NPC leap
                         // lua:2690 — SetDamageType(LeapAttackDamageType) → S&Box Tags
                         dmgInfo.Tags.Add(MapDamageTypeToTag(LeapAttackDamageType));
                         // SKIP: lua:2691 — SetDamageForce — Phase 3 damage force
