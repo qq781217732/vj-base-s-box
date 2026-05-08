@@ -476,7 +476,7 @@ public partial class HumanNPC
                         continue;
                     }
                     // lua:3365 — local funcCustom = self.OnDangerDetected; if funcCustom && funcCustom(self, VJ.DANGER_TYPE_GRENADE, ent) then continue end
-                    if (OnDangerDetected(2, ent)) continue; // 2 = DANGER_TYPE_GRENADE
+                    if (OnDangerDetected(VJDangerType.Grenade, ent)) continue;
                     // lua:3366 — curTime = CurTime()
                     float curTime = Time.Now;
                     // lua:3367 — if !self:PlaySoundSystem("GrenadeSight") then self:PlaySoundSystem("DangerSight") end
@@ -508,12 +508,12 @@ public partial class HumanNPC
             if (regDangerDetected != null)
             {
                 // lua:3388 — if funcCustom(self, VJ.DANGER_TYPE_ENTITY, regDangerDetected) then return end
-                if (OnDangerDetected(1, regDangerDetected)) return; // 1 = DANGER_TYPE_ENTITY
+                if (OnDangerDetected(VJDangerType.Entity, regDangerDetected)) return;
             }
             else
             {
                 // lua:3390 — if funcCustom(self, VJ.DANGER_TYPE_HINT, nil) then return end
-                if (OnDangerDetected(3, null)) return; // 3 = DANGER_TYPE_HINT
+                if (OnDangerDetected(VJDangerType.Hint, null)) return;
             }
             // lua:3393 — self:PlaySoundSystem("DangerSight")
             PlaySoundSystem("DangerSight");

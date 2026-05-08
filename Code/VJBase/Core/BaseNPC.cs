@@ -726,7 +726,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public virtual void SetRelationshipMemory(GameObject ent, string key, object value) { }
     public virtual float GetMaxLookDistance() => SightDistance;
     public virtual int CheckRelationship(GameObject ent) => (int)VJBase.Disposition.Neutral;
-    public virtual bool OnDangerDetected(int dangerType, GameObject dangerEnt = null) => false;
+    public virtual bool OnDangerDetected(VJDangerType dangerType, GameObject dangerEnt = null) => false;
     public virtual void OnResetEnemy() { }
     public virtual void MarkEnemyAsEluded(GameObject ent) { }
     public virtual void ClearEnemyMemory(GameObject ent) { }
