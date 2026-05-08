@@ -4,7 +4,7 @@
 > **地面真相 (Ground Truth):** Lua 源码 (`F:/DevProject/Sbox/VJ-Base-master/lua/`)
 > **要修改的:** C# 代码 (`F:/DevProject/Sbox/testzombie/Code/VJBase/`)
 > **架构指南:** `docs/translation-guide.md`
-> **上次更新:** 2026-05-06
+> **上次更新:** 2026-05-09（DamageInfo + 实体标志 + 盟友 + 移动类型重构）
 
 ---
 
@@ -12,12 +12,12 @@
 
 | 优先级 | 总数 | ⬜ | 🔵 | ✅ | ⚠️ | 完成率 |
 |--------|------|----|----|----|----|--------|
-| P0: AI核心 | 5 | 0 | 0 | 4 | 1 | 80% → P0 全部完成（base_aa 已是翻译层，AA_MoveAnimation 是 Phase 3 动画）|
-| P1: 实体基类 | 15 | 12 | 2 | 0 | 1 | 0% |
+| P0: AI核心 | 5 | 0 | 0 | 5 | 0 | 100% ✅ |
+| P1: 实体基类 | 15 | 10 | 2 | 2 | 1 | 13% |
 | P2: 工具设施 | 14 | 13 | 1 | 0 | 0 | 0% |
 | P3: 武器 | 18 | 17 | 1 | 0 | 0 | 0% |
 | P4: 简单实体 | 33 | 33 | 0 | 0 | 0 | 0% |
-| **总计** | **85** | **75** | **4** | **4** | **2** | **4.7%** (P0 5/5 翻译层完成) |
+| **总计** | **85** | **73** | **4** | **7** | **1** | **8.2%** |
 
 > 进度在此更新，每个文件审计完成后改数字。
 
@@ -59,8 +59,8 @@
 |---|-----------|---------|----------|------|------|
 | 6 | `lua/entities/npc_vj_creature_base/init.lua` | `Bases/CreatureNPC.cs` + `.Think.cs` | — | 🔵 | Think/RunAI/SelectSchedule/SCHEDULE_ALERT_CHASE 完成。Melee/Range/Leap 攻击 Phase 3。 |
 | 7 | `lua/entities/npc_vj_creature_base/shared.lua` | `Bases/CreatureNPC.cs` | — | ⬜ | |
-| 8 | `lua/entities/npc_vj_human_base/init.lua` | `Bases/HumanNPC.cs` | — | 🔵 | 武器/手雷配置部分就位。人类特有逻辑 Phase 3。 |
-| 9 | `lua/entities/npc_vj_human_base/shared.lua` | `Bases/HumanNPC.cs` | — | ⬜ | |
+| 8 | `lua/entities/npc_vj_human_base/init.lua` | `Bases/HumanNPC.cs` + `.Think.cs` | 18/18 + 2 local | ✅ | 全部 24 方法翻译完成。2026-05-09: DamageInfo 免疫链 + 实体标志 + 盟友系统填坑。 |
+| 9 | `lua/entities/npc_vj_human_base/shared.lua` | `Bases/HumanNPC.cs` | — | ✅ | 字段默认值全部搬入 HumanNPC.cs 构造器。 |
 | 10 | `lua/entities/npc_vj_tank_base/init.lua` | `Bases/TankNPC.cs` | — | ⚠️ | 仅基架。 |
 | 11 | `lua/entities/npc_vj_tank_base/shared.lua` | `Bases/TankNPC.cs` | — | ⬜ | |
 | 12 | `lua/entities/npc_vj_tankg_base/init.lua` | `Bases/TankGNPC.cs` | — | ⬜ | |

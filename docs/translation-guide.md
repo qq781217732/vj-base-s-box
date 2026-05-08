@@ -275,7 +275,7 @@ public virtual void StartEngineTask(int taskId, float taskData)
 
 ## 7. 当前状态清单
 
-> 最后更新：2026-05-08（HumanNPC 18/18 + 死亡序列 4 方法全部完成）
+> 最后更新：2026-05-09（DamageInfo 落地 + 免疫链 + 实体标志 + 盟友系统 + 移动类型重构）
 
 ### 7.1a schedules.lua → BaseNPC.Schedule.cs（32 个方法）
 
@@ -336,7 +336,7 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | 状态 | 方法 | Lua 行 | 备注 |
 |------|------|--------|------|
 | ✅ | `Initialize` | 2131-2282 | ~150 行机械翻译，SKIP ~28（hull/caps/flags/pose-params/hooks） |
-| ✅ | `DoChangeMovementType` | 2287-2319 | 4 分支（Ground/Aerial/Stationary/Physics），全 SKIP Source 引擎 caps |
+| ✅ | `DoChangeMovementType` | 2287-2319 | **2026-05-09 重构**：Source MoveType → S&Box NavMeshAgent/Rigidbody Component 映射。从 HumanNPC.Think.cs 提升至 BaseNPC.cs，全部 NPC 共用。地面→NavMeshAgent 开，飞行/水生→关+AA 接管，静止→关，物理→Rigidbody 开。TODO: CAP_MOVE_JUMP(动画), CAP_MOVE_SHOOT(武器) |
 | ✅ | `ProcessAttackTimers` | — | 覆写：加 grenade exec 轮询 |
 | ✅ | `SetWeaponState` / `GetWeaponState` | 2520-2534 | 空壳（timer-based reset Phase 3） |
 | ✅ | `SCHEDULE_ALERT_CHASE` | 2340-2357 | doLOSChase 双分支 + RunCodeOnFinish re-chase 回环 |
@@ -344,11 +344,11 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | ✅ | `GrenadeAttack` | 3070-3186 | 完整骨架（~90 行，22 SKIP：动画/骨骼/可见性/实体 parent） |
 | ✅ | `ExecuteGrenadeAttack` | 3204-3331 | 完整骨架（~85 行，18 SKIP：spawn/bone/fuse/ownership） |
 | ✅ | `SelectSchedule` | 3520-3838 | ~275 行机械翻译。空闲/调查/无武器战斗/避让全部翻译；C2 武器战斗树（~190 行）逐行 SKIP 标记，Phase 3 武器系统就位后展开。需 +28 字段（HumanNPC.cs）+ 10 辅助桩（BaseNPC.cs）+ 2 动画桩（VJUtility.cs） |
-| ✅ | `OnTakeDamage` | 3918-4172 | ~255 行逐行展开（15 块 A-O，先前仅粗骨架）。8 真调用（OnDamaged×3/Flinch/OnBleed/PlaySoundSystem×3），SKIP ~55（免疫链/dmginfo API/玩家反应/掩体/盟友/死亡 — Phase 3 DamageInfo） |
+| ✅ | `OnTakeDamage` | 3918-4172 | ~255 行（15 块 A-O）。**2026-05-09 填坑**：Block A 友好 NPC 子弹免疫，Block B ragdoll 免伤(Velocity<=100)，Block C GodMode+dmg<=0，Block E Boss 绕过免疫链，Block F 免疫链 8 类型完整落地(Is*Damage helpers)，Block J PreDamage guard，Block M4 盟友伤害响应，Block M6 被动盟友逃跑。仍 SKIP: 免疫链细粒度(Source DMG_*)/玩家反应/combine ball/死亡 |
 | ❌ | `TranslateActivity` | 2417-2466 | 纯动画（ACT_* 翻译表/ACT_INVALID/PlayAnim/AnimationTranslations）— 跳过，Phase 3 |
 | ✅ | `DoChangeWeapon` | 2470-2518 | ~50 行。6 真调用（SetWeaponState/OnWeaponChange/WeaponEntity/WeaponInventory），6 SKIP（Give/Remove/SelectWeapon/Equip/EmitSound/UpdateAnimationTranslations — Phase 3 武器系统） |
-| ✅ | `ResetEnemy` | 3840-3916 | ~75 行（11 功能块）。13 真调用，4 SKIP（tool guard/ally inheritance/VisibleCount/timer）。新增 BaseNPC 字段 AlertTimeout(15,20)/EnemyTimeout(15)/CurrentReachableEnemies/NextAlertResetT + 4 桩 |
-| ✅ | `CheckForDangers` | 3356-3403 | ~50 行。7 真调用（Visible/OnDangerDetected/PlaySoundSystem×2/HasCondition×3/SCHEDULE_COVER_ORIGIN），5 SKIP（VJ_ID_* 标志/GetOwner/GetClass — Phase 3 entity flags）。新增 HumanNPC: CanDetectDangers/DangerDetectionDistance/CanRedirectGrenades，BaseNPC: OnDangerDetected 回调 |
+| ✅ | `ResetEnemy` | 3840-3916 | ~75 行（11 功能块）。**2026-05-09 接线**：Block 1 盟友敌人继承 real Allies_Check + 条件判断，Block 8 ClearEnemyMemory 非玩家死敌清理。BaseNPC 字段 AlertTimeout(15,20)/EnemyTimeout(15)/CurrentReachableEnemies/NextAlertResetT + 4 桩 |
+| ✅ | `CheckForDangers` | 3356-3403 | ~50 行。**2026-05-09 接线**：实体标志系统落地后 isDanger/isGrenade 真实读取 + VJ_ID_Grabbable/VJ_ST_Grabbed 手雷重定向 + SCHEDULE_COVER_ORIGIN。新增 HumanNPC: CanDetectDangers/DangerDetectionDistance/CanRedirectGrenades，BaseNPC: OnDangerDetected 回调 |
 | ✅ | `CanFireWeapon` | 3476-3510 | ~35 行。6 真调用（OnWeaponCanFire/WeaponEntity/GetWeaponState/Enemy.Distance），2 SKIP（IsMeleeWeapon/IsCurrentAnim — Phase 3 weapon+animation）。新增 HumanNPC Weapon_MinDistance=10f，BaseNPC 签名修正 |
 | ❌ | `UpdatePoseParamTracking` | 3426-3467 | 纯动画（90% 依赖 Source SetPoseParameter/GetPoseParameter/EyePos/GetAimPosition）— 跳过，Phase 3 |
 | ✅ | `BeginDeath` | 4177-4298 | ~122 行机械翻译（human override），12 块，~22 SKIP |
@@ -372,6 +372,70 @@ public virtual void StartEngineTask(int taskId, float taskData)
 > - HumanNPC.cs（+5）：`CanDetectDangers=true`, `DangerDetectionDistance=400`, `CanRedirectGrenades=true`, `Weapon_MinDistance=10`, `PlayReloadAnimation`（virtual）
 > - BaseNPC.cs（+8）：`AlertTimeout(15,20)`, `EnemyTimeout(15)`, `CurrentReachableEnemies`, `NextAlertResetT`, `OnDangerDetected`, `OnResetEnemy`, `MarkEnemyAsEluded`, `ClearEnemyMemory`, `GetEnemyLastKnownPos`
 > - BaseNPC.cs CanFireWeapon 签名修正：`(checkState,checkLOS)` → `(checkDistance,checkDistanceOnly)`
+>
+> ### 7.1e DamageInfo 落地 + 免疫链（2026-05-09）
+>
+> > 全局替换 `object dmginfo` → `DamageInfo`，实现 OnTakeDamage 免疫链。
+>
+> | 状态 | 内容 | 备注 |
+> |------|------|------|
+> | ✅ | `VJDamageTags` 补全 | +13 tag (Dissolve/Sonic/SlowBurn/Acid/Radiation/NerveGas/Paralyze/Airboat/Buckshot/Sniper/BlastSurface/MissileDefense/EnergyBeam) |
+> | ✅ | `BaseNPC.Is*Damage` 8 helper | IsBulletDamage/IsFireDamage/IsToxicDamage/IsExplosiveDamage/IsElectricDamage/IsMeleeDamage/IsDissolveDamage/IsSonicDamage |
+> | ✅ | 全局签名 object→DamageInfo | BaseNPC(Flinch/SpawnBloodParticles/SpawnBloodDecals/GibOnDeath), HumanNPC(OnDamaged/OnBleed/OnSetEnemyFromDamage/OnBecomeEnemyToPlayer), CreatureNPC(BeginDeath/FinishDeath), TankNPC(OnDamaged/Tank_OnInitialDeath) |
+> | ✅ | `OnTakeDamage` Block A | 友好 NPC 子弹豁免 — DamageInfo.Attacker + IsBulletDamage + VJ_NPC_Class 交集 |
+> | ✅ | `OnTakeDamage` Block B | ragdoll 免伤 — dmgInflictor→Weapon, Rigidbody.Velocity<=100 + non-NPC guard |
+> | ✅ | `OnTakeDamage` Block C | GodMode or dmgInfo.Damage<=0 → return 0 |
+> | ✅ | `OnTakeDamage` Block E | Boss 绕过免疫链 — ForceDamageFromBosses + VJ_ID_Boss |
+> | ✅ | `OnTakeDamage` Block F | 免疫链 8 类型 (Fire/Toxic/Bullet/Explosive/Dissolve/Electric/Melee/Sonic) |
+> | ✅ | `OnTakeDamage` Block J | PreDamage: dmgInfo.Damage<=0 → return 0 |
+> | ✅ | `TankNPC.OnDamaged` | ~15 行 Lua→C# (Physgun 免疫, Melee+Generic 过滤, Boss>=30 减半) |
+> | ✅ | `CreatureNPC BeginDeath` | dmgAttacker/dmgInflictor → dmginfo.Attacker/Weapon |
+> | ✅ | `ResetEnemy` | VJUtility.Rand(3,5) 替代手动 NextDouble |
+>
+> ### 7.1f 实体标志系统（2026-05-09）
+>
+> > 新建 `VJEntityFlags.cs` Component + BaseNPC 标志字段 + `HasEntityFlag` 静态 helper。
+>
+> | 状态 | 内容 | 备注 |
+> |------|------|------|
+> | ✅ | `VJEntityFlags.cs` | 新建 Component (VJ_ID_Danger/Grenade/Grabbable/Living/Attackable/Destructible/Boss + VJ_ST_Grabbed/Eating) |
+> | ✅ | `BaseNPC` +9 标志字段 | VJ_ID_*/VJ_ST_* 字段 + `HasEntityFlag(GameObject, string)` 静态 helper (查 BaseNPC + VJEntityFlags) |
+> | ✅ | `CheckForDangers` | isDanger/isGrenade 真实读取, VJ_ID_Grabbable/VJ_ST_Grabbed 手雷重定向, Rigidbody.Velocity, SCHEDULE_COVER_ORIGIN |
+> | ✅ | `ExecuteMeleeAttack` | VJ_ID_Attackable/Destructible → 攻击目标扩展, isProp = isAttackable |
+> | ✅ | `ExecuteLeapAttack` | 同上 VJ_ID_Attackable/Destructible |
+>
+> ### 7.1g 盟友系统（2026-05-09）
+>
+> > core.lua:2438-2584 → BaseNPC.cs 完整实现 + 5 处接线。
+>
+> | 状态 | 方法 | 备注 |
+> |------|------|------|
+> | ✅ | `Allies_Check(dist)` | 扫描同族/友好 NPC → `List<GameObject>?` |
+> | ✅ | `Allies_Bring(form, dist, allies, limit, onlyVis)` | 集结盟友 + SetLastPosition + GOTO_POSITION/COVER_ORIGIN |
+> | ✅ | `Allies_CallHelp(dist)` | 召唤盟友攻击自己的敌人 + PassiveNature 守卫 + 同族守卫 |
+> | ✅ | `BaseNPC` 新增字段 | `CanReceiveOrders=true`, `IsGuard` (去重), `OpeningDoor` |
+> | ✅ | `TankNPC` 去重 | `CanReceiveOrders` 从 TankNPC 移除 (继承 BaseNPC) |
+> | ✅ | `ResetEnemy Block 1` | 盟友敌人继承 — 真实 Allies_Check + 时效/距离/关系检查 |
+> | ✅ | `OnTakeDamage Block M4` | DamageAllyResponse — Allies_Check + Allies_Bring("Diamond") + DoReadyAlert + cooldown |
+> | ✅ | `OnTakeDamage Block M6` | Passive_AlliesRunOnDamage — Allies_Check + SCHEDULE_COVER_ORIGIN + PlaySoundSystem("Alert") |
+> | ✅ | `CreatureNPC BeginDeath` | 死亡盟友反应 — Allies_Check + OnAllyKilled + Allies_Bring + DoReadyAlert |
+> | ✅ | `HumanNPC BeginDeath` | 死亡盟友反应 (人类版, 同上模式) |
+> | ⚠️ | `Allies_CallHelp` | Animation (AnimTbl_CallForHelp/PlayAnim) 仍 SKIP — Phase 3 动画 |
+>
+> ### 7.1h 移动类型 + 物理/门（2026-05-09）
+>
+> > DoChangeMovementType 重构：Source MoveType → S&Box Component 映射。门系统落地。
+>
+> | 状态 | 内容 | 备注 |
+> |------|------|------|
+> | ✅ | `DoChangeMovementType` | 从 HumanNPC.Think.cs 提升至 BaseNPC.cs (virtual), 全部 NPC 共用 |
+> | ✅ | Ground | NavMeshAgent.Enabled=true, UpdatePosition/UpdateRotation=true |
+> | ✅ | Aerial/Aquatic | agent.Stop()+Enabled=false (AA system 接管 Position) |
+> | ✅ | Stationary | agent.Stop()+Enabled=false |
+> | ✅ | Physics | agent.Stop()+Enabled=false, Rigidbody.Enabled=true |
+> | ✅ | `OpeningDoor` | BaseNPC +OpeningDoor 字段, StartSchedule 门检查 |
+> | ❌ | WaterLevel(8 SKIP) | Source 引擎内置, S&Box 无等价物 — 永久保留 |
+> | ❌ | MoveType/VPhysics(3 SKIP) | MOVETYPE_STEP/VPHYSICS Source 专有 — 永久保留 |
 
 ### 7.2 接口体系
 
@@ -427,6 +491,14 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | 35 | **HumanNPC DoChangeWeapon** — 武器库存管理机械翻译，6 真调用/6 SKIP | ✅ 2026-05-08 |
 | 36 | **HumanNPC 尾方法收尾** — GetAttackSpread + PlayReloadAnimation + attackTimers 替代标注 | ✅ 2026-05-08 |
 | 37 | **HumanNPC 18/18 方法全部翻译完成** | ✅ 2026-05-08 |
+| 38 | **DamageInfo 落地** — 全局 `object dmginfo`→`DamageInfo`，VJDamageTags+13，8 Is*Damage helper | ✅ 2026-05-09 |
+| 39 | **OnTakeDamage 免疫链** — Block A/C/E/F/J 填坑，Boss 绕过，ragdoll 免伤 | ✅ 2026-05-09 |
+| 40 | **TankNPC OnDamaged** — ~15 行 Lua→C# (Physgun 免疫/Boss 减半/Melee 过滤) | ✅ 2026-05-09 |
+| 41 | **实体标志系统** — VJEntityFlags Component + HasEntityFlag helper + CheckForDangers/ExecuteMeleeAttack/ExecuteLeapAttack 接线 | ✅ 2026-05-09 |
+| 42 | **盟友系统** — Allies_Check/Allies_Bring/Allies_CallHelp 完整实现 + 5 处接线 (ResetEnemy/OnTakeDamage M4+M6/死亡序列) | ✅ 2026-05-09 |
+| 43 | **盟友 3 处修正** — Allies_Bring+SetLastPosition, PassiveNature+同族守卫 | ✅ 2026-05-09 |
+| 44 | **门系统** — OpeningDoor 字段 + StartSchedule 门检查 | ✅ 2026-05-09 |
+| 45 | **DoChangeMovementType 重构** — Source MoveType→NavMeshAgent/Rigidbody, 提升至 BaseNPC | ✅ 2026-05-09 |
 
 ### 7.4 SKIP 总表（Phase 3+ 填坑清单）
 
@@ -488,6 +560,25 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | `HumanNPC.cs` | SelectSchedule 所需字段缺失（28 个） | 武器行为配置（11）+ 动画表（4）+ 运行时状态（9）+ 动画配置（4）全部添加 |
 | `BaseNPC.cs` | SelectSchedule 所需辅助方法缺失 | `CanFireWeapon` / `DoCoverTrace` / `TranslateActivity` / `UpdatePoseParamTracking` / `PlayIdleSound` / `GetActiveWeapon` / `GetBestSoundHint` / `NearestPoint` / `SetMovementActivity` / `GetActivity` — 全部 Phase 3 桩返回安全默认值 |
 | `VJUtility.cs` | `AnimExists` / `IsCurrentAnim` 缺失 | 动画存在/当前动画检查桩 |
+
+#### 已解决（2026-05-09 会话 — DamageInfo + 实体标志 + 盟友 + 移动类型）
+| 文件 | 原 SKIP | 解决方案 |
+|------|---------|----------|
+| 全局 | `object dmginfo` 占位参数 | 全部替换为 `DamageInfo`，8 BaseNPC method + 5 HumanNPC callback + 2 CreatureNPC + 2 TankNPC 签名改版 |
+| `VJEnums.cs` | 免疫链 sub-type 缺失 | +13 VJDamageTags (Dissolve/Sonic/SlowBurn/Acid/Radiation/等) |
+| `BaseNPC.cs` | 免疫链 8 类型全 SKIP | +8 Is*Damage helper (Fire/Toxic/Bullet/Explosive/Electric/Melee/Dissolve/Sonic) |
+| `HumanNPC.Think.cs` | OnTakeDamage Block A/C/E/F/J 全 SKIP | 完整落地 → DamageInfo.Attacker/GodMode/Damage/免疫链/Boss 绕过 |
+| `TankNPC.cs` | OnDamaged 全 SKIP | ~15 行翻译 (Physgun/Melee immunity + Boss halve) |
+| `VJEntityFlags.cs` | 无此文件 | 新建 Component (9 个 VJ_ID_*/VJ_ST_* 标志) |
+| `BaseNPC.cs` | VJ_ID_*/VJ_ST_* 字段缺失 | +9 标志字段 + `HasEntityFlag(GameObject, string)` 静态 helper |
+| `HumanNPC.Think.cs` | CheckForDangers isDanger/isGrenade 硬编码 false | HasEntityFlag 真实读取 + 手雷重定向(VJ_ID_Grabbable/Velocity/GrenadeAttack) |
+| `CreatureNPC.Think.cs` | ExecuteMeleeAttack/ExecuteLeapAttack VJ_ID_Attackable/Destructible SKIP | 真实读取 + isProp 判定 |
+| `BaseNPC.cs` | Allies_Check/Allies_Bring/Allies_CallHelp 空壳 | 完整实现 (core.lua:2438-2584) + CanReceiveOrders/IsGuard |
+| `HumanNPC.Think.cs` | ResetEnemy Block 1 + OnTakeDamage M4/M6 全 SKIP | 盟友接线 (Allies_Check/Allies_Bring/DoReadyAlert/SCHEDULE_COVER_ORIGIN) |
+| `CreatureNPC.Think.cs` | BeginDeath 死亡盟友反应 SKIP | OnAllyKilled + Allies_Bring + DoReadyAlert + SetTurnTarget |
+| `HumanNPC.Think.cs` | BeginDeath 死亡盟友反应 SKIP | 人类版, 同上模式 |
+| `BaseNPC.Schedule.cs` | StartSchedule 门检查 SKIP | `OpeningDoor.IsValid()` 门检查 |
+| `HumanNPC.Think.cs` | DoChangeMovementType 20 行全 SKIP Source caps | 重构为 NavMeshAgent/Rigidbody Component 映射, 提升至 BaseNPC |
 
 #### 剩余待填
 | 文件 | 行/位置 | SKIP 内容 | 归属系统 |
@@ -736,7 +827,25 @@ Source C++:  f:/DevProject/Sbox/source-sdk-2013/
 
 18. ✅ HumanNPC 18/18 方法全部翻译完成  ← 2026-05-08
 
-19. 动画系统
+19. ✅ DamageInfo 落地 + 免疫链  ← 已完成 2026-05-09
+    全局 object dmginfo → DamageInfo，VJDamageTags+13，8 Is*Damage helper
+    OnTakeDamage Block A/C/E/F/J 填坑，Boss 绕过，ragdoll 免伤
+    TankNPC OnDamaged 翻译 (Physgun/Melee immunity)
+
+20. ✅ 实体标志系统  ← 已完成 2026-05-09
+    VJEntityFlags Component + HasEntityFlag helper
+    CheckForDangers 真实工作 (isDanger/Grenade/Grabbable)
+    ExecuteMeleeAttack/ExecuteLeapAttack VJ_ID_Attackable/Destructible 接线
+
+21. ✅ 盟友系统  ← 已完成 2026-05-09
+    Allies_Check/Allies_Bring/Allies_CallHelp 完整实现 (core.lua:2438-2584)
+    ResetEnemy Block 1 + OnTakeDamage M4/M6 + CreatureNPC/HumanNPC BeginDeath 接线
+
+22. ✅ 移动类型重构  ← 已完成 2026-05-09
+    DoChangeMovementType → NavMeshAgent/Rigidbody 映射, 提升至 BaseNPC
+    门系统 OpeningDoor + StartSchedule 检查
+
+23. 动画系统
     16 个 M 标记动画方法仍是 return 0/false
     TranslateActivity / UpdatePoseParamTracking / ExecuteMeleeAttack(覆写) 跳过
 
