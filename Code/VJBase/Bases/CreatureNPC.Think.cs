@@ -328,7 +328,9 @@ public partial class CreatureNPC
                                 d.OnDamage(dmgInfo);
                         }
                         // lua:2524-2541: Bleeding damage
-                        if (MeleeAttackBleedEnemy && isLiving && Game.Random.Next(1, MeleeAttackBleedEnemyChance + 1) == 1)
+                        // lua:2524 — (!ent.VJ_ID_Boss or self.VJ_ID_Boss) — boss guard: only bleed non-bosses (or if attacker is boss)
+                        bool targetIsBoss = BaseNPC.HasEntityFlag(ent, "VJ_ID_Boss");
+                        if (MeleeAttackBleedEnemy && isLiving && (!targetIsBoss || VJ_ID_Boss) && Game.Random.Next(1, MeleeAttackBleedEnemyChance + 1) == 1)
                         {
                             // SKIP: lua:2525-2541 — timer.Create bleed system — Phase 3 async timers
                         }
