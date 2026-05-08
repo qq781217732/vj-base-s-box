@@ -479,9 +479,9 @@ public partial class CreatureNPC
         if (IsFollowing) ResetFollowBehavior();
 
         // lua:3195 — dmgInflictor = dmginfo:GetInflictor()
-        // SKIP: lua:3195 — dmginfo:GetInflictor() — Source engine CTakeDamageInfo API
+        var dmgInflictor = dmginfo.Weapon; // S&Box: Weapon ≈ Source CTakeDamageInfo inflictor
         // lua:3196 — dmgAttacker = dmginfo:GetAttacker()
-        // SKIP: lua:3196 — dmginfo:GetAttacker() — Source engine CTakeDamageInfo API
+        var dmgAttacker = dmginfo.Attacker;
         // lua:3197 — myPos = self:GetPos()
         Vector3 myPos = WorldPosition;
 

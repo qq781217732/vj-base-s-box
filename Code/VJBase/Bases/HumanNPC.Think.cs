@@ -1145,7 +1145,7 @@ public partial class HumanNPC
 
         // ---- Block 10: Wander time + SetEnemy(null) (lua:3903-3904) ----
         // lua:3903 — selfData.NextWanderTime = curTime + math.Rand(3, 5)
-        NextWanderTime = curTime + 3 + (float)Game.Random.NextDouble() * 2;
+        NextWanderTime = curTime + VJUtility.Rand(3, 5);
         // lua:3904 — self:SetEnemy(NULL)
         SetEnemy(null);
 
@@ -1222,8 +1222,9 @@ public partial class HumanNPC
         // SKIP: lua:3941 — WaterLevel() > 1 → Extinguish() — Phase 3 water/fire system
 
         // ---- Block E: Boss bypass (lua:3944-3947) ----
-        // lua:3945-3946 — if dmgAttacker && selfData.ForceDamageFromBosses && dmgAttacker.VJ_ID_Boss then goto skip_immunity end
-        // SKIP: lua:3945-3946 — dmgAttacker.VJ_ID_Boss cross-entity read → goto skip_immunity — Phase 3 boss flag system
+        // lua:3945-3946 — if dmgAttacker && ForceDamageFromBosses && dmgAttacker.VJ_ID_Boss then goto skip_immunity
+        if (ForceDamageFromBosses && dmgAttacker.IsValid() && dmgAttacker.Components.Get<TankNPC>()?.VJ_ID_Boss == true)
+            goto skip_immunity;
 
         // ---- Block F: Immunity chain (lua:3949-3951) ----
         // lua:3950 — fire entity with ignition disabled → extinguish and block
