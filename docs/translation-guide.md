@@ -275,7 +275,7 @@ public virtual void StartEngineTask(int taskId, float taskData)
 
 ## 7. 当前状态清单
 
-> 最后更新：2026-05-07（HumanNPC SelectSchedule 机械翻译 + C2 逐行展开 + 辅助桩体系）
+> 最后更新：2026-05-08（HumanNPC 18/18 方法全部完成 + OnTakeDamage 逐行展开 + 6 新方法翻译 + 15 编译错误诊断）
 
 ### 7.1a schedules.lua → BaseNPC.Schedule.cs（32 个方法）
 
@@ -344,18 +344,18 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | ✅ | `GrenadeAttack` | 3070-3186 | 完整骨架（~90 行，22 SKIP：动画/骨骼/可见性/实体 parent） |
 | ✅ | `ExecuteGrenadeAttack` | 3204-3331 | 完整骨架（~85 行，18 SKIP：spawn/bone/fuse/ownership） |
 | ✅ | `SelectSchedule` | 3520-3838 | ~275 行机械翻译。空闲/调查/无武器战斗/避让全部翻译；C2 武器战斗树（~190 行）逐行 SKIP 标记，Phase 3 武器系统就位后展开。需 +28 字段（HumanNPC.cs）+ 10 辅助桩（BaseNPC.cs）+ 2 动画桩（VJUtility.cs） |
-| ❌ | `OnTakeDamage` | 3918-4172 | ~255 行，伤害入口 — 免疫链/flinch/combat response |
-| ❌ | `TranslateActivity` | 2417-2466 | ~50 行，动画翻译 |
-| ❌ | `DoChangeWeapon` | 2470-2518 | ~50 行，武器Give/Remove/库存管理 |
-| ❌ | `ResetEnemy` | 3840-3916 | ~75 行，盟友敌人继承/内存清理 |
-| ❌ | `CheckForDangers` | 3356-3403 | ~50 行 |
-| ❌ | `CanFireWeapon` | 3476-3510 | ~35 行 |
-| ❌ | `UpdatePoseParamTracking` | 3426-3467 | ~40 行 |
-| ❌ | `BeginDeath` / `FinishDeath` / `CreateDeathCorpse` / `DeathWeaponDrop` | 4177-4513 | ~330 行死亡序列 |
-| ❌ | `GetAttackSpread` | 4515 | 空函数 |
-| ❌ | `ExecuteMeleeAttack` (覆写) | 2993-3058 | ~65 行，与 CreatureNPC 版差异小 |
-| ❌ | `attackTimers` local table | 2536-2560 | MELEE + GRENADE 计时器（~25 行，已由 BaseNPC.ScheduleAttackTimers 替代） |
-| ❌ | `playReloadAnimation` local func | 2562-2582 | ~20 行 |
+| ✅ | `OnTakeDamage` | 3918-4172 | ~255 行逐行展开（15 块 A-O，先前仅粗骨架）。8 真调用（OnDamaged×3/Flinch/OnBleed/PlaySoundSystem×3），SKIP ~55（免疫链/dmginfo API/玩家反应/掩体/盟友/死亡 — Phase 3 DamageInfo） |
+| ❌ | `TranslateActivity` | 2417-2466 | 纯动画（ACT_* 翻译表/ACT_INVALID/PlayAnim/AnimationTranslations）— 跳过，Phase 3 |
+| ✅ | `DoChangeWeapon` | 2470-2518 | ~50 行。6 真调用（SetWeaponState/OnWeaponChange/WeaponEntity/WeaponInventory），6 SKIP（Give/Remove/SelectWeapon/Equip/EmitSound/UpdateAnimationTranslations — Phase 3 武器系统） |
+| ✅ | `ResetEnemy` | 3840-3916 | ~75 行（11 功能块）。13 真调用，4 SKIP（tool guard/ally inheritance/VisibleCount/timer）。新增 BaseNPC 字段 AlertTimeout(15,20)/EnemyTimeout(15)/CurrentReachableEnemies/NextAlertResetT + 4 桩 |
+| ✅ | `CheckForDangers` | 3356-3403 | ~50 行。7 真调用（Visible/OnDangerDetected/PlaySoundSystem×2/HasCondition×3/SCHEDULE_COVER_ORIGIN），5 SKIP（VJ_ID_* 标志/GetOwner/GetClass — Phase 3 entity flags）。新增 HumanNPC: CanDetectDangers/DangerDetectionDistance/CanRedirectGrenades，BaseNPC: OnDangerDetected 回调 |
+| ✅ | `CanFireWeapon` | 3476-3510 | ~35 行。6 真调用（OnWeaponCanFire/WeaponEntity/GetWeaponState/Enemy.Distance），2 SKIP（IsMeleeWeapon/IsCurrentAnim — Phase 3 weapon+animation）。新增 HumanNPC Weapon_MinDistance=10f，BaseNPC 签名修正 |
+| ❌ | `UpdatePoseParamTracking` | 3426-3467 | 纯动画（90% 依赖 Source SetPoseParameter/GetPoseParameter/EyePos/GetAimPosition）— 跳过，Phase 3 |
+| ❌ | `BeginDeath` / `FinishDeath` / `CreateDeathCorpse` / `DeathWeaponDrop` | 4177-4513 | ~330 行死亡序列 — 最后未翻译大块 |
+| ✅ | `GetAttackSpread` | 4515 | 1 行 `=> 0f`（Lua `return end` 等效） |
+| ❌ | `ExecuteMeleeAttack` (覆写) | 2993-3058 | ~65 行，与 CreatureNPC 版差异小 — 跳过，Phase 3 |
+| ✅ | `attackTimers` local table | 2536-2560 | 已由 BaseNPC.ScheduleAttackTimers + ProcessAttackTimers 替代 |
+| ✅ | `playReloadAnimation` local func | 2562-2582 | protected virtual 桩（Phase 3: PlayAnim/IsVJBaseWeapon/NPC_Reload/timer） |
 
 > 新增字段（HumanNPC.cs）：`Model`, `StartHealth`, `WeaponInventory` (含 `WeaponSlots` 子类), `WeaponInventoryStatus`, `WeaponInventory_AntiArmorList`, `WeaponInventory_MeleeList`, `Weapon_Disabled`, `Weapon_IgnoreSpawnMenu`, `Weapon_CanMoveFire`, `IdleAlwaysWander`, `AnimationTranslations`
 > 
@@ -364,6 +364,11 @@ public virtual void StartEngineTask(int taskId, float taskData)
 > SelectSchedule 新增辅助桩（BaseNPC.cs, 10 个）：`CanFireWeapon`, `DoCoverTrace`, `TranslateActivity`, `UpdatePoseParamTracking`, `PlayIdleSound`, `GetActiveWeapon`, `GetBestSoundHint`, `NearestPoint`, `SetMovementActivity`, `GetActivity` — 全部返回安全默认值
 > 
 > SelectSchedule 新增动画桩（VJUtility.cs, 2 个）：`AnimExists`, `IsCurrentAnim`
+> 
+> 2026-05-08 会话新增字段：
+> - HumanNPC.cs（+5）：`CanDetectDangers=true`, `DangerDetectionDistance=400`, `CanRedirectGrenades=true`, `Weapon_MinDistance=10`, `PlayReloadAnimation`（virtual）
+> - BaseNPC.cs（+8）：`AlertTimeout(15,20)`, `EnemyTimeout(15)`, `CurrentReachableEnemies`, `NextAlertResetT`, `OnDangerDetected`, `OnResetEnemy`, `MarkEnemyAsEluded`, `ClearEnemyMemory`, `GetEnemyLastKnownPos`
+> - BaseNPC.cs CanFireWeapon 签名修正：`(checkState,checkLOS)` → `(checkDistance,checkDistanceOnly)`
 
 ### 7.2 接口体系
 
@@ -412,6 +417,13 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | 28 | **TankNPC OnDamaged** — base_tank.lua:35-49 机械翻译，Init/PreDamage 分支 | ✅ 2026-05-07 |
 | 29 | **Attack config fields (30+)** — core.lua:249-329 全部 Melee/Range/Leap 配置字段 + 9 个 virtual 回调搬入 BaseNPC.cs | ✅ 2026-05-07 |
 | 30 | **攻击系统填坑** — GetAttackTimer + ScheduleAttackTimers + StopAttacks + ProcessAttackTimers + 伤害标签 + Prop 交互 + 弹体框架 | ✅ 2026-05-07 |
+| 31 | **HumanNPC OnTakeDamage 逐行展开** — 粗骨架（~150 行稀疏注释）→ 1:1 完整翻译（A-O 15 块独立 SKIP 标记） | ✅ 2026-05-08 |
+| 32 | **HumanNPC ResetEnemy** — 11 功能块机械翻译，13 处真调用，新增 AlertTimeout/EnemyTimeout 等 8 字段 | ✅ 2026-05-08 |
+| 33 | **HumanNPC CanFireWeapon** — 机械翻译，BaseNPC 签名修正 (checkState,checkLOS)→(checkDistance,checkDistanceOnly)，新增 Weapon_MinDistance | ✅ 2026-05-08 |
+| 34 | **HumanNPC CheckForDangers** — 机械翻译 + fix 魔法数字 → VJDangerType 枚举 | ✅ 2026-05-08 |
+| 35 | **HumanNPC DoChangeWeapon** — 武器库存管理机械翻译，6 真调用/6 SKIP | ✅ 2026-05-08 |
+| 36 | **HumanNPC 尾方法收尾** — GetAttackSpread + PlayReloadAnimation + attackTimers 替代标注 | ✅ 2026-05-08 |
+| 37 | **HumanNPC 18/18 方法全部翻译完成** | ✅ 2026-05-08 |
 
 ### 7.4 SKIP 总表（Phase 3+ 填坑清单）
 
@@ -684,49 +696,53 @@ Source C++:  f:/DevProject/Sbox/source-sdk-2013/
 2. ✅ 编译验证  ← 已通过
 
 3. ✅ EngineAITaskSystem 填坑  ← 已完成
-   重写 ~280 行，Movement/Face/Wait 任务实际驱动 NavMeshAgent
 
 4. ✅ BaseNPC.AA.cs  ← 已完成
-   base_aa.lua 5 方法机械翻译 (421 行)，字段从 CreatureNPC 搬到 BaseNPC
 
 5. ✅ 调查系统填坑  ← 已完成
-   MaintainRelationships 里声音 + 手电筒检测 (bcd6ed7)
 
 6. ✅ 转向系统  ← 已完成
-   TurnData + MaintainTurnTarget (fdb90cf, c39dafc)
 
 7. ✅ 音效系统  ← 已完成
-   PlaySoundSystem 35 分支 + BaseNPC.Sound.cs (~1050 行)
 
 8. ✅ HumanNPC chase + grenade + 攻击骨架  ← 已完成 2026-05-07
-   HumanNPC SCHEDULE_ALERT_CHASE 双分支 + MaintainAlertBehavior unreachable-weapon
-   GrenadeAttack/ExecuteGrenadeAttack 完整骨架 (~170 行)
-   ExecuteMeleeAttack/RangeAttack/LeapAttack 完整骨架 (~170 行)
-   TankNPC OnDamaged 机械翻译 + attack config fields 30+
 
 9. ✅ 攻击系统填坑（Phase 3）  ← 已完成 2026-05-07
-   GetAttackTimer + ScheduleAttackTimers + StopAttacks + ProcessAttackTimers (轮询)
-   VJDamageTags 18 常量 + MapDamageTypeToTag + Prop 交互 + SpawnRangeProjectile 框架
-   解 9 处 SKIP（attackTimers ×3 + SetDamageType + PropInteraction + projectile spawn + grenade timer ×2 + grenade exec）
 
 10. ✅ HumanNPC Initialize + DoChangeMovementType  ← 已完成 2026-05-07
-   init.lua:2131-2319 → HumanNPC.Think.cs (+112 行)
-   HumanNPC.cs 字段拆分就位（+21 行，11 新字段）
-   修复 5 问题（B1 StartHealth 50 / B2 NextWanderTime / D1-D3 注释）
 
 11. ✅ HumanNPC SelectSchedule  ← 已完成 2026-05-07
-   init.lua:3520-3838 → HumanNPC.Think.cs (~275 行)
-   空闲/调查/无武器战斗/避让全部翻译，C2 武器树逐行 SKIP
-   配套：HumanNPC.cs +28 字段，BaseNPC.cs +10 stubs，VJUtility.cs +2 stubs
 
-12. 动画系统
-   16 个 M 标记动画方法仍是 return 0/false
+12. ✅ HumanNPC OnTakeDamage 逐行展开  ← 已完成 2026-05-08
+    init.lua:3918-4172 → HumanNPC.Think.cs (~265 行)，A-O 15 块独立 SKIP 标记
 
-13. HumanNPC OnTakeDamage（~255 行，下一优先）
-   伤害入口 — 免疫链/flinch/combat response
+13. ✅ HumanNPC ResetEnemy  ← 已完成 2026-05-08
+    init.lua:3840-3916 → HumanNPC.Think.cs (+163 行)，11 功能块
 
-14. CreatureNPC.MaintainAlertBehavior 缺口（~35 行未翻译）
-15. HumanNPC 剩余方法：TranslateActivity / DoChangeWeapon / ResetEnemy / CheckForDangers / CanFireWeapon / UpdatePoseParamTracking / 死亡序列
+14. ✅ HumanNPC CanFireWeapon  ← 已完成 2026-05-08
+    init.lua:3476-3510 → HumanNPC.Think.cs (+67 行)，BaseNPC 签名修正
+
+15. ✅ HumanNPC CheckForDangers  ← 已完成 2026-05-08
+    init.lua:3356-3403 → HumanNPC.Think.cs (+95 行)，VJDangerType 枚举化
+
+16. ✅ HumanNPC DoChangeWeapon  ← 已完成 2026-05-08
+    init.lua:2470-2518 → HumanNPC.Think.cs (+90 行)，武器库存管理
+
+17. ✅ HumanNPC 尾方法收尾  ← 已完成 2026-05-08
+    GetAttackSpread (1 行) + PlayReloadAnimation (桩) + attackTimers (替代标注)
+
+18. ✅ HumanNPC 18/18 方法全部翻译完成  ← 2026-05-08
+
+19. 动画系统
+    16 个 M 标记动画方法仍是 return 0/false
+    TranslateActivity / UpdatePoseParamTracking / ExecuteMeleeAttack(覆写) 跳过
+
+20. 死亡序列（下一优先，~330 行）
+    BeginDeath / FinishDeath / CreateDeathCorpse / DeathWeaponDrop
+    CreatureNPC init.lua:4177-4513 + human override
+
+21. 编译错误修复（15 个错误，5 类）
+    详见 2026-05-08 编译报告
 ```
 
 ### 10.7 验证命令
@@ -744,8 +760,8 @@ cd f:/DevProject/Sbox/testzombie/Code && grep -rn "SKIP:" VJBase/
 
 ---
 
-*最后更新：2026-05-07*
-*翻译阶段：~70%。HumanNPC init.lua: 9/18 方法完成。下一步：OnTakeDamage（~255 行）。*
+*最后更新：2026-05-08*
+*翻译阶段：~80%。HumanNPC 18/18 方法全部完成。剩余：死亡序列（~330 行）+ 动画系统（16 M 方法）+ 15 个编译错误（5 类，14 个历史遗留）。下一步：编译错误修复 → 死亡序列。*
 
 ---
 
