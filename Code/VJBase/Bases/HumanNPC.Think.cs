@@ -1250,7 +1250,7 @@ public partial class HumanNPC
 
         // ---- Block E: Boss bypass (lua:3944-3947) ----
         // lua:3945-3946 — if dmgAttacker && ForceDamageFromBosses && dmgAttacker.VJ_ID_Boss then goto skip_immunity
-        if (ForceDamageFromBosses && dmgAttacker.IsValid() && dmgAttacker.Components.Get<TankNPC>()?.VJ_ID_Boss == true)
+        if (ForceDamageFromBosses && dmgAttacker.IsValid() && BaseNPC.HasEntityFlag(dmgAttacker, "VJ_ID_Boss"))
             goto skip_immunity;
 
         // ---- Block F: Immunity chain (lua:3949-3951) ----

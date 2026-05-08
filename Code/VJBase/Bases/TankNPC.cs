@@ -106,7 +106,7 @@ public partial class TankNPC : CreatureNPC
         // lua:43-48: PreDamage — filter melee damage unless from boss and strong enough
         else if (status == "PreDamage" && (IsMeleeDamage(dmginfo) || dmginfo.Tags.Has(VJDamageTags.Generic)))
         {
-            if (dmginfo.Damage >= 30 && dmginfo.Attacker?.Components.Get<TankNPC>()?.VJ_ID_Boss == true)
+            if (dmginfo.Damage >= 30 && BaseNPC.HasEntityFlag(dmginfo.Attacker, "VJ_ID_Boss"))
                 dmginfo.Damage /= 2;
             else
                 dmginfo.Damage = 0;
