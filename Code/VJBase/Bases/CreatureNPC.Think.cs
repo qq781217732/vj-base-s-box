@@ -410,11 +410,12 @@ public partial class CreatureNPC
             {
                 // lua:2678: ent == self or ent:GetClass() == myClass → skip self, skip same NPC type
                 if (ent == GameObject) continue;
-                // SKIP: GetClass() comparison — Source-specific, Phase 3 replace with component type check
+                var entBase2 = ent.Components.Get<BaseNPC>();
+                if (entBase2 != null && entBase2.VJ_NPC_Class.Any(c => VJ_NPC_Class.Contains(c))) continue;
                 // SKIP: lua:2679 — ent.IsVJBaseBullseye && ent.VJ_IsBeingControlled — Phase 3 bullseye
                 // SKIP: lua:2680 — ent:IsPlayer() / VJ_IsControllingNPC / Alive / VJ_CVAR_IGNOREPLAYERS — Phase 3 player
                 // lua:2681 — disposition check
-                bool isLiving = ent.Components.Get<BaseNPC>()?.IsVJBaseSNPC ?? false;
+                bool isLiving = entBase2?.IsVJBaseSNPC ?? false;
                 // SKIP: lua:2681 — ent.VJ_ID_Attackable / ent.VJ_ID_Destructible — Phase 3 entity flags
                 if (isLiving && Disposition(ent) != (int)VJBase.Disposition.Like)
                 {
