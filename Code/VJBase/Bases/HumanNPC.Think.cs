@@ -1540,8 +1540,8 @@ public partial class HumanNPC
         // lua:4276 — combine ball → HasDeathAnimation = false
         // SKIP: lua:4276 — dmgInflictor:GetClass()=="prop_combine_ball" — Phase 3 entity type
         // lua:4277 — if self.HasDeathAnimation && VJ_CVAR_AI_ENABLED && !DMG_REMOVENORAGDOLL && !DMG_DISSOLVE && NavType!=CLIMB && random <= DeathAnimationChance
-        // SKIP: lua:4277 — DMG_* bit checks / VJ_CVAR_AI_ENABLED / NavType — Phase 3 damage constants + convar
-        if (HasDeathAnimation && DeathAnimationChance > 0)
+        // SKIP: lua:4277 — DMG_* bit checks / VJ_CVAR_AI_ENABLED / NavType!=CLIMB — Phase 3 damage constants + convar + nav system
+        if (HasDeathAnimation && Game.Random.Next(1, Math.Max(1, DeathAnimationChance) + 1) == 1)
         {
             // lua:4278 — self:RemoveAllGestures()
             RemoveAllGestures();

@@ -565,8 +565,8 @@ public partial class CreatureNPC
         // lua:3289 — combine ball → HasDeathAnimation = false
         // SKIP: lua:3289 — dmgInflictor:GetClass()=="prop_combine_ball" — Phase 3 entity type
         // lua:3290 — if self.HasDeathAnimation && VJ_CVAR_AI_ENABLED && !DMG_REMOVENORAGDOLL && !DMG_DISSOLVE && NavType!=CLIMB && random <= DeathAnimationChance
-        // SKIP: lua:3290 — DMG_* bit checks / VJ_CVAR_AI_ENABLED — Phase 3 damage constants + convar
-        if (HasDeathAnimation && DeathAnimationChance > 0)
+        // SKIP: lua:3290 — DMG_* bit checks / VJ_CVAR_AI_ENABLED / NavType!=CLIMB — Phase 3 damage constants + convar + nav system
+        if (HasDeathAnimation && Game.Random.Next(1, Math.Max(1, DeathAnimationChance) + 1) == 1)
         {
             // lua:3291 — self:RemoveAllGestures()
             RemoveAllGestures();
