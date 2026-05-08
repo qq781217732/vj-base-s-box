@@ -480,7 +480,7 @@ public partial class HumanNPC
                     // lua:3366 — curTime = CurTime()
                     float curTime = Time.Now;
                     // lua:3367 — if !self:PlaySoundSystem("GrenadeSight") then self:PlaySoundSystem("DangerSight") end
-                    if (!PlaySoundSystem("GrenadeSight"))
+                    if (PlaySoundSystem("GrenadeSight") == 0f)
                         PlaySoundSystem("DangerSight");
                     // lua:3368 — selfData.NextDangerDetectionT = curTime + 4
                     NextDangerDetectionT = curTime + 4;
@@ -622,7 +622,7 @@ public partial class HumanNPC
                 {
                     Weapon_UnarmedBehavior_Active = false;                  // lua:3597
                     NextDangerDetectionT = curTime + 4;                    // lua:3598
-                    MaintainAlertBehavior();                                // lua:3599
+                    MaintainAlertBehavior(false);                           // lua:3599
                     return;                                                 // lua:3600
                 }
                 // lua:3602: Fallback — idle, then fall through to goto_conditions
@@ -992,7 +992,7 @@ public partial class HumanNPC
             var rb = grenade.Components.Get<Rigidbody>();
             if (rb != null)
             {
-                rb.Wake();
+                rb.Sleeping = false;
                 // SKIP: lua:3317 — AddAngleVelocity — Phase 3
                 rb.Velocity = vel;
             }
@@ -1445,7 +1445,7 @@ public partial class HumanNPC
     /// Play reload animation and schedule reload-complete timer.
     /// Source: init.lua local function, used by SelectSchedule reload logic.
     /// </summary>
-    protected virtual bool PlayReloadAnimation(GameObject anims)
+    protected virtual bool PlayReloadAnimation(object anims)
     {
         // lua:2563 — anim, animDur, animType = self:PlayAnim(anims, true, false, "Visible")
         // SKIP: lua:2563 — PlayAnim(anims, true, false, "Visible") — Phase 3 animation

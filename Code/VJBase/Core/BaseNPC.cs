@@ -471,7 +471,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
             .WithoutTags("npc")
             .IgnoreGameObjectHierarchy(GameObject)
             .Run();
-        return !tr.Hit || tr.EndPos.Distance(pos) < 4f;
+        return !tr.Hit || tr.EndPosition.Distance(pos) < 4f;
     }
 
     public virtual bool Visible(GameObject ent)
@@ -730,6 +730,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public virtual void OnResetEnemy() { }
     public virtual void MarkEnemyAsEluded(GameObject ent) { }
     public virtual void ClearEnemyMemory(GameObject ent) { }
+    public virtual void MaintainAlertBehavior(bool alwaysChase) { }
     public virtual Vector3 GetEnemyLastKnownPos() => Vector3.Zero;
 
     // ═══ Cleanup ═══
@@ -795,7 +796,6 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     }
 
     public float GetIdealYaw() => IdealYaw;
-    public bool IsFacingIdealYaw() => false; // Phase 3
     public void SetIdealYawAndUpdate(float yaw) => IdealYaw = yaw;
     public float GetMoveDelay() => MoveDelay;
 

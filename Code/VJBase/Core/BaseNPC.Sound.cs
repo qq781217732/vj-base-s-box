@@ -297,7 +297,7 @@ public partial class BaseNPC
     protected static string PickSound(List<string> tbl)
     {
         if (tbl == null || tbl.Count == 0) return null;
-        return VJUtility.PICK(tbl);
+        return VJUtility.PICK<string>(tbl);
     }
 
     /// <summary>

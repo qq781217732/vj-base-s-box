@@ -275,7 +275,7 @@ public partial class CreatureNPC
                             if (rb != null)
                             {
                                 rb.Enabled = true;
-                                rb.Wake();
+                                rb.Sleeping = false;
                                 // SKIP: lua:2485 — constraint.RemoveConstraints(ent, "Weld") — Phase 3 joint system
                                 // lua:2475 — true/"OnlyDamage" + health → applyDmg = true
                                 // SKIP: lua:2475 — ent:Health() / ent:GetInternalVariable("m_takedamage") — Phase 3
@@ -319,7 +319,8 @@ public partial class CreatureNPC
                             // SKIP: lua:2517 — SetDamageForce — Phase 3 (S&Box: apply force separately on Rigidbody)
                             dmgInfo.Attacker = GameObject;
                             // SKIP: lua:2520 — VJ.DamageSpecialEnts — Phase 3 damage utility
-                            ent.TakeDamage(dmgInfo);
+                            // SKIP: lua:2521 — ent:TakeDamage(dmgInfo) — S&Box damage via IDamageable.OnDamage, Phase 3
+                            // ent.TakeDamage(dmgInfo);
                         }
                         // lua:2524-2541: Bleeding damage
                         if (MeleeAttackBleedEnemy && isLiving && Game.Random.Next(1, MeleeAttackBleedEnemyChance + 1) == 1)
@@ -374,7 +375,7 @@ public partial class CreatureNPC
             if (!OnRangeAttackExecute("Init", ene))
             {
                 // lua:2633: PICK projectile class
-                var projectileClass = VJUtility.PICK(RangeAttackProjectiles) ?? VJUtility.PICK(RangeAttackEntityToSpawn);
+                var projectileClass = VJUtility.PICK<string>(RangeAttackProjectiles) ?? VJUtility.PICK<string>(RangeAttackEntityToSpawn);
                 if (projectileClass != null)
                 {
                     // lua:2635-2657 — spawn projectile via virtual dispatch
@@ -424,7 +425,8 @@ public partial class CreatureNPC
                         // SKIP: lua:2690 — SetDamageType(LeapAttackDamageType) — Phase 3 damage type mapping
                         // SKIP: lua:2691 — SetDamageForce — Phase 3 damage force
                         dmgInfo.Attacker = GameObject;
-                        ent.TakeDamage(dmgInfo);
+                        // SKIP: lua:2692 — ent:TakeDamage(dmgInfo) — S&Box damage via IDamageable.OnDamage, Phase 3
+                        // ent.TakeDamage(dmgInfo);
                     }
                     // SKIP: lua:2694-2695 — ent:IsPlayer() / ViewPunch — Phase 3 player system
                     hitRegistered = true;

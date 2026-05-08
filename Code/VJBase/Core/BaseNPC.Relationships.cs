@@ -305,7 +305,7 @@ public partial class BaseNPC
                         var myHandle = HandlePerceivedRelationship;
                         if (myHandle != null)
                         {
-                            var result = myHandle(this, ent, distanceToEnt, false);
+                            var result = myHandle(this.GameObject, ent, distanceToEnt, false);
                             entBase.AddEntityRelationship(GameObject, result ?? (int)VJBase.Disposition.Hate, 0);
                         }
                         else
