@@ -1435,4 +1435,39 @@ public partial class HumanNPC
         // lua:4171 — return 1
         return 1;
     }
+
+    // ═══ GetAttackSpread — human_base/init.lua:4515 ═══
+    /// <summary>Weapon spread modifier. Lua returns nil (= 0 spread). Override in derived types.</summary>
+    public virtual float GetAttackSpread(GameObject wep, GameObject target) => 0f;
+
+    // ═══ playReloadAnimation (local func) — human_base/init.lua:2562-2582 ═══
+    /// <summary>
+    /// Play reload animation and schedule reload-complete timer.
+    /// Source: init.lua local function, used by SelectSchedule reload logic.
+    /// </summary>
+    protected virtual bool PlayReloadAnimation(GameObject anims)
+    {
+        // lua:2563 — anim, animDur, animType = self:PlayAnim(anims, true, false, "Visible")
+        // SKIP: lua:2563 — PlayAnim(anims, true, false, "Visible") — Phase 3 animation
+        // lua:2564 — if anim != ACT_INVALID then
+        // SKIP: lua:2564 — ACT_INVALID comparison — Phase 3 animation
+        // lua:2565 — wep = self.WeaponEntity
+        // lua:2566 — if wep.IsVJBaseWeapon then wep:NPC_Reload() end
+        // SKIP: lua:2566 — IsVJBaseWeapon + NPC_Reload() — Phase 3 weapon interface
+        // lua:2567-2573 — timer.Create("wep_reload_reset", animDur, ...) reload-complete
+        // SKIP: lua:2567-2573 — timer.Create + SetClip1 + GetMaxClip1 + OnReload + SetWeaponState — Phase 3 timer + weapon
+        // lua:2574 — self.AllowWeaponOcclusionDelay = false
+        AllowWeaponOcclusionDelay = false;
+        // lua:2576-2578 — if !VJ_IsBeingControlled && animType == ANIM_TYPE_GESTURE then StopMoving() end
+        // SKIP: lua:2576 — animType == ANIM_TYPE_GESTURE — Phase 3 animation
+        // lua:2579 — return true (reload animation ran successfully)
+        // lua:2581 — return false (animation invalid)
+        return false; // Phase 3: PlayAnim returns real animation
+    }
+
+    // ═══ attackTimers (local table) — human_base/init.lua:2536-2560 ═══
+    // Replaced by BaseNPC.ScheduleAttackTimers() + ProcessAttackTimers() (timer→polling).
+    // MELEE timer → AttackResetTime/AttackReEnableTime in ScheduleAttackTimers()
+    // GRENADE timer → AttackResetTime/GrenadeExecTime/NextThrowGrenadeT in ScheduleAttackTimers()
+    // Both polled in ProcessAttackTimers() called from Think.
 }
