@@ -275,7 +275,7 @@ public virtual void StartEngineTask(int taskId, float taskData)
 
 ## 7. 当前状态清单
 
-> 最后更新：2026-05-09（DamageInfo 落地 + 免疫链 + 实体标志 + 盟友系统 + 移动类型重构）
+> 最后更新：2026-05-09（武器 Phase 1 + DamageInfo + 免疫链 + 实体标志 + 盟友系统 + 移动类型重构）
 
 ### 7.1a schedules.lua → BaseNPC.Schedule.cs（32 个方法）
 
@@ -351,9 +351,9 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | ✅ | `CheckForDangers` | 3356-3403 | ~50 行。**2026-05-09 接线**：实体标志系统落地后 isDanger/isGrenade 真实读取 + VJ_ID_Grabbable/VJ_ST_Grabbed 手雷重定向 + SCHEDULE_COVER_ORIGIN。新增 HumanNPC: CanDetectDangers/DangerDetectionDistance/CanRedirectGrenades，BaseNPC: OnDangerDetected 回调 |
 | ✅ | `CanFireWeapon` | 3476-3510 | ~35 行。6 真调用（OnWeaponCanFire/WeaponEntity/GetWeaponState/Enemy.Distance），2 SKIP（IsMeleeWeapon/IsCurrentAnim — Phase 3 weapon+animation）。新增 HumanNPC Weapon_MinDistance=10f，BaseNPC 签名修正 |
 | ❌ | `UpdatePoseParamTracking` | 3426-3467 | 纯动画（90% 依赖 Source SetPoseParameter/GetPoseParameter/EyePos/GetAimPosition）— 跳过，Phase 3 |
-| ✅ | `BeginDeath` | 4177-4298 | ~122 行机械翻译（human override），12 块，~22 SKIP |
-| ✅ | `FinishDeath` | 4300-4310 | ~11 行机械翻译（human override，加 DeathWeaponDrop） |
-| ✅ | `CreateDeathCorpse` | 4314-4482 | ~168 行机械翻译（human override，加 WeaponEntity 跟踪） |
+| ✅ | `BeginDeath` | 4177-4298 | ~122 行（human override）。**2026-05-09**: 死亡动画 guard DMG_DISSOLVE+NavType | 
+| ✅ | `FinishDeath` | 4300-4310 | ~11 行（human override）。**2026-05-09**: DMG_REMOVENORAGDOLL→Tags.Has(Dissolve) 守卫 |
+| ✅ | `CreateDeathCorpse` | 4314-4482 | ~168 行（human override）。**2026-05-09**: SavedDmgInfo 真实 DamageInfo 字段 |
 | ✅ | `DeathWeaponDrop` | 4484-4513 | ~30 行机械翻译（human only，8 SKIP） |
 | ✅ | `GetAttackSpread` | 4515 | 1 行 `=> 0f`（Lua `return end` 等效） |
 | ❌ | `ExecuteMeleeAttack` (覆写) | 2993-3058 | ~65 行，与 CreatureNPC 版差异小 — 跳过，Phase 3 |
@@ -499,6 +499,8 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | 43 | **盟友 3 处修正** — Allies_Bring+SetLastPosition, PassiveNature+同族守卫 | ✅ 2026-05-09 |
 | 44 | **门系统** — OpeningDoor 字段 + StartSchedule 门检查 | ✅ 2026-05-09 |
 | 45 | **DoChangeMovementType 重构** — Source MoveType→NavMeshAgent/Rigidbody, 提升至 BaseNPC | ✅ 2026-05-09 |
+| 46 | **武器系统 Phase 1** — IVJBaseWeapon 接口 + VJBaseWeapon Component + GetActiveWeapon/DoChangeWeapon/SetWeaponState/CanFireWeapon/PlayReloadAnimation/SelectSchedule C2 填坑, ~18 SKIP 消除 | ✅ 2026-05-09 |
+| 47 | **死亡序列 DMG_REMOVENORAGDOLL** — SavedDmgInfo 真实字段 + Tags.Has(Dissolve) + NavType!=Climb (CreatureNPC+HumanNPC) | ✅ 2026-05-09 |
 
 ### 7.4 SKIP 总表（Phase 3+ 填坑清单）
 
@@ -561,7 +563,7 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | `BaseNPC.cs` | SelectSchedule 所需辅助方法缺失 | `CanFireWeapon` / `DoCoverTrace` / `TranslateActivity` / `UpdatePoseParamTracking` / `PlayIdleSound` / `GetActiveWeapon` / `GetBestSoundHint` / `NearestPoint` / `SetMovementActivity` / `GetActivity` — 全部 Phase 3 桩返回安全默认值 |
 | `VJUtility.cs` | `AnimExists` / `IsCurrentAnim` 缺失 | 动画存在/当前动画检查桩 |
 
-#### 已解决（2026-05-09 会话 — DamageInfo + 实体标志 + 盟友 + 移动类型）
+#### 已解决（2026-05-09 会话 — Weapon Phase 1 + DamageInfo + 实体标志 + 盟友 + 移动类型）
 | 文件 | 原 SKIP | 解决方案 |
 |------|---------|----------|
 | 全局 | `object dmginfo` 占位参数 | 全部替换为 `DamageInfo`，8 BaseNPC method + 5 HumanNPC callback + 2 CreatureNPC + 2 TankNPC 签名改版 |
@@ -579,6 +581,19 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | `HumanNPC.Think.cs` | BeginDeath 死亡盟友反应 SKIP | 人类版, 同上模式 |
 | `BaseNPC.Schedule.cs` | StartSchedule 门检查 SKIP | `OpeningDoor.IsValid()` 门检查 |
 | `HumanNPC.Think.cs` | DoChangeMovementType 20 行全 SKIP Source caps | 重构为 NavMeshAgent/Rigidbody Component 映射, 提升至 BaseNPC |
+| `CreatureNPC.Think.cs` | CreateDeathCorpse SavedDmgInfo 7 SKIP + FinishDeath DMG_REMOVENORAGDOLL + BeginDeath 死亡动画 guard | DamageInfo 真实字段 + Tags.Has(Dissolve) + NavType!=Climb |
+| `HumanNPC.Think.cs` | CreateDeathCorpse SavedDmgInfo 7 SKIP + FinishDeath DMG_REMOVENORAGDOLL (含 DeathWeaponDrop) + BeginDeath 死亡动画 guard | 同上 |
+
+#### 剩余待填
+| `IVJBaseWeapon.cs` | 无此文件 | 新建接口 (9 成员: IsVJBaseWeapon/IsMeleeWeapon/HoldType/Equip/Unequip/Clip1/MaxClip1/SetClip1/NPC_Reload) |
+| `VJBaseWeapon.cs` | 无此文件 | 新建 Component 实现 IVJBaseWeapon, [Property] 可配置 |
+| `BaseNPC.cs` | GetActiveWeapon() 永远返回 null | HumanNPC override → 返回 WeaponEntity |
+| `HumanNPC.cs` | GetActiveWeapon/IsMeleeWeapon/IsVJBaseWeapon 缺失 | +override GetActiveWeapon + static IsWeaponVJBase/IsWeaponMelee/GetWeaponComponent + CheckWeaponState override |
+| `HumanNPC.Think.cs` | SetWeaponState 空壳 | 计时器状态机 (NextWeaponStateChangeT polling) |
+| `HumanNPC.Think.cs` | DoChangeWeapon Give/Remove/SelectWeapon/Equip 全 SKIP | 完整实现: Destroy/Children search/new GameObject+Create<VJBaseWeapon>/IVJBaseWeapon.Equip |
+| `HumanNPC.Think.cs` | CanFireWeapon IsMeleeWeapon 分支 SKIP | if/else IsMeleeWeapon → melee vs ranged distance check |
+| `HumanNPC.Think.cs` | PlayReloadAnimation IsVJBaseWeapon+NPC_Reload SKIP | IVJBaseWeapon.NPC_Reload() 真实调用 |
+| `HumanNPC.Think.cs` | SelectSchedule C2 IsVJBaseWeapon/IsMeleeWeapon ×5 SKIP | 全部替换为 IsWeaponVJBase()/IsWeaponMelee() 真实检查 + else(C2c-v) 语法 |
 
 #### 剩余待填
 | 文件 | 行/位置 | SKIP 内容 | 归属系统 |
@@ -594,7 +609,6 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | `BaseNPC.Sound.cs` | — | `SoundLevel` (dB) 未映射到 S&Box 衰减 (`Distance`/`Decibels`) | 音效 |
 | `BaseNPC.Sound.cs` | — | `GetSoundDuration()` 硬编码 fallback，非真实音效文件时长 | 音效 |
 | `BaseNPC.Schedule.cs` | — | `RememberUnreachable` / `IsUnreachable` — Source 引擎敌人记忆 API | 敌人记忆 |
-| `HumanNPC.cs` | — | `IsMeleeWeapon` — 武器近战检测，Phase 3 武器系统 | 武器系统 |
 | `CreatureNPC.Think.cs` | — | `IsNextBot` / `loco:Approach` / `ViewPunch` / `SetDSP` / `DoMeleeAttackPlayerSpeed` | 玩家系统 |
 | `HumanNPC.cs` | — | `LookupAttachment` / `GetAttachment` / `LookupBone` / `GetBonePosition` / `GetShootPos` | 骨骼动画 |
 | `HumanNPC.cs` | — | `VisibleVec` / `VJ.TraceDirections` 可见性/空间查询 | 感知系统 |
@@ -615,6 +629,9 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | `Core/EngineConstants.cs` | TASK_* 字符串常量 + MoveTasks 集合 | ~75 | ✅ |
 | `Core/BaseNPC.AA.cs` | base_aa.lua 5 方法机械翻译 | ~421 | ✅ 4/5 完整翻译，1 Phase 3 stub |
 | `Core/BaseNPC.Sound.cs` | core.lua:2944-3375 PlaySoundSystem + 音效配置字段 | ~1050 | ✅ 35 分支 + 辅助方法全部翻译 |
+| `Core/IVJBaseWeapon.cs` | weapon_vj_base/shared.lua SWEP 契约 | ~23 | ✅ Phase 1 |
+| `Core/VJBaseWeapon.cs` | weapon_vj_base/shared.lua SWEP 默认实现 | ~41 | ✅ Phase 1 |
+| `Entities/VJEntityFlags.cs` | 实体标志系统 | ~23 | ✅ |
 
 ### 7.5b 已删除文件
 
@@ -845,9 +862,18 @@ Source C++:  f:/DevProject/Sbox/source-sdk-2013/
     DoChangeMovementType → NavMeshAgent/Rigidbody 映射, 提升至 BaseNPC
     门系统 OpeningDoor + StartSchedule 检查
 
-23. 动画系统
+23. ✅ 武器系统 Phase 1  ← 已完成 2026-05-09
+    IVJBaseWeapon 接口 + VJBaseWeapon Component
+    GetActiveWeapon/DoChangeWeapon(Give/Remove/SelectWeapon)/SetWeaponState 填坑
+    CanFireWeapon IsMeleeWeapon 分支 + PlayReloadAnimation NPC_Reload
+    SelectSchedule C2 IsVJBaseWeapon+IsMeleeWeapon×5 → 真实检查 + else(C2c-v)
+
+24. 动画系统
     16 个 M 标记动画方法仍是 return 0/false
     TranslateActivity / UpdatePoseParamTracking / ExecuteMeleeAttack(覆写) 跳过
+
+25. 武器系统 Phase 2（射击/弹道/弹药消耗）
+    SelectSchedule C2b/C2c-iii/C2c-v 内 ~20 个射击 SKIP 尚未消
 
 20. ✅ 死亡序列 ← 2026-05-08
     BeginDeath / FinishDeath / CreateDeathCorpse / DeathWeaponDrop (~330 行)
@@ -872,8 +898,8 @@ cd f:/DevProject/Sbox/testzombie/Code && grep -rn "SKIP:" VJBase/
 
 ---
 
-*最后更新：2026-05-08*
-*翻译阶段：~85%。HumanNPC 18/18 方法 + 死亡序列 4 方法全部完成。剩余：动画系统（16 M 方法）+ 15 个编译错误（5 类，14 个历史遗留）。下一步：编译错误修复 → 动画系统。*
+*最后更新：2026-05-09*
+*翻译阶段：~90%。武器 Phase 1 完成（IVJBaseWeapon 接口 + VJBaseWeapon Component + ~18 SKIP 消除）+ DamageInfo 落地 + 实体标志 + 盟友系统 + 移动类型重构。剩余：动画系统（16 M 方法）+ 武器 Phase 2（射击/弹道 ~20 SKIP）+ 玩家交互/掩体/射线系统。*
 
 ---
 
