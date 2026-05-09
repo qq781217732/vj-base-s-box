@@ -8,6 +8,7 @@ namespace VJBase;
 /// </summary>
 public interface IVJBaseWeapon
 {
+    // ---- Phase 1: inventory & lifecycle ----
     bool IsVJBaseWeapon { get; }
     bool IsMeleeWeapon { get; }
     string HoldType { get; }
@@ -20,4 +21,12 @@ public interface IVJBaseWeapon
     void SetClip1(int amount);
 
     void NPC_Reload();
+
+    // ---- Phase 2: NPC autonomous fire ----
+    float NPC_NextPrimaryFire { get; set; }
+    bool NPC_StandingOnly { get; }
+    string NPC_BeforeFireSound { get; }
+    float NPC_BeforeFireSoundLevel { get; }
+    (float a, float b) NPC_BeforeFireSoundPitch { get; }
+    void NPCShoot_Primary();
 }

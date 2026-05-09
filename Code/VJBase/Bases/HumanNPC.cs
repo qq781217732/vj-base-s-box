@@ -83,6 +83,10 @@ public partial class HumanNPC : CreatureNPC
     public bool Weapon_Disabled { get; set; }
     public bool Weapon_IgnoreSpawnMenu { get; set; }
     public bool Weapon_CanMoveFire { get; set; }
+    public bool Weapon_CanReload { get; set; } = true;
+    public bool Weapon_CanSecondaryFire { get; set; } = true;
+    public bool Weapon_FindCoverOnReload { get; set; } = true;
+    public bool DisableWeaponReloadAnimation { get; set; }
 
     // ═══ Weapon Behavior Config (ported from init.lua:285-297) ═══
     public bool Weapon_UnarmedBehavior { get; set; } = true;
@@ -114,6 +118,8 @@ public partial class HumanNPC : CreatureNPC
     public float NextMeleeWeaponAttackT { get; set; }
     public float NextDangerDetectionT { get; set; }
     public float NextWeaponStateChangeT { get; set; }
+    public float NextReloadCompleteT { get; set; }
+    public GameObject ReloadingWeapon { get; set; }
 
     // ═══ Animation Config (ported from init.lua:130,303) ═══
     public bool HasPoseParameterLooking { get; set; } = true;
@@ -173,17 +179,35 @@ public partial class HumanNPC : CreatureNPC
     public static IVJBaseWeapon GetWeaponComponent(GameObject wep)
         => wep?.Components.Get<IVJBaseWeapon>();
 
-    /// <summary>CheckWeaponState — syncs weapon entity and handles timer-based state reset.</summary>
+    /// <summary>CheckWeaponState — syncs weapon entity, handles timer-based state reset + reload completion.</summary>
     public override void CheckWeaponState()
     {
         var active = GetActiveWeapon();
         if (active != WeaponEntity)
             DoChangeWeapon();
 
+        // Realtime weapon state reset (e.g., from reloading)
         if (NextWeaponStateChangeT > 0 && Time.Now > NextWeaponStateChangeT)
         {
             WeaponState = VJWepState.Ready;
             NextWeaponStateChangeT = 0;
+        }
+
+        // Reload complete: refill clip and reset state (lua:2567-2573)
+        if (NextReloadCompleteT > 0 && Time.Now > NextReloadCompleteT)
+        {
+            NextReloadCompleteT = 0;
+            if (ReloadingWeapon.IsValid() && WeaponState == VJWepState.Reloading)
+            {
+                var wepComp = ReloadingWeapon.Components.Get<IVJBaseWeapon>();
+                if (wepComp != null)
+                {
+                    wepComp.SetClip1(wepComp.GetMaxClip1());
+                }
+                // SKIP: OnReload("Finish") — Phase 3 weapon callback
+                SetWeaponState(VJWepState.Ready);
+            }
+            ReloadingWeapon = null;
         }
     }
 

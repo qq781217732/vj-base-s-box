@@ -593,6 +593,7 @@ public partial class HumanNPC
         {
             // lua:3581-3582: Get active weapon + enemy data
             var wep = GetActiveWeapon(); // returns WeaponEntity (null until DoChangeWeapon initializes)
+            var wepComp = wep.IsValid() ? wep.Components.Get<IVJBaseWeapon>() : null;
             var eneData = Enemy;
 
             // ═══ C1: No valid weapon (lua:3585-3603) ═══
@@ -663,40 +664,25 @@ public partial class HumanNPC
                 }
 
                 // ═══ C2b: CanFireWeapon checks + occlusion (lua:3623-3651) ═══
-                // lua:3623: if CanFireWeapon(false, false) && GetState() != VJ_STATE_ONLY_ANIMATION_NOATTACK then
-                // SKIP: lua:3623 — CanFireWeapon(false, false) — Phase 3 weapon
+                // lua:3623: if CanFireWeapon(false, false) && !VJ_STATE_ONLY_ANIMATION_NOATTACK then
+                if (CanFireWeapon(false, false) && GetState() != VJState.OnlyAnimationNoAttack)
                 {
                     // lua:3625: if eneData.Distance > Weapon_MaxDistance or curTime < NextWeaponAttackT then
-                    // SKIP: lua:3625 — Weapon_MaxDistance, NextWeaponAttackT — Phase 3 weapon config
-                    // SKIP: lua:3626 — MaintainAlertBehavior() — Phase 3
-                    // SKIP: lua:3627 — AllowWeaponOcclusionDelay = false
-
-                    // lua:3629: elseif CanFireWeapon(true, true) then
-                    // SKIP: lua:3629 — CanFireWeapon(true, true) — Phase 3 weapon
+                    if (eneData.Distance > Weapon_MaxDistance || curTime < NextWeaponAttackT)
                     {
-                        // lua:3631: if DoCoverTrace(EyePos, enePos_Eye, true) then
-                        // SKIP: lua:3631 — DoCoverTrace(EyePos, enePos_Eye, true) — Phase 3 cover + eye position
+                        // lua:3626 — MaintainAlertBehavior()
+                        MaintainAlertBehavior(false);
+                        AllowWeaponOcclusionDelay = false;
+                    }
+                    // lua:3629: elseif CanFireWeapon(true, true) then
+                    else if (CanFireWeapon(true, true))
+                    {
+                        // lua:3631: if DoCoverTrace(EyePos, enePos_Eye, true) then — can't see enemy
+                        // SKIP: lua:3631 — DoCoverTrace(EyePos, ...) — Phase 3 cover
+                        if (false /* DoCoverTrace — Phase 3 */)
                         {
-                            // SKIP: lua:3632 — TakingCoverT > curTime → return — Phase 3
-                            // lua:3633: if GetWeaponState() != VJ.WEP_STATE_RELOADING then
-                            // SKIP: lua:3633 — GetWeaponState() — Phase 3 weapon state
-                            {
-                                // lua:3635-3638: Occlusion delay
-                                // SKIP: lua:3635 — Weapon_OcclusionDelay && WeaponAttackState != VJ.WEP_ATTACK_STATE_AIM_OCCLUSION && !wep.IsMeleeWeapon && AllowWeaponOcclusionDelay && (curTime - WeaponLastShotTime) <= 4.5 && eneData.Distance > Weapon_OcclusionDelayMinDist
-                                // SKIP: lua:3636 — WeaponAttackState = VJ.WEP_ATTACK_STATE_AIM_OCCLUSION
-                                // SKIP: lua:3637 — MaintainIdleBehavior(2) → ACT_IDLE_ANGRY
-                                // SKIP: lua:3638 — NextChaseTime = curTime + math.Rand(Weapon_OcclusionDelayTime.a, Weapon_OcclusionDelayTime.b)
-
-                                // lua:3640-3641: Hidden zone stand-up
-                                // SKIP: lua:3640 — curTime < LastHiddenZoneT && !DoCoverTrace(myPosCentered + GetUp()*30, enePos_Eye + GetUp()*30, true) — Phase 3 cover + GetUp
-                                // SKIP: lua:3641 — MaintainIdleBehavior(2) → ACT_IDLE_ANGRY
-                                // SKIP: lua:3642 — goto goto_checkwep
-
-                                // lua:3643-3649: Everything failed → chase
-                                // SKIP: lua:3645-3646 — WeaponAttackState >= VJ.WEP_ATTACK_STATE_FIRE && CurrentScheduleName != "SCHEDULE_ALERT_CHASE" → WeaponAttackState = VJ.WEP_ATTACK_STATE_NONE
-                                // SKIP: lua:3648 — MaintainAlertBehavior() — Phase 3
-                            }
-                            // SKIP: lua:3651 — goto goto_conditions
+                            // Occlusion delay logic (lua:3632-3649) — Phase 3 cover system
+                            // SKIP: lua:3632-3649 — TakingCoverT + occlusion delay + hidden zone + chase fallback
                         }
                         // lua:3653: -- I can see the enemy...
                         // ═══ C2c: Enemy visible — weapon combat loop (lua:3654-3816) ═══
@@ -739,38 +725,74 @@ public partial class HumanNPC
 
                             // ═══ C2c-iii: Weapon attack (lua:3737-3794) ═══
                             // lua:3737: if curTime > NextWeaponAttackT && curTime > NextWeaponAttackT_Base then
-                            // SKIP: lua:3737 — NextWeaponAttackT, NextWeaponAttackT_Base — Phase 3 weapon timers
+                            if (curTime > NextWeaponAttackT && curTime > NextWeaponAttackT_Base)
                             {
                                 // lua:3739-3751: Melee weapons
                                 if (IsWeaponMelee(wep))
                                 {
-                                    // SKIP: lua:3740 — OnWeaponAttack() — Phase 3 weapon callback
-                                    // SKIP: lua:3741 — TranslateActivity(PICK(AnimTbl_WeaponAttack)) — Phase 3 animation
-                                    // SKIP: lua:3742-3743 — AnimExists + AnimDuration — Phase 3 animation
-                                    // SKIP: lua:3744 — wep.NPC_NextPrimaryFire = animDur — Phase 3 weapon
-                                    // SKIP: lua:3745 — wep:NPCShoot_Primary() — Phase 3 weapon
-                                    // SKIP: lua:3746 — VJ.EmitSound(self, wep.NPC_BeforeFireSound, ...) — Phase 3 sound
-                                    // SKIP: lua:3747 — NextMeleeWeaponAttackT = curTime + animDur
-                                    // SKIP: lua:3748 — WeaponAttackAnim = finalAnim
-                                    // SKIP: lua:3749 — PlayAnim(finalAnim, "LetAttacks", false, true) — Phase 3 animation
-                                    // SKIP: lua:3750 — WeaponAttackState = VJ.WEP_ATTACK_STATE_FIRE_STAND
+                                    // lua:3740 — self:OnWeaponAttack()
+                                    OnWeaponAttack();
+                                    // lua:3741 — finalAnim = TranslateActivity(PICK(AnimTbl_WeaponAttack))
+                                    // SKIP: lua:3741-3743 — TranslateActivity/PICK(AnimTbl_WeaponAttack) + AnimExists + AnimDuration — Phase 3 animation
+                                    // lua:3742 — if curTime > NextMeleeWeaponAttackT && VJ.AnimExists then
+                                    if (curTime > NextMeleeWeaponAttackT)
+                                    {
+                                        // lua:3744 — wep.NPC_NextPrimaryFire = animDur → Phase 3 (needs AnimDuration)
+                                        // lua:3745 — wep:NPCShoot_Primary()
+                                        wepComp.NPCShoot_Primary();
+                                        // lua:3746 — VJ.EmitSound(self, wep.NPC_BeforeFireSound, ...)
+                                        EmitWeaponSound(wepComp);
+                                        // lua:3747 — NextMeleeWeaponAttackT = curTime + animDur → Phase 3
+                                        NextMeleeWeaponAttackT = curTime + 0.5f; // animDur fallback
+                                        // lua:3748 — WeaponAttackAnim = finalAnim → Phase 3
+                                        // SKIP: lua:3749 — PlayAnim(finalAnim, "LetAttacks", false, true) — Phase 3 animation
+                                        // lua:3750 — WeaponAttackState = FIRE_STAND
+                                        WeaponAttackState = VJWepAttackState.FireStand;
+                                    }
                                 }
                                 // lua:3753-3793: Ranged weapons
                                 else
                                 {
-                                // SKIP: lua:3754 — AllowWeaponOcclusionDelay = true
-                                // SKIP: lua:3755 — hasAmmo = wep:Clip1() > 0 — Phase 3 weapon
-                                // SKIP: lua:3756-3757 — !hasAmmo && WeaponAttackState != VJ.WEP_ATTACK_STATE_AIM → WeaponAttackAnim = ACT_INVALID
-                                // SKIP: lua:3760 — VJ.IsCurrentAnim(self, TranslateActivity(WeaponAttackAnim)) — Phase 3 animation
-                                // SKIP: lua:3763 — GetActivity() != WeaponAttackAnim && GetActivity() != ACT_TRANSITION — Phase 3 animation
-                                // SKIP: lua:3764 — OnWeaponAttack() — Phase 3 weapon callback
-                                // SKIP: lua:3765-3766 — WeaponAttackState == VJ.WEP_ATTACK_STATE_AIM_OCCLUSION → WeaponAttackState = VJ.WEP_ATTACK_STATE_NONE
-                                // SKIP: lua:3768 — WeaponLastShotTime = curTime
-                                // SKIP: lua:3772-3775 — !hasAmmo → MaintainIdleBehavior(2) + WeaponAttackState = VJ.WEP_ATTACK_STATE_AIM
-                                // SKIP: lua:3778-3783 — TranslateActivity(PICK(AnimTbl_WeaponAttackCrouch)) vs TranslateActivity(PICK(AnimTbl_WeaponAttack)) — Phase 3 animation
-                                // SKIP: lua:3779 — crouch condition: Weapon_CanCrouchAttack && !inCover && !wepInCover && distance > 500 && AnimExists + random + DoCoverTrace — Phase 3
-                                // SKIP: lua:3786-3792 — AnimExists + VJ.EmitSound + PlayAnim + WeaponAttackAnim + WeaponAttackState + NextWeaponAttackT_Base — Phase 3 animation + sound
-                            }
+                                    AllowWeaponOcclusionDelay = true;
+                                    // lua:3755 — hasAmmo = wep:Clip1() > 0
+                                    bool hasAmmo = wepComp.GetClip1() > 0;
+                                    // lua:3756-3757 — !hasAmmo && WeaponAttackState != AIM → WeaponAttackAnim = ACT_INVALID
+                                    if (!hasAmmo && WeaponAttackState != VJWepAttackState.Aim)
+                                    {
+                                        // SKIP: WeaponAttackAnim = ACT_INVALID — Phase 3 animation
+                                    }
+                                    // lua:3760 — VJ.IsCurrentAnim(self, TranslateActivity(WeaponAttackAnim))
+                                    // SKIP: lua:3760 — IsCurrentAnim — Phase 3 animation
+                                    // lua:3763 — GetActivity() != WeaponAttackAnim && GetActivity() != ACT_TRANSITION
+                                    { // Always enter — Phase 3: guard with IsCurrentAnim + GetActivity checks
+                                        // lua:3764 — OnWeaponAttack()
+                                        OnWeaponAttack();
+                                        // lua:3765-3766 — WeaponAttackState == AIM_OCCLUSION → NONE
+                                        if (WeaponAttackState == VJWepAttackState.AimOcclusion)
+                                            WeaponAttackState = VJWepAttackState.None;
+                                        // lua:3768 — WeaponLastShotTime = curTime
+                                        WeaponLastShotTime = curTime;
+                                        // lua:3771-3775 — !hasAmmo → MaintainIdleBehavior(2) + AIM state
+                                        if (!hasAmmo)
+                                        {
+                                            // SKIP: lua:3773 — MaintainIdleBehavior(2) — Phase 3
+                                            WeaponAttackState = VJWepAttackState.Aim;
+                                        }
+                                        else
+                                        {
+                                            // lua:3778-3783 — crouch vs standing animation
+                                            // SKIP: lua:3778-3783 — TranslateActivity/PICK/AnimExists/crouch condition — Phase 3 animation
+                                            // SKIP: lua:3786-3792 — AnimExists + PlayAnim + EmitSound(BeforeFireSound) — Phase 3 animation + sound
+                                        }
+                                        // lua:3791 — NextWeaponAttackT_Base = curTime + 0.2
+                                        NextWeaponAttackT_Base = curTime + 0.2f;
+                                        // Ranged: weapon auto-fires via its own NPC_Think after attack state is set
+                                        if (hasAmmo)
+                                        {
+                                            WeaponAttackState = VJWepAttackState.FireStand;
+                                        }
+                                    }
+                                }
                             }  // C2c-iii
 
                             // ═══ C2c-iv: Random strafing while shooting (lua:3797-3806) ═══
@@ -796,11 +818,15 @@ public partial class HumanNPC
                         else
                         {
                             // ═══ C2c-v: Non-VJ weapons (lua:3808-3816) ═══
-                            // SKIP: lua:3809 — SetTurnTarget("Enemy") — Phase 3 turning
-                            // SKIP: lua:3810 — WeaponAttackState = VJ.WEP_ATTACK_STATE_FIRE_STAND
-                            // SKIP: lua:3811 — OnWeaponAttack() — Phase 3 weapon callback
-                            // SKIP: lua:3812 — WeaponLastShotTime = curTime
-                            // SKIP: lua:3814 — self:SetSchedule(SCHED_RANGE_ATTACK1) — Source engine schedule, no S&Box equivalent
+                            // lua:3809 — SetTurnTarget("Enemy")
+                            SetTurnTarget("Enemy");
+                            // lua:3810 — WeaponAttackState = FIRE_STAND
+                            WeaponAttackState = VJWepAttackState.FireStand;
+                            // lua:3811 — OnWeaponAttack()
+                            OnWeaponAttack();
+                            // lua:3812 — WeaponLastShotTime = curTime
+                            WeaponLastShotTime = curTime;
+                            // lua:3814 — SCHED_RANGE_ATTACK1 (Source engine schedule, no S&Box equivalent)
                         }
                     }
                 }
@@ -1352,25 +1378,51 @@ public partial class HumanNPC
 
                 // ---- M2: Player attacker → BecomeEnemyToPlayer (lua:4020-4052) ----
                 // lua:4021 — if dmgAttacker && dmgAttacker:IsPlayer() then
-                // SKIP: lua:4021 — dmgAttacker:IsPlayer() — Phase 3 DamageInfo + player detection
-                // lua:4023-4041 — BecomeEnemyToPlayer hostility counter:
-                //   if selfData.BecomeEnemyToPlayer && self:CheckRelationship(dmgAttacker) == D_LI then
-                //     self:SetRelationshipMemory(dmgAttacker, VJ.MEM_HOSTILITY_LEVEL, ...)
-                //     if relationMemory[VJ.MEM_HOSTILITY_LEVEL] > selfData.BecomeEnemyToPlayer && self:Disposition(dmgAttacker) != D_HT then
-                //       self:OnBecomeEnemyToPlayer(dmginfo, hitgroup)
-                //       if selfData.IsFollowing && selfData.FollowData.Target == dmgAttacker then self:ResetFollowBehavior() end
-                //       self:SetRelationshipMemory(dmgAttacker, VJ.MEM_OVERRIDE_DISPOSITION, D_HT)
-                //       self:AddEntityRelationship(dmgAttacker, D_HT, 2)
-                //       selfData.TakingCoverT = curTime + 2
-                //       self:PlaySoundSystem("BecomeEnemyToPlayer")
-                //       if !IsValid(funcGetEnemy(self)) then self:StopMoving() self:SetTarget(dmgAttacker) self:SCHEDULE_FACE("TASK_FACE_TARGET") end
-                //       if selfData.CanChatMessage then dmgAttacker:PrintMessage(HUD_PRINTTALK, ...) end
-                // lua:4044-4051 — DamageByPlayer sounds:
-                //   if selfData.HasDamageByPlayerSounds && curTime > selfData.NextDamageByPlayerSoundT && self:Visible(dmgAttacker) then
-                //     dispLvl = selfData.DamageByPlayerDispositionLevel
-                //     if dispLvl == 0 or (dispLvl == 1 && Disposition == D_LI) or (dispLvl == 2 && Disposition != D_HT) then
-                //       self:PlaySoundSystem("DamageByPlayer")
-                // SKIP: lua:4020-4051 — full M2 player-attacker block — Phase 3 DamageInfo + player + relationship
+                bool isPlayerAttacker = dmgAttacker.IsValid() && dmgAttacker.Components.Get<PlayerBase>() != null;
+                if (isPlayerAttacker && !VJInit.vj_npc_ignoreplayers)
+                {
+                    // lua:4023 — if self.BecomeEnemyToPlayer && self:CheckRelationship(dmgAttacker) == D_LI then
+                    if (BecomeEnemyToPlayer > 0 && CheckRelationship(dmgAttacker) == (int)VJBase.Disposition.Like)
+                    {
+                        // lua:4024 — self:SetRelationshipMemory(dmgAttacker, VJ.MEM_HOSTILITY_LEVEL, 1)
+                        SetRelationshipMemory(dmgAttacker, "hostility", 1f);
+                        var hostility = GetRelationshipMemory(dmgAttacker, "hostility");
+                        // lua:4025-4026 — if relationMemory[VJ.MEM_HOSTILITY_LEVEL] > self.BecomeEnemyToPlayer && self:Disposition(dmgAttacker) != D_HT then
+                        if (hostility > BecomeEnemyToPlayer && Disposition(dmgAttacker) != (int)VJBase.Disposition.Hate)
+                        {
+                            // lua:4027 — self:OnBecomeEnemyToPlayer(dmginfo, hitgroup)
+                            OnBecomeEnemyToPlayer(dmgInfo, hitgroup);
+                            // lua:4028 — if self.IsFollowing && self.FollowData.Target == dmgAttacker then self:ResetFollowBehavior() end
+                            // SKIP: lua:4028 — IsFollowing / FollowData / ResetFollowBehavior — Phase 3 follow system
+                            // lua:4029 — self:SetRelationshipMemory(dmgAttacker, VJ.MEM_OVERRIDE_DISPOSITION, D_HT)
+                            // lua:4030 — self:AddEntityRelationship(dmgAttacker, D_HT, 2)
+                            AddEntityRelationship(dmgAttacker, (int)VJBase.Disposition.Hate, 2);
+                            // lua:4031 — self.TakingCoverT = curTime + 2
+                            TakingCoverT = curTime + 2f;
+                            // lua:4032 — self:PlaySoundSystem("BecomeEnemyToPlayer")
+                            PlaySoundSystem("BecomeEnemyToPlayer");
+                            // lua:4033 — if !IsValid(funcGetEnemy(self)) then self:StopMoving() self:SetTarget(dmgAttacker) self:SCHEDULE_FACE("TASK_FACE_TARGET") end
+                            if (!GetEnemy().IsValid())
+                            {
+                                StopMoving();
+                                SetTarget(dmgAttacker);
+                                SCHEDULE_FACE("TASK_FACE_TARGET");
+                            }
+                            // SKIP: lua:4036-4041 — CanChatMessage / PrintMessage — Phase 3 chat system
+                        }
+                    }
+                    // lua:4044-4051 — DamageByPlayer sounds
+                    if (HasDamageByPlayerSounds && curTime > NextDamageByPlayerSoundT && Visible(dmgAttacker))
+                    {
+                        var dispLvl = DamageByPlayerDispositionLevel;
+                        var disp = Disposition(dmgAttacker);
+                        if (dispLvl == 0 || (dispLvl == 1 && disp == (int)VJBase.Disposition.Like) || (dispLvl == 2 && disp != (int)VJBase.Disposition.Hate))
+                        {
+                            PlaySoundSystem("DamageByPlayer");
+                            NextDamageByPlayerSoundT = curTime + 15f;
+                        }
+                    }
+                }
 
                 // ---- M2.5: Pain sound inside AI block (lua:4054) ----
                 // lua:4054 — self:PlaySoundSystem("Pain")
@@ -1512,8 +1564,11 @@ public partial class HumanNPC
             var allies = Allies_Check(responseDist);
             if (allies != null)
             {
-                // lua:4192 — doBecomeEnemyToPlayer (player attacker hostility)
-                // SKIP: lua:4192 — IsPlayer()/VJ_CVAR_IGNOREPLAYERS — Phase 3 player + convar
+                // lua:4192 — doBecomeEnemyToPlayer = (self.BecomeEnemyToPlayer && dmgAttacker:IsPlayer() && !VJ_CVAR_IGNOREPLAYERS)
+                var doBecomeEnemyToPlayer = BecomeEnemyToPlayer > 0
+                    && dmgAttacker.IsValid()
+                    && dmgAttacker.Components.Get<PlayerBase>() != null
+                    && !VJInit.vj_npc_ignoreplayers;
                 var responseType = DeathAllyResponse;
                 foreach (var ally in allies)
                 {
@@ -1529,7 +1584,19 @@ public partial class HumanNPC
                     allyBase.DoReadyAlert();
                     allyBase.SetTurnTarget("Enemy");
                     // lua:4220-4235 — BecomeEnemyToPlayer chain
-                    // SKIP: lua:4220-4235 — BecomeEnemyToPlayer/SetRelationshipMemory/CanChatMessage — Phase 3 player + relationship memory
+                    if (doBecomeEnemyToPlayer && allyBase.BecomeEnemyToPlayer > 0 && allyBase.CheckRelationship(dmgAttacker) == (int)VJBase.Disposition.Like)
+                    {
+                        allyBase.SetRelationshipMemory(dmgAttacker, "hostility", 1f);
+                        var hostility = allyBase.GetRelationshipMemory(dmgAttacker, "hostility");
+                        if (hostility > allyBase.BecomeEnemyToPlayer)
+                        {
+                            allyBase.OnBecomeEnemyToPlayer(dmginfo, hitgroup);
+                            allyBase.AddEntityRelationship(dmgAttacker, (int)VJBase.Disposition.Hate, 2);
+                            allyBase.PlaySoundSystem("BecomeEnemyToPlayer");
+                            // SKIP: lua:4225 — ResetFollowBehavior — Phase 3 follow system
+                            // SKIP: lua:4232 — CanChatMessage — Phase 3 chat system
+                        }
+                    }
                 }
             }
         }
@@ -1803,6 +1870,18 @@ public partial class HumanNPC
     /// <summary>Weapon spread modifier. Lua returns nil (= 0 spread). Override in derived types.</summary>
     public virtual float GetAttackSpread(GameObject wep, GameObject target) => 0f;
 
+    // ═══ EmitWeaponSound — helper for NPC_BeforeFireSound (weapon_vj_base/shared.lua:3746/3787) ═══
+    /// <summary>
+    /// Play the weapon's NPC_BeforeFireSound if configured. (Phase 3: use S&Box Sound.Play)
+    /// </summary>
+    protected virtual void EmitWeaponSound(IVJBaseWeapon wepComp)
+    {
+        if (wepComp == null) return;
+        var soundName = wepComp.NPC_BeforeFireSound;
+        if (string.IsNullOrEmpty(soundName)) return;
+        // Phase 3: Sound.Play(soundName, WorldPosition, 0f);
+    }
+
     // ═══ playReloadAnimation (local func) — human_base/init.lua:2562-2582 ═══
     /// <summary>
     /// Play reload animation and schedule reload-complete timer.
@@ -1827,7 +1906,13 @@ public partial class HumanNPC
                 }
             }
             // lua:2567-2573 — timer.Create("wep_reload_reset", animDur, ...) reload-complete
-            // SKIP: lua:2567-2573 — timer.Create + SetClip1 + GetMaxClip1 + OnReload + SetWeaponState — Phase 3 timer + weapon
+            // SKIP: animDur from PlayAnim — Phase 3 animation (use fallback 2.0s)
+            float animDur = 2.0f; // Phase 3: get from PlayAnim return
+            float reloadCompleteTime = Time.Now + animDur;
+            // Schedule reload completion: SetClip1(MaxClip1) + OnReload("Finish") + SetWeaponState(READY)
+            // Phase 3: use async timer instead of polling; for now, poll in CheckWeaponState
+            NextReloadCompleteT = reloadCompleteTime;
+            ReloadingWeapon = wep;
             // lua:2574 — self.AllowWeaponOcclusionDelay = false
             AllowWeaponOcclusionDelay = false;
             // lua:2576-2578 — if !VJ_IsBeingControlled && animType == ANIM_TYPE_GESTURE then StopMoving() end
