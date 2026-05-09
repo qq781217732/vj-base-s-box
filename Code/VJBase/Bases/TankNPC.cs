@@ -102,6 +102,8 @@ public partial class TankNPC : CreatureNPC
             if (dmginfo.Tags.Has(VJDamageTags.Physgun))
                 dmginfo.Damage = 0;
             // lua:39 — dmgInflictor:GetClass() == "crossbow_bolt" → check weapon tag
+            // LIMITATION: dmginfo.Weapon requires Phase 3 projectile system to populate crossbow bolt entity with tag.
+            // If projectile system is absent, check returns false and crossbow damage passes through (weaker than Lua always-block).
             if (dmginfo.Weapon.IsValid() && dmginfo.Weapon.Tags.Has("crossbow_bolt"))
                 dmginfo.Damage = 0;
         }

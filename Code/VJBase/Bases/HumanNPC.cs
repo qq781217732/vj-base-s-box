@@ -206,6 +206,9 @@ public partial class HumanNPC : CreatureNPC
                     wepComp.SetClip1(wepComp.GetMaxClip1());
                 }
                 // lua:2572 — OnReload("Finish") callback
+                // LIMITATION: Lua passes "Finish" string to distinguish from NPC_Reload's "Start".
+                // C# OnReloadAction is parameterless → Start + Finish invoke same delegate.
+                // Phase 3: change to Action<string> to restore Start/Finish distinction.
                 if (wepComp is VJBaseWeapon vjbWep) vjbWep.OnReloadAction?.Invoke();
                 SetWeaponState(VJWepState.Ready);
             }
