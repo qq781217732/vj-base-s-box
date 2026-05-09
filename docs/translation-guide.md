@@ -313,18 +313,18 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | ✅ | `EmitSound(sdFile, sdLevel, sdPitch)` | funcs.lua:89-98 → `Sound.Play(sdFile, WorldPosition)` |
 | ✅ | `StopSD(SoundHandle)` | funcs.lua:70-72 → `handle.Stop()` |
 | ✅ | `GetSoundPitch(object)` | core.lua:940-961, 完整替换旧 stub |
-| ✅ | `GetSoundDuration(sdSet)` | SoundDuration fallback — 硬编码 2/3/3.5s（Phase 3 改进） |
+| ✅ | `GetSoundDuration(sdSet)` | SoundFile.Load().Duration 真实时长替换硬编码 fallback |
 | ✅ | `StopAllSounds()` | 停止全部 8 个活跃 SoundHandle |
 | ✅ | `OnPlaySound` / `OnCreateSound` / `OnEmitSound` | virtual 回调 |
-| ⚠️ | `SoundLevel` 映射 | 接收参数但未用于 S&Box 衰减 — Phase 3 待调整 |
+| ✅ | `SoundLevel` 映射 | DbToDistance() + handle.Distance 设置 (CreateSound/EmitSound) |
 | ⚠️ | `PlayFootstepSound` / `PlayIdleSound` | Phase 3 辅助音效系统（非 PlaySoundSystem，独立的 think 循环音效） |
 | ✅ | 音效配置字段 | 全部 ~200 字段（Has* / SoundTbl_* / *SoundChance / *SoundLevel / *SoundPitch / NextSoundTime_*） |
 
 > S&Box API 映射与已知限制：
 > - `CreateSound` → `Sound.Play()` + 手动 `handle.Parent = GameObject`（Phase 3 可切 `GameObject.PlaySound()` 自动 parent）
 > - `EmitSound` → `Sound.Play(eventName, WorldPosition)` 不 parent，fire-and-forget
-> - `SoundLevel` (dB) 接收参数但未映射到 `SoundHandle.Distance`/`Decibels` — Phase 3
-> - `SoundDuration` → `GetSoundDuration(sdSet)` 硬编码 fallback — Phase 3
+> - `SoundLevel` (dB) → `DbToDistance()` + `handle.Distance` 设置 ✅
+> - `SoundDuration` → `SoundFile.Load().Duration` 真实时长 ✅
 > - `math.random(1, chance)` → `Game.Random.Next(1, chance + 1)` 防 throw + 匹配 Lua inclusive-max
 > - Lua `customSD` 可传 table → C# 仅 `string`，调用方需先 `PickSound()` 选好
 
@@ -530,6 +530,16 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | 73 | **Weapon_UnarmedBehavior_Active 移至 BaseNPC** — 修复 CS0103 (基类访问派生类字段) | ✅ 2026-05-10 |
 | 74 | **TankNPC crossbow_bolt** — dmginfo.Weapon.Tags.Has("crossbow_bolt") 替代 GetClass() | ✅ 2026-05-10 |
 | 75 | **HumanNPC OnReload("Finish")** — vjbWep.OnReloadAction?.Invoke() 接线 | ✅ 2026-05-10 |
+| 76 | **Weapon Phase 2 核心回路** — NPC_Think 接入 Think loop + C2b 遮蔽延迟/隐藏区/回退 if→elseif→else + C2c-iii 重入守卫/射击驱动/BeforeFireSound/MaintainIdleBehavior | ✅ 2026-05-10 |
+| 77 | **PrimaryAttack 9 守卫/时序修复** — SetNextPrimaryFire 移至顶部 + IsReloading/CanPrimaryAttack/OnPrimaryAttack("Init")/NextSecondaryFireT 守卫 + Melee hit/miss Sound.Play + OnMeleeAttackExecute("Miss") + Class exclusion + NPC_ExtraFireSound Sound.Play + DryFireSound | ✅ 2026-05-10 |
+| 78 | **NPCShoot_Primary Visibility 守卫** — npc.Enemy.Visible 阻止隔墙开火 (shared.lua:594) | ✅ 2026-05-10 |
+| 79 | **NPC_CanFire isControlled/IN_ATTACK2 SKIP 留痕** — Phase 3 玩家控制器输入 (shared.lua:575) | ✅ 2026-05-10 |
+| 80 | **Prop joint weld 移除** — constraint.RemoveConstraints("Weld") → FixedJoint.Destroy() + MaintainPropInteraction(ent) virtual | ✅ 2026-05-11 |
+| 81 | **门系统 Phase 3 预备** — OnOpenDoor(door) virtual + StartSchedule guard 注释完善 | ✅ 2026-05-11 |
+| 82 | **GetAttackTimer(range) 修正** — 删除 animDur>0 分支, 纯 Rand(a,b)/rate 对齐 Lua "discard" 语义 | ✅ 2026-05-11 |
+| 83 | **prop_ragdoll 速度守卫** — isRagdoll 路径补 rb.Velocity.Length<=100, 对齐 Lua 三条件 | ✅ 2026-05-11 |
+| 84 | **动画系统分析文档** — animation-system-analysis.md: 6 API + 27 AnimTbl_* + S&Box API 对照 + 迁移路线 A/B | ✅ 2026-05-11 |
+| 85 | **Phase 2 集成测试指南** — phase2-testing-guide.md: 三层递进 + 9 子系统检查清单 + Bug 分类标准 | ✅ 2026-05-11 |
 
 ### 7.4 SKIP 总表（Phase 3+ 填坑清单）
 
@@ -647,6 +657,20 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | `VJBaseWeapon.cs` | UpdatePoseParamTracking/BulletCallback/PrimaryAttackEffects/GetBulletPos | 4 SKIP 一次性消 (stub 调用/delegate/fallback) |
 | `TankNPC.cs` | crossbow_bolt GetClass() | dmginfo.Weapon.Tags.Has("crossbow_bolt") tag 检测 |
 | `BaseNPC.cs` | Weapon_UnarmedBehavior_Active CS0103 | 从 HumanNPC 移至 BaseNPC, 修复基类编译错误 |
+
+#### 已解决（2026-05-10/11 会话 — Weapon Phase 2 完整闭环 + PrimaryAttack 守卫修复 + Prop/Door 填坑, 10 项）
+| 文件 | 原 SKIP | 解决方案 |
+|------|---------|----------|
+| `CreatureNPC.Think.cs` | NPC_Think 从未被调用 | Think loop 末尾调用 GetActiveWeapon() → NPC_Think() |
+| `HumanNPC.Think.cs` | C2b 遮蔽延迟/隐藏区/回退全 SKIP | 1:1 对照 init.lua:3635-3649: AimOcclusion+MaintainIdleBehavior+NextChaseTime / 隐藏区 goto_checkwep / else WeaponAttackState>=Fire→None+MaintainAlertBehavior |
+| `HumanNPC.Think.cs` | C2c-iii 重入无守卫 + BeforeFireSound SKIP | if WeaponAttackState!=FireStand && !=Aim 守卫 + EmitWeaponSound(wepComp) |
+| `VJBaseWeapon.cs` | PrimaryAttack 9 项缺失 | SetNextPrimaryFire 移至顶部 + IsReloading/CanPrimaryAttack/OnPrimaryAttack("Init")/NextSecondaryFireT 守卫 + Melee hit/miss Sound.Play + OnMeleeAttackExecute("Miss") + Class exclusion (VJ_NPC_Class) + DryFireSound + OnPrimaryAttack("PostFire") |
+| `VJBaseWeapon.cs` | NPCShoot_Primary Visibility 缺失 | npc.Enemy.Visible 守卫 (shared.lua:594) |
+| `CreatureNPC.Think.cs` | constraint.RemoveConstraints("Weld") SKIP | FixedJoint.Destroy() + MaintainPropInteraction(ent) virtual |
+| `BaseNPC.cs` | OpeningDoor 门系统 | OnOpenDoor(door) virtual + StartSchedule guard 注释完善 |
+| `BaseNPC.cs` | GetAttackTimer(range) animDur>0 分支 | 删除多余分支, 纯 Rand(a,b)/rate 对齐 Lua "discard" 语义 |
+| `HumanNPC.Think.cs` | prop_ragdoll 无速度守卫 | isRagdoll 路径补 rb.Velocity.Length<=100, 对齐 Lua 三条件 |
+| `VJBaseWeapon.cs` | NPC_CanFire isControlled 守卫缺失 | 标注 SKIP: Phase 3 玩家控制器输入 (shared.lua:575) |
 
 #### 剩余待填（Phase 3 独占，~230 SKIP）
 | 系统 | 数量 | 说明 |
@@ -933,7 +957,20 @@ Source C++:  f:/DevProject/Sbox/source-sdk-2013/
     GetAttackTimer (float,float) range 重载
     prop_ragdoll ModelPhysics + crossbow_bolt tag + OnReload callback
 
-27. 动画系统
+27. ✅ Weapon Phase 2 完整闭环 ← 已完成 2026-05-10/11
+    NPC_Think 自动射击回路 + C2b 遮蔽延迟/回退 + C2c-iii 射击驱动/重入守卫
+    PrimaryAttack 9 守卫/时序修复（SetNextPrimaryFire/Reloading/CanPrimaryAttack/OnPrimaryAttack）
+    NPCShoot_Primary Visibility 守卫 + NPC_CanFire isControlled SKIP 留痕
+
+28. ✅ Prop/Door 填坑 ← 已完成 2026-05-11
+    constraint.RemoveConstraints("Weld") → FixedJoint.Destroy() + MaintainPropInteraction
+    OnOpenDoor virtual + StartSchedule 门检查注释完善
+
+29. ✅ GetAttackTimer + prop_ragdoll 语义修正 ← 已完成 2026-05-11
+    GetAttackTimer(range) 删除 animDur>0 分支, 纯 Rand(a,b)/rate
+    prop_ragdoll isRagdoll 路径补 rb.Velocity.Length<=100 守卫
+
+30. 动画系统
     16 个 M 标记动画方法仍是 return 0/false
     TranslateActivity / PlayAnim / pose parameters / ACT_* / AnimTbl_*
     UpdatePoseParamTracking 已接线(stub)、ExecuteMeleeAttack(覆写) 跳过
@@ -960,8 +997,8 @@ cd f:/DevProject/Sbox/testzombie/Code && grep -rn "SKIP:" VJBase/
 
 ---
 
-*最后更新：2026-05-10*
-*翻译阶段：~95%。Phase 2 可做 SKIP 全部清完（20 项）。SoundEvent 注册表/调查系统完整接线 + GetBestSoundHint + CreatureNPC ResetEnemy 填坑 + VJBaseWeapon 武器链路 (GetAimPosition/GetHeadDirection/BulletCallback/PrimaryAttackEffects) + SelectSchedule C2 射击接线 + SoundLevel/Duration 真实映射 + 零碎 (prop_ragdoll/crossbow_bolt/OnReload/VisibleVec)。剩余：动画(16 M 方法) + Phase 3 独占(Spawn/Model/Physics/Dissolve/Collision, ~230 SKIP)。*
+*最后更新：2026-05-11*
+*翻译阶段：~95%。Weapon Phase 2 完整闭环（NPC_Think 自动射击 + C2b/C2c-iii 填坑 + PrimaryAttack 9 守卫/时序修复 + Visibility/IsReloading/CanPrimaryAttack/OnPrimaryAttack 守卫） + Prop joint weld (FixedJoint.Destroy) + 门系统 Phase 3 预备 (OnOpenDoor) + GetAttackTimer 语义修正 + prop_ragdoll 速度守卫。Phase 2 可做 SKIP 全部清完。剩余：动画(~80 SKIP) + Phase 3 独占(~230 SKIP)。*
 
 ---
 
