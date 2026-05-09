@@ -878,7 +878,8 @@ public partial class HumanNPC
                                     )
                                 {
                                     // lua:3686 — moveCheck = PICK(VJ.TraceDirections(self, "Quick", 50, true, false, 4, true, true))
-                                    var directions = VJUtility.TraceDirections(this, "Quick", 50f, true, 4, false, false, false, false);
+                                    // lua:3686 — excludeForward=true, excludeBack=true → only strafe sideways
+                                    var directions = VJUtility.TraceDirections(this, "Quick", 50f, true, 4, true, true);
                                     var moveCheck = VJUtility.PICK(directions);
                                     // lua:3687 — if moveCheck then
                                     if (moveCheck != default)
