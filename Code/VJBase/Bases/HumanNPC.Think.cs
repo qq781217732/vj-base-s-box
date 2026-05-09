@@ -596,6 +596,94 @@ public partial class HumanNPC
             var wepComp = wep.IsValid() ? wep.Components.Get<IVJBaseWeapon>() : null;
             var eneData = Enemy;
 
+            // ═══ Weapon Reloading (lua:2777-2827) ═══
+            // Guard: Weapon_CanReload, no active attack, not melee, weapon state READY
+            bool plyControlled = VJ_IsBeingControlled;
+            if (Weapon_CanReload && AttackType == VJAttackType.None && !IsWeaponMelee(wep)
+                && GetWeaponState() == VJWepState.Ready && wepComp != null)
+            {
+                bool shouldReload = false;
+                if (!plyControlled)
+                {
+                    if (!eneValid)
+                    {
+                        // No enemy: reload when partial mag && idle long enough && not moving
+                        shouldReload = wepComp.GetMaxClip1() > wepComp.GetClip1()
+                            && (curTime - eneData.TimeSet) > VJUtility.Rand(3f, 8f)
+                            && !IsMoving();
+                    }
+                    else
+                    {
+                        // Has enemy: reload when empty
+                        shouldReload = wepComp.GetClip1() <= 0;
+                    }
+                }
+                else
+                {
+                    // Player-controlled: R key + partial mag
+                    // SKIP: lua:2778 — KeyDown(IN_RELOAD) — Phase 3 player controller input
+                    shouldReload = false; // wepComp.GetMaxClip1() > wepComp.GetClip1()
+                }
+
+                if (shouldReload)
+                {
+                    // lua:2779-2783
+                    WeaponAttackState = VJWepAttackState.None;
+                    NextChaseTime = curTime + 2;
+                    if (!plyControlled) SetWeaponState(VJWepState.Reloading);
+                    if (eneValid) PlaySoundSystem("WeaponReload");
+                    OnWeaponReload();
+
+                    // lua:2784-2787 — No animation: instant reload
+                    if (DisableWeaponReloadAnimation)
+                    {
+                        if (GetWeaponState() == VJWepState.Reloading)
+                            SetWeaponState();
+                        wepComp.SetClip1(wepComp.GetMaxClip1());
+                        if (IsWeaponVJBase(wep)) wepComp.NPC_Reload();
+                    }
+                    // lua:2788-2825 — Use reload animation
+                    else
+                    {
+                        // Controlled by player
+                        if (plyControlled)
+                        {
+                            SetWeaponState(VJWepState.Reloading);
+                            // SKIP: lua:2792 — playReloadAnimation(self, TranslateActivity(PICK(AnimTbl_WeaponReload))) — Phase 3 animation
+                        }
+                        else
+                        {
+                            // NPC hidden → crouch reload
+                            // SKIP: lua:2796 — DoCoverTrace(myPos+OBBCenter, ene:EyePos, false) — Phase 3 cover
+                            if (false /* DoCoverTrace — Phase 3 */)
+                            {
+                                // SKIP: lua:2797-2799 — crouch reload animation (AnimTbl_WeaponReloadCovered) — Phase 3 animation
+                            }
+                            else
+                            {
+                                // Standing reload (no cover needed) or fallback
+                                // lua:2804 — guards against cover-finding
+                                if (!Weapon_FindCoverOnReload || IsGuard || IsFollowing
+                                    || VJ_IsBeingControlled_Tool || !eneValid
+                                    || MovementType == VJMoveType.Stationary
+                                    || eneData.Distance < 650)
+                                {
+                                    // SKIP: lua:2805 — playReloadAnimation(self, TranslateActivity(PICK(AnimTbl_WeaponReload))) — Phase 3 animation
+                                    PlayReloadAnimation(null);
+                                }
+                                // lua:2806-2822 — SCHEDULE_COVER_RELOAD: find cover, run, wait, on-finish reload
+                                else
+                                {
+                                    // SKIP: lua:2807-2822 — SCHEDULE_COVER_RELOAD (TASK_FIND_COVER_FROM_ENEMY) — Phase 3 cover/navmesh system
+                                    // Fallback to standing reload so NPC doesn't get stuck
+                                    PlayReloadAnimation(null);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             // ═══ C1: No valid weapon (lua:3585-3603) ═══
             if (!wep.IsValid())
             {
@@ -649,18 +737,24 @@ public partial class HumanNPC
                     && AttackType == VJAttackType.None
                     && !IsFollowing
                     && eneData.Target?.Components.Get<BaseNPC>()?.Behavior != VJBehavior.Passive
-                    // SKIP: !DoCoverTrace(myPosCentered, enePos_Eye) — Phase 3 cover system
+                    && !DoCoverTrace(myPosCentered, enePos_Eye).isCover
                     )
                 {
-                    // SKIP: lua:3613 — moveCheck = PICK(VJ.TraceDirections(self, "Quick", 200, true, false, 8, true)) — Phase 3 utility
-                    // SKIP: lua:3614 — if moveCheck then
-                    // SKIP: lua:3615 — SetLastPosition(moveCheck) — Phase 3
-                    // lua:3616 — GetWeaponState() == VJ.WEP_STATE_RELOADING → SetWeaponState()
-                    if (GetWeaponState() == VJWepState.Reloading)
-                        SetWeaponState();
-                    // SKIP: lua:3617 — TakingCoverT = curTime + 2 — Phase 3 cover timer
-                    // SKIP: lua:3618 — SCHEDULE_GOTO_POSITION("TASK_RUN_PATH", ...) — Phase 3 cover schedule
-                    // SKIP: lua:3619 — goto goto_conditions
+                    // lua:3613 — moveCheck = PICK(VJ.TraceDirections(self, "Quick", 200, true, false, 8, true))
+                    var moveCheck = VJUtility.PICK(VJUtility.TraceDirections(this, "Quick", 200f, true, 8, true, false, false, false));
+                    if (moveCheck != default)
+                    {
+                        // lua:3615 — SetLastPosition(moveCheck)
+                        SetLastPosition(moveCheck);
+                        // lua:3616 — GetWeaponState() == VJ.WEP_STATE_RELOADING → SetWeaponState()
+                        if (GetWeaponState() == VJWepState.Reloading)
+                            SetWeaponState();
+                        // lua:3617 — TakingCoverT = curTime + 2
+                        TakingCoverT = curTime + 2f;
+                        // lua:3618 — SCHEDULE_GOTO_POSITION("TASK_RUN_PATH")
+                        SCHEDULE_GOTO_POSITION("TASK_RUN_PATH");
+                        return;
+                    }
                 }
 
                 // ═══ C2b: CanFireWeapon checks + occlusion (lua:3623-3651) ═══
@@ -677,12 +771,34 @@ public partial class HumanNPC
                     // lua:3629: elseif CanFireWeapon(true, true) then
                     else if (CanFireWeapon(true, true))
                     {
-                        // lua:3631: if DoCoverTrace(EyePos, enePos_Eye, true) then — can't see enemy
-                        // SKIP: lua:3631 — DoCoverTrace(EyePos, ...) — Phase 3 cover
-                        if (false /* DoCoverTrace — Phase 3 */)
+                        // lua:3631: if DoCoverTrace(EyePos, enePos_Eye, true) then — can't see enemy (enemy behind cover)
+                        var (cantSeeEnemy, _) = DoCoverTrace(EyePosition(), enePos_Eye, true);
+                        if (cantSeeEnemy)
                         {
-                            // Occlusion delay logic (lua:3632-3649) — Phase 3 cover system
-                            // SKIP: lua:3632-3649 — TakingCoverT + occlusion delay + hidden zone + chase fallback
+                            // lua:3632 — if TakingCoverT > curTime then return (already covering)
+                            if (TakingCoverT > curTime) return;
+                            // lua:3633-3634 — reload state check
+                            if (GetWeaponState() != VJWepState.Reloading)
+                            {
+                                // lua:3635-3638 — Weapon occlusion delay
+                                if (Weapon_OcclusionDelay && !IsWeaponMelee(wep) && AllowWeaponOcclusionDelay
+                                    && (curTime - WeaponLastShotTime) <= 4.5f
+                                    && eneData.Distance > Weapon_OcclusionDelayMinDist)
+                                {
+                                    // SKIP: lua:3636-3638 — WeaponAttackState/ACT_IDLE_ANGRY/NextChaseTime + occlusion delay — Phase 3 weapon state + animation
+                                }
+                                // lua:3640-3641 — Hidden zone stand-up
+                                if (curTime < LastHiddenZoneT
+                                    && !DoCoverTrace(myPosCentered + Vector3.Up * 30f, enePos_Eye + Vector3.Up * 30f, true).isCover)
+                                {
+                                    // SKIP: lua:3641 — MaintainIdleBehavior(2) → ACT_IDLE_ANGRY — Phase 3 animation
+                                    // SKIP: lua:3642 — goto goto_checkwep
+                                }
+                                // lua:3643-3649 — Failed everything → fall back to chase
+                                // SKIP: lua:3645-3649 — WeaponAttackState reset + MaintainAlertBehavior — Phase 3 weapon state
+                            }
+                            // lua:3651 — goto goto_conditions
+                            return;
                         }
                         // lua:3653: -- I can see the enemy...
                         // ═══ C2c: Enemy visible — weapon combat loop (lua:3654-3816) ═══
@@ -699,28 +815,41 @@ public partial class HumanNPC
                             // lua:3671: // self:MaintainAlertBehavior() — commented out
 
                             // ═══ C2c-ii: Cover/obstruction check (lua:3673-3734) ═══
-                            // lua:3673-3676: inCover + wepInCover via DoCoverTrace
-                            // SKIP: lua:3673 — DoCoverTrace(myPosCentered, enePos_Eye, false, {SetLastHiddenTime = true}) — Phase 3 cover
-                            // SKIP: lua:3675 — DoCoverTrace(wep:GetBulletPos(), enePos_Eye, false) — Phase 3 weapon + cover
-                            // lua:3679-3682: inCoverEntLiving = IsValid(inCoverEnt) && inCoverEnt.VJ_ID_Living
-                            // SKIP: lua:3679-3682 — inCoverEnt.VJ_ID_Living — Phase 3 entity flags
+                            // lua:3673 — inCover, inCoverTrace = self:DoCoverTrace(myPosCentered, enePos_Eye, false, {SetLastHiddenTime = true})
+                            var (inCover, inCoverTrace) = DoCoverTrace(myPosCentered, enePos_Eye, false, true);
+                            // lua:3675 — wepInCover, wepInCoverTrace = self:DoCoverTrace(wep:GetBulletPos(), enePos_Eye, false)
+                            // Phase 3: wep:GetBulletPos() approximated with WorldPosition + Up*60
+                            var bulletPos = wep.WorldPosition + Vector3.Up * 60f;
+                            var (wepInCover, _) = DoCoverTrace(bulletPos, enePos_Eye, false);
+                            // lua:3679 — inCoverEnt = inCoverTrace.Entity
+                            var inCoverEnt = inCoverTrace.GameObject;
+                            // lua:3679 — inCoverEntLiving = IsValid(inCoverEnt) && inCoverEnt.VJ_ID_Living
+                            var inCoverEntLiving = inCoverEnt.IsValid() && HasEntityFlag(inCoverEnt, "VJ_ID_Living");
 
                             // lua:3683: if !wep.IsMeleeWeapon then — ranged weapons only
                             if (!IsWeaponMelee(wep))
                             {
                                 // lua:3685-3693: Friendly in line of fire → move
-                                // SKIP: lua:3685 — inCoverEntLiving && WeaponAttackState == VJ.WEP_ATTACK_STATE_FIRE_STAND && IsValid(wepInCoverEnt) && wepInCoverEnt:IsNPC() && Disposition checks — Phase 3
+                                // SKIP: lua:3685 — inCoverEntLiving && WeaponAttackState == VJ.WEP_ATTACK_STATE_FIRE_STAND && IsValid(wepInCoverEnt) && wepInCoverEnt:IsNPC() && Disposition checks — Phase 3 weapon state
                                 // SKIP: lua:3686 — moveCheck = PICK(VJ.TraceDirections(self, "Quick", 50, ...)) — Phase 3 utility
                                 // SKIP: lua:3688-3692 — StopMoving / IsGuard guard data / SetLastPosition / SCHEDULE_GOTO_POSITION("TASK_WALK_PATH", lambda) — Phase 3
 
-                                // lua:3697-3734: Behind cover logic
-                                // SKIP: lua:3697 — if inCover then
-                                // SKIP: lua:3699 — curTime < TakingCoverT → goto goto_conditions
-                                // SKIP: lua:3701 — curTime > NextMoveOnGunCoveredT && distance > 150 || wepInCover → reposition
-                                // SKIP: lua:3703-3710 — nearestPos/nearestEntPos via VJ.GetNearestPositions / NearestPoint — Phase 3 utility
-                                // SKIP: lua:3716-3727 — custom vj_ai_schedule.New("SCHEDULE_GOTO_POSITION") + TranslateActivity(PICK(AnimTbl_MoveToCover)) + AnimExists + SetMovementActivity + StartSchedule — Phase 3 animation + schedule
-                                // SKIP: lua:3730 — NextMoveOnGunCoveredT = curTime + 2
-                                // SKIP: lua:3731 — return
+                                // lua:3697: if inCover then
+                                if (inCover)
+                                {
+                                    // lua:3699 — if curTime < TakingCoverT then goto goto_conditions
+                                    if (curTime < TakingCoverT) return;
+                                    // lua:3701 — if curTime > NextMoveOnGunCoveredT && (distance > 150 || wepInCover) then
+                                    if (curTime > NextMoveOnGunCoveredT && (eneData.Distance > 150f || wepInCover))
+                                    {
+                                        // lua:3703-3710 — nearestPos/nearestEntPos — Phase 3 utility (skip NearestPoint positioning)
+                                        // lua:3716-3727 — SCHEDULE_GOTO_POSITION + animation — skip Phase 3 animation
+                                        // SKIP: lua:3716-3727 — TranslateActivity(PICK(AnimTbl_MoveToCover)) + AnimExists + SetMovementActivity + StartSchedule — Phase 3 animation
+                                        // lua:3730 — NextMoveOnGunCoveredT = curTime + 2
+                                        NextMoveOnGunCoveredT = curTime + 2f;
+                                        return;
+                                    }
+                                }
                             }
 
                             // ═══ C2c-iii: Weapon attack (lua:3737-3794) ═══
@@ -801,7 +930,7 @@ public partial class HumanNPC
                             //          && curTime > NextWeaponStrafeT && (curTime - eneData.TimeAcquired) > 2
                             //          && eneData.Distance < (Weapon_MaxDistance / 1.25)
                             if (Weapon_Strafe
-                                // SKIP: !inCover — Phase 3 cover system
+                                && !inCover
                                 && !IsGuard
                                 && !IsFollowing
                                 && !IsWeaponMelee(wep)
@@ -809,9 +938,14 @@ public partial class HumanNPC
                                 )
                             {
                                 // SKIP: lua:3798 — OnWeaponStrafe() != false — Phase 3 weapon callback
-                                // SKIP: lua:3799 — moveCheck = PICK(VJ.TraceDirections(self, "Radial", math.random(150, 400), true, false, 12, true)) — Phase 3 utility
-                                // SKIP: lua:3801-3803 — StopMoving / SetLastPosition / SCHEDULE_GOTO_POSITION(random walk/run, lambda with FACE_ENEMY) — Phase 3
-                                // SKIP: lua:3806 — NextWeaponStrafeT = curTime + math.Rand(Weapon_StrafeCooldown.a, Weapon_StrafeCooldown.b)
+                                // lua:3799 — moveCheck = PICK(VJ.TraceDirections(self, "Radial", math.random(150, 400), true, false, 12, true))
+                                var strafeDist = VJUtility.Rand(150f, 400f);
+                                var strafeCheck = VJUtility.PICK(VJUtility.TraceDirections(this, "Radial", strafeDist, true, 12, true, false, false, false));
+                                if (strafeCheck != default)
+                                {
+                                    // SKIP: lua:3801-3803 — StopMoving / SetLastPosition / SCHEDULE_GOTO_POSITION(random walk/run, lambda with FACE_ENEMY) — Phase 3
+                                }
+                                // SKIP: lua:3806 — NextWeaponStrafeT = curTime + math.Rand(Weapon_StrafeCooldown.a, Weapon_StrafeCooldown.b) — Phase 3 weapon state
                             }
                         }
                         // lua:3808: else — None VJ Base weapons
@@ -1479,7 +1613,8 @@ public partial class HumanNPC
 
                 // ---- M5: Passive NPC run away (lua:4130-4134) ----
                 // lua:4131-4134 — elseif isPassive && curTime > selfData.TakingCoverT then if selfData.DamageResponse && !self:IsBusy() then self:SCHEDULE_COVER_ORIGIN("TASK_RUN_PATH") end end
-                // SKIP: lua:4131-4134 — isPassive run-away via SCHEDULE_COVER_ORIGIN — Phase 3 passive behavior
+                if (isPassive && curTime > TakingCoverT && DamageResponse is bool dr && dr && !IsBusy("Activities"))
+                    SCHEDULE_COVER_ORIGIN("TASK_RUN_PATH");
             }
 
             // ---- M6: Passive allies signal danger (lua:4138-4151) ----
@@ -1610,8 +1745,14 @@ public partial class HumanNPC
             // lua:4244 — if bloodDecal then
             if (bloodDecal != null)
             {
-                // lua:4245-4248 — decalPos / TraceLine / util.Decal
-                // SKIP: lua:4245-4248 — TraceLine + util.Decal blood decal — Phase 3 decal system
+                // lua:4245-4248 — decalPos = myPos + vecZ4, TraceLine downward 500, util.Decal
+                var decalPos = myPos + Vector3.Up * 4f;
+                // SKIP: lua:4245 — SetLocalPos(decalPos) — self position move before decal
+                var tr = Game.ActiveScene.Trace.Ray(decalPos, decalPos + Vector3.Down * 500f)
+                    .IgnoreGameObjectHierarchy(GameObject)
+                    .Run();
+                if (tr.Hit)
+                    PlaceBloodDecal(bloodDecal, tr.HitPosition + tr.Normal, tr.HitPosition - tr.Normal);
             }
         }
 

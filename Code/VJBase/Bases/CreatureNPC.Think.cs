@@ -248,12 +248,15 @@ public partial class CreatureNPC
                 var entBase1 = ent.Components.Get<BaseNPC>();
                 if (entBase1 != null && entBase1.VJ_NPC_Class.Any(c => VJ_NPC_Class.Contains(c))) continue;
                 // SKIP: lua:2463 — ent.IsVJBaseBullseye && ent.VJ_IsBeingControlled — Phase 3 bullseye system
-                // SKIP: lua:2464 — ent:IsPlayer() with VJ_IsControllingNPC / Alive / VJ_CVAR_IGNOREPLAYERS — Phase 3 player system
+                // lua:2464 — skip VJ_IsControllingNPC, skip player when ignoreplayers / dead
+                if (entBase1?.VJ_IsBeingControlled == true) continue;
+                bool isPlayer = ent.Components.Get<PlayerBase>() != null;
+                if (isPlayer && VJInit.vj_npc_ignoreplayers) continue;
                 // lua:2465 — ((VJ_ID_Living && Disp != D_LI) || VJ_ID_Attackable || VJ_ID_Destructible) && angle
-                // Phase 3: isLiving → ent.Components.Get<VJEntityFlags>()?.IsLiving (IsVJBaseSNPC proxy only covers NPCs, not players/props)
-                bool isLiving = false;
-                bool isAttackable = false; // Phase 3: VJEntityFlags.IsAttackable
-                bool isDestructible = false; // Phase 3: VJEntityFlags.IsDestructible
+                bool isLiving = HasEntityFlag(ent, "VJ_ID_Living");
+                if (isPlayer && !isLiving) isLiving = true; // players are living targets by default
+                bool isAttackable = HasEntityFlag(ent, "VJ_ID_Attackable");
+                bool isDestructible = HasEntityFlag(ent, "VJ_ID_Destructible");
                 var delta = new Vector3(ent.WorldPosition.x - myPos.x, ent.WorldPosition.y - myPos.y, 0);
                 bool inAngle = traceDir.Dot(delta.Normal) > MathF.Cos(MathF.PI / 180f * MeleeAttackDamageAngleRadius);
                 if (((isLiving && Disposition(ent) != (int)VJBase.Disposition.Like) || isAttackable || isDestructible) && inAngle)
@@ -337,7 +340,13 @@ public partial class CreatureNPC
                         }
                     }
                     // lua:2544-2553: Player-specific effects
-                    // SKIP: lua:2544-2553 — ent:IsPlayer() / ViewPunch / SetDSP / DoMeleeAttackPlayerSpeed — Phase 3 player system
+                    if (isPlayer)
+                    {
+                        // SKIP: lua:2545 — ent:ViewPunch(Angle(...)) — Phase 3 player camera (no native S&Box API)
+                        // SKIP: lua:2547-2548 — ent:SetDSP(MeleeAttackDSP) — Phase 3 audio (Source DSP index→S&Box mapping needed)
+                        if (MeleeAttackPlayerSpeed)
+                            DoMeleeAttackPlayerSpeed(ent, MeleeAttackPlayerSpeedWalk, MeleeAttackPlayerSpeedRun, MeleeAttackPlayerSpeedTime);
+                    }
                     if (!isProp)
                     {
                         hitRegistered = true;
@@ -419,12 +428,15 @@ public partial class CreatureNPC
                 var entBase2 = ent.Components.Get<BaseNPC>();
                 if (entBase2 != null && entBase2.VJ_NPC_Class.Any(c => VJ_NPC_Class.Contains(c))) continue;
                 // SKIP: lua:2679 — ent.IsVJBaseBullseye && ent.VJ_IsBeingControlled — Phase 3 bullseye
-                // SKIP: lua:2680 — ent:IsPlayer() / VJ_IsControllingNPC / Alive / VJ_CVAR_IGNOREPLAYERS — Phase 3 player
+                // lua:2680 — skip VJ_IsControllingNPC, skip player when ignoreplayers / dead
+                if (entBase2?.VJ_IsBeingControlled == true) continue;
+                bool isPlayer = ent.Components.Get<PlayerBase>() != null;
+                if (isPlayer && VJInit.vj_npc_ignoreplayers) continue;
                 // lua:2681 — (VJ_ID_Living && Disp != D_LI) || VJ_ID_Attackable || VJ_ID_Destructible
-                // Phase 3: isLiving → ent.Components.Get<VJEntityFlags>()?.IsLiving (IsVJBaseSNPC proxy only covers NPCs, not players/props)
-                bool isLiving = false;
-                bool isAttackable = false; // Phase 3: VJEntityFlags.IsAttackable
-                bool isDestructible = false; // Phase 3: VJEntityFlags.IsDestructible
+                bool isLiving = HasEntityFlag(ent, "VJ_ID_Living");
+                if (isPlayer && !isLiving) isLiving = true; // players are living targets by default
+                bool isAttackable = HasEntityFlag(ent, "VJ_ID_Attackable");
+                bool isDestructible = HasEntityFlag(ent, "VJ_ID_Destructible");
                 if ((isLiving && Disposition(ent) != (int)VJBase.Disposition.Like) || isAttackable || isDestructible)
                 {
                     if (OnLeapAttackExecute("PreDamage", ent)) continue;
@@ -442,7 +454,10 @@ public partial class CreatureNPC
                         foreach (var d in ent.Components.GetAll<IDamageable>())
                             d.OnDamage(dmgInfo);
                     }
-                    // SKIP: lua:2694-2695 — ent:IsPlayer() / ViewPunch — Phase 3 player system
+                    if (isPlayer)
+                    {
+                        // SKIP: lua:2694-2695 — ent:ViewPunch(Angle(...)) — Phase 3 player camera (no native S&Box API)
+                    }
                     hitRegistered = true;
                     if (LeapAttackStopOnHit) break;
                 }
@@ -504,8 +519,11 @@ public partial class CreatureNPC
         var allies = Allies_Check(responseDist);
         if (allies != null)
         {
-            // lua:3203 — doBecomeEnemyToPlayer (player attacker hostility)
-            // SKIP: lua:3203 — IsPlayer() / VJ_CVAR_IGNOREPLAYERS — Phase 3 player detection + convar
+            // lua:3203 — doBecomeEnemyToPlayer = (self.BecomeEnemyToPlayer && dmgAttacker:IsPlayer() && !VJ_CVAR_IGNOREPLAYERS)
+            var doBecomeEnemyToPlayer = BecomeEnemyToPlayer > 0
+                && dmgAttacker.IsValid()
+                && dmgAttacker.Components.Get<PlayerBase>() != null
+                && !VJInit.vj_npc_ignoreplayers;
             var responseType = DeathAllyResponse;
             foreach (var ally in allies)
             {
@@ -520,8 +538,20 @@ public partial class CreatureNPC
                 // lua:3226-3227 — alert ally
                 allyBase.DoReadyAlert();
                 allyBase.SetTurnTarget("Enemy");
-                // lua:3233-3241 — BecomeEnemyToPlayer chain (player attacker hostility)
-                // SKIP: lua:3233-3241 — BecomeEnemyToPlayer/SetRelationshipMemory/ResetFollowBehavior — Phase 3 player + relationship memory
+                // lua:3233-3241 — BecomeEnemyToPlayer chain
+                if (doBecomeEnemyToPlayer && allyBase.BecomeEnemyToPlayer > 0 && allyBase.CheckRelationship(dmgAttacker) == (int)VJBase.Disposition.Like)
+                {
+                    allyBase.SetRelationshipMemory(dmgAttacker, "hostility", 1f);
+                    var hostility = allyBase.GetRelationshipMemory(dmgAttacker, "hostility");
+                    if (hostility > allyBase.BecomeEnemyToPlayer)
+                    {
+                        allyBase.OnBecomeEnemyToPlayer(dmginfo, hitgroup);
+                        allyBase.AddEntityRelationship(dmgAttacker, (int)VJBase.Disposition.Hate, 2);
+                        allyBase.PlaySoundSystem("BecomeEnemyToPlayer");
+                        // SKIP: lua:3236 — ResetFollowBehavior — Phase 3 follow system
+                        // SKIP: lua:3240 — CanChatMessage — Phase 3 chat system
+                    }
+                }
             }
         }
 
@@ -534,11 +564,13 @@ public partial class CreatureNPC
             // lua:3255 — if bloodDecal then
             if (bloodDecal != null)
             {
-                // lua:3256 — decalPos = myPos + vecZ4
-                // lua:3257 — self:SetLocalPos(decalPos)
-                // lua:3258 — tr = util.TraceLine({start=decalPos, endpos=decalPos-vecZ500, filter=self})
-                // lua:3259 — util.Decal(bloodDecal, tr.HitPos+tr.HitNormal, tr.HitPos-tr.HitNormal)
-                // SKIP: lua:3256-3259 — TraceLine + util.Decal blood decal — Phase 3 decal system
+                // lua:3256-3259 — TraceLine downward + util.Decal
+                var decalPos = myPos + Vector3.Up * 4f;
+                var tr = Game.ActiveScene.Trace.Ray(decalPos, decalPos + Vector3.Down * 500f)
+                    .IgnoreGameObjectHierarchy(GameObject)
+                    .Run();
+                if (tr.Hit)
+                    PlaceBloodDecal(bloodDecal, tr.HitPosition + tr.Normal, tr.HitPosition - tr.Normal);
             }
         }
 

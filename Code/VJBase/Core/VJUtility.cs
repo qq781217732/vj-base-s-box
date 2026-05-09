@@ -63,4 +63,98 @@ public static class VJUtility
 
     /// <summary>VJ.AnimDurationEx — Calculate animation duration with override (Phase 3)</summary>
     public static float AnimDurationEx(GameObject ent, string anim, object overrideVal, float decrease = 0) => 0f;
+
+    /// <summary>VJ.TraceDirections — funcs.lua:204-300. Multi-direction trace to find valid movement positions.</summary>
+    public static List<Vector3> TraceDirections(BaseNPC npc, string trType, float maxDist = 200f,
+        bool requireFullDist = true, int numDirections = 4,
+        bool excludeForward = false, bool excludeBack = false,
+        bool excludeLeft = false, bool excludeRight = false)
+    {
+        maxDist = maxDist <= 0 ? 200f : maxDist;
+        numDirections = numDirections <= 0 ? 4 : numDirections;
+
+        var entPos = npc.WorldPosition;
+        var entPosZ = entPos.z;
+        var entPosCentered = npc.WorldSpaceCenter();
+        var myForward = npc.GameObject.WorldRotation.Forward;
+        var myRight = npc.GameObject.WorldRotation.Right;
+        var result = new List<Vector3>();
+
+        if (trType == "Quick")
+        {
+            void RunTrace(Vector3 dir)
+            {
+                var tr = Game.ActiveScene.Trace.Ray(entPosCentered, entPosCentered + dir * maxDist)
+                    .IgnoreGameObjectHierarchy(npc.GameObject)
+                    .Run();
+                if (!requireFullDist || entPos.Distance(tr.EndPosition) >= maxDist)
+                {
+                    var hitPos = tr.EndPosition;
+                    hitPos.z = entPosZ;
+                    result.Add(hitPos);
+                }
+            }
+
+            if (!excludeForward)
+            {
+                RunTrace(myForward);
+                if (numDirections >= 5)
+                {
+                    RunTrace((myForward - myRight).Normal);
+                    RunTrace((myForward + myRight).Normal);
+                }
+            }
+            if (!excludeBack)
+            {
+                RunTrace(-myForward);
+                if (numDirections >= 5)
+                {
+                    RunTrace((-myForward - myRight).Normal);
+                    RunTrace((-myForward + myRight).Normal);
+                }
+            }
+            if (!excludeLeft) RunTrace(-myRight);
+            if (!excludeRight) RunTrace(myRight);
+        }
+        else // "Radial"
+        {
+            var angleIncrement = (2f * MathF.PI) / numDirections;
+            for (int i = 0; i < numDirections; i++)
+            {
+                var angle = i * angleIncrement;
+                var dir = myForward * MathF.Cos(angle) + myRight * MathF.Sin(angle);
+                var forwardDot = Vector3.Dot(dir, myForward);
+                var rightDot = Vector3.Dot(dir, myRight);
+
+                if ((excludeForward && forwardDot > 0.7f) ||
+                    (excludeBack && forwardDot < -0.7f) ||
+                    (excludeLeft && rightDot < -0.7f) ||
+                    (excludeRight && rightDot > 0.7f))
+                    continue;
+
+                var tr = Game.ActiveScene.Trace.Ray(entPosCentered, entPosCentered + dir * maxDist)
+                    .IgnoreGameObjectHierarchy(npc.GameObject)
+                    .Run();
+                if (!requireFullDist || entPos.Distance(tr.EndPosition) >= maxDist)
+                {
+                    var hitPos = tr.EndPosition;
+                    hitPos.z = entPosZ;
+                    result.Add(hitPos);
+                }
+            }
+        }
+        return result;
+    }
+
+    /// <summary>VJ.TraceDirections overload with GameObject for convenience.</summary>
+    public static List<Vector3> TraceDirections(GameObject ent, string trType, float maxDist = 200f,
+        bool requireFullDist = true, int numDirections = 4,
+        bool excludeForward = false, bool excludeBack = false,
+        bool excludeLeft = false, bool excludeRight = false)
+    {
+        var npc = ent.Components.Get<BaseNPC>();
+        if (npc == null) return new List<Vector3>();
+        return TraceDirections(npc, trType, maxDist, requireFullDist, numDirections,
+            excludeForward, excludeBack, excludeLeft, excludeRight);
+    }
 }

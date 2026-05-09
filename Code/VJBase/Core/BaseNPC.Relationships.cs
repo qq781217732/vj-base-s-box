@@ -50,12 +50,12 @@ public partial class BaseNPC
     protected virtual Vector3 OBBMins() => new(-32, -32, 0);
 
     // WorldSpaceCenter = WorldPosition + OBB center offset. Source: GetAbsOrigin() + (Mins+Maxs)/2
-    protected Vector3 WorldSpaceCenter()
+    public Vector3 WorldSpaceCenter()
     {
         var obbCenter = (OBBMins() + OBBMaxs()) * 0.5f;
         return GameObject.WorldPosition + obbCenter;
     }
-    protected Vector3 WorldSpaceCenter_Entity(GameObject ent)
+    public Vector3 WorldSpaceCenter_Entity(GameObject ent)
     {
         if (ent == null || !ent.IsValid()) return Vector3.Zero;
         var baseNPC = ent.Components.Get<BaseNPC>();

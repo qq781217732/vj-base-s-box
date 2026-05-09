@@ -107,6 +107,8 @@ public partial class HumanNPC : CreatureNPC
     public List<string> AnimTbl_WeaponAttack { get; set; } = new();
     public List<string> AnimTbl_WeaponAttackCrouch { get; set; } = new();
     public List<string> AnimTbl_WeaponAim { get; set; } = new();
+    public List<string> AnimTbl_WeaponReload { get; set; } = new();
+    public List<string> AnimTbl_WeaponReloadCovered { get; set; } = new();
 
     // ═══ Weapon Runtime State (ported from init.lua:1649-1662) ═══
     public float WeaponLastShotTime { get; set; }

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Sandbox;
+using SWB.Player;
 
 namespace VJBase;
 
@@ -194,6 +196,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public List<string> BloodDecal { get; set; } = new();
     public List<string> BloodParticle { get; set; } = new();
     public bool HasBloodPool { get; set; } = true;
+    public float BloodDecalDistance { get; set; } = 150f;
 
     // ═══ Saved Damage Info — creature_base + human_base init.lua:3331-3341 ═══
     public SavedDmgInfoData SavedDmgInfo { get; set; }
@@ -379,14 +382,116 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     /// <summary>CanFireWeapon — human init.lua:3476. Returns false (conservative) until Phase 3.</summary>
     public virtual bool CanFireWeapon(bool checkDistance, bool checkDistanceOnly) => false;
 
-    /// <summary>DoCoverTrace — human init.lua:1294. Returns true = "behind cover" (conservative default).</summary>
-    public virtual bool DoCoverTrace(Vector3 start, Vector3 end, bool checkForEntity = false, object options = null)
+    /// <summary>DoCoverTrace — core.lua:1294-1340. Returns (isBehindCover, traceResult).</summary>
+    public virtual (bool isCover, SceneTraceResult trace) DoCoverTrace(Vector3 start, Vector3 end, bool acceptWorld = false, bool setLastHiddenTime = false)
     {
-        if (options != null && options is System.Collections.Generic.Dictionary<string, object> opts
-            && opts.TryGetValue("SetLastHiddenTime", out var v))
-            LastHiddenZoneT = Time.Now;
-        return true;
+        var ene = GetEnemy();
+        if (!ene.IsValid()) return (false, default);
+        if (start == default) start = WorldSpaceCenter();
+        if (end == default) end = ene.WorldPosition + Vector3.Up * 64f; // EyePos fallback
+
+        var tr = Game.ActiveScene.Trace.Ray(start, end)
+            .IgnoreGameObjectHierarchy(GameObject)
+            .WithoutTags("npc")
+            .Run();
+
+        var hitPos = tr.HitPosition;
+        var hitEnt = tr.GameObject;
+
+        // Small FindInSphere invalidation — hitPos might be very close to enemy or living entity
+        var sphereInvalidate = false;
+        foreach (var v in Game.ActiveScene.FindInPhysics(new Sphere(hitPos, 5f)))
+        {
+            if (v == ene) { sphereInvalidate = true; break; }
+            if (v.Components.TryGet<BaseNPC>(out var vNpc) && vNpc.VJ_ID_Living) { sphereInvalidate = true; break; }
+            if (v.Components.TryGet<VJEntityFlags>(out var vFlags) && vFlags.VJ_ID_Living) { sphereInvalidate = true; break; }
+        }
+
+        // Hiding zone: hit world AND close (< 200 units)
+        if (tr.Hit && hitEnt.IsWorld && start.Distance(hitPos) < 200f)
+        {
+            if (setLastHiddenTime) LastHiddenZoneT = Time.Now + 20f;
+            return (true, tr);
+        }
+        // NOT a hiding zone
+        else if (sphereInvalidate
+            || (!acceptWorld && tr.Hit && hitEnt.IsWorld)
+            || (hitEnt.IsValid() && (hitEnt == ene || IsEntityLiving(hitEnt) || EntityVelocitySqLg(hitEnt) > 1000f))
+            || end.Distance(hitPos) <= 10f)
+        {
+            if (setLastHiddenTime) LastHiddenZoneT = 0f;
+            return (false, tr);
+        }
+        else // Hidden
+        {
+            if (setLastHiddenTime) LastHiddenZoneT = Time.Now + 20f;
+            return (true, tr);
+        }
     }
+
+    private bool IsEntityLiving(GameObject ent)
+    {
+        if (ent.Components.TryGet<BaseNPC>(out var npc)) return npc.VJ_ID_Living;
+        if (ent.Components.TryGet<VJEntityFlags>(out var flags)) return flags.VJ_ID_Living;
+        return false;
+    }
+
+    private float EntityVelocitySqLg(GameObject ent)
+    {
+        var rb = ent.Components.Get<Rigidbody>();
+        return rb?.Velocity.LengthSquared ?? 0f;
+    }
+
+    /// <summary>DoMeleeAttackPlayerSpeed — creature init.lua:2579-2621. Slow player after melee hit.</summary>
+    public virtual void DoMeleeAttackPlayerSpeed(GameObject player, float walkSpeed, float runSpeed, float speedTime)
+    {
+        speedTime = speedTime <= 0 ? 5f : speedTime;
+        var ctrl = player.Components.Get<PlayerController>();
+        if (ctrl == null) return;
+
+        var oldWalk = ctrl.WalkSpeed;
+        var oldRun = ctrl.RunSpeed;
+        ctrl.WalkSpeed = walkSpeed > 0 ? walkSpeed : 50f;
+        ctrl.RunSpeed = runSpeed > 0 ? runSpeed : 50f;
+
+        // Play heartbeat sound
+        if (HasSounds && HasMeleeAttackPlayerSpeedSounds)
+        {
+            var sdFile = VJUtility.PICK(SoundTbl_MeleeAttackPlayerSpeed);
+            if (!string.IsNullOrEmpty(sdFile))
+            {
+                var handle = Sound.Play(sdFile, player.WorldPosition);
+                handle.Parent = player;
+                handle.Pitch = GetSoundPitch(MeleeAttackPlayerSpeedPitch);
+                // SoundLevel not mapped to S&Box attenuation yet (Phase 3)
+                CurrentMeleeAttackPlayerSpeedSound = handle;
+            }
+        }
+
+        _ = RestoreSpeedAsync(player, ctrl, oldWalk, oldRun, speedTime);
+    }
+
+    private async Task RestoreSpeedAsync(GameObject player, PlayerController ctrl, float oldWalk, float oldRun, float delay)
+    {
+        await Task.Delay((int)(delay * 1000));
+        if (!player.IsValid() || ctrl == null || !ctrl.IsValid()) return;
+        ctrl.WalkSpeed = oldWalk;
+        ctrl.RunSpeed = oldRun;
+        if (CurrentMeleeAttackPlayerSpeedSound != null)
+        {
+            CurrentMeleeAttackPlayerSpeedSound.Stop();
+            CurrentMeleeAttackPlayerSpeedSound = null;
+        }
+    }
+
+    /// <summary>HasMeleeAttackPlayerSpeedSounds — creature init:373</summary>
+    public bool HasMeleeAttackPlayerSpeedSounds { get; set; } = true;
+    /// <summary>MeleeAttackPlayerSpeedSoundLevel — creature init:493</summary>
+    public int MeleeAttackPlayerSpeedSoundLevel { get; set; } = 100;
+    /// <summary>MeleeAttackPlayerSpeedPitch — creature base init:526</summary>
+    public object MeleeAttackPlayerSpeedPitch { get; set; }
+    /// <summary>CurrentMeleeAttackPlayerSpeedSound handle stored for fade-out on restore</summary>
+    public SoundHandle CurrentMeleeAttackPlayerSpeedSound { get; set; }
 
     /// <summary>TranslateActivity — human init.lua:2417. Pass-through until Phase 3 animation.</summary>
     public virtual string TranslateActivity(string animName) => animName;
@@ -1036,11 +1141,74 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public virtual int WaterLevel() => 0;
     public virtual void Extinguish() { }
     public virtual void SpawnBloodParticles(DamageInfo dmginfo, int hitgroup) { }
-    public virtual void SpawnBloodDecals(DamageInfo dmginfo, int hitgroup) { }
+    public virtual void SpawnBloodDecals(DamageInfo dmginfo, int hitgroup)
+    {
+        var decalName = VJUtility.PICK(BloodDecal);
+        if (string.IsNullOrEmpty(decalName)) return;
+
+        var dmgPos = dmginfo.Position;
+        if (dmgPos == default) dmgPos = WorldSpaceCenter();
+        // Approximate damage force direction from Origin→Position (S&Box DamageInfo has no Force)
+        var dmgForceDir = (dmgPos - dmginfo.Origin).Length > 0.1f
+            ? (dmgPos - dmginfo.Origin).Normal
+            : Vector3.Random.Normal;
+        var clampedLength = Math.Clamp(150f, 100f, BloodDecalDistance > 0 ? BloodDecalDistance : 500f);
+
+        // Main direction decal
+        var tr1 = Game.ActiveScene.Trace.Ray(dmgPos, dmgPos + dmgForceDir * clampedLength)
+            .IgnoreGameObjectHierarchy(GameObject)
+            .Run();
+        if (tr1.Hit) PlaceBloodDecal(decalName, tr1.HitPosition, tr1.Normal);
+
+        // Random scatter decals
+        for (int i = 0; i < 2; i++)
+        {
+            if (Game.Random.Next(1, 3) == 1)
+                PlaceBloodDecal(decalName, tr1.HitPosition + new Vector3(Game.Random.Next(-70, 71), Game.Random.Next(-70, 71), 0), tr1.Normal);
+        }
+
+        // Downward decal (50% chance)
+        if (Game.Random.Next(1, 3) == 1)
+        {
+            var d2End = dmgPos + Vector3.Down * clampedLength;
+            PlaceBloodDecal(decalName, dmgPos, Vector3.Up);
+            if (Game.Random.Next(1, 3) == 1)
+                PlaceBloodDecal(decalName, dmgPos + new Vector3(Game.Random.Next(-120, 121), Game.Random.Next(-120, 121), 0), Vector3.Up);
+        }
+    }
+
+    /// <summary>Place a single blood decal at the given world position</summary>
+    protected void PlaceBloodDecal(string decalName, Vector3 pos, Vector3 normal)
+    {
+        var decalGo = new GameObject();
+        decalGo.Name = $"BloodDecal_{decalName}";
+        decalGo.WorldPosition = pos;
+        decalGo.WorldRotation = Rotation.LookAt(normal);
+        var decal = decalGo.Components.Create<Decal>();
+        decal.Size = new Vector2(32, 32);
+        decal.Transient = true;
+        decal.LifeTime = 30f;
+        // Phase 3: load decal ColorTexture/NormalTexture from decalName asset
+    }
     public virtual void TriggerOutput(string output, GameObject activator) { }
     public virtual void MarkTookDamageFromEnemy(GameObject attacker) { }
     public virtual void SetSaveValue(string key, object value) { }
-    public virtual void SetRelationshipMemory(GameObject ent, string key, object value) { }
+
+    /// <summary>Relationship memory dictionary — hostility levels per entity. core.lua SetRelationshipMemory</summary>
+    private Dictionary<GameObject, float> _hostilityLevels = new();
+    public virtual float GetRelationshipMemory(GameObject ent, string key)
+    {
+        if (key == "hostility" && _hostilityLevels.TryGetValue(ent, out var val)) return val;
+        return 0f;
+    }
+    public virtual void SetRelationshipMemory(GameObject ent, string key, object value)
+    {
+        if (key == "hostility" && value is float f)
+        {
+            _hostilityLevels.TryGetValue(ent, out var cur);
+            _hostilityLevels[ent] = cur + f;
+        }
+    }
     public virtual float GetMaxLookDistance() => SightDistance;
     public virtual int CheckRelationship(GameObject ent) => (int)VJBase.Disposition.Neutral;
     public virtual bool OnDangerDetected(VJDangerType dangerType, GameObject dangerEnt = null) => false;
