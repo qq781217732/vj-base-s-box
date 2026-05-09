@@ -863,10 +863,41 @@ public partial class HumanNPC
                             // lua:3683: if !wep.IsMeleeWeapon then — ranged weapons only
                             if (!IsWeaponMelee(wep))
                             {
-                                // lua:3685-3693: Friendly in line of fire → move
-                                // SKIP: lua:3685 — inCoverEntLiving && WeaponAttackState == VJ.WEP_ATTACK_STATE_FIRE_STAND && IsValid(wepInCoverEnt) && wepInCoverEnt:IsNPC() && Disposition checks — Phase 3 weapon state
-                                // SKIP: lua:3686 — moveCheck = PICK(VJ.TraceDirections(self, "Quick", 50, ...)) — Phase 3 utility
-                                // SKIP: lua:3688-3692 — StopMoving / IsGuard guard data / SetLastPosition / SCHEDULE_GOTO_POSITION("TASK_WALK_PATH", lambda) — Phase 3
+                                // lua:3685 — Friendly in line of fire → move!
+                                if (inCoverEntLiving
+                                    && WeaponAttackState == VJWepAttackState.FireStand
+                                    && curTime > TakingCoverT
+                                    && wepInCoverEnt.IsValid()
+                                    && wepInCoverEnt.Components.Get<BaseNPC>() != null
+                                    && wepInCoverEnt != GameObject
+                                    && (Disposition(wepInCoverEnt) == (int)VJBase.Disposition.Like
+                                        || Disposition(wepInCoverEnt) == (int)VJBase.Disposition.Neutral)
+                                    // SKIP: lua:3685 — wepInCoverTrace.HitPos:Distance(StartPos) <= 3000 — DoCoverTrace missing UseHitPosition
+                                    )
+                                {
+                                    // lua:3686 — moveCheck = PICK(VJ.TraceDirections(self, "Quick", 50, true, false, 4, true, true))
+                                    var directions = VJUtility.TraceDirections(this, "Quick", 50f, true, 4, false, false, false, false);
+                                    var moveCheck = VJUtility.PICK(directions);
+                                    // lua:3687 — if moveCheck then
+                                    if (moveCheck != default)
+                                    {
+                                        // lua:3688 — self:StopMoving()
+                                        StopMoving();
+                                        // lua:3689 — if IsGuard then GuardData.Position = moveCheck ... end
+                                        // SKIP: lua:3689 — GuardData.Position/Direction — Phase 3 guard system
+                                        // lua:3690 — self:SetLastPosition(moveCheck)
+                                        SetLastPosition(moveCheck);
+                                        // lua:3691 — NextChaseTime = curTime + 1
+                                        NextChaseTime = curTime + 1;
+                                        // lua:3692 — SCHEDULE_GOTO_POSITION("TASK_WALK_PATH", lambda FACE_ENEMY + CanShootWhenMoving)
+                                        SCHEDULE_GOTO_POSITION("TASK_WALK_PATH", schedule =>
+                                        {
+                                            schedule.EngTask(EngineTask.FaceEnemy, 0);
+                                            schedule.CanShootWhenMoving = true;
+                                            schedule.TurnData = new TurnData { Type = VJFaceStatus.Enemy };
+                                        });
+                                    }
+                                }
 
                                 // lua:3697: if inCover then
                                 if (inCover)
