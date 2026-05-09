@@ -103,6 +103,10 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public int MeleeAttackDSP { get; set; } = 32;
     public int MeleeAttackDSPLimit { get; set; } = 60;
 
+    // ═══ Weapon Misc — shared.lua / human init.lua ═══
+    /// <summary>Can this NPC use weapon secondary fire? Overridden by HumanNPC.</summary>
+    public virtual bool Weapon_CanSecondaryFire => false;
+
     // ═══ Range Attack Config — core.lua:289-305 ═══
     public bool HasRangeAttack { get; set; }
     public List<string> RangeAttackProjectiles { get; set; }
@@ -1153,7 +1157,9 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
         var dmgForceDir = (dmgPos - dmginfo.Origin).Length > 0.1f
             ? (dmgPos - dmginfo.Origin).Normal
             : Vector3.Random.Normal;
-        var clampedLength = Math.Clamp(150f, 100f, BloodDecalDistance > 0 ? BloodDecalDistance : 500f);
+        // Lua: math.min(math.max(dmgForce:Length()*10, 100), BloodDecalDistance)
+        // S&Box DamageInfo has no Force; use fixed 150f as a reasonable decay distance. Phase 3: read force from physics impact.
+        var clampedLength = BloodDecalDistance > 0 ? Math.Clamp(BloodDecalDistance, 100f, 500f) : 150f;
 
         // Main direction decal
         var tr1 = Game.ActiveScene.Trace.Ray(dmgPos, dmgPos + dmgForceDir * clampedLength)

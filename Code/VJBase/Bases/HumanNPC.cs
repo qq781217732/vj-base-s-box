@@ -84,7 +84,8 @@ public partial class HumanNPC : CreatureNPC
     public bool Weapon_IgnoreSpawnMenu { get; set; }
     public bool Weapon_CanMoveFire { get; set; }
     public bool Weapon_CanReload { get; set; } = true;
-    public bool Weapon_CanSecondaryFire { get; set; } = true;
+    /// <summary>humans can use secondary fire by default.</summary>
+    public override bool Weapon_CanSecondaryFire => true;
     public bool Weapon_FindCoverOnReload { get; set; } = true;
     public bool DisableWeaponReloadAnimation { get; set; }
 

@@ -654,8 +654,8 @@ public partial class HumanNPC
                         else
                         {
                             // NPC hidden → crouch reload
-                            // SKIP: lua:2796 — DoCoverTrace(myPos+OBBCenter, ene:EyePos, false) — Phase 3 cover
-                            if (false /* DoCoverTrace — Phase 3 */)
+                            // lua:2796 — if eneValid && self:DoCoverTrace(myPos + OBBCenter(), ene:EyePos(), false, {SetLastHiddenTime = true}) then
+                            if (eneValid && DoCoverTrace(WorldSpaceCenter(), ene.WorldPosition + Vector3.Up * 64f, false, true).isCover)
                             {
                                 // SKIP: lua:2797-2799 — crouch reload animation (AnimTbl_WeaponReloadCovered) — Phase 3 animation
                             }
@@ -838,16 +838,17 @@ public partial class HumanNPC
                                 if (inCover)
                                 {
                                     // lua:3699 — if curTime < TakingCoverT then goto goto_conditions
-                                    if (curTime < TakingCoverT) return;
-                                    // lua:3701 — if curTime > NextMoveOnGunCoveredT && (distance > 150 || wepInCover) then
-                                    if (curTime > NextMoveOnGunCoveredT && (eneData.Distance > 150f || wepInCover))
+                                    if (curTime < TakingCoverT) goto goto_conditions;
+                                    // lua:3701 — if curTime > NextMoveOnGunCoveredT && (inCoverTrace.HitPos:Distance(myPos) > 150 || wepInCover) && !inCoverEntLiving then
+                                    var coverDist = inCoverTrace.HitPosition.Distance(myPosCentered);
+                                    if (curTime > NextMoveOnGunCoveredT && (coverDist > 150f || wepInCover) && !inCoverEntLiving)
                                     {
                                         // lua:3703-3710 — nearestPos/nearestEntPos — Phase 3 utility (skip NearestPoint positioning)
                                         // lua:3716-3727 — SCHEDULE_GOTO_POSITION + animation — skip Phase 3 animation
                                         // SKIP: lua:3716-3727 — TranslateActivity(PICK(AnimTbl_MoveToCover)) + AnimExists + SetMovementActivity + StartSchedule — Phase 3 animation
                                         // lua:3730 — NextMoveOnGunCoveredT = curTime + 2
                                         NextMoveOnGunCoveredT = curTime + 2f;
-                                        return;
+                                        goto goto_conditions;
                                     }
                                 }
                             }
@@ -1617,7 +1618,8 @@ public partial class HumanNPC
 
                 // ---- M5: Passive NPC run away (lua:4130-4134) ----
                 // lua:4131-4134 — elseif isPassive && curTime > selfData.TakingCoverT then if selfData.DamageResponse && !self:IsBusy() then self:SCHEDULE_COVER_ORIGIN("TASK_RUN_PATH") end end
-                if (isPassive && curTime > TakingCoverT && DamageResponse is bool dr && dr && !IsBusy("Activities"))
+                // lua: selfData.DamageResponse is truthy — accepts true, "OnlySearch", "OnlyMove", etc.
+                if (isPassive && curTime > TakingCoverT && DamageResponse is not false and not null && !IsBusy("Activities"))
                     SCHEDULE_COVER_ORIGIN("TASK_RUN_PATH");
             }
 
@@ -2047,6 +2049,8 @@ public partial class HumanNPC
             // lua:2565 — wep = self.WeaponEntity
             var wep = WeaponEntity;
             // lua:2566 — if wep.IsVJBaseWeapon then wep:NPC_Reload() end
+            // Called BEFORE timer — NPC_Reload is a reload-start callback (sends OnReload("Start"),
+            // pushes grenade timer, plays reload sound), not reload-complete. Timer handles completion.
             if (wep.IsValid())
             {
                 var wepComp = wep.Components.Get<IVJBaseWeapon>();

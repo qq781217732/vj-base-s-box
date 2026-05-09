@@ -76,6 +76,7 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
     public float NPC_NextDrySoundT { get; set; }
     public float NPC_SecondaryFireNextT { get; set; }
     public float NPC_DelayedFireTime { get; set; }
+    public float NPC_ExtraFireSoundTime_T { get; set; }
 
     // ═══ Phase 1: Lifecycle ═══
     public virtual void Equip(GameObject owner)
@@ -138,6 +139,17 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
         {
             NPC_DelayedFireTime = 0;
             DoPrimaryFire();
+        }
+
+        // Extra fire sound (bolt action, shotgun pump) — lua:680-685 timer.Simple(NPC_ExtraFireSoundTime, ...)
+        if (NPC_ExtraFireSoundTime_T > 0 && Time.Now > NPC_ExtraFireSoundTime_T)
+        {
+            NPC_ExtraFireSoundTime_T = 0;
+            if (!string.IsNullOrEmpty(NPC_ExtraFireSound))
+            {
+                var pitch = Game.Random.Float(NPC_ExtraFireSoundPitchA, NPC_ExtraFireSoundPitchB);
+                // Phase 3: Sound.Play(NPC_ExtraFireSound, owner.WorldPosition);
+            }
         }
     }
 
@@ -221,24 +233,20 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
 
         // SKIP: UpdatePoseParamTracking — Phase 3 animation
 
-        // Secondary fire chance
-        if (NPC_HasSecondaryFire)
+        // Secondary fire chance (lua:603-625)
+        if (NPC_HasSecondaryFire && npc.Weapon_CanSecondaryFire && Time.Now > NPC_SecondaryFireNextT
+            && ene.IsValid() && ene.WorldPosition.Distance(owner.WorldPosition) <= NPC_SecondaryFireDistance)
         {
-            var human = npc as HumanNPC;
-            if (human != null && human.Weapon_CanSecondaryFire && Time.Now > NPC_SecondaryFireNextT
-                && ene.IsValid() && ene.WorldPosition.Distance(owner.WorldPosition) <= NPC_SecondaryFireDistance)
+            if (Game.Random.Next(1, NPC_SecondaryFireChance + 1) == 1)
             {
-                if (Game.Random.Next(1, NPC_SecondaryFireChance + 1) == 1)
-                {
-                    NPC_SecondaryFireNextT = Time.Now + Game.Random.Float(NPC_SecondaryFireNextA, NPC_SecondaryFireNextB);
-                    // Secondary fire animation + delayed spawn — Phase 3 animation + entity system
-                    // SKIP: lua:605-621 — secondary fire animation, timer, NPC_SecondaryFire
-                    return;
-                }
-                else
-                {
-                    NPC_SecondaryFireNextT = Time.Now + Game.Random.Float(NPC_SecondaryFireNextA, NPC_SecondaryFireNextB);
-                }
+                NPC_SecondaryFireNextT = Time.Now + Game.Random.Float(NPC_SecondaryFireNextA, NPC_SecondaryFireNextB);
+                // Secondary fire animation + delayed spawn — Phase 3 animation + entity system
+                // SKIP: lua:605-621 — secondary fire animation, timer, NPC_SecondaryFire
+                return;
+            }
+            else
+            {
+                NPC_SecondaryFireNextT = Time.Now + Game.Random.Float(NPC_SecondaryFireNextA, NPC_SecondaryFireNextB);
             }
         }
 
@@ -263,6 +271,7 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
         var owner = WeaponOwner;
         if (!owner.IsValid()) return;
 
+        // lua:633 — owner:IsNPC() → S&Box: BaseNPC component presence = NPC identity
         var npc = owner.Components.Get<BaseNPC>();
         if (npc == null) return;
 
@@ -393,7 +402,10 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
             // Ammo consumption
             SetClip1(GetClip1() - Primary_TakeAmmo);
 
-            // Extra fire sound (bolt action, shotgun pump) — Phase 3 async timer
+            // Extra fire sound (bolt action, shotgun pump) — lua:680-685
+            if (!string.IsNullOrEmpty(NPC_ExtraFireSound) && NPC_ExtraFireSoundTime > 0)
+                NPC_ExtraFireSoundTime_T = Time.Now + NPC_ExtraFireSoundTime;
+
             // SKIP: PrimaryAttackEffects + MuzzleFlash — Phase 3 effects system
             // SKIP: OnPrimaryAttack_BulletCallback — Phase 3 callbacks
         }
