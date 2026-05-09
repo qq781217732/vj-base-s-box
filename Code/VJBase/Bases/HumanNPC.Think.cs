@@ -2110,6 +2110,127 @@ public partial class HumanNPC
     /// <summary>Weapon spread modifier. Lua returns nil (= 0 spread). Override in derived types.</summary>
     public virtual float GetAttackSpread(GameObject wep, GameObject target) => 0f;
 
+    // ═══ ExecuteMeleeAttack (human override) — human_base/init.lua:2993-3058 ═══
+    /// <summary>
+    /// Human-specific melee attack override. Simpler than CreatureNPC version:
+    /// adds GRENADE guard, removes prop interaction, bleed, player DSP/speed effects.
+    /// </summary>
+    public override void ExecuteMeleeAttack(bool isPropAttack)
+    {
+        // lua:2995 — guard: Dead / PauseAttacks / Flinching / ATTACK_TYPE_GRENADE / (StopOnHit && EXECUTED_HIT)
+        if (Dead || PauseAttacks || Flinching
+            || AttackType == VJAttackType.Grenade
+            || (MeleeAttackStopOnHit && AttackState == VJAttackState.ExecutedHit)) return;
+
+        // lua:2996 — OnMeleeAttackExecute("Init")
+        var skip = OnMeleeAttackExecute("Init");
+        var hitRegistered = false;
+
+        if (!skip) // lua:2998
+        {
+            var myPos = WorldPosition;                              // lua:2999
+            var traceOrigin = MeleeAttackTraceOrigin();             // lua:3001 — MeleeAttackTraceOrigin()
+            var traceDir = MeleeAttackTraceDirection();             // for angle check (lua:3004)
+            var hits = Scene.FindInPhysics(new Sphere(traceOrigin, MeleeAttackDamageDistance > 0 ? MeleeAttackDamageDistance : 80));
+
+            foreach (var ent in hits) // lua:3001
+            {
+                // lua:3002 — skip self, same NPC type, bullseye controlled
+                if (ent == GameObject) continue;
+                var entBase = ent.Components.Get<BaseNPC>();
+                if (entBase != null && entBase.VJ_NPC_Class.Any(c => VJ_NPC_Class.Contains(c))) continue;
+                // SKIP: lua:3002 — ent.IsVJBaseBullseye && ent.VJ_IsBeingControlled — Phase 3 bullseye system
+
+                // lua:3003 — player skip: VJ_IsControllingNPC / dead / ignoreplayers
+                bool isPlayer = ent.Components.Get<PlayerBase>() != null;
+                if (isPlayer)
+                {
+                    // SKIP: ent.VJ_IsControllingNPC — Source player field, no S&Box equivalent
+                    if (!Alive(ent) || VJInit.vj_npc_ignoreplayers) continue;
+                }
+                else if (entBase?.VJ_IsBeingControlled == true) continue;
+
+                // lua:3004 — ((Living && Disp!=D_LI) || Attackable || Destructible) && angle check
+                bool isLiving = HasEntityFlag(ent, "VJ_ID_Living");
+                if (isPlayer && !isLiving) isLiving = true;
+                bool isAttackable = HasEntityFlag(ent, "VJ_ID_Attackable");
+                bool isDestructible = HasEntityFlag(ent, "VJ_ID_Destructible");
+                var delta = new Vector3(ent.WorldPosition.x - myPos.x, ent.WorldPosition.y - myPos.y, 0);
+                bool inAngle = traceDir.Dot(delta.Normal) > MathF.Cos(MathF.PI / 180f * MeleeAttackDamageAngleRadius);
+
+                if (((isLiving && Disposition(ent) != (int)VJBase.Disposition.Like) || isAttackable || isDestructible) && inAngle)
+                {
+                    // lua:3005 — isProp = ent.VJ_ID_Attackable
+                    bool isProp = isAttackable;
+
+                    // lua:3006 — OnMeleeAttackExecute("PreDamage")
+                    if (OnMeleeAttackExecute("PreDamage", ent, isProp)) continue;
+
+                    var dmgAmount = ScaleByDifficulty(MeleeAttackDamage); // lua:3007
+
+                    // lua:3009-3021 — Knockback (skip doors, trains, stationary, Boss non-Tank)
+                    if (HasMeleeAttackKnockBack
+                        // SKIP: lua:3009 — ent:GetMoveType() != MOVETYPE_PUSH — Source engine move type, no S&Box equivalent
+                        && entBase?.MovementType != VJMoveType.Stationary
+                        && (!HasEntityFlag(ent, "VJ_ID_Boss") /* || ent.IsVJBaseSNPC_Tank — Phase 3 */))
+                    {
+                        // SKIP: lua:3010-3019 — IsNextBot / SetGroundEntity(NULL) / loco:Approach/Jump/SetVelocity — Phase 3 NextBot
+                        var vel = MeleeAttackKnockbackVelocity(ent); // lua:3014
+                        var rb = ent.Components.Get<Rigidbody>();
+                        if (rb != null)
+                        {
+                            rb.Velocity = vel;
+                        }
+                    }
+
+                    // lua:3023-3032 — Apply damage
+                    if (!DisableDefaultMeleeAttackDamageCode)
+                    {
+                        var dmgInfo = new DamageInfo();
+                        dmgInfo.Damage = dmgAmount;                     // lua:3025 — SetDamage(dmgAmount) (already scaled)
+                        dmgInfo.Tags.Add(MapDamageTypeToTag(MeleeAttackDamageType)); // lua:3026 — SetDamageType
+                        // SKIP: lua:3027 — SetDamageForce — Phase 3 (S&Box DamageInfo no Force field; use Rigidbody.ApplyForce)
+                        // SKIP: lua:3028 — SetInflictor(self) — S&Box DamageInfo no Inflictor; Weapon=null means attacker-is-inflictor
+                        dmgInfo.Attacker = GameObject;                  // lua:3029 — SetAttacker(self)
+                        // SKIP: lua:3030 — VJ.DamageSpecialEnts — Phase 3 damage utility
+                        foreach (var d in ent.Components.GetAll<IDamageable>()) // lua:3031 — TakeDamageInfo
+                            d.OnDamage(dmgInfo);
+                    }
+
+                    // lua:3033-3035 — Player ViewPunch
+                    // SKIP: lua:3033-3035 — ViewPunch(Angle(...)) — Phase 3 player camera
+
+                    // lua:3036-3038 — non-prop → hitRegistered, stop on hit
+                    if (!isProp)
+                    {
+                        hitRegistered = true;
+                        if (MeleeAttackStopOnHit) break;                // lua:3037
+                    }
+                }
+            }
+        }
+
+        // lua:3043-3044 — AttackState < EXECUTED → set EXECUTED
+        // lua:3045-3046 — attackTimers[VJ.ATTACK_TYPE_MELEE](self) — C# handles via ProcessAttackTimers Think poll
+        if (AttackState < VJAttackState.Executed)
+            AttackState = VJAttackState.Executed;
+
+        // lua:3049-3057 — Post-loop: hit → MeleeAttack sound, miss → OnMiss + MeleeAttackMiss sound
+        if (!skip)
+        {
+            if (hitRegistered)
+            {
+                PlaySoundSystem("MeleeAttack");                          // lua:3051
+                AttackState = VJAttackState.ExecutedHit;                 // lua:3052
+            }
+            else
+            {
+                OnMeleeAttackExecute("Miss");                            // lua:3054
+                PlaySoundSystem("MeleeAttackMiss");                      // lua:3055
+            }
+        }
+    }
+
     // ═══ EmitWeaponSound — helper for NPC_BeforeFireSound (weapon_vj_base/shared.lua:3746/3787) ═══
     /// <summary>
     /// Play the weapon's NPC_BeforeFireSound if configured. (Phase 3: use S&Box Sound.Play)
