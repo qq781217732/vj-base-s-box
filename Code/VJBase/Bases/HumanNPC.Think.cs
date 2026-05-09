@@ -1486,12 +1486,15 @@ public partial class HumanNPC
         // lua:3929 — ragdoll damage avoidance (walking over corpses)
         if (dmgInflictor.IsValid())
         {
-            // lua:3927-3929 — ragdoll or low-velocity prop damage avoidance
+            // lua:3929 — ragdoll damage avoidance: GetClass()=="prop_ragdoll" && Velocity <= 100
             var rb = dmgInflictor.Components.Get<Rigidbody>();
             bool isRagdoll = dmgInflictor.Components.Get<ModelPhysics>() != null;
+            if (isRagdoll && rb != null && rb.Velocity.Length <= 100)
+                return 0; // lua:3929 — slow ragdoll (walking over corpse) → no damage
+            // Low-velocity non-NPC prop guard (C# expansion: any slow prop, not just ragdoll)
             bool isLowVelocityProp = rb != null && rb.Velocity.Length <= 100
                 && dmgInflictor.Components.Get<BaseNPC>() == null;
-            if (isRagdoll || isLowVelocityProp)
+            if (isLowVelocityProp)
                 return 0;
         }
 

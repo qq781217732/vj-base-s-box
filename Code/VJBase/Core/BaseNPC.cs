@@ -561,18 +561,11 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
         return mainTime / rate;
     }
 
-    /// <summary>GetAttackTimer range overload — core.lua:988: istable(mainTime) → math.Rand(a, b) / rate</summary>
+    /// <summary>GetAttackTimer range overload — core.lua:988-989: istable(mainTime) → math.Rand(a, b) / rate</summary>
     public virtual float GetAttackTimer((float a, float b) mainTime, float executionTime = 0, float animDur = 0)
     {
         float rate = MathF.Max(AnimPlaybackRate, 0.01f);
-        // lua:974-985 — animDur-based calculation (consistent with float overload)
-        if (animDur > 0)
-        {
-            if (executionTime <= 0)
-                return animDur / rate;
-            return animDur - (executionTime / rate);
-        }
-        // lua:988-989 — table mainTime → random range
+        // lua:987-989 — "Table has been given, discard executionTime and animDur, then pick randomly"
         return VJUtility.Rand(mainTime.a, mainTime.b) / rate;
     }
 
