@@ -751,9 +751,15 @@ public partial class HumanNPC
                             SetWeaponState();
                         // lua:3617 — TakingCoverT = curTime + 2
                         TakingCoverT = curTime + 2f;
-                        // lua:3618 — SCHEDULE_GOTO_POSITION("TASK_RUN_PATH")
-                        SCHEDULE_GOTO_POSITION("TASK_RUN_PATH");
-                        return;
+                        // lua:3618 — SCHEDULE_GOTO_POSITION("TASK_RUN_PATH", lambda with FACE_ENEMY + CanShootWhenMoving)
+                        SCHEDULE_GOTO_POSITION("TASK_RUN_PATH", sched =>
+                        {
+                            sched.EngTask(EngineTask.FaceEnemy, 0);
+                            sched.CanShootWhenMoving = true;
+                            sched.TurnData = new TurnData { Type = VJFaceStatus.Enemy };
+                        });
+                        // lua:3619 — goto goto_conditions
+                        goto goto_conditions;
                     }
                 }
 
@@ -820,11 +826,13 @@ public partial class HumanNPC
                             // lua:3675 — wepInCover, wepInCoverTrace = self:DoCoverTrace(wep:GetBulletPos(), enePos_Eye, false)
                             // Phase 3: wep:GetBulletPos() approximated with WorldPosition + Up*60
                             var bulletPos = wep.WorldPosition + Vector3.Up * 60f;
-                            var (wepInCover, _) = DoCoverTrace(bulletPos, enePos_Eye, false);
-                            // lua:3679 — inCoverEnt = inCoverTrace.Entity
+                            var (wepInCover, wepInCoverTrace) = DoCoverTrace(bulletPos, enePos_Eye, false);
+                            // lua:3679 — inCoverEnt = inCoverTrace.Entity / wepInCoverEnt = wepInCoverTrace.Entity
                             var inCoverEnt = inCoverTrace.GameObject;
-                            // lua:3679 — inCoverEntLiving = IsValid(inCoverEnt) && inCoverEnt.VJ_ID_Living
+                            var wepInCoverEnt = wepInCoverTrace.GameObject;
+                            // lua:3679-3682 — inCoverEntLiving / wepInCoverEntLiving
                             var inCoverEntLiving = inCoverEnt.IsValid() && HasEntityFlag(inCoverEnt, "VJ_ID_Living");
+                            var wepInCoverEntLiving = wepInCoverEnt.IsValid() && HasEntityFlag(wepInCoverEnt, "VJ_ID_Living");
 
                             // lua:3683: if !wep.IsMeleeWeapon then — ranged weapons only
                             if (!IsWeaponMelee(wep))
@@ -839,9 +847,10 @@ public partial class HumanNPC
                                 {
                                     // lua:3699 — if curTime < TakingCoverT then goto goto_conditions
                                     if (curTime < TakingCoverT) goto goto_conditions;
-                                    // lua:3701 — if curTime > NextMoveOnGunCoveredT && (inCoverTrace.HitPos:Distance(myPos) > 150 || wepInCover) && !inCoverEntLiving then
+                                    // lua:3701: (coverDist > 150 && !inCoverEntLiving) || (wepInCover && !wepInCoverEntLiving)
                                     var coverDist = inCoverTrace.HitPosition.Distance(myPosCentered);
-                                    if (curTime > NextMoveOnGunCoveredT && (coverDist > 150f || wepInCover) && !inCoverEntLiving)
+                                    if (curTime > NextMoveOnGunCoveredT
+                                        && ((coverDist > 150f && !inCoverEntLiving) || (wepInCover && !wepInCoverEntLiving)))
                                     {
                                         // lua:3703-3710 — nearestPos/nearestEntPos — Phase 3 utility (skip NearestPoint positioning)
                                         // lua:3716-3727 — SCHEDULE_GOTO_POSITION + animation — skip Phase 3 animation
@@ -1742,23 +1751,26 @@ public partial class HumanNPC
                     allyBase.SetTurnTarget("Enemy");
                     // lua:4220-4235 — BecomeEnemyToPlayer chain
                     if (doBecomeEnemyToPlayer && allyBase.BecomeEnemyToPlayer > 0
-                        && allyBase.CheckRelationship(dmgAttacker) == (int)VJBase.Disposition.Like
-                        && allyBase.Disposition(dmgAttacker) != (int)VJBase.Disposition.Hate)
+                        && allyBase.CheckRelationship(dmgAttacker) == (int)VJBase.Disposition.Like)
                     {
                         allyBase.SetRelationshipMemory(dmgAttacker, "hostility", 1f);
                         var hostility = allyBase.GetRelationshipMemory(dmgAttacker, "hostility");
                         if (hostility > allyBase.BecomeEnemyToPlayer)
                         {
-                            allyBase.OnBecomeEnemyToPlayer(dmginfo, hitgroup);
-                            allyBase.SetRelationshipMemory(dmgAttacker, "override_disposition", (int)VJBase.Disposition.Hate);
-                            allyBase.AddEntityRelationship(dmgAttacker, (int)VJBase.Disposition.Hate, 2);
-                            allyBase.PlaySoundSystem("BecomeEnemyToPlayer");
-                            // SKIP: lua:4225 — ResetFollowBehavior — Phase 3 follow system
-                            // SKIP: lua:4232 — CanChatMessage — Phase 3 chat system
+                            // lua:4223 — if ally:Disposition(dmgAttacker) != D_HT then
+                            if (allyBase.Disposition(dmgAttacker) != (int)VJBase.Disposition.Hate)
+                            {
+                                allyBase.OnBecomeEnemyToPlayer(dmginfo, hitgroup);
+                                allyBase.SetRelationshipMemory(dmgAttacker, "override_disposition", (int)VJBase.Disposition.Hate);
+                                allyBase.AddEntityRelationship(dmgAttacker, (int)VJBase.Disposition.Hate, 2);
+                                allyBase.PlaySoundSystem("BecomeEnemyToPlayer");
+                                // SKIP: lua:4225 — ResetFollowBehavior — Phase 3 follow system
+                                // SKIP: lua:4232 — CanChatMessage — Phase 3 chat system
+                            }
+                            // lua:4235 — ally.Alerted = true
+                            allyBase.Alerted = VJAlertState.Enemy;
                         }
                     }
-                    // lua:4235 — ally.Alerted = true
-                    allyBase.Alerted = VJAlertState.Enemy;
                 }
             }
         }

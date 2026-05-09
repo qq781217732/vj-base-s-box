@@ -548,23 +548,26 @@ public partial class CreatureNPC
                 allyBase.SetTurnTarget("Enemy");
                 // lua:3233-3241 — BecomeEnemyToPlayer chain
                 if (doBecomeEnemyToPlayer && allyBase.BecomeEnemyToPlayer > 0
-                    && allyBase.CheckRelationship(dmgAttacker) == (int)VJBase.Disposition.Like
-                    && allyBase.Disposition(dmgAttacker) != (int)VJBase.Disposition.Hate)
+                    && allyBase.CheckRelationship(dmgAttacker) == (int)VJBase.Disposition.Like)
                 {
                     allyBase.SetRelationshipMemory(dmgAttacker, "hostility", 1f);
                     var hostility = allyBase.GetRelationshipMemory(dmgAttacker, "hostility");
                     if (hostility > allyBase.BecomeEnemyToPlayer)
                     {
-                        allyBase.OnBecomeEnemyToPlayer(dmginfo, hitgroup);
-                        allyBase.SetRelationshipMemory(dmgAttacker, "override_disposition", (int)VJBase.Disposition.Hate);
-                        allyBase.AddEntityRelationship(dmgAttacker, (int)VJBase.Disposition.Hate, 2);
-                        allyBase.PlaySoundSystem("BecomeEnemyToPlayer");
-                        // SKIP: lua:3236 — ResetFollowBehavior — Phase 3 follow system
-                        // SKIP: lua:3240 — CanChatMessage — Phase 3 chat system
+                        // lua:3235 — if ally:Disposition(dmgAttacker) != D_HT then
+                        if (allyBase.Disposition(dmgAttacker) != (int)VJBase.Disposition.Hate)
+                        {
+                            allyBase.OnBecomeEnemyToPlayer(dmginfo, hitgroup);
+                            allyBase.SetRelationshipMemory(dmgAttacker, "override_disposition", (int)VJBase.Disposition.Hate);
+                            allyBase.AddEntityRelationship(dmgAttacker, (int)VJBase.Disposition.Hate, 2);
+                            allyBase.PlaySoundSystem("BecomeEnemyToPlayer");
+                            // SKIP: lua:3236 — ResetFollowBehavior — Phase 3 follow system
+                            // SKIP: lua:3240 — CanChatMessage — Phase 3 chat system
+                        }
+                        // lua:3245 — ally.Alerted = true
+                        allyBase.Alerted = VJAlertState.Enemy;
                     }
                 }
-                // lua:3245 — ally.Alerted = true (sets enemy-sensed state for ally)
-                allyBase.Alerted = VJAlertState.Enemy;
             }
         }
 
