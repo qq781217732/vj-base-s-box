@@ -90,7 +90,6 @@ public partial class HumanNPC : CreatureNPC
 
     // ═══ Weapon Behavior Config (ported from init.lua:285-297) ═══
     public bool Weapon_UnarmedBehavior { get; set; } = true;
-    public bool Weapon_UnarmedBehavior_Active { get; set; }
     public bool Weapon_Strafe { get; set; } = true;
     public (float a, float b) Weapon_StrafeCooldown { get; set; } = (3f, 6f);
     public bool Weapon_OcclusionDelay { get; set; } = true;

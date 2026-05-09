@@ -243,6 +243,12 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
     /// </summary>
     public virtual bool OnPrimaryAttack(string type, GameObject ent = null) => false;
 
+    /// <summary>OnPrimaryAttack_BulletCallback — shared.lua:753-755. Fired when bullet trace hits.</summary>
+    public Action<GameObject, TraceResult, DamageInfo> OnPrimaryAttack_BulletCallback { get; set; }
+
+    /// <summary>PrimaryAttackEffects — shared.lua:812. Muzzle flash, shell eject. Phase 3 effects.</summary>
+    public virtual void PrimaryAttackEffects(GameObject owner) { }
+
     // ═══ Phase 2: Execute primary fire (weapon_vj_base/shared.lua:593-650) ═══
     /// <summary>
     /// NPCShoot_Primary — handles secondary fire chance, then schedules PrimaryAttack with TimeUntilFire delay.
@@ -260,7 +266,8 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
         // lua:594 — NPC without enemy or enemy not visible → abort
         if (!npc.VJ_IsBeingControlled && (!ene.IsValid() || !npc.Enemy.Visible)) return;
 
-        // SKIP: UpdatePoseParamTracking — Phase 3 animation
+        // lua:259 — UpdatePoseParamTracking(true)
+        npc.UpdatePoseParamTracking(true);
 
         // Secondary fire chance (lua:603-625)
         if (NPC_HasSecondaryFire && npc.Weapon_CanSecondaryFire && Time.Now > NPC_SecondaryFireNextT
@@ -473,7 +480,8 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
                     .UseHitPosition(true)
                     .Run();
 
-                // SKIP: lua:753-755 — OnPrimaryAttack_BulletCallback — Phase 3
+                // lua:753-755 — OnPrimaryAttack_BulletCallback(attacker, tr, dmginfo)
+                OnPrimaryAttack_BulletCallback?.Invoke(owner, result, dmginfo);
                 if (result.Hit && result.GameObject.IsValid())
                 {
                     var dmginfo = new DamageInfo();
@@ -492,8 +500,8 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
         if (!IsMeleeWeapon)
             SetClip1(GetClip1() - Primary_TakeAmmo);
 
-        // lua:797 — PrimaryAttackEffects (muzzle flash, etc.)
-        // SKIP: lua:797-807 — PrimaryAttackEffects + MuzzleFlash + ViewPunch + animation — Phase 3
+        // lua:797 — PrimaryAttackEffects(self, owner) (NPC path only; player ViewPunch/animation deferred Phase 3)
+        PrimaryAttackEffects(owner);
 
         // lua:808 — OnPrimaryAttack("PostFire")
         OnPrimaryAttack("PostFire");
@@ -508,9 +516,9 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
     {
         if (!string.IsNullOrEmpty(NPC_BulletSpawnAttachment))
         {
-            // SKIP: attachment lookup — Phase 3 animation/model system
+            // SKIP: attachment lookup (LookupAttachment/GetAttachment) — Phase 3 animation/model system
         }
-        return GameObject.WorldPosition;
+        return GameObject.WorldPosition + WorldRotation.Forward * 40f;
     }
 
     /// <summary>

@@ -158,21 +158,17 @@ public partial class BaseNPC
             AddEntityRelationship(ene, (int)VJBase.Disposition.Neutral, 10);
         }
 
-        // ---- Block 7: LastHiddenZone cleanup (lua:2931-2934) ----
-        LastHiddenZone_CanWander = curTime > LastHiddenZoneT;
-        LastHiddenZoneT = 0;
-
-        // ---- Block 8: Clear dead non-player enemy memory (lua:2932-2935) ----
+        // ---- Block 7: Clear dead non-player enemy memory (lua:2931-2935) ----
         if (eneValid && !ene.Components.Get<PlayerBase>().IsValid() && !Alive(ene))
         {
             ClearEnemyMemory(ene);
         }
 
-        // ---- Block 9: Wander time + SetEnemy(null) (lua:2936-2937) ----
+        // ---- Block 8: Wander time + SetEnemy(null) (lua:2936-2937) ----
         NextWanderTime = curTime + VJUtility.Rand(3, 5);
         SetEnemy(null);
 
-        // ---- Block 10: GOTO last known position (lua:2938-2948) ----
+        // ---- Block 9: GOTO last known position (lua:2938-2948) ----
         if (moveToEnemy.HasValue)
         {
             SetLastPosition(moveToEnemy.Value);

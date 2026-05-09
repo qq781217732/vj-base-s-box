@@ -872,7 +872,7 @@ public partial class HumanNPC
                                     // lua:3667 — self:SetTurnTarget("Enemy")
                                     SetTurnTarget("Enemy");
                                     // lua:3668 — self:UpdatePoseParamTracking(true)
-                                    // SKIP: lua:3668 — UpdatePoseParamTracking(true) — Phase 3 animation (pose parameter reset for turn snaps)
+                                    UpdatePoseParamTracking(true);
                                 }
                             }
                             // lua:3671: // self:MaintainAlertBehavior() — commented out in Lua
@@ -903,7 +903,8 @@ public partial class HumanNPC
                                     && wepInCoverEnt != GameObject
                                     && (Disposition(wepInCoverEnt) == (int)VJBase.Disposition.Like
                                         || Disposition(wepInCoverEnt) == (int)VJBase.Disposition.Neutral)
-                                    // SKIP: lua:3685 — wepInCoverTrace.HitPos:Distance(StartPos) <= 3000 — DoCoverTrace missing UseHitPosition
+                                    // lua:3685 — wepInCoverTrace.HitPos:Distance(StartPos) <= 3000 → entity distance
+                                    && wepInCoverEnt.WorldPosition.Distance(bulletPos) <= 3000f
                                     )
                                 {
                                     // lua:3686 — moveCheck = PICK(VJ.TraceDirections(self, "Quick", 50, true, false, 4, true, true))

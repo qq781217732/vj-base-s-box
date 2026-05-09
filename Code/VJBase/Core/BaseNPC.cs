@@ -108,6 +108,8 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     // ═══ Weapon Misc — shared.lua / human init.lua ═══
     /// <summary>Can this NPC use weapon secondary fire? Overridden by HumanNPC.</summary>
     public virtual bool Weapon_CanSecondaryFire => false;
+    /// <summary>Unarmed behavior is currently active (no weapon or weapon disabled). human init.lua:285.</summary>
+    public bool Weapon_UnarmedBehavior_Active { get; set; }
 
     // ═══ Range Attack Config — core.lua:289-305 ═══
     public bool HasRangeAttack { get; set; }
