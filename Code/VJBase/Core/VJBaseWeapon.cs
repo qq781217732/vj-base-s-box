@@ -210,7 +210,9 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
             return false;
         }
 
-        // Firing cone check
+        // lua:575 — Firing cone check (always runs for non-controlled NPCs)
+        // SKIP: lua:575 — isControlled && IN_ATTACK2 guard — Phase 3 player controller input
+        // When VJ_IsBeingControlled: Lua requires IN_ATTACK2 (right mouse) to fire; C# always allows when conditions met.
         if (ene.IsValid())
         {
             var spawnPos = GameObject.WorldPosition;
