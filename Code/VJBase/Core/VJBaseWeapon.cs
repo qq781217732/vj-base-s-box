@@ -126,19 +126,17 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
         var activeWep = npc.GetActiveWeapon();
         if (activeWep != GameObject) return;
 
-        // Non-melee weapons auto-fire on timer
-        if (!IsMeleeWeapon && NPC_NextPrimaryFire >= 0 && Time.Now > NPC_NextPrimaryFireT && NPC_CanFire(npc))
-        {
-            // lua:593 — weapon_vj_base/shared.lua NPCShoot_Primary schedules PrimaryAttack
-            if (NPC_DelayedFireTime > 0 && Time.Now < NPC_DelayedFireTime) return;
-            NPCShoot_Primary();
-        }
-
-        // Delayed fire (from NPC_TimeUntilFire > 0)
-        if (NPC_DelayedFireTime > 0 && Time.Now > NPC_DelayedFireTime)
+        // Delayed fire completion FIRST (lua:629 — timer.Simple expired → PrimaryAttack)
+        // Must check before auto-fire to avoid NPCShoot_Primary re-arming delay and overwriting the pending shot
+        if (NPC_DelayedFireTime > 0 && Time.Now >= NPC_DelayedFireTime)
         {
             NPC_DelayedFireTime = 0;
             DoPrimaryFire();
+        }
+        // Non-melee weapons auto-fire on timer (only when no delayed fire is pending)
+        else if (!IsMeleeWeapon && NPC_NextPrimaryFire >= 0 && Time.Now > NPC_NextPrimaryFireT && NPC_CanFire(npc))
+        {
+            NPCShoot_Primary();
         }
 
         // Extra fire sound (bolt action, shotgun pump) — lua:680-685 timer.Simple(NPC_ExtraFireSoundTime, ...)
