@@ -285,7 +285,8 @@ public partial class HumanNPC
                 var ene = GetEnemy();
                 if (ene.IsValid())
                 {
-                    // SKIP: RememberUnreachable(ene, 0) — Source engine API, Phase 3 enemy memory
+                    // lua:2349 — RememberUnreachable(ene, 0) = clear unreachable (LOS chase brought us closer)
+                    RememberUnreachable(ene, 0);
                     SCHEDULE_ALERT_CHASE(false);
                 }
             };
@@ -343,12 +344,13 @@ public partial class HumanNPC
         if (!alwaysChase && (DisableChasingEnemy || IsGuard)) return;
 
         // init.lua:2394-2399 — If enemy unreachable and we have a ranged weapon → LOS chase
-        // SKIP: IsUnreachable(ene) — Source engine API, Phase 3 enemy memory
-        // SKIP: IsMeleeWeapon check — Phase 3 weapon system
-        if (HasCondition(Condition.EnemyUnreachable) && HasWeapon)
+        if ((HasCondition(Condition.EnemyUnreachable) || IsUnreachable(ene))
+            && HasWeapon
+            && !IsWeaponMelee(GetActiveWeapon()))
         {
             SCHEDULE_ALERT_CHASE(true);
-            // SKIP: RememberUnreachable(ene, 2) — Source engine API, Phase 3 enemy memory
+            // lua:2396 — RememberUnreachable(ene, 2) — mark unreachable so we don't re-evaluate immediately
+            RememberUnreachable(ene, 2);
         }
         else
         {

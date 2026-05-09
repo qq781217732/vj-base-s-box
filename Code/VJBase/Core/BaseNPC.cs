@@ -37,6 +37,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public bool IsFollowing { get; set; }
     public bool IsGuard { get; set; }
     public bool CanReceiveOrders { get; set; } = true;
+    public bool DisableChasingEnemy { get; set; }
     public bool PauseAttacks { get; set; }
     public float AnimLockTime { get; set; }
     public float AnimPlaybackRate { get; set; } = 1;
@@ -1143,6 +1144,29 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
 
     // ═══ Phase 3 engine stubs (called by OnTakeDamage) ═══
     public virtual bool IsOnFire() => false;
+    // ═══ Enemy Memory — CAI_BaseNPC IsUnreachable / RememberUnreachable ═══
+    /// <summary>Maps entity → unreachable expiry time. Source engine CAI_BaseNPC enemy memory.</summary>
+    private Dictionary<GameObject, float> _unreachableEnemies = new();
+
+    /// <summary>IsUnreachable — checks if entity is marked unreachable and timer hasn't expired.</summary>
+    public bool IsUnreachable(GameObject ent)
+    {
+        if (!ent.IsValid()) return false;
+        if (_unreachableEnemies.TryGetValue(ent, out var expiry))
+            return Time.Now < expiry;
+        return false;
+    }
+
+    /// <summary>RememberUnreachable — mark entity unreachable for duration seconds, or 0 to clear.</summary>
+    public void RememberUnreachable(GameObject ent, float duration)
+    {
+        if (!ent.IsValid()) return;
+        if (duration <= 0)
+            _unreachableEnemies.Remove(ent);
+        else
+            _unreachableEnemies[ent] = Time.Now + duration;
+    }
+
     public virtual int WaterLevel() => 0;
     public virtual void Extinguish() { }
     public virtual void SpawnBloodParticles(DamageInfo dmginfo, int hitgroup) { }

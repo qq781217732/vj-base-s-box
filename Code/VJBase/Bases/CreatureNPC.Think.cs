@@ -163,11 +163,14 @@ public partial class CreatureNPC
         }
     }
 
-    // ═══ MaintainAlertBehavior ═══
+    // ═══ MaintainAlertBehavior — creature_base/init.lua:1760-1797 ═══
     public virtual void MaintainAlertBehavior(bool alwaysChase)
     {
         var ene = GetEnemy();
         if (!ene.IsValid()) return;
+
+        // lua:1764-1765 — !alwaysChase && (DisableChasingEnemy or IsGuard) → idle
+        if (!alwaysChase && (DisableChasingEnemy || IsGuard)) { SCHEDULE_IDLE_STAND(); return; }
 
         if (MovementType == VJMoveType.Aerial || MovementType == VJMoveType.Aquatic)
         {
@@ -175,8 +178,32 @@ public partial class CreatureNPC
             return;
         }
 
-        // Ground: SCHEDULE_ALERT_CHASE
-        SCHEDULE_ALERT_CHASE(false);
+        // lua:1779 — If the enemy is not reachable then wander around
+        if (IsUnreachable(ene))
+        {
+            // lua:1780-1781 — HasRangeAttack → LOS chase
+            if (HasRangeAttack)
+            {
+                SCHEDULE_ALERT_CHASE(true);
+            }
+            // lua:1782-1785 — 1/30 chance + not moving → wander + remember unreachable for 4s
+            else if (Game.Random.Next(1, 31) == 1 && !IsMoving())
+            {
+                NextWanderTime = 0;
+                MaintainIdleBehavior(1);
+                RememberUnreachable(ene, 4);
+            }
+            // lua:1787 — fallback: idle stand
+            else
+            {
+                SCHEDULE_IDLE_STAND();
+            }
+        }
+        // lua:1789 — Is reachable, so chase the enemy!
+        else
+        {
+            SCHEDULE_ALERT_CHASE(false);
+        }
     }
 
     // ═══ SCHEDULE_ALERT_CHASE — creature_base/init.lua:1724 ═══

@@ -21,7 +21,6 @@ public partial class HumanNPC : CreatureNPC
     public float NextThrowGrenadeT { get; set; }
 
     // ═══ Attack Config (human-specific values set in constructor) ═══
-    public bool DisableChasingEnemy { get; set; }
     public bool HasGrenadeAttack { get; set; }
 
     // ═══ Grenade Config — human_base/init.lua:14-323 ═══
