@@ -156,6 +156,8 @@ public class AISenses
 	public List<GameObject> SeenHighPriority { get; private set; } = new();  // m_SeenHighPriority
 	public List<GameObject> SeenNPCs { get; private set; } = new();          // m_SeenNPCs
 	public List<GameObject> SeenMisc { get; private set; } = new();          // m_SeenMisc
+	// Sensed objects manager — ai_senses.cpp:673: g_AI_SensedObjectsManager
+	public AISensedObjectsManager SensedObjectsManager { get; private set; } = new();
 
 	// Time-of-last-update per category
 	public float TimeLastLookHighPriority { get; private set; }  // m_TimeLastLookHighPriority
@@ -593,11 +595,19 @@ public class AISenses
 			TimeLastLookMisc = curTime;
 
 			BeginGather();
-
-			// ai_senses.cpp:524 — iterate sensed objects
-			// Source: g_AI_SensedObjectsManager.GetFirst/GetNext
-			// Phase 3: SensedObjectsManager — for now, empty iteration
-			// SKIP: ai_senses.cpp:524-535 — no FL_OBJECT system in S&box
+			// ai_senses.cpp:524-535 — iterate g_AI_SensedObjectsManager
+			// S&Box: FL_OBJECT membership implicit via SensedObjectsManager (non-player, non-NPC entities)
+			float distSq = iDistance * iDistance;
+			Vector3 origin = GetAbsOrigin();
+			var pEnt = SensedObjectsManager.GetFirst();
+			while (pEnt != null)
+			{
+				if (Vector3.DistanceBetweenSquared(origin, GetAbsOrigin_Entity(pEnt)) < distSq && Look(pEnt))
+				{
+					nSeen++;
+				}
+				pEnt = SensedObjectsManager.GetNext();
+			}
 
 			EndGather(SeenMisc);
 		}
@@ -888,9 +898,17 @@ public class AISensedObjectsManager
 	/// <summary>Init — ai_senses.cpp:673</summary>
 	public void Init()
 	{
-		// Source: iterates gEntList, adds FL_OBJECT entities
-		// Phase 3: hook into S&Box entity spawn/destroy events
-	}
+		// ai_senses.cpp:675-684 — iterate gEntList, add FL_OBJECT entities
+		// S&Box: scan Rigidbody components as proxy for physics objects (FL_OBJECT ≈ non-character physics entity)
+		_sensedObjects.Clear();
+		foreach (var rb in Game.ActiveScene.GetAllComponents<Rigidbody>())
+		{
+			var obj = rb.GameObject;
+			if (obj.Tags.Has("player") || obj.Tags.Has("npc")) continue;
+			if (!_sensedObjects.Contains(obj))
+				_sensedObjects.Add(obj);
+		}
+		}
 
 	/// <summary>Term — ai_senses.cpp:686</summary>
 	public void Term()
