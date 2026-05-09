@@ -275,7 +275,7 @@ public virtual void StartEngineTask(int taskId, float taskData)
 
 ## 7. 当前状态清单
 
-> 最后更新：2026-05-10（水系统 WaterLevel + MASK_WATER + aquatic AA 消 SKIP + LookForObjects 感知物件 + 掩体/玩家交互/射线三子系统填坑）
+> 最后更新：2026-05-11（Weapon Phase 2 完整闭环 — NPC_Think 自动射击 + PrimaryAttack 9 守卫/时序修复 + Prop/Door 填坑 + GetAttackTimer/prop_ragdoll 语义修正 + 动画系统分析文档 + Phase 2 集成测试指南）
 
 ### 7.1a schedules.lua → BaseNPC.Schedule.cs（32 个方法）
 
@@ -510,6 +510,26 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | 53 | **水系统 WaterLevel** — RedSnail WaterTool 对接, aquatic AA_MoveTo ×4 + AA_IdleWander ×3 SKIP 消 | ✅ 2026-05-10 |
 | 54 | **LookForObjects 感知物件** — FL_OBJECT 迭代循环落地, AISensedObjectsManager.Init 实装 | ✅ 2026-05-10 |
 | 55 | **审查修复** — C2a FACE_ENEMY lambda/return→goto, C2c-ii wepInCoverEntLiving, Alerted 层级, 多轮审查 | ✅ 2026-05-10 |
+| 56 | **OnPlayerSight 回调** — BaseNPC +virtual OnPlayerSight + MaintainRelationships 接线 | ✅ 2026-05-10 |
+| 57 | **Allies_CallHelp ReceiveOrder 块** — NextChaseTime gate / SetTarget / SCHEDULE_FACE / PlaySoundSystem("ReceiveOrder") 填坑 | ✅ 2026-05-10 |
+| 58 | **GetAttackTimer VJ.SET range 重载** — (float a, float b) 重载 + VJUtility.Rand(a,b)/rate | ✅ 2026-05-10 |
+| 59 | **prop_ragdoll 检查** — ModelPhysics 组件替代 GetClass()=="prop_ragdoll" | ✅ 2026-05-10 |
+| 60 | **IsVJBaseSNPC_Tank 检查** — Components.Get\<TankNPC\>() 替代 Source 字段 | ✅ 2026-05-10 |
+| 61 | **GetEnemyLastKnownPos 填坑** — EntityMemory["enemy_pos"] / Enemy.VisiblePos 返回真实数据 | ✅ 2026-05-10 |
+| 62 | **GetAimPosition 增强** — 玩家 Z 偏移 + VisibleVec 遮挡回退 + Enemy.VisiblePos 兜底 | ✅ 2026-05-10 |
+| 63 | **GetHeadDirection** — BaseNPC +virtual, NPC_CanFire + HumanNPC alert chase 接线 | ✅ 2026-05-10 |
+| 64 | **VisibleVec GrenadeAttack 接线** — canFlush 真实 VisibleVec 判定 | ✅ 2026-05-10 |
+| 65 | **SoundLevel 衰减映射** — DbToDistance() + handle.Distance 设置 (CreateSound/EmitSound) | ✅ 2026-05-10 |
+| 66 | **SoundDuration 真实时长** — SoundFile.Load().Duration 替换硬编码 fallback, 5 调用方传入音效文件 | ✅ 2026-05-10 |
+| 67 | **GetBestSoundHint 注册表** — VJSoundType [Flags] 11bit + WorldSoundEvent + SoundEventRegistry (Register/GetClosestSound/过期清理) | ✅ 2026-05-10 |
+| 68 | **调查系统完整接线** — bitsDanger 掩码 + Owner/Disposition 过滤 (dead NPC combat + vehicle SKIP) + SetLastPosition/OnInvestigate | ✅ 2026-05-10 |
+| 69 | **武器射击 SoundEvent 注册** — NPCShoot_Primary/melee hit → Register(VJSoundType.Combat) | ✅ 2026-05-10 |
+| 70 | **CreatureNPC ResetEnemy 填坑** — 1:1 对照 creature init.lua:2881-2949, 9 功能块 (ally 继承/OnResetEnemy/moveToEnemy/MarkEnemyAsEluded/ClearEnemyMemory/SCHEDULE_GOTO_POSITION) | ✅ 2026-05-10 |
+| 71 | **VJBaseWeapon 武器链路 SKIP 消** — UpdatePoseParamTracking/BulletCallback delegate/PrimaryAttackEffects stub/GetBulletPos fallback | ✅ 2026-05-10 |
+| 72 | **SelectSchedule C2c-ii 友军火线距离** — wepInCoverEnt.WorldPosition.Distance(bulletPos) <= 3000f | ✅ 2026-05-10 |
+| 73 | **Weapon_UnarmedBehavior_Active 移至 BaseNPC** — 修复 CS0103 (基类访问派生类字段) | ✅ 2026-05-10 |
+| 74 | **TankNPC crossbow_bolt** — dmginfo.Weapon.Tags.Has("crossbow_bolt") 替代 GetClass() | ✅ 2026-05-10 |
+| 75 | **HumanNPC OnReload("Finish")** — vjbWep.OnReloadAction?.Invoke() 接线 | ✅ 2026-05-10 |
 
 ### 7.4 SKIP 总表（Phase 3+ 填坑清单）
 
@@ -604,26 +624,40 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | `HumanNPC.Think.cs` | PlayReloadAnimation IsVJBaseWeapon+NPC_Reload SKIP | IVJBaseWeapon.NPC_Reload() 真实调用 |
 | `HumanNPC.Think.cs` | SelectSchedule C2 IsVJBaseWeapon/IsMeleeWeapon ×5 SKIP | 全部替换为 IsWeaponVJBase()/IsWeaponMelee() 真实检查 + else(C2c-v) 语法 |
 
-#### 剩余待填
-| 文件 | 行/位置 | SKIP 内容 | 归属系统 |
-|------|---------|----------|----------|
-| `BaseNPC.Relationships.cs` | 行 126 | `FL_NOTARGET` — stub 到位，Phase 3 flag system 填 `HasEntityFlag` | 标志系统 |
-| `BaseNPC.Relationships.cs` | 行 269-270 | `m_vecSmoothedVelocity` — 当前用 rb.Velocity 瞬时值，Phase 3 优化 | Source 引擎 API |
-| `BaseNPC.Schedule.cs` | — | `m_hOpeningDoor` door system | 门系统 |
-| `CreatureNPC.Think.cs` | — | `MaintainActivity()` call | 动画维持 |
-| `CreatureNPC.Think.cs` | — | `MaintainActivity()` call | 动画维持 |
-| `BaseNPC.AA.cs` | — | `AA_MoveAnimation` 动画选表/PlayAnim/ACT_* | 动画系统 |
-| `BaseNPC.AA.cs` | 82 | `MASK_WATER` trace — 当前 `IsPositionInsideAny(destVec)` 临时方案, 标注 SKIP | 水系统 |
-| `BaseNPC.AA.cs` | — | `AA_MoveAnimation` 动画选表/PlayAnim/ACT_* | 动画系统 |
-| `BaseNPC.Sound.cs` | — | `SoundLevel` (dB) 未映射到 S&Box 衰减 (`Distance`/`Decibels`) | 音效 |
-| `BaseNPC.Sound.cs` | — | `GetSoundDuration()` 硬编码 fallback，非真实音效文件时长 | 音效 |
-| `BaseNPC.Schedule.cs` | — | `RememberUnreachable` / `IsUnreachable` — Source 引擎敌人记忆 API | 敌人记忆 |
-| `CreatureNPC.Think.cs` | — | `ViewPunch / SetDSP / IsNextBot / loco:Approach — Phase 3 player camera/audio/NextBot` | 玩家系统 |
-| `HumanNPC.cs` | — | `LookupAttachment` / `GetAttachment` / `LookupBone` / `GetBonePosition` / `GetShootPos` | 骨骼动画 |
-| `HumanNPC.cs` | — | `VisibleVec` / `VJ.TraceDirections` 可见性/空间查询 | 感知系统 |
-| `CreatureNPC.Think.cs` | — | `GetClass()` entity type comparison → component type check | 实体类型 |
-| `BaseNPC.cs` | — | `constraint.RemoveConstraints(ent, "Weld")` — S&Box joint system | Prop系统 |
-| `BaseNPC.cs` | — | `istable(mainTime)` VJ.SET random range in GetAttackTimer | 计时器 |
+#### 已解决（2026-05-10 会话 — Phase 2 清扫，20 项）
+| 文件 | 原 SKIP | 解决方案 |
+|------|---------|----------|
+| `BaseNPC.Relationships.cs` | OnPlayerSight 回调 | `OnPlayerSight(ent)` virtual 方法 + MaintainRelationships 接线 |
+| `BaseNPC.Relationships.cs` | ResetEnemy 空壳 | 1:1 对照 creature init.lua:2881-2949, 9 功能块完整实现 |
+| `BaseNPC.cs` | Allies_CallHelp ReceiveOrder 块 | NextChaseTime gate + Visible→SetTarget+SCHEDULE_FACE / else→PlaySoundSystem+MaintainAlertBehavior |
+| `BaseNPC.cs` | GetAttackTimer istable(mainTime) | (float a, float b) 重载 + VJUtility.Rand(a,b)/rate |
+| `BaseNPC.cs` | GetEnemyLastKnownPos 返回 Zero | EntityMemory["enemy_pos"] / Enemy.VisiblePos 返回真实数据 |
+| `BaseNPC.cs` | GetHeadDirection 缺失 | +virtual GetHeadDirection() (Phase 2: body forward; Phase 3: skeletal) |
+| `BaseNPC.cs` | GetBestSoundHint 返回 null | 新建 SoundEventRegistry.cs (VJSoundType + WorldSoundEvent + 全局注册表) |
+| `BaseNPC.Sound.cs` | SoundLevel 未映射 | DbToDistance() + handle.Distance 设置 (CreateSound/EmitSound) |
+| `BaseNPC.Sound.cs` | GetSoundDuration 硬编码 | SoundFile.Load().Duration 真实时长, 5 调用方传入音效文件 |
+| `HumanNPC.Think.cs` | IsVJBaseSNPC_Tank 检查 | Components.Get\<TankNPC\>() == null |
+| `HumanNPC.Think.cs` | prop_ragdoll 检查 | ModelPhysics 组件检测替代 GetClass() |
+| `HumanNPC.Think.cs` | GrenadeAttack VisibleVec | VisibleVec(eneData.VisiblePos) + distance 真实接线 |
+| `HumanNPC.Think.cs` | 调查块全 SKIP | bitsDanger 掩码 + Owner/Disposition 过滤 + SetLastPosition/OnInvestigate |
+| `HumanNPC.Think.cs` | SelectSchedule C2c-ii HitPos 距离 | wepInCoverEnt.WorldPosition.Distance(bulletPos) <= 3000f |
+| `HumanNPC.cs` | OnReload("Finish") | vjbWep.OnReloadAction?.Invoke() |
+| `VJBaseWeapon.cs` | NPC_CanFire GetAimPosition | 调用已有 GetAimPosition() 替代 ene.WorldPosition |
+| `VJBaseWeapon.cs` | GetAimPosition 简陋 | 玩家 Z 偏移 + VisibleVec 遮挡回退 + Enemy.VisiblePos 兜底 |
+| `VJBaseWeapon.cs` | UpdatePoseParamTracking/BulletCallback/PrimaryAttackEffects/GetBulletPos | 4 SKIP 一次性消 (stub 调用/delegate/fallback) |
+| `TankNPC.cs` | crossbow_bolt GetClass() | dmginfo.Weapon.Tags.Has("crossbow_bolt") tag 检测 |
+| `BaseNPC.cs` | Weapon_UnarmedBehavior_Active CS0103 | 从 HumanNPC 移至 BaseNPC, 修复基类编译错误 |
+
+#### 剩余待填（Phase 3 独占，~230 SKIP）
+| 系统 | 数量 | 说明 |
+|------|------|------|
+| 动画 | ~80 | PlayAnim/TranslateActivity/pose params/ACT_*/AnimTbl_* |
+| 实体生成/Model | ~40 | ents.Create/SetModel/SetSkin/bodygroup/Dissolve |
+| 物理/力 | ~15 | SetDamageForce/GetPhysicsObject/ApplyForceCenter |
+| 玩家/DSP/特效 | ~10 | ViewPunch/SetDSP/MuzzleFlash |
+| Source 永久独占 | ~10 | IsNextBot/gamemode.Call/SetNPCState/hook.Call |
+| 调试/convars | ~5 | VJ_DEBUG/convar/PrintMessage |
+| 其他 (timer/attachment/碰撞等) | ~70 | timer.Create/武器附件/碰撞组/TriggerOutput |
 
 ### 7.5 新增文件清单
 
@@ -641,6 +675,7 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | `Core/IVJBaseWeapon.cs` | weapon_vj_base/shared.lua SWEP 契约 | ~23 | ✅ Phase 1 |
 | `Core/VJBaseWeapon.cs` | weapon_vj_base/shared.lua SWEP 默认实现 | ~41 | ✅ Phase 1 |
 | `Entities/VJEntityFlags.cs` | 实体标志系统 | ~23 | ✅ |
+| `Core/SoundEventRegistry.cs` | VJSoundType 11bitflags + WorldSoundEvent + 全局注册表 (Register/GetClosestSound) | ~80 | ✅ Phase 2 |
 
 ### 7.5b 已删除文件
 
@@ -743,9 +778,11 @@ python verify_api_mapping.py
 
 ```
 你是谁：帮阿纳金和土豆把 VJ Base (GMod Lua) 机械翻译成 S&Box C#
-做到哪：~92%。P0 + 攻击骨架 + 攻击填坑（计时器/伤害/Prop/弹体）+ 手雷全部完成。
-        三子系统（掩体/玩家交互/射线）落地，水系统（WaterLevel + aquatic AA）落地，LookForObjects 感知物件落地。
-        剩余：动画（16 M 方法）/ 武器 Phase 2（射击弹道）/ 门 / 玩家交互残留（ViewPunch/SetDSP）。
+做到哪：~95%。Phase 2 可做 SKIP 全部清完。
+        武器链路 (GetAimPosition/GetHeadDirection/BulletCallback/PrimaryAttackEffects) 完整。
+        SoundEvent 注册表落地，调查系统完整接线，SoundLevel/Duration 真实映射。
+        CreatureNPC ResetEnemy 填坑，C2c-ii 友军火线距离检查。
+        剩余：动画（16 M 方法）+ Phase 3 独占（Spawn/Model/Physics/Dissolve/Collision，~230 SKIP）。
 怎么验：git log --oneline -20 秒级概览（§11 Git 提交规范）
         python verify_api_mapping.py 交叉验证 Lua↔文档
 ```
@@ -878,19 +915,34 @@ Source C++:  f:/DevProject/Sbox/source-sdk-2013/
     CanFireWeapon IsMeleeWeapon 分支 + PlayReloadAnimation NPC_Reload
     SelectSchedule C2 IsVJBaseWeapon+IsMeleeWeapon×5 → 真实检查 + else(C2c-v)
 
-24. 动画系统
+24. ✅ 武器系统 Phase 2（射击/弹道/弹药消耗）← 已完成 2026-05-10
+    NPC_CanFire → GetAimPosition + GetHeadDirection + firing cone
+    NPCShoot_Primary / PrimaryAttack / BulletCallback delegate / PrimaryAttackEffects
+    GetBulletPos fallback + SoundEvent COMBAT 注册
+    SelectSchedule C2c-ii 友军火线距离检查 + UpdatePoseParamTracking 接线
+
+25. ✅ CreatureNPC ResetEnemy 填坑 ← 已完成 2026-05-10
+    1:1 对照 creature init.lua:2881-2949, 9 功能块
+
+26. ✅ Phase 2 SKIP 清扫 ← 已完成 2026-05-10
+    SoundEvent 注册表 (VJSoundType/WorldSoundEvent/SoundEventRegistry) + GetBestSoundHint
+    调查系统完整接线 (bitsDanger/Owner/Disposition/SetLastPosition/OnInvestigate)
+    SoundLevel→DbToDistance + SoundDuration→SoundFile.Load().Duration
+    VisibleVec GrenadeAttack 接线 + OnPlayerSight 回调 + GetEnemyLastKnownPos
+    Allies_CallHelp ReceiveOrder (NextChaseTime/SetTarget/SCHEDULE_FACE/PlaySoundSystem)
+    GetAttackTimer (float,float) range 重载
+    prop_ragdoll ModelPhysics + crossbow_bolt tag + OnReload callback
+
+27. 动画系统
     16 个 M 标记动画方法仍是 return 0/false
-    TranslateActivity / UpdatePoseParamTracking / ExecuteMeleeAttack(覆写) 跳过
+    TranslateActivity / PlayAnim / pose parameters / ACT_* / AnimTbl_*
+    UpdatePoseParamTracking 已接线(stub)、ExecuteMeleeAttack(覆写) 跳过
 
-25. 武器系统 Phase 2（射击/弹道/弹药消耗）
-    SelectSchedule C2b/C2c-iii/C2c-v 内 ~20 个射击 SKIP 尚未消
-
-20. ✅ 死亡序列 ← 2026-05-08
-    BeginDeath / FinishDeath / CreateDeathCorpse / DeathWeaponDrop (~330 行)
-    CreatureNPC base + HumanNPC override 全部翻译完成
-
-21. 编译错误修复（15 个错误，5 类）
-    详见 2026-05-08 编译报告
+28. Phase 3 独占（~230 SKIP，现在做不了）
+    实体生成 (ents.Create/SetModel/Spawn) / 模型 (ModelRenderer/bodygroup)
+    物理力 (SetDamageForce/GetPhysicsObject) / 碰撞组 (COLLISION_GROUP)
+    Dissolve / 玩家 ViewPunch/SetDSP / 调试 (VJ_DEBUG/convar)
+    门系统 / 定时器 (timer.Create) / 武器附件 (LookupAttachment/GetBonePosition)
 ```
 
 ### 10.7 验证命令
@@ -909,7 +961,7 @@ cd f:/DevProject/Sbox/testzombie/Code && grep -rn "SKIP:" VJBase/
 ---
 
 *最后更新：2026-05-10*
-*翻译阶段：~92%。武器 Phase 2 自主射击完成 + NPC_Think/NPCShoot_Primary/PrimaryAttack + 三子系统(掩体/玩家交互/射线/血渍) + C2c-i 瞄准转向 + C2c-ii 友军火线 + LookForObjects/FL_OBJECT + EnemyMemory(IsUnreachable) + WaterLevel/水系统 + IDamageable 桥接。剩余：动画(16 M 方法) + 少量 SKIP(SetInflictor/DamageSpecialEnts/Prop joint/SET random range/ViewPunch)。*
+*翻译阶段：~95%。Phase 2 可做 SKIP 全部清完（20 项）。SoundEvent 注册表/调查系统完整接线 + GetBestSoundHint + CreatureNPC ResetEnemy 填坑 + VJBaseWeapon 武器链路 (GetAimPosition/GetHeadDirection/BulletCallback/PrimaryAttackEffects) + SelectSchedule C2 射击接线 + SoundLevel/Duration 真实映射 + 零碎 (prop_ragdoll/crossbow_bolt/OnReload/VisibleVec)。剩余：动画(16 M 方法) + Phase 3 独占(Spawn/Model/Physics/Dissolve/Collision, ~230 SKIP)。*
 
 ---
 
