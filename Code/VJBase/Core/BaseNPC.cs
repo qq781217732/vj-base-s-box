@@ -1195,19 +1195,34 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public virtual void MarkTookDamageFromEnemy(GameObject attacker) { }
     public virtual void SetSaveValue(string key, object value) { }
 
-    /// <summary>Relationship memory dictionary — hostility levels per entity. core.lua SetRelationshipMemory</summary>
-    private Dictionary<GameObject, float> _hostilityLevels = new();
+    /// <summary>Relationship memory dictionary — per-entity key-value store. core.lua SetRelationshipMemory/GetRelationshipMemory</summary>
+    private Dictionary<GameObject, Dictionary<string, object>> _relationshipMemory = new();
     public virtual float GetRelationshipMemory(GameObject ent, string key)
     {
-        if (key == "hostility" && _hostilityLevels.TryGetValue(ent, out var val)) return val;
+        if (ent == null || !ent.IsValid()) return 0f;
+        if (_relationshipMemory.TryGetValue(ent, out var mem) && mem.TryGetValue(key, out var val))
+        {
+            if (val is float f) return f;
+            if (val is int i) return i;
+        }
         return 0f;
     }
     public virtual void SetRelationshipMemory(GameObject ent, string key, object value)
     {
+        if (ent == null || !ent.IsValid()) return;
+        if (!_relationshipMemory.TryGetValue(ent, out var mem))
+            _relationshipMemory[ent] = mem = new Dictionary<string, object>();
+
         if (key == "hostility" && value is float f)
         {
-            _hostilityLevels.TryGetValue(ent, out var cur);
-            _hostilityLevels[ent] = cur + f;
+            // lua: AddToRelationshipMemory — accumulates hostility
+            mem.TryGetValue(key, out var cur);
+            mem[key] = (cur is float cf ? cf : 0f) + f;
+        }
+        else
+        {
+            // lua: MEM_OVERRIDE_DISPOSITION — overwrites previous value
+            mem[key] = value;
         }
     }
     public virtual float GetMaxLookDistance() => SightDistance;

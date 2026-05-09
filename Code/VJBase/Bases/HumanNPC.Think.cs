@@ -863,10 +863,12 @@ public partial class HumanNPC
                                     OnWeaponAttack();
                                     // lua:3741 — finalAnim = TranslateActivity(PICK(AnimTbl_WeaponAttack))
                                     // SKIP: lua:3741-3743 — TranslateActivity/PICK(AnimTbl_WeaponAttack) + AnimExists + AnimDuration — Phase 3 animation
-                                    // lua:3742 — if curTime > NextMeleeWeaponAttackT && VJ.AnimExists then
+                                    // lua:3742 — if curTime > NextMeleeWeaponAttackT && VJ.AnimExists(self, finalAnim) then
+                                    // NOTE: AnimExists guard missing — Phase 3 animation system needed to check animation validity
+                                    // Phase 2: always enters (conservative — allows melee NPCs to function without animations)
                                     if (curTime > NextMeleeWeaponAttackT)
                                     {
-                                        // lua:3744 — wep.NPC_NextPrimaryFire = animDur → Phase 3 (needs AnimDuration)
+                                        // lua:3744 — wep.NPC_NextPrimaryFire = animDur (dynamic, based on AnimDuration) → Phase 3
                                         // lua:3745 — wep:NPCShoot_Primary()
                                         wepComp.NPCShoot_Primary();
                                         // lua:3746 — VJ.EmitSound(self, wep.NPC_BeforeFireSound, ...)
@@ -1511,9 +1513,9 @@ public partial class HumanNPC
                 Flinch(dmgInfo, hitgroup);
 
                 // ---- M2: Player attacker → BecomeEnemyToPlayer (lua:4020-4052) ----
-                // lua:4021 — if dmgAttacker && dmgAttacker:IsPlayer() then
+                // lua:4021 — if dmgAttacker && dmgAttacker:IsPlayer() then (no VJ_CVAR_IGNOREPLAYERS guard — NPC attacked by player always reacts)
                 bool isPlayerAttacker = dmgAttacker.IsValid() && dmgAttacker.Components.Get<PlayerBase>() != null;
-                if (isPlayerAttacker && !VJInit.vj_npc_ignoreplayers)
+                if (isPlayerAttacker)
                 {
                     // lua:4023 — if self.BecomeEnemyToPlayer && self:CheckRelationship(dmgAttacker) == D_LI then
                     if (BecomeEnemyToPlayer > 0 && CheckRelationship(dmgAttacker) == (int)VJBase.Disposition.Like)
@@ -1529,6 +1531,7 @@ public partial class HumanNPC
                             // lua:4028 — if self.IsFollowing && self.FollowData.Target == dmgAttacker then self:ResetFollowBehavior() end
                             // SKIP: lua:4028 — IsFollowing / FollowData / ResetFollowBehavior — Phase 3 follow system
                             // lua:4029 — self:SetRelationshipMemory(dmgAttacker, VJ.MEM_OVERRIDE_DISPOSITION, D_HT)
+                            SetRelationshipMemory(dmgAttacker, "override_disposition", (int)VJBase.Disposition.Hate);
                             // lua:4030 — self:AddEntityRelationship(dmgAttacker, D_HT, 2)
                             AddEntityRelationship(dmgAttacker, (int)VJBase.Disposition.Hate, 2);
                             // lua:4031 — self.TakingCoverT = curTime + 2
@@ -1546,6 +1549,8 @@ public partial class HumanNPC
                         }
                     }
                     // lua:4044-4051 — DamageByPlayer sounds
+                    // NOTE: Lua checks NextDamageByPlayerSoundT but never sets it (variable stays 0 → always true).
+                    //       This is a Lua oversight — translating 1:1 without adding cooldown.
                     if (HasDamageByPlayerSounds && curTime > NextDamageByPlayerSoundT && Visible(dmgAttacker))
                     {
                         var dispLvl = DamageByPlayerDispositionLevel;
@@ -1553,7 +1558,6 @@ public partial class HumanNPC
                         if (dispLvl == 0 || (dispLvl == 1 && disp == (int)VJBase.Disposition.Like) || (dispLvl == 2 && disp != (int)VJBase.Disposition.Hate))
                         {
                             PlaySoundSystem("DamageByPlayer");
-                            NextDamageByPlayerSoundT = curTime + 15f;
                         }
                     }
                 }
@@ -1719,19 +1723,24 @@ public partial class HumanNPC
                     allyBase.DoReadyAlert();
                     allyBase.SetTurnTarget("Enemy");
                     // lua:4220-4235 — BecomeEnemyToPlayer chain
-                    if (doBecomeEnemyToPlayer && allyBase.BecomeEnemyToPlayer > 0 && allyBase.CheckRelationship(dmgAttacker) == (int)VJBase.Disposition.Like)
+                    if (doBecomeEnemyToPlayer && allyBase.BecomeEnemyToPlayer > 0
+                        && allyBase.CheckRelationship(dmgAttacker) == (int)VJBase.Disposition.Like
+                        && allyBase.Disposition(dmgAttacker) != (int)VJBase.Disposition.Hate)
                     {
                         allyBase.SetRelationshipMemory(dmgAttacker, "hostility", 1f);
                         var hostility = allyBase.GetRelationshipMemory(dmgAttacker, "hostility");
                         if (hostility > allyBase.BecomeEnemyToPlayer)
                         {
                             allyBase.OnBecomeEnemyToPlayer(dmginfo, hitgroup);
+                            allyBase.SetRelationshipMemory(dmgAttacker, "override_disposition", (int)VJBase.Disposition.Hate);
                             allyBase.AddEntityRelationship(dmgAttacker, (int)VJBase.Disposition.Hate, 2);
                             allyBase.PlaySoundSystem("BecomeEnemyToPlayer");
                             // SKIP: lua:4225 — ResetFollowBehavior — Phase 3 follow system
                             // SKIP: lua:4232 — CanChatMessage — Phase 3 chat system
                         }
                     }
+                    // lua:4235 — ally.Alerted = true
+                    allyBase.Alerted = VJAlertState.Enemy;
                 }
             }
         }

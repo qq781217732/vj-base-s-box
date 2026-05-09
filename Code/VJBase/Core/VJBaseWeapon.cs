@@ -97,6 +97,12 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
         OnReloadAction?.Invoke();
     }
 
+    // ═══ Phase 2: Weapon lifecycle callbacks ═══
+    /// <summary>MaintainWorldModel — weapon_vj_base/shared.lua:477-506. Positions weapon model on owner bone. Phase 3: model attachment.</summary>
+    protected virtual void MaintainWorldModel(GameObject owner) { }
+    /// <summary>OnThink — weapon_vj_base/shared.lua. Custom per-weapon think callback.</summary>
+    protected virtual void OnThink() { }
+
     // ═══ Phase 2: Per-frame auto-fire (called from HumanNPC.Think or Component Update) ═══
     /// <summary>
     /// NPC_Think — weapon_vj_base/shared.lua:534-545.
@@ -110,6 +116,10 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
 
         var npc = owner.Components.Get<BaseNPC>();
         if (npc == null) return;
+
+        // lua:540-541 — MaintainWorldModel + OnThink callbacks
+        MaintainWorldModel(owner);
+        OnThink();
 
         // Only fire if this is the owner's active weapon
         var activeWep = npc.GetActiveWeapon();
@@ -299,7 +309,7 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
             {
                 if (!ent.IsValid() || ent == owner) continue;
 
-                bool isPlayer = ent.Tags.Has("player");
+                bool isPlayer = ent.Components.Get<PlayerBase>() != null;
                 bool isNPC = ent.Components.Get<BaseNPC>() != null;
                 bool isValidTarget = isNPC || isPlayer || ent.Tags.Has("attackable") || ent.Tags.Has("destructible");
 
@@ -309,23 +319,28 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
                 var entNPC = ent.Components.Get<BaseNPC>();
                 if (entNPC != null && npc.Disposition(ent) == (int)VJBase.Disposition.Like) continue;
 
-                // Angle check
+                // Angle check — uses NPC's configurable MeleeAttackDamageAngleRadius (Lua: owner.MeleeAttackDamageAngleRadius)
                 var toEnt = (ent.WorldPosition - ownersPos).Normal;
                 float dot = Vector3.Dot(owner.WorldRotation.Forward, toEnt);
                 float angleRad = MathF.Acos(Math.Clamp(dot, -1f, 1f));
-                if (angleRad > MathF.PI * 0.5f) continue; // 90° default guard
+                float meleeAngleRadius = npc.MeleeAttackDamageAngleRadius > 0 ? npc.MeleeAttackDamageAngleRadius : 90f;
+                if (angleRad > MathF.PI / 180f * meleeAngleRadius) continue;
 
                 // Apply damage
+                float dmgAmount = npc.ScaleByDifficulty(Primary_Damage);
                 var dmginfo = new DamageInfo();
-                dmginfo.Damage = npc.ScaleByDifficulty(Primary_Damage);
+                dmginfo.Damage = dmgAmount;
                 dmginfo.Attacker = owner;
+                // lua:708-709 — SetDamageForce for living entities
+                if (entNPC != null) // VJ_ID_Living → knockback
+                    dmginfo.Position = ent.WorldPosition + owner.WorldRotation.Forward * ((dmgAmount + 100f) * 70f);
                 dmginfo.Tags.Add("melee");
                 // SKIP: DMG_CLUB — Phase 3 damage type mapping
                 foreach (var d in ent.Components.GetAll<IDamageable>())
                     d.OnDamage(dmginfo);
 
-                // SKIP: Player ViewPunch — Phase 3 player system
-                // SKIP: OnPrimaryAttack_BulletCallback — Phase 3 callbacks
+                // SKIP: lua:710-711 — Player ViewPunch — Phase 3 player camera
+                // SKIP: lua:713 — OnPrimaryAttack("MeleeHit", ent) — Phase 3 weapon callback
             }
         }
         // Ranged weapon

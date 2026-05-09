@@ -248,10 +248,14 @@ public partial class CreatureNPC
                 var entBase1 = ent.Components.Get<BaseNPC>();
                 if (entBase1 != null && entBase1.VJ_NPC_Class.Any(c => VJ_NPC_Class.Contains(c))) continue;
                 // SKIP: lua:2463 — ent.IsVJBaseBullseye && ent.VJ_IsBeingControlled — Phase 3 bullseye system
-                // lua:2464 — skip VJ_IsControllingNPC, skip player when ignoreplayers / dead
-                if (entBase1?.VJ_IsBeingControlled == true) continue;
+                // lua:2464 — skip VJ_IsControllingNPC, skip player when VJ_IsControllingNPC / dead / ignoreplayers
                 bool isPlayer = ent.Components.Get<PlayerBase>() != null;
-                if (isPlayer && VJInit.vj_npc_ignoreplayers) continue;
+                if (isPlayer)
+                {
+                    // SKIP: ent.VJ_IsControllingNPC — Source player field, no S&Box equivalent
+                    if (!Alive(ent) || VJInit.vj_npc_ignoreplayers) continue;
+                }
+                else if (entBase1?.VJ_IsBeingControlled == true) continue;
                 // lua:2465 — ((VJ_ID_Living && Disp != D_LI) || VJ_ID_Attackable || VJ_ID_Destructible) && angle
                 bool isLiving = HasEntityFlag(ent, "VJ_ID_Living");
                 if (isPlayer && !isLiving) isLiving = true; // players are living targets by default
@@ -428,10 +432,14 @@ public partial class CreatureNPC
                 var entBase2 = ent.Components.Get<BaseNPC>();
                 if (entBase2 != null && entBase2.VJ_NPC_Class.Any(c => VJ_NPC_Class.Contains(c))) continue;
                 // SKIP: lua:2679 — ent.IsVJBaseBullseye && ent.VJ_IsBeingControlled — Phase 3 bullseye
-                // lua:2680 — skip VJ_IsControllingNPC, skip player when ignoreplayers / dead
-                if (entBase2?.VJ_IsBeingControlled == true) continue;
+                // lua:2680 — skip VJ_IsControllingNPC, skip player when VJ_IsControllingNPC / dead / ignoreplayers
                 bool isPlayer = ent.Components.Get<PlayerBase>() != null;
-                if (isPlayer && VJInit.vj_npc_ignoreplayers) continue;
+                if (isPlayer)
+                {
+                    // SKIP: ent.VJ_IsControllingNPC — Source player field, no S&Box equivalent
+                    if (!Alive(ent) || VJInit.vj_npc_ignoreplayers) continue;
+                }
+                else if (entBase2?.VJ_IsBeingControlled == true) continue;
                 // lua:2681 — (VJ_ID_Living && Disp != D_LI) || VJ_ID_Attackable || VJ_ID_Destructible
                 bool isLiving = HasEntityFlag(ent, "VJ_ID_Living");
                 if (isPlayer && !isLiving) isLiving = true; // players are living targets by default
@@ -539,19 +547,24 @@ public partial class CreatureNPC
                 allyBase.DoReadyAlert();
                 allyBase.SetTurnTarget("Enemy");
                 // lua:3233-3241 — BecomeEnemyToPlayer chain
-                if (doBecomeEnemyToPlayer && allyBase.BecomeEnemyToPlayer > 0 && allyBase.CheckRelationship(dmgAttacker) == (int)VJBase.Disposition.Like)
+                if (doBecomeEnemyToPlayer && allyBase.BecomeEnemyToPlayer > 0
+                    && allyBase.CheckRelationship(dmgAttacker) == (int)VJBase.Disposition.Like
+                    && allyBase.Disposition(dmgAttacker) != (int)VJBase.Disposition.Hate)
                 {
                     allyBase.SetRelationshipMemory(dmgAttacker, "hostility", 1f);
                     var hostility = allyBase.GetRelationshipMemory(dmgAttacker, "hostility");
                     if (hostility > allyBase.BecomeEnemyToPlayer)
                     {
                         allyBase.OnBecomeEnemyToPlayer(dmginfo, hitgroup);
+                        allyBase.SetRelationshipMemory(dmgAttacker, "override_disposition", (int)VJBase.Disposition.Hate);
                         allyBase.AddEntityRelationship(dmgAttacker, (int)VJBase.Disposition.Hate, 2);
                         allyBase.PlaySoundSystem("BecomeEnemyToPlayer");
                         // SKIP: lua:3236 — ResetFollowBehavior — Phase 3 follow system
                         // SKIP: lua:3240 — CanChatMessage — Phase 3 chat system
                     }
                 }
+                // lua:3245 — ally.Alerted = true (sets enemy-sensed state for ally)
+                allyBase.Alerted = VJAlertState.Enemy;
             }
         }
 
