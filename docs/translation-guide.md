@@ -275,7 +275,7 @@ public virtual void StartEngineTask(int taskId, float taskData)
 
 ## 7. 当前状态清单
 
-> 最后更新：2026-05-09（武器 Phase 1 + DamageInfo + 免疫链 + 实体标志 + 盟友系统 + 移动类型重构）
+> 最后更新：2026-05-10（水系统 WaterLevel + MASK_WATER + aquatic AA 消 SKIP + LookForObjects 感知物件 + 掩体/玩家交互/射线三子系统填坑）
 
 ### 7.1a schedules.lua → BaseNPC.Schedule.cs（32 个方法）
 
@@ -434,7 +434,8 @@ public virtual void StartEngineTask(int taskId, float taskData)
 > | ✅ | Stationary | agent.Stop()+Enabled=false |
 > | ✅ | Physics | agent.Stop()+Enabled=false, Rigidbody.Enabled=true |
 > | ✅ | `OpeningDoor` | BaseNPC +OpeningDoor 字段, StartSchedule 门检查 |
-> | ❌ | WaterLevel(8 SKIP) | Source 引擎内置, S&Box 无等价物 — 永久保留 |
+> | ✅ | WaterLevel() 本体 | RedSnail WaterTool 对接 — `IsPositionInsideAny` + `GetWaterHeightAt` → 0/1/2/3 |
+> | ✅ | MASK_WATER trace + aquatic AA | `IsPositionInsideAny(destVec)` 临时方案(标注SKIP), AA_MoveTo ×4 aquatic守卫, AA_IdleWander ×3 aquatic守卫 |
 > | ❌ | MoveType/VPhysics(3 SKIP) | MOVETYPE_STEP/VPHYSICS Source 专有 — 永久保留 |
 
 ### 7.2 接口体系
@@ -505,6 +506,10 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | 49 | **对照审查: VJ_ID_Boss 窄化** — `Components.Get<TankNPC>()`→`HasEntityFlag` 通用检测 | ✅ 2026-05-09 |
 | 50 | **对照审查: Allies_CallHelp 4处遗漏** — IsGuard+Visible守卫, Disposition守卫, 距离判断修正(ally→caller改为ally→ene), GOTO偏移 | ✅ 2026-05-09 |
 | 51 | **对照审查: Block O Health 守卫** — 无条件调 BeginDeath→加 `CurrentHealth<=0 && !Dead` 守卫 | ✅ 2026-05-09 |
+| 52 | **掩体/玩家交互/射线三子系统填坑** — DoCoverTrace TraceLine + TraceDirections + IsPlayerDetection + DoMeleeAttackPlayerSpeed + BecomeEnemyToPlayer/M2 + C2a/b/c-ii/c-iv 掩体 SKIP 消 + 血渍贴花 | ✅ 2026-05-10 |
+| 53 | **水系统 WaterLevel** — RedSnail WaterTool 对接, aquatic AA_MoveTo ×4 + AA_IdleWander ×3 SKIP 消 | ✅ 2026-05-10 |
+| 54 | **LookForObjects 感知物件** — FL_OBJECT 迭代循环落地, AISensedObjectsManager.Init 实装 | ✅ 2026-05-10 |
+| 55 | **审查修复** — C2a FACE_ENEMY lambda/return→goto, C2c-ii wepInCoverEntLiving, Alerted 层级, 多轮审查 | ✅ 2026-05-10 |
 
 ### 7.4 SKIP 总表（Phase 3+ 填坑清单）
 
@@ -606,14 +611,14 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | `BaseNPC.Relationships.cs` | 行 269-270 | `m_vecSmoothedVelocity` — 当前用 rb.Velocity 瞬时值，Phase 3 优化 | Source 引擎 API |
 | `BaseNPC.Schedule.cs` | — | `m_hOpeningDoor` door system | 门系统 |
 | `CreatureNPC.Think.cs` | — | `MaintainActivity()` call | 动画维持 |
-| `Engine/AISenses.cs` | 599 | `LookForObjects` — FL_OBJECT 系统 | 感知物件 |
-| `BaseNPC.AA.cs` | 95-103 | `WaterLevel()` 水源检查 — 整个 aquatic 分支 | 水系统 |
-| `BaseNPC.AA.cs` | 98-101 | `MASK_WATER` trace + aquatic 可达性检查 | 水系统 |
+| `CreatureNPC.Think.cs` | — | `MaintainActivity()` call | 动画维持 |
+| `BaseNPC.AA.cs` | — | `AA_MoveAnimation` 动画选表/PlayAnim/ACT_* | 动画系统 |
+| `BaseNPC.AA.cs` | 82 | `MASK_WATER` trace — 当前 `IsPositionInsideAny(destVec)` 临时方案, 标注 SKIP | 水系统 |
 | `BaseNPC.AA.cs` | — | `AA_MoveAnimation` 动画选表/PlayAnim/ACT_* | 动画系统 |
 | `BaseNPC.Sound.cs` | — | `SoundLevel` (dB) 未映射到 S&Box 衰减 (`Distance`/`Decibels`) | 音效 |
 | `BaseNPC.Sound.cs` | — | `GetSoundDuration()` 硬编码 fallback，非真实音效文件时长 | 音效 |
 | `BaseNPC.Schedule.cs` | — | `RememberUnreachable` / `IsUnreachable` — Source 引擎敌人记忆 API | 敌人记忆 |
-| `CreatureNPC.Think.cs` | — | `IsNextBot` / `loco:Approach` / `ViewPunch` / `SetDSP` / `DoMeleeAttackPlayerSpeed` | 玩家系统 |
+| `CreatureNPC.Think.cs` | — | `ViewPunch / SetDSP / IsNextBot / loco:Approach — Phase 3 player camera/audio/NextBot` | 玩家系统 |
 | `HumanNPC.cs` | — | `LookupAttachment` / `GetAttachment` / `LookupBone` / `GetBonePosition` / `GetShootPos` | 骨骼动画 |
 | `HumanNPC.cs` | — | `VisibleVec` / `VJ.TraceDirections` 可见性/空间查询 | 感知系统 |
 | `CreatureNPC.Think.cs` | — | `GetClass()` entity type comparison → component type check | 实体类型 |
@@ -738,8 +743,9 @@ python verify_api_mapping.py
 
 ```
 你是谁：帮阿纳金和土豆把 VJ Base (GMod Lua) 机械翻译成 S&Box C#
-做到哪：~65%。P0 + 攻击骨架 + 攻击填坑（计时器/伤害/Prop/弹体）+ 手雷全部完成。
-        剩余：动画（16 M 方法）/ 门 / 水 / FL_OBJECT 4 个 Phase 3 系统。
+做到哪：~92%。P0 + 攻击骨架 + 攻击填坑（计时器/伤害/Prop/弹体）+ 手雷全部完成。
+        三子系统（掩体/玩家交互/射线）落地，水系统（WaterLevel + aquatic AA）落地，LookForObjects 感知物件落地。
+        剩余：动画（16 M 方法）/ 武器 Phase 2（射击弹道）/ 门 / 玩家交互残留（ViewPunch/SetDSP）。
 怎么验：git log --oneline -20 秒级概览（§11 Git 提交规范）
         python verify_api_mapping.py 交叉验证 Lua↔文档
 ```
@@ -902,8 +908,8 @@ cd f:/DevProject/Sbox/testzombie/Code && grep -rn "SKIP:" VJBase/
 
 ---
 
-*最后更新：2026-05-09*
-*翻译阶段：~90%。武器 Phase 1 完成（IVJBaseWeapon 接口 + VJBaseWeapon Component + ~18 SKIP 消除）+ DamageInfo 落地 + 实体标志 + 盟友系统 + 移动类型重构。剩余：动画系统（16 M 方法）+ 武器 Phase 2（射击/弹道 ~20 SKIP）+ 玩家交互/掩体/射线系统。*
+*最后更新：2026-05-10*
+*翻译阶段：~90%。武器 Phase 1 完成（IVJBaseWeapon 接口 + VJBaseWeapon Component + ~18 SKIP 消除）+ DamageInfo 落地 + 实体标志 + 盟友系统 + 移动类型重构。剩余：动画系统（16 M 方法）+ 武器 Phase 2（射击/弹道 ~20 SKIP）+ 玩家交互残留（ViewPunch/SetDSP）+ 门系统/Prop joint。*
 
 ---
 
