@@ -519,10 +519,10 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     /// <summary>CheckWeaponState — called from Think to sync weapon state. No-op in base.</summary>
     public virtual void CheckWeaponState() { }
 
-    /// <summary>GetBestSoundHint — Source engine NPC:GetBestSoundHint. Returns null until Phase 3 sound system.</summary>
-    public virtual object GetBestSoundHint(int soundMask) => null;
+    /// <summary>GetBestSoundHint — core.lua ENT:GetBestSound. Queries global SoundEventRegistry.</summary>
+    public virtual WorldSoundEvent GetBestSoundHint(VJSoundType soundMask) => SoundEventRegistry.GetClosestSound(WorldPosition, soundMask);
 
-    /// <summary>NearestPoint — Source engine NPC:NearestPoint(navmesh). Pass-through until Phase 3 nav system.</summary>
+    /// <summary>NearestPoint — Source engine NPC:NearestPoint. S&Box NavMesh has no GetClosestPoint API yet; pass-through until API matures.</summary>
     public virtual Vector3 NearestPoint(Vector3 pos) => pos;
 
     /// <summary>SetMovementActivity — Source engine NPC:SetMovementActivity. Phase 3 animation.</summary>

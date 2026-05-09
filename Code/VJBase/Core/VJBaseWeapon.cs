@@ -315,6 +315,9 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
 
         PrimaryAttack(npc, ene);
 
+        // Register combat sound for NPC hearing/investigation
+        SoundEventRegistry.Register(GameObject.WorldPosition, VJSoundType.Combat, GameObject, 1f);
+
         var human = npc as HumanNPC;
         if (human != null)
             human.WeaponLastShotTime = curTime;

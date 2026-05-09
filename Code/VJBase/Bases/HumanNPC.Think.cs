@@ -554,8 +554,8 @@ public partial class HumanNPC
             // lua:3537
             Weapon_UnarmedBehavior_Active = false;
 
-            // lua:3539-3576: Investigation block
-            // SKIP: lua:3518 — bitsDanger = bit.bor(SOUND_BULLET_IMPACT, SOUND_COMBAT, SOUND_WORLD, SOUND_DANGER) — Phase 3 sound constants
+            // lua:3518+3539-3576: Investigation block — hear danger → look toward sound source
+            var bitsDanger = VJSoundType.BulletImpact | VJSoundType.Combat | VJSoundType.World | VJSoundType.Danger;
             if (CanInvestigate
                 && (HasCondition(Condition.HearBulletImpact)
                     || HasCondition(Condition.HearCombat)
@@ -565,27 +565,29 @@ public partial class HumanNPC
                 && TakingCoverT < curTime
                 && !IsBusy())
             {
-                // lua:3541: GetBestSoundHint(bitsDanger) — Source engine sound location
-                var sdSrc = GetBestSoundHint(0); // SKIP: bitsDanger mask — Phase 3 sound system
-                // lua:3542
+                // lua:3541 — GetBestSoundHint(bitsDanger)
+                var sdSrc = GetBestSoundHint(bitsDanger);
                 if (sdSrc != null)
                 {
-                    // lua:3544: allowed flag
+                    // lua:3544-3553 — owner/type/vehicle/driver/disposition checks
                     bool allowed = true;
-                    // SKIP: lua:3545-3553 — sdSrc.owner, .type, IsVehicle(), GetDriver(), Disposition checks — Phase 3 sound event system
-                    // lua:3556-3560 — commented-out player sound check
-
-                    // lua:3561-3574: Execute investigation
+                    var sdOwner = sdSrc.Owner;
+                    if (sdOwner.IsValid())
+                    {
+                        // lua:3547 — if sdOwner is self or allied, ignore
+                        if (sdOwner == GameObject || Disposition(sdOwner) == (int)VJBase.Disposition.Like)
+                            allowed = false;
+                    }
+                    // lua:3561-3574 — Execute investigation
                     if (allowed)
                     {
-                        DoReadyAlert();                              // lua:3562
-                        StopMoving();                                 // lua:3563
-                        // SKIP: lua:3564 — SetLastPosition(sdSrc.origin) — sdSrc is null (Phase 3 sound)
-                        SCHEDULE_FACE("TASK_FACE_LASTPOSITION");     // lua:3565
-                        // lua:3567-3571: commented-out custom schedule
-                        // SKIP: lua:3572 — OnInvestigate(sdOwner) — sdOwner is null (Phase 3)
-                        PlaySoundSystem("Investigate");              // lua:3573
-                        TakingCoverT = curTime + 1;                  // lua:3574
+                        DoReadyAlert();
+                        StopMoving();
+                        SetLastPosition(sdSrc.Origin);
+                        SCHEDULE_FACE("TASK_FACE_LASTPOSITION");
+                        OnInvestigate?.Invoke(sdOwner);
+                        PlaySoundSystem("Investigate");
+                        TakingCoverT = curTime + 1;
                     }
                 }
             }
