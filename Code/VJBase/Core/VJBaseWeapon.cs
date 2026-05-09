@@ -75,6 +75,7 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
     public float NPC_NextPrimaryFireT { get; set; }
     public float NPC_NextDrySoundT { get; set; }
     public float NPC_SecondaryFireNextT { get; set; }
+    public float NPC_DelayedFireTime { get; set; }
 
     // ═══ Phase 1: Lifecycle ═══
     public virtual void Equip(GameObject owner)
@@ -115,9 +116,18 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
         if (activeWep != GameObject) return;
 
         // Non-melee weapons auto-fire on timer
-        if (!IsMeleeWeapon && NPC_NextPrimaryFire > 0 && Time.Now > NPC_NextPrimaryFireT && NPC_CanFire(npc))
+        if (!IsMeleeWeapon && NPC_NextPrimaryFire >= 0 && Time.Now > NPC_NextPrimaryFireT && NPC_CanFire(npc))
         {
+            // lua:593 — weapon_vj_base/shared.lua NPCShoot_Primary schedules PrimaryAttack
+            if (NPC_DelayedFireTime > 0 && Time.Now < NPC_DelayedFireTime) return;
             NPCShoot_Primary();
+        }
+
+        // Delayed fire (from NPC_TimeUntilFire > 0)
+        if (NPC_DelayedFireTime > 0 && Time.Now > NPC_DelayedFireTime)
+        {
+            NPC_DelayedFireTime = 0;
+            DoPrimaryFire();
         }
     }
 
@@ -146,24 +156,20 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
             return false;
 
         // Attack state check
-        bool canFire = false;
         if (isVJHuman)
         {
             bool inFireState = human.WeaponAttackState == VJWepAttackState.Fire
                 || (human.WeaponAttackState == VJWepAttackState.FireStand /* && VJ.IsCurrentAnim — Phase 3 */);
             if (!inFireState) return false;
         }
-        else
-        {
-            canFire = true;
-        }
+        // Non-VJ-human: skip attack state check (lua:557 — (!isVJHuman) → bypass animation guard)
 
         if (IsMeleeWeapon) return true;
 
         // Ammo check (humans only)
         if (isVJHuman && human.Weapon_CanReload && GetClip1() <= 0)
         {
-            if (NPC_NextPrimaryFire > 0)
+            if (NPC_NextPrimaryFire >= 0)
                 NPC_NextDrySoundT = Time.Now + NPC_NextPrimaryFire;
             // Dry fire sound — Phase 3 sound system
             return false;
@@ -183,7 +189,8 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
             return dot > NPC_FiringCone;
         }
 
-        return canFire;
+        // lua:590 — reached end without entering any return branch → false
+        return false;
     }
 
     // ═══ Phase 2: Execute primary fire (weapon_vj_base/shared.lua:593-650) ═══
@@ -233,10 +240,8 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
         }
         else
         {
-            // Fire after delay — in Lua this uses timer.Simple. For Phase 2, fire immediately
-            // and track the timer for extra shots.
-            DoPrimaryFire();
-            // TODO Phase 3: async/await or timer-based delayed fire
+            // lua:629 — timer.Simple(self.NPC_TimeUntilFire, function() ... PrimaryAttack ... end)
+            NPC_DelayedFireTime = Time.Now + delay;
         }
     }
 
@@ -254,8 +259,8 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
         float curTime = Time.Now;
         var ene = npc.GetEnemy();
 
-        // Only fire if timer allows
-        if (NPC_NextPrimaryFire > 0 && curTime <= NPC_NextPrimaryFireT) return;
+        // Only fire if timer allows (Lua: NPC_NextPrimaryFire is truthy for 0, false disables)
+        if (NPC_NextPrimaryFire >= 0 && curTime <= NPC_NextPrimaryFireT) return;
 
         // Check NPC_CanFire again for safety
         if (!NPC_CanFire(npc)) return;
@@ -266,8 +271,8 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
         if (human != null)
             human.WeaponLastShotTime = curTime;
 
-        // Set next fire timer
-        if (NPC_NextPrimaryFire > 0)
+        // Set next fire timer (Lua: if NPC_NextPrimaryFire != false then)
+        if (NPC_NextPrimaryFire >= 0)
         {
             NPC_NextPrimaryFireT = curTime + NPC_NextPrimaryFire;
             // Extra fire timers (bolt action, shotgun pump, etc.) — Phase 3 async

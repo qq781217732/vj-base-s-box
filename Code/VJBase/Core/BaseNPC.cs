@@ -408,14 +408,15 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
         }
 
         // Hiding zone: hit world AND close (< 200 units)
-        if (tr.Hit && hitEnt.IsWorld && start.Distance(hitPos) < 200f)
+        // S&Box: tr.GameObject is null when trace hits world geometry (no entity)
+        if (tr.Hit && hitEnt == null && start.Distance(hitPos) < 200f)
         {
             if (setLastHiddenTime) LastHiddenZoneT = Time.Now + 20f;
             return (true, tr);
         }
         // NOT a hiding zone
         else if (sphereInvalidate
-            || (!acceptWorld && tr.Hit && hitEnt.IsWorld)
+            || (!acceptWorld && tr.Hit && hitEnt == null)
             || (hitEnt.IsValid() && (hitEnt == ene || IsEntityLiving(hitEnt) || EntityVelocitySqLg(hitEnt) > 1000f))
             || end.Distance(hitPos) <= 10f)
         {
