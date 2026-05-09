@@ -63,6 +63,21 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
     [Property] public string NPC_SecondaryFireSound { get; set; }
     [Property] public float NPC_SecondaryFireSoundLevel { get; set; } = 90f;
 
+    // ═══ Phase 2: Firing Guards + Melee Sounds ═══
+    /// <summary>IsReloading — Lua:665 guard: blocks PrimaryAttack during reload.</summary>
+    public bool IsReloading { get; set; }
+    /// <summary>NextSecondaryFireT — Lua:665 guard: blocks PrimaryAttack when secondary fire cooldown active.</summary>
+    public float NextSecondaryFireT { get; set; }
+    /// <summary>Melee weapon hit sound table.</summary>
+    [Property] public List<string> MeleeWeaponSound_Hit { get; set; } = new();
+    /// <summary>Melee weapon miss sound table.</summary>
+    [Property] public List<string> MeleeWeaponSound_Miss { get; set; } = new();
+    /// <summary>Dry fire sound table — played when out of ammo.</summary>
+    [Property] public List<string> DryFireSound { get; set; } = new();
+    [Property] public float DryFireSoundLevel { get; set; } = 70f;
+    [Property] public float DryFireSoundPitchA { get; set; } = 90f;
+    [Property] public float DryFireSoundPitchB { get; set; } = 100f;
+
     // ═══ Phase 2: Primary Attack Config (weapon_vj_base/shared.lua Primary table) ═══
     [Property] public float Primary_Damage { get; set; } = 10f;
     [Property] public float Primary_Delay { get; set; } = 0.11f;
@@ -146,7 +161,7 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
             if (!string.IsNullOrEmpty(NPC_ExtraFireSound))
             {
                 var pitch = Game.Random.Float(NPC_ExtraFireSoundPitchA, NPC_ExtraFireSoundPitchB);
-                // Phase 3: Sound.Play(NPC_ExtraFireSound, owner.WorldPosition);
+                Sound.Play(NPC_ExtraFireSound, owner.WorldPosition);
             }
         }
     }
@@ -212,6 +227,20 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
         // lua:590 — reached end without entering any return branch → false
         return false;
     }
+
+    // ═══ Phase 2: Weapon callbacks (shared.lua:676-677) ═══
+    /// <summary>
+    /// CanPrimaryAttack — Lua:676: weapon-specific guard before PrimaryAttack.
+    /// Override to add custom fire-prevention logic (e.g. cooldowns, ammo checks).
+    /// Return false to block the attack.
+    /// </summary>
+    public virtual bool CanPrimaryAttack() => true;
+
+    /// <summary>
+    /// OnPrimaryAttack — Lua:677/808: called with "Init" (pre-fire, return true to block)
+    /// and "PostFire" (post-fire notification). Also "MeleeHit" with the hit entity for melee.
+    /// </summary>
+    public virtual bool OnPrimaryAttack(string type, GameObject ent = null) => false;
 
     // ═══ Phase 2: Execute primary fire (weapon_vj_base/shared.lua:593-650) ═══
     /// <summary>
@@ -287,13 +316,6 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
         var human = npc as HumanNPC;
         if (human != null)
             human.WeaponLastShotTime = curTime;
-
-        // Set next fire timer (Lua: if NPC_NextPrimaryFire != false then)
-        if (NPC_NextPrimaryFire >= 0)
-        {
-            NPC_NextPrimaryFireT = curTime + NPC_NextPrimaryFire;
-            // Extra fire timers (bolt action, shotgun pump, etc.) — Phase 3 async
-        }
     }
 
     /// <summary>
@@ -306,54 +328,121 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
         if (!owner.IsValid()) return;
 
         float curTime = Time.Now;
+        bool isNPC = npc != null;
 
-        // Melee weapon
+        // lua:660 — SetNextPrimaryFire FIRST, before any guards
+        if (NPC_NextPrimaryFire >= 0)
+            NPC_NextPrimaryFireT = curTime + NPC_NextPrimaryFire;
+
+        // lua:665 — Reloading / SecondaryFire guard
+        if (IsReloading || NextSecondaryFireT > curTime) return;
+
+        // lua:666 — NPC without enemy guard (non-controlled NPC only)
+        if (isNPC && !npc.VJ_IsBeingControlled && !ene.IsValid()) return;
+
+        // lua:667-674 — Out of ammo → dry fire sound + return (non-melee only)
+        if (!IsMeleeWeapon && GetClip1() <= 0)
+        {
+            var drySd = VJUtility.PICK(DryFireSound);
+            if (drySd != null)
+            {
+                var dryPitch = Game.Random.Float(DryFireSoundPitchA, DryFireSoundPitchB);
+                Sound.Play(drySd, owner.WorldPosition);
+            }
+            return;
+        }
+
+        // lua:676 — CanPrimaryAttack callback
+        if (!CanPrimaryAttack()) return;
+
+        // lua:677 — OnPrimaryAttack("Init") guard (return true to block)
+        if (OnPrimaryAttack("Init") == true) return;
+
+        // lua:679-685 — NPC_ExtraFireSound timer (bolt action, shotgun pump)
+        if (isNPC && !IsMeleeWeapon && !string.IsNullOrEmpty(NPC_ExtraFireSound) && NPC_ExtraFireSoundTime > 0)
+            NPC_ExtraFireSoundTime_T = curTime + NPC_ExtraFireSoundTime;
+
+        // lua:687-693 — Primary firing sound
+        // SKIP: lua:687-705 — Primary.Sound/EmitSound + DistantSound + gesture — Phase 3 sound system
+
+        // ═══ lua:707-742 — MELEE WEAPON ═══
         if (IsMeleeWeapon)
         {
+            bool meleeHit = false;
             var ownersPos = owner.WorldPosition;
-            var sphere = new Sphere(ownersPos, MeleeWeaponDistance + 20f);
-            foreach (var ent in Scene.FindInPhysics(sphere))
+            var myClass = npc?.VJ_NPC_Class;
+
+            foreach (var ent in Scene.FindInPhysics(new Sphere(ownersPos, MeleeWeaponDistance + 20f)))
             {
                 if (!ent.IsValid() || ent == owner) continue;
 
+                // lua:713 — Skip bullseye-controlled / player-controlling-NPC
+                // SKIP: lua:713 — IsVJBaseBullseye + VJ_IsBeingControlled / VJ_IsControllingNPC — Phase 3
+
                 bool isPlayer = ent.Components.Get<PlayerBase>() != null;
-                bool isNPC = ent.Components.Get<BaseNPC>() != null;
-                bool isValidTarget = isNPC || isPlayer || ent.Tags.Has("attackable") || ent.Tags.Has("destructible");
+                bool isENTNPC = ent.Components.Get<BaseNPC>() != null;
+                var entData = ent.Components.Get<BaseNPC>();
 
-                if (!isValidTarget) continue;
+                // lua:714 — Target validity: isPlayer owner → any target; isNPC owner → NPCs / Players / Attackable / Destructible
+                // lua:714 — + Disposition guard + class exclusion + angle
+                if (!isPlayer && isNPC)
+                {
+                    // NPC owner: validate target type
+                    if (!isENTNPC && !isPlayer && !BaseNPC.HasEntityFlag(ent, "VJ_ID_Attackable") && !BaseNPC.HasEntityFlag(ent, "VJ_ID_Destructible"))
+                        continue;
+                    // Disposition guard: don't hit friends
+                    if (entData != null && npc.Disposition(ent) == (int)VJBase.Disposition.Like) continue;
+                    // Class exclusion: ent:GetClass() != owner:GetClass()
+                    if (entData != null && myClass != null && entData.VJ_NPC_Class.Any(c => myClass.Contains(c))) continue;
+                }
 
-                // Friendly check
-                var entNPC = ent.Components.Get<BaseNPC>();
-                if (entNPC != null && npc.Disposition(ent) == (int)VJBase.Disposition.Like) continue;
-
-                // Angle check — uses NPC's configurable MeleeAttackDamageAngleRadius (Lua: owner.MeleeAttackDamageAngleRadius)
+                // lua:714 — Angle check
                 var toEnt = (ent.WorldPosition - ownersPos).Normal;
                 float dot = Vector3.Dot(owner.WorldRotation.Forward, toEnt);
                 float angleRad = MathF.Acos(Math.Clamp(dot, -1f, 1f));
-                float meleeAngleRadius = npc.MeleeAttackDamageAngleRadius > 0 ? npc.MeleeAttackDamageAngleRadius : 90f;
+                float meleeAngleRadius = npc?.MeleeAttackDamageAngleRadius > 0 ? npc.MeleeAttackDamageAngleRadius : 90f;
                 if (angleRad > MathF.PI / 180f * meleeAngleRadius) continue;
 
-                // Apply damage
-                float dmgAmount = npc.ScaleByDifficulty(Primary_Damage);
+                // lua:715-723 — Apply damage
+                float dmgAmount = isNPC ? npc.ScaleByDifficulty(Primary_Damage) : Primary_Damage;
                 var dmginfo = new DamageInfo();
                 dmginfo.Damage = dmgAmount;
+                // SKIP: lua:718 — SetDamageForce for VJ_ID_Living — Phase 3
+                // SKIP: lua:719 — SetInflictor(owner) — Phase 3
                 dmginfo.Attacker = owner;
-                // SKIP: lua:708-709 — SetDamageForce for living entities (VJ_ID_Living knockback)
-                // Phase 3: ent.Components.Get<Rigidbody>()?.ApplyForce(owner.WorldRotation.Forward * ((dmgAmount + 100f) * 70f))
                 dmginfo.Tags.Add("melee");
-                // SKIP: DMG_CLUB — Phase 3 damage type mapping
+                // SKIP: lua:721 — DMG_CLUB — Phase 3 damage type
+                // SKIP: lua:722 — VJ.DamageSpecialEnts — Phase 3
+
                 foreach (var d in ent.Components.GetAll<IDamageable>())
                     d.OnDamage(dmginfo);
 
-                // SKIP: lua:710-711 — Player ViewPunch — Phase 3 player camera
-                // SKIP: lua:713 — OnPrimaryAttack("MeleeHit", ent) — Phase 3 weapon callback
+                // SKIP: lua:724-726 — Player ViewPunch — Phase 3
+
+                // lua:727 — OnPrimaryAttack("MeleeHit", ent)
+                OnPrimaryAttack("MeleeHit", ent);
+                meleeHit = true;
+            }
+
+            // lua:731-741 — Melee hit/miss sound + miss callback
+            if (meleeHit)
+            {
+                var hitSd = VJUtility.PICK(MeleeWeaponSound_Hit);
+                if (hitSd != null)
+                    Sound.Play(hitSd, owner.WorldPosition);
+            }
+            else
+            {
+                // lua:737 — NPC:OnMeleeAttackExecute("Miss")
+                if (isNPC) npc.OnMeleeAttackExecute("Miss");
+                var missSd = VJUtility.PICK(MeleeWeaponSound_Miss);
+                if (missSd != null)
+                    Sound.Play(missSd, owner.WorldPosition);
             }
         }
-        // Ranged weapon
+        // ═══ lua:743-786 — RANGED WEAPON ═══
         else
         {
-            if (GetClip1() <= 0) return; // No ammo
-
             var spawnPos = GetBulletPos(owner);
             var aimPos = GetAimPosition(npc, ene, spawnPos);
             var aimDir = (aimPos - spawnPos).Normal;
@@ -373,16 +462,13 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
                     dir = (aimDir + randOff).Normal;
                 }
 
+                // lua:786 — owner:FireBullets(bullet) → C# Trace
                 var result = Game.ActiveScene.Trace.Ray(spawnPos, spawnPos + dir * NPC_FiringDistanceMax)
                     .IgnoreGameObjectHierarchy(owner)
                     .UseHitPosition(true)
                     .Run();
 
-                // Always apply damage along direction (even if no hit) — like Lua FireBullets
-                var traceEnd = result.Hit ? result.HitPosition : spawnPos + dir * NPC_FiringDistanceMax;
-
-                // Damage target along the trace
-                // SKIP: Lua FireBullets structure (bullet.Callback, tracer, etc.) — Phase 3
+                // SKIP: lua:753-755 — OnPrimaryAttack_BulletCallback — Phase 3
                 if (result.Hit && result.GameObject.IsValid())
                 {
                     var dmginfo = new DamageInfo();
@@ -390,22 +476,22 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
                     dmginfo.Attacker = owner;
                     dmginfo.Position = result.HitPosition;
                     dmginfo.Tags.Add("bullet");
-                    // SKIP: Force — Phase 3 (S&Box: apply force separately on Rigidbody)
+                    // SKIP: lua:749 — Force — Phase 3
                     foreach (var d in result.GameObject.Components.GetAll<IDamageable>())
                         d.OnDamage(dmginfo);
                 }
             }
+        }
 
-            // Ammo consumption
+        // lua:789-795 — Ammo consumption (melee weapons skip this)
+        if (!IsMeleeWeapon)
             SetClip1(GetClip1() - Primary_TakeAmmo);
 
-            // Extra fire sound (bolt action, shotgun pump) — lua:680-685
-            if (!string.IsNullOrEmpty(NPC_ExtraFireSound) && NPC_ExtraFireSoundTime > 0)
-                NPC_ExtraFireSoundTime_T = Time.Now + NPC_ExtraFireSoundTime;
+        // lua:797 — PrimaryAttackEffects (muzzle flash, etc.)
+        // SKIP: lua:797-807 — PrimaryAttackEffects + MuzzleFlash + ViewPunch + animation — Phase 3
 
-            // SKIP: PrimaryAttackEffects + MuzzleFlash — Phase 3 effects system
-            // SKIP: OnPrimaryAttack_BulletCallback — Phase 3 callbacks
-        }
+        // lua:808 — OnPrimaryAttack("PostFire")
+        OnPrimaryAttack("PostFire");
     }
 
     // ═══ Phase 2: Helpers ═══

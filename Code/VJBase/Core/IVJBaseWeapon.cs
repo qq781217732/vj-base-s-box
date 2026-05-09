@@ -29,4 +29,10 @@ public interface IVJBaseWeapon
     float NPC_BeforeFireSoundLevel { get; }
     (float a, float b) NPC_BeforeFireSoundPitch { get; }
     void NPCShoot_Primary();
+
+    // ---- Phase 2: Firing guards ----
+    bool IsReloading { get; set; }
+    float NextSecondaryFireT { get; set; }
+    bool CanPrimaryAttack();
+    bool OnPrimaryAttack(string type, GameObject ent = null);
 }
