@@ -1386,10 +1386,9 @@ public partial class HumanNPC
             //   && selfData.LastHiddenZone_CanWander == true && !selfData.Weapon_UnarmedBehavior_Active
             //   && selfData.Behavior != VJ_BEHAVIOR_PASSIVE && selfData.Behavior != VJ_BEHAVIOR_PASSIVE_NATURE
             //   && !self:IsBusy() && !self:Visible(ene) && self:GetEnemyLastKnownPos() != defPos then
-            // SKIP: lua:3883a — IsVJBaseSNPC_Tank cross-entity check — Phase 3 tank flag (always false for HumanNPC)
             bool canMoveToEnemy = !IsFollowing
                 && !IsGuard
-                // && !IsVJBaseSNPC_Tank // SKIP (always false for HumanNPC, TankNPC has its own override)
+                && Components.Get<TankNPC>() == null
                 && !VJ_IsBeingControlled
                 && LastHiddenZone_CanWander == true
                 && !Weapon_UnarmedBehavior_Active
@@ -1399,8 +1398,7 @@ public partial class HumanNPC
                 && !Visible(ene);
             if (canMoveToEnemy)
             {
-                // SKIP: lua:3883b — GetEnemyLastKnownPos() != defPos — Phase 3 enemy memory (returns Vector3.Zero stub)
-                // lua:3884 — moveToEnemy = self:GetEnemyLastKnownPos()
+                // lua:3883b-3884 — GetEnemyLastKnownPos() != defPos → moveToEnemy
                 var lastKnownPos = GetEnemyLastKnownPos();
                 if (lastKnownPos != Vector3.Zero)
                     moveToEnemy = lastKnownPos;
@@ -1488,13 +1486,12 @@ public partial class HumanNPC
         // lua:3929 — ragdoll damage avoidance (walking over corpses)
         if (dmgInflictor.IsValid())
         {
+            // lua:3927-3929 — ragdoll or low-velocity prop damage avoidance
             var rb = dmgInflictor.Components.Get<Rigidbody>();
-            // SKIP: lua:3929 — GetClass()=="prop_ragdoll" — Phase 3 entity type
-            // Fallback: non-NPC physics object with low velocity (covers ragdolls + ground debris)
-            // NOTE: broader than Lua (catches non-ragdoll props too). Acceptable Phase 1 gap.
-            // TODO Phase 3: add IsRagdoll check via ModelPhysics/Ragdoll component.
-            if (rb != null && rb.Velocity.Length <= 100
-                && dmgInflictor.Components.Get<BaseNPC>() == null)
+            bool isRagdoll = dmgInflictor.Components.Get<ModelPhysics>() != null;
+            bool isLowVelocityProp = rb != null && rb.Velocity.Length <= 100
+                && dmgInflictor.Components.Get<BaseNPC>() == null;
+            if (isRagdoll || isLowVelocityProp)
                 return 0;
         }
 

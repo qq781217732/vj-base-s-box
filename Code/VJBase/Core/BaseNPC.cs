@@ -529,7 +529,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
 
     /// ═══ Attack Timer System — creature init.lua:1825-1859, core.lua:972-994 ═══
     /// <summary>GetAttackTimer — core.lua:972-994. Calculates timer delay for attack reset/re-enable.</summary>
-    /// <param name="mainTime">NextAnyAttackTime_* value (<=0 = auto)</param>
+    /// <param name="mainTime">NextAnyAttackTime_* value (<=0 = auto, >0 = seconds)</param>
     /// <param name="executionTime">TimeUntil*Damage value (<=0 = event-based)</param>
     /// <param name="animDur">AttackAnimDuration</param>
     public virtual float GetAttackTimer(float mainTime, float executionTime, float animDur)
@@ -552,12 +552,24 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
                     return animDur - (executionTime / rate);
             }
         }
-        // lua:988-992 — number given, use directly (includes 0 = immediate)
-        // SKIP: lua:988 — istable(mainTime) random range (VJ.SET) — Phase 3
-        else
+        // lua:991-992 — number given, use directly (includes 0 = immediate)
+        // For VJ.SET random ranges, use the (float a, float b) overload
+        return mainTime / rate;
+    }
+
+    /// <summary>GetAttackTimer range overload — core.lua:988: istable(mainTime) → math.Rand(a, b) / rate</summary>
+    public virtual float GetAttackTimer((float a, float b) mainTime, float executionTime = 0, float animDur = 0)
+    {
+        float rate = MathF.Max(AnimPlaybackRate, 0.01f);
+        // lua:974-985 — animDur-based calculation (consistent with float overload)
+        if (animDur > 0)
         {
-            return mainTime / rate;
+            if (executionTime <= 0)
+                return animDur / rate;
+            return animDur - (executionTime / rate);
         }
+        // lua:988-989 — table mainTime → random range
+        return VJUtility.Rand(mainTime.a, mainTime.b) / rate;
     }
 
     /// <summary>ScheduleAttackTimers — replaces Lua attackTimers table, sets polling fields.</summary>
@@ -1040,11 +1052,25 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
             {
                 // lua:2467-2481 — enemy is close enough, tell ally to attack
                 // lua:2469-2470 — player-specific: override friendly disposition
-                // SKIP: lua:2469-2470 — SetRelationshipMemory(MEM_OVERRIDE_DISPOSITION, D_HT) — Phase 3 relationship memory
+                if (eneIsPlayer && ally.Disposition(ene) == (int)VJBase.Disposition.Like)
+                {
+                    // SKIP: lua:2470 — SetRelationshipMemory(ent, ene, MEM_OVERRIDE_DISPOSITION, D_HT) — Phase 3 relationship memory
+                }
                 ally.ForceSetEnemy(ene, true);
                 // lua:2473-2481 — chase gate + visible→FaceTarget, !visible→PlaySound+AlertBehavior
-                // SKIP: lua:2473-2481 — NextChaseTime gate / SetTarget / SCHEDULE_FACE / PlaySoundSystem("ReceiveOrder") — Phase 3
-                ally.MaintainAlertBehavior(false);
+                if (curTime > ally.NextChaseTime)
+                {
+                    if (ally.Behavior != VJBehavior.Passive && ally.Visible(ene))
+                    {
+                        ally.SetTarget(ene);
+                        ally.SCHEDULE_FACE("TASK_FACE_TARGET");
+                    }
+                    else
+                    {
+                        ally.PlaySoundSystem("ReceiveOrder");
+                        ally.MaintainAlertBehavior(false);
+                    }
+                }
                 ally.NextWanderTime = curTime + 8;
             }
         }
@@ -1291,6 +1317,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public virtual void OnDeath(DamageInfo dmginfo, int hitgroup, string status) { }
     public virtual void OnAllyKilled(GameObject ally) { }
     public virtual void OnCreateDeathCorpse(DamageInfo dmginfo, int hitgroup, GameObject corpse) { }
+    public virtual void OnPlayerSight(GameObject ent) { }
     public virtual void RemoveTimers() { }
     public virtual void CreateDeathLoot(DamageInfo dmginfo, int hitgroup) { }
     public virtual void ResetMedicBehavior() { }

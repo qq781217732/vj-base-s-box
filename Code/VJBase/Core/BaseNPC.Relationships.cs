@@ -435,7 +435,7 @@ public partial class BaseNPC
 
                 if (shouldFire)
                 {
-                    // SKIP: self:OnPlayerSight(ent) — Phase 3 event system
+                    OnPlayerSight(ent);
                     PlaySoundSystem("OnPlayerSight");
                     if (OnPlayerSightOnlyOnce)
                         HasOnPlayerSight = false;
