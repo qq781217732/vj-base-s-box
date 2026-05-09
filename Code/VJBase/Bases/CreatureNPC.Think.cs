@@ -340,11 +340,14 @@ public partial class CreatureNPC
                         else if (piBool || piStr != null)
                         {
                             var rb = ent.Components.Get<Rigidbody>();
-                            if (rb != null)
+                            // lua:2482 — MaintainPropInteraction callback (return false to block prop manipulation)
+                            if (rb != null && MaintainPropInteraction(ent))
                             {
                                 rb.Enabled = true;
                                 rb.Sleeping = false;
-                                // SKIP: lua:2485 — constraint.RemoveConstraints(ent, "Weld") — Phase 3 joint system
+                                // lua:2485 — constraint.RemoveConstraints(ent, "Weld") → destroy FixedJoint components
+                                foreach (var joint in ent.Components.GetAll<FixedJoint>())
+                                    joint.Destroy();
                                 // lua:2475 — true/"OnlyDamage" + health → applyDmg = true
                                 // SKIP: lua:2475 — ent:Health() / ent:GetInternalVariable("m_takedamage") — Phase 3
                                 if (piBool || piStr == "OnlyDamage")

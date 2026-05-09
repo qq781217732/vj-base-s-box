@@ -139,6 +139,10 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public virtual Vector3 MeleeAttackTraceDirection() => WorldRotation.Forward;
     public virtual Vector3 MeleeAttackKnockbackVelocity(GameObject ent) => (ent.WorldPosition - WorldPosition).Normal * 200;
     public virtual bool OnMeleeAttackExecute(string status, GameObject ent = null, bool isProp = false) => false;
+    /// <summary>MaintainPropInteraction — creature init.lua:2482. Called when NPC melee-hits a prop. Return false to block physics push/unweld.</summary>
+    public virtual bool MaintainPropInteraction(GameObject ent) => true;
+    /// <summary>OnOpenDoor — schedules.lua:360. Called when NPC is about to open a door. Phase 3: nav mesh door detection sets OpeningDoor, then this fires.</summary>
+    public virtual void OnOpenDoor(GameObject door) { }
     public virtual Vector3 RangeAttackProjPos(GameObject projectile) => WorldPosition + WorldRotation.Forward * 50;
     public virtual Vector3 RangeAttackProjVel(GameObject projectile) => (GetEnemy()?.WorldPosition - WorldPosition ?? Vector3.Forward).Normal * 800;
     public virtual bool OnRangeAttackExecute(string status, GameObject ent = null, GameObject projectile = null) => false;

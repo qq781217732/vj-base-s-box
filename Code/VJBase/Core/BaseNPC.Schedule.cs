@@ -30,6 +30,8 @@ public partial class BaseNPC
         if (cur != null)
         {
             // lua:360 — same schedule + opening door or move delay → skip
+            // Phase 3: nav mesh door detection sets OpeningDoor when NPC approaches a door;
+            // this guard prevents schedule restart while door animation plays.
             if (schedule.Name == cur.Name && (OpeningDoor.IsValid() || GetMoveDelay() > 0))
                 return;
 
