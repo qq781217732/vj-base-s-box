@@ -6,7 +6,7 @@ namespace VJBase;
 
 /// <summary>
 /// Default VJ weapon component. Implements IVJBaseWeapon with configurable properties.
-/// Phase 1: inventory/lifecycle. Phase 2: NPC autonomous fire logic (NPC_Think, NPCShoot_Primary, PrimaryAttack).
+/// Covers: inventory/lifecycle, NPC autonomous fire (NPC_Think, NPCShoot_Primary, PrimaryAttack).
 /// </summary>
 public partial class VJBaseWeapon : Component, IVJBaseWeapon
 {
@@ -23,7 +23,7 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
 
     public Action OnReloadAction { get; set; }
 
-    // ═══ Phase 2: NPC Firing Config (weapon_vj_base/shared.lua:35-63) ═══
+    // ═══ NPC Firing Config (weapon_vj_base/shared.lua:35-63) ═══
     [Property] public float NPC_NextPrimaryFire { get; set; } = 0.11f;
     [Property] public float NPC_TimeUntilFire { get; set; }
     [Property] public List<float> NPC_TimeUntilFireExtraTimers { get; set; } = new();
@@ -34,26 +34,26 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
     [Property] public float NPC_FiringDistanceMax { get; set; } = 100000f;
     [Property] public float NPC_FiringCone { get; set; } = 0.9f;
 
-    // ═══ Phase 2: Reload Sound ═══
+    // ═══ Reload Sound ═══
     [Property] public bool NPC_HasReloadSound { get; set; } = true;
     [Property] public string NPC_ReloadSound { get; set; }
     [Property] public float NPC_ReloadSoundLevel { get; set; } = 60f;
 
-    // ═══ Phase 2: Before-Fire Sound ═══
+    // ═══ Before-Fire Sound ═══
     [Property] public string NPC_BeforeFireSound { get; set; }
     [Property] public float NPC_BeforeFireSoundLevel { get; set; } = 70f;
     [Property] public float NPC_BeforeFireSoundPitchA { get; set; } = 90f;
     [Property] public float NPC_BeforeFireSoundPitchB { get; set; } = 100f;
     public (float a, float b) NPC_BeforeFireSoundPitch => (NPC_BeforeFireSoundPitchA, NPC_BeforeFireSoundPitchB);
 
-    // ═══ Phase 2: Extra Fire Sound ═══
+    // ═══ Extra Fire Sound ═══
     [Property] public string NPC_ExtraFireSound { get; set; }
     [Property] public float NPC_ExtraFireSoundTime { get; set; } = 0.4f;
     [Property] public float NPC_ExtraFireSoundLevel { get; set; } = 70f;
     [Property] public float NPC_ExtraFireSoundPitchA { get; set; } = 90f;
     [Property] public float NPC_ExtraFireSoundPitchB { get; set; } = 100f;
 
-    // ═══ Phase 2: Secondary Fire ═══
+    // ═══ Secondary Fire ═══
     [Property] public bool NPC_HasSecondaryFire { get; set; }
     [Property] public string NPC_SecondaryFireEnt { get; set; } = "obj_vj_grenade_rifle";
     [Property] public int NPC_SecondaryFireChance { get; set; } = 3;
@@ -63,7 +63,7 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
     [Property] public string NPC_SecondaryFireSound { get; set; }
     [Property] public float NPC_SecondaryFireSoundLevel { get; set; } = 90f;
 
-    // ═══ Phase 2: Firing Guards + Melee Sounds ═══
+    // ═══ Firing Guards + Melee Sounds ═══
     /// <summary>IsReloading — Lua:665 guard: blocks PrimaryAttack during reload.</summary>
     public bool IsReloading { get; set; }
     /// <summary>NextSecondaryFireT — Lua:665 guard: blocks PrimaryAttack when secondary fire cooldown active.</summary>
@@ -78,7 +78,7 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
     [Property] public float DryFireSoundPitchA { get; set; } = 90f;
     [Property] public float DryFireSoundPitchB { get; set; } = 100f;
 
-    // ═══ Phase 2: Primary Attack Config (weapon_vj_base/shared.lua Primary table) ═══
+    // ═══ Primary Attack Config (weapon_vj_base/shared.lua Primary table) ═══
     [Property] public float Primary_Damage { get; set; } = 10f;
     [Property] public float Primary_Delay { get; set; } = 0.11f;
     [Property] public int Primary_NumberOfShots { get; set; } = 1;
@@ -86,7 +86,7 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
     [Property] public int Primary_TakeAmmo { get; set; } = 1;
     [Property] public float MeleeWeaponDistance { get; set; } = 75f;
 
-    // ═══ Phase 2: Runtime State ═══
+    // ═══ Runtime State ═══
     public float NPC_NextPrimaryFireT { get; set; }
     public float NPC_NextDrySoundT { get; set; }
     public float NPC_SecondaryFireNextT { get; set; }
@@ -113,13 +113,13 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
         OnReloadAction?.Invoke();
     }
 
-    // ═══ Phase 2: Weapon lifecycle callbacks ═══
+    // ═══ Weapon lifecycle callbacks ═══
     /// <summary>MaintainWorldModel — weapon_vj_base/shared.lua:477-506. Positions weapon model on owner bone. Phase 3: model attachment.</summary>
     protected virtual void MaintainWorldModel(GameObject owner) { }
     /// <summary>OnThink — weapon_vj_base/shared.lua. Custom per-weapon think callback.</summary>
     protected virtual void OnThink() { }
 
-    // ═══ Phase 2: Per-frame auto-fire (called from HumanNPC.Think or Component Update) ═══
+    // ═══ Per-frame auto-fire (called from HumanNPC.Think or Component Update) ═══
     /// <summary>
     /// NPC_Think — weapon_vj_base/shared.lua:534-545.
     /// Called every frame when equipped by an NPC. Checks fire conditions and auto-fires.
@@ -166,7 +166,7 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
         }
     }
 
-    // ═══ Phase 2: Firing condition check (weapon_vj_base/shared.lua:548-591) ═══
+    // ═══ Firing condition check (weapon_vj_base/shared.lua:548-591) ═══
     /// <summary>
     /// NPC_CanFire — checks standing-only, CanFireWeapon, attack state, ammo, firing cone.
     /// </summary>
@@ -229,7 +229,7 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
         return false;
     }
 
-    // ═══ Phase 2: Weapon callbacks (shared.lua:676-677) ═══
+    // ═══ Weapon callbacks (shared.lua:676-677) ═══
     /// <summary>
     /// CanPrimaryAttack — Lua:676: weapon-specific guard before PrimaryAttack.
     /// Override to add custom fire-prevention logic (e.g. cooldowns, ammo checks).
@@ -249,7 +249,7 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
     /// <summary>PrimaryAttackEffects — shared.lua:812. Muzzle flash, shell eject. Phase 3 effects.</summary>
     public virtual void PrimaryAttackEffects(GameObject owner) { }
 
-    // ═══ Phase 2: Execute primary fire (weapon_vj_base/shared.lua:593-650) ═══
+    // ═══ Execute primary fire (weapon_vj_base/shared.lua:593-650) ═══
     /// <summary>
     /// NPCShoot_Primary — handles secondary fire chance, then schedules PrimaryAttack with TimeUntilFire delay.
     /// Called either from SelectSchedule (melee) or NPC_Think auto-fire timer (ranged).
@@ -509,7 +509,7 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
         OnPrimaryAttack("PostFire");
     }
 
-    // ═══ Phase 2: Helpers ═══
+    // ═══ Helpers ═══
 
     /// <summary>
     /// Get bullet spawn position. Uses attachment position if configured, else weapon position + forward.

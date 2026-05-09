@@ -22,7 +22,7 @@ public interface IVJBaseWeapon
 
     void NPC_Reload();
 
-    // ---- Phase 2: NPC autonomous fire ----
+    // ---- NPC autonomous fire ----
     float NPC_NextPrimaryFire { get; set; }
     bool NPC_StandingOnly { get; }
     string NPC_BeforeFireSound { get; }
@@ -30,7 +30,7 @@ public interface IVJBaseWeapon
     (float a, float b) NPC_BeforeFireSoundPitch { get; }
     void NPCShoot_Primary();
 
-    // ---- Phase 2: Firing guards ----
+    // ---- Firing guards ----
     bool IsReloading { get; set; }
     float NextSecondaryFireT { get; set; }
     bool CanPrimaryAttack();

@@ -731,7 +731,7 @@ public partial class HumanNPC
                 Weapon_UnarmedBehavior_Active = false;
 
                 // lua:3607-3609: Position calculations
-                // lua:3607 — Phase 2: approximate eye position (Phase 3: EyePosition())
+                // lua:3607 — approximate eye position (Phase 3: EyePosition() via skeletal head bone)
                 var enePos_Eye = ene.WorldPosition + Vector3.Up * 64f;
                 var myPos = WorldPosition;                                  // lua:3608
                 // SKIP: lua:3609 — myPosCentered = myPos + OBBCenter() — Phase 3 OBB/GetBonePosition
@@ -964,8 +964,8 @@ public partial class HumanNPC
                                     // lua:3741 — finalAnim = TranslateActivity(PICK(AnimTbl_WeaponAttack))
                                     // SKIP: lua:3741-3743 — TranslateActivity/PICK(AnimTbl_WeaponAttack) + AnimExists + AnimDuration — Phase 3 animation
                                     // lua:3742 — if curTime > NextMeleeWeaponAttackT && VJ.AnimExists(self, finalAnim) then
-                                    // NOTE: AnimExists guard missing — Phase 3 animation system needed to check animation validity
-                                    // Phase 2: always enters (conservative — allows melee NPCs to function without animations)
+                                    // NOTE: AnimExists guard missing — Phase 3 animation system needed
+                                    // Without animations: always enters (conservative — melee NPCs still functional)
                                     if (curTime > NextMeleeWeaponAttackT)
                                     {
                                         // lua:3744 — wep.NPC_NextPrimaryFire = animDur (dynamic, based on AnimDuration) → Phase 3
@@ -992,8 +992,7 @@ public partial class HumanNPC
                                     {
                                         WeaponAttackAnim = null; // ACT_INVALID sentinel
                                     }
-                                    // Phase 2 re-entry guard: replaces Lua animation guards
-                                    // (IsCurrentAnim + GetActivity != WeaponAttackAnim/ACT_TRANSITION)
+                                    // Re-entry guard: replaces Lua animation guards (IsCurrentAnim/GetActivity)
                                     // Once state is FireStand/Aim, auto-fire loop handles it — don't re-init every frame
                                     if (WeaponAttackState != VJWepAttackState.FireStand
                                         && WeaponAttackState != VJWepAttackState.Aim)

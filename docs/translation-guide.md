@@ -17,6 +17,42 @@
 | `C` | 纯 C# 逻辑 | 同上 | 自己写实现 |
 | `X` | S&Box 不需要 | 跳过不翻译 | — |
 
+### 1.1 项目阶段定义
+
+**只有两个阶段：Phase 1（翻译）和 Phase 3（填坑）。没有 Phase 2。**
+
+| 阶段 | 目标 | 输入 | 输出 |
+|------|------|------|------|
+| **Phase 1** | 机械翻译，每条 Lua 语句在 C# 有对应行 | Lua 源码 | C# 代码 + SKIP 注释 |
+| **Phase 3** | 填坑，把 SKIP 注释里的方法实现 | Phase 1 产物 + S&Box API | 完整的 C# 实现 |
+
+Phase 3 内部可以分优先级（P0 > P1 > P2），但那是**填坑阶段内部的优先级**，不是独立的项目阶段。
+
+**Phase 3 内部优先级：**
+```
+P0 — 使 NPC 能跑起来的核心能力（感知、移动、攻击、伤害）
+P1 — 使 NPC 行为完整（音效、UI、配置）
+P2 — 非核心、可延后的能力（动画、调试、特殊武器）
+```
+
+### 1.2 "接线到空壳"的处理
+
+当 Phase 3 方法体尚未实现，但调用方可以提前接好时：
+
+```csharp
+// ✅ 正确：保留 SKIP 注释，说明桩已存在
+// SKIP: lua:3668 — UpdatePoseParamTracking(true) — Phase 3 animation (stub wired)
+UpdatePoseParamTracking(true);
+
+// ✅ 正确：方法体是空壳，注释标注 Phase 3
+public virtual void UpdatePoseParamTracking(bool reset) { } // Phase 3: skeletal pose params
+
+// ❌ 错误：删掉 SKIP，调用空壳当作"已完成"
+UpdatePoseParamTracking(true);  // 无 SKIP，但方法体是 {} — 静默无行为
+```
+
+**接线到空壳 ≠ 完成填坑。** SKIP 注释必须保留直到 Phase 3 填了方法体。
+
 关键约束：
 - `GetParent()` 不会变成 `.Parent`，永远保持方法调用
 - 每个 Lua 调用在 C# 里都有对应行——要么是翻译，要么是 `// SKIP: 原因`

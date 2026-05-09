@@ -1310,7 +1310,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public virtual void MarkEnemyAsEluded(GameObject ent) { }
     public virtual void ClearEnemyMemory(GameObject ent) { }
     /// <summary>Head direction for firing cone / aim checks. core.lua:579 (GetHeadDirection).</summary>
-    /// Phase 2: returns body forward; Phase 3: use skeletal head bone direction.
+    /// Wired to stub — Phase 3: use skeletal head bone direction instead of body forward.
     public virtual Vector3 GetHeadDirection() => WorldRotation.Forward;
 
     public virtual void MaintainAlertBehavior(bool alwaysChase) { }
