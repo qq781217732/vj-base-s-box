@@ -256,7 +256,8 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
         if (npc == null) return;
 
         var ene = npc.GetEnemy();
-        if (!npc.VJ_IsBeingControlled && (!ene.IsValid() /* || !Visible — Phase 3 */)) return;
+        // lua:594 — NPC without enemy or enemy not visible → abort
+        if (!npc.VJ_IsBeingControlled && (!ene.IsValid() || !npc.Enemy.Visible)) return;
 
         // SKIP: UpdatePoseParamTracking — Phase 3 animation
 
