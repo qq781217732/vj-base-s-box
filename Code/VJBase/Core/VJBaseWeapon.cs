@@ -134,7 +134,7 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
             DoPrimaryFire();
         }
         // Non-melee weapons auto-fire on timer (only when no delayed fire is pending)
-        else if (!IsMeleeWeapon && NPC_NextPrimaryFire >= 0 && Time.Now > NPC_NextPrimaryFireT && NPC_CanFire(npc))
+        else if (NPC_DelayedFireTime <= 0 && !IsMeleeWeapon && NPC_NextPrimaryFire >= 0 && Time.Now > NPC_NextPrimaryFireT && NPC_CanFire(npc))
         {
             NPCShoot_Primary();
         }
