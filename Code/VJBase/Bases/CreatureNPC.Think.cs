@@ -50,6 +50,16 @@ public partial class CreatureNPC
         // Follow behavior (Phase 3)
 
         RunAI();
+
+        // ═══ Weapon NPC_Think — auto-fire loop (VJBaseWeapon.NPC_Think) ═══
+        // Called after RunAI so SelectSchedule's C2c-iii has already set WeaponAttackState=FireStand.
+        var activeWep = GetActiveWeapon();
+        if (activeWep.IsValid())
+        {
+            var wepThink = activeWep.Components.Get<VJBaseWeapon>();
+            if (wepThink != null)
+                wepThink.NPC_Think();
+        }
     }
 
     protected virtual void OnThink() { }

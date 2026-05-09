@@ -909,7 +909,7 @@ cd f:/DevProject/Sbox/testzombie/Code && grep -rn "SKIP:" VJBase/
 ---
 
 *最后更新：2026-05-10*
-*翻译阶段：~90%。武器 Phase 1 完成（IVJBaseWeapon 接口 + VJBaseWeapon Component + ~18 SKIP 消除）+ DamageInfo 落地 + 实体标志 + 盟友系统 + 移动类型重构。剩余：动画系统（16 M 方法）+ 武器 Phase 2（射击/弹道 ~20 SKIP）+ 玩家交互残留（ViewPunch/SetDSP）+ 门系统/Prop joint。*
+*翻译阶段：~92%。武器 Phase 2 自主射击完成 + NPC_Think/NPCShoot_Primary/PrimaryAttack + 三子系统(掩体/玩家交互/射线/血渍) + C2c-i 瞄准转向 + C2c-ii 友军火线 + LookForObjects/FL_OBJECT + EnemyMemory(IsUnreachable) + WaterLevel/水系统 + IDamageable 桥接。剩余：动画(16 M 方法) + 少量 SKIP(SetInflictor/DamageSpecialEnts/Prop joint/SET random range/ViewPunch)。*
 
 ---
 

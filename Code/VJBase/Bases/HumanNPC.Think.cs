@@ -722,7 +722,8 @@ public partial class HumanNPC
                 Weapon_UnarmedBehavior_Active = false;
 
                 // lua:3607-3609: Position calculations
-                // SKIP: lua:3607 — enePos_Eye = ene:EyePos() — Phase 3 eye position
+                // lua:3607 — Phase 2: approximate eye position (Phase 3: EyePosition())
+                var enePos_Eye = ene.WorldPosition + Vector3.Up * 64f;
                 var myPos = WorldPosition;                                  // lua:3608
                 // SKIP: lua:3609 — myPosCentered = myPos + OBBCenter() — Phase 3 OBB/GetBonePosition
                 var myPosCentered = myPos;
@@ -789,21 +790,40 @@ public partial class HumanNPC
                             if (GetWeaponState() != VJWepState.Reloading)
                             {
                                 // lua:3635-3638 — Weapon occlusion delay
-                                if (Weapon_OcclusionDelay && !IsWeaponMelee(wep) && AllowWeaponOcclusionDelay
+                                if (Weapon_OcclusionDelay && WeaponAttackState != VJWepAttackState.AimOcclusion
+                                    && !IsWeaponMelee(wep) && AllowWeaponOcclusionDelay
                                     && (curTime - WeaponLastShotTime) <= 4.5f
                                     && eneData.Distance > Weapon_OcclusionDelayMinDist)
                                 {
-                                    // SKIP: lua:3636-3638 — WeaponAttackState/ACT_IDLE_ANGRY/NextChaseTime + occlusion delay — Phase 3 weapon state + animation
+                                    // lua:3636 — WeaponAttackState = AIM_OCCLUSION
+                                    WeaponAttackState = VJWepAttackState.AimOcclusion;
+                                    // lua:3637 — MaintainIdleBehavior(2) (Phase 3: ACT_IDLE_ANGRY)
+                                    MaintainIdleBehavior(2);
+                                    // lua:3638 — NextChaseTime delay
+                                    NextChaseTime = curTime + VJUtility.Rand(Weapon_OcclusionDelayTime.a, Weapon_OcclusionDelayTime.b);
                                 }
                                 // lua:3640-3641 — Hidden zone stand-up
-                                if (curTime < LastHiddenZoneT
+                                else if (curTime < LastHiddenZoneT
                                     && !DoCoverTrace(myPosCentered + Vector3.Up * 30f, enePos_Eye + Vector3.Up * 30f, true).isCover)
                                 {
-                                    // SKIP: lua:3641 — MaintainIdleBehavior(2) → ACT_IDLE_ANGRY — Phase 3 animation
-                                    // SKIP: lua:3642 — goto goto_checkwep
+                                    // lua:3641 — Hidden zone stand-up (Phase 3: ACT_IDLE_ANGRY animation)
+                                    MaintainIdleBehavior(2);
+                                    // lua:3642 — Jump to weapon combat loop
+                                    goto goto_checkwep;
                                 }
-                                // lua:3643-3649 — Failed everything → fall back to chase
-                                // SKIP: lua:3645-3649 — WeaponAttackState reset + MaintainAlertBehavior — Phase 3 weapon state
+                                // lua:3643-3649 — Else: Failed everything → fall back to chase
+                                else
+                                {
+                                    // lua:3645-3646 — Reset weapon state if actively firing and not already chasing
+                                    if (WeaponAttackState >= VJWepAttackState.Fire
+                                        && CurrentScheduleName != "SCHEDULE_ALERT_CHASE"
+                                        && CurrentScheduleName != "SCHEDULE_ALERT_CHASE_LOS")
+                                    {
+                                        WeaponAttackState = VJWepAttackState.None;
+                                    }
+                                    // lua:3648 — MaintainAlertBehavior()
+                                    MaintainAlertBehavior(false);
+                                }
                             }
                             // lua:3651 — goto goto_conditions
                             return;
@@ -960,12 +980,14 @@ public partial class HumanNPC
                                     // lua:3756-3757 — !hasAmmo && WeaponAttackState != AIM → WeaponAttackAnim = ACT_INVALID
                                     if (!hasAmmo && WeaponAttackState != VJWepAttackState.Aim)
                                     {
-                                        // SKIP: WeaponAttackAnim = ACT_INVALID — Phase 3 animation
+                                        WeaponAttackAnim = null; // ACT_INVALID sentinel
                                     }
-                                    // lua:3760 — VJ.IsCurrentAnim(self, TranslateActivity(WeaponAttackAnim))
-                                    // SKIP: lua:3760 — IsCurrentAnim — Phase 3 animation
-                                    // lua:3763 — GetActivity() != WeaponAttackAnim && GetActivity() != ACT_TRANSITION
-                                    { // Always enter — Phase 3: guard with IsCurrentAnim + GetActivity checks
+                                    // Phase 2 re-entry guard: replaces Lua animation guards
+                                    // (IsCurrentAnim + GetActivity != WeaponAttackAnim/ACT_TRANSITION)
+                                    // Once state is FireStand/Aim, auto-fire loop handles it — don't re-init every frame
+                                    if (WeaponAttackState != VJWepAttackState.FireStand
+                                        && WeaponAttackState != VJWepAttackState.Aim)
+                                    {
                                         // lua:3764 — OnWeaponAttack()
                                         OnWeaponAttack();
                                         // lua:3765-3766 — WeaponAttackState == AIM_OCCLUSION → NONE
@@ -976,14 +998,14 @@ public partial class HumanNPC
                                         // lua:3771-3775 — !hasAmmo → MaintainIdleBehavior(2) + AIM state
                                         if (!hasAmmo)
                                         {
-                                            // SKIP: lua:3773 — MaintainIdleBehavior(2) — Phase 3
+                                            MaintainIdleBehavior(2); // Phase 3: ACT_IDLE_ANGRY animation
                                             WeaponAttackState = VJWepAttackState.Aim;
                                         }
                                         else
                                         {
-                                            // lua:3778-3783 — crouch vs standing animation
-                                            // SKIP: lua:3778-3783 — TranslateActivity/PICK/AnimExists/crouch condition — Phase 3 animation
-                                            // SKIP: lua:3786-3792 — AnimExists + PlayAnim + EmitSound(BeforeFireSound) — Phase 3 animation + sound
+                                            // SKIP: lua:3778-3786 — TranslateActivity/PICK/AnimExists/crouch condition + PlayAnim — Phase 3 animation
+                                            // lua:3787 — EmitSound(BeforeFireSound)
+                                            EmitWeaponSound(wepComp);
                                         }
                                         // lua:3791 — NextWeaponAttackT_Base = curTime + 0.2
                                         NextWeaponAttackT_Base = curTime + 0.2f;
@@ -2240,7 +2262,7 @@ public partial class HumanNPC
         if (wepComp == null) return;
         var soundName = wepComp.NPC_BeforeFireSound;
         if (string.IsNullOrEmpty(soundName)) return;
-        // Phase 3: Sound.Play(soundName, WorldPosition, 0f);
+        Sound.Play(soundName, WorldPosition);
     }
 
     // ═══ playReloadAnimation (local func) — human_base/init.lua:2562-2582 ═══
