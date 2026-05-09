@@ -101,7 +101,9 @@ public partial class TankNPC : CreatureNPC
         {
             if (dmginfo.Tags.Has(VJDamageTags.Physgun))
                 dmginfo.Damage = 0;
-            // SKIP: lua:39 — dmgInflictor:GetClass() == "crossbow_bolt" — Phase 3 entity type system
+            // lua:39 — dmgInflictor:GetClass() == "crossbow_bolt" → check weapon tag
+            if (dmginfo.Weapon.IsValid() && dmginfo.Weapon.Tags.Has("crossbow_bolt"))
+                dmginfo.Damage = 0;
         }
         // lua:43-48: PreDamage — filter melee damage unless from boss and strong enough
         else if (status == "PreDamage" && (IsMeleeDamage(dmginfo) || dmginfo.Tags.Has(VJDamageTags.Generic)))

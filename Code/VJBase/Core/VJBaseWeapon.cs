@@ -434,6 +434,8 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
                 // lua:727 — OnPrimaryAttack("MeleeHit", ent)
                 OnPrimaryAttack("MeleeHit", ent);
                 meleeHit = true;
+                // Register combat sound for NPC hearing/investigation
+                SoundEventRegistry.Register(ent.WorldPosition, VJSoundType.Combat, owner);
             }
 
             // lua:731-741 — Melee hit/miss sound + miss callback

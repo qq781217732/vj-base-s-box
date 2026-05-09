@@ -205,7 +205,8 @@ public partial class HumanNPC : CreatureNPC
                 {
                     wepComp.SetClip1(wepComp.GetMaxClip1());
                 }
-                // SKIP: OnReload("Finish") — Phase 3 weapon callback
+                // lua:2572 — OnReload("Finish") callback
+                if (wepComp is VJBaseWeapon vjbWep) vjbWep.OnReloadAction?.Invoke();
                 SetWeaponState(VJWepState.Ready);
             }
             ReloadingWeapon = null;
