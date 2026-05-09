@@ -340,9 +340,8 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
                 var dmginfo = new DamageInfo();
                 dmginfo.Damage = dmgAmount;
                 dmginfo.Attacker = owner;
-                // lua:708-709 — SetDamageForce for living entities
-                if (entNPC != null) // VJ_ID_Living → knockback
-                    dmginfo.Position = ent.WorldPosition + owner.WorldRotation.Forward * ((dmgAmount + 100f) * 70f);
+                // SKIP: lua:708-709 — SetDamageForce for living entities (VJ_ID_Living knockback)
+                // Phase 3: ent.Components.Get<Rigidbody>()?.ApplyForce(owner.WorldRotation.Forward * ((dmgAmount + 100f) * 70f))
                 dmginfo.Tags.Add("melee");
                 // SKIP: DMG_CLUB — Phase 3 damage type mapping
                 foreach (var d in ent.Components.GetAll<IDamageable>())
