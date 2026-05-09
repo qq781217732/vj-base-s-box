@@ -815,10 +815,36 @@ public partial class HumanNPC
                         // lua:3655: if wep.IsVJBaseWeapon then — VJ Base weapons
                         if (IsWeaponVJBase(wep))
                         {
-                            // ═══ C2c-i: Aim turning (lua:3656-3670) ═══
-                            // lua:3657: if !HasPoseParameterLooking then
-                            // SKIP: lua:3657-3669 — HasPoseParameterLooking, FInAimCone, SetTurnTarget("Enemy"), GetAngles():Forward(), Dot, UpdatePoseParamTracking(true) — Phase 3 animation + turning
-                            // lua:3671: // self:MaintainAlertBehavior() — commented out
+                            // ═══ C2c-i: Aim turning — FInAimCone logic (lua:3656-3670) ═══
+                            // lua:3657 — if !HasPoseParameterLooking then (pose param disabled → always face)
+                            if (!HasPoseParameterLooking)
+                            {
+                                // lua:3658 — self:SetTurnTarget("Enemy")
+                                SetTurnTarget("Enemy");
+                            }
+                            else
+                            {
+                                // lua:3660 — wepDif = Weapon_AimTurnDiff or Weapon_AimTurnDiff_Def
+                                var wepDif = Weapon_AimTurnDiff ?? Weapon_AimTurnDiff_Def;
+                                // lua:3661-3662 — los = ene:GetPos() - myPos; los.z = 0
+                                var los = ene.WorldPosition - myPos;
+                                los = los.WithZ(0);
+                                // lua:3663-3664 — facingDir = self:GetAngles():Forward(); facingDir.z = 0
+                                // NOTE: GetAngles() ≠ sight dir (eyes). Lua explicitly warns against using sight dir here.
+                                var facingDir = WorldRotation.Forward;
+                                facingDir = facingDir.WithZ(0);
+                                // lua:3665 — coneCalc = facingDir:Dot(los:GetNormalized())
+                                var coneCalc = Vector3.Dot(facingDir, los.Normal);
+                                // lua:3666 — if coneCalc < wepDif then
+                                if (coneCalc < wepDif)
+                                {
+                                    // lua:3667 — self:SetTurnTarget("Enemy")
+                                    SetTurnTarget("Enemy");
+                                    // lua:3668 — self:UpdatePoseParamTracking(true)
+                                    // SKIP: lua:3668 — UpdatePoseParamTracking(true) — Phase 3 animation (pose parameter reset for turn snaps)
+                                }
+                            }
+                            // lua:3671: // self:MaintainAlertBehavior() — commented out in Lua
 
                             // ═══ C2c-ii: Cover/obstruction check (lua:3673-3734) ═══
                             // lua:3673 — inCover, inCoverTrace = self:DoCoverTrace(myPosCentered, enePos_Eye, false, {SetLastHiddenTime = true})
