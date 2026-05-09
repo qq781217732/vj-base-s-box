@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Sandbox;
+using RedSnail.WaterTool;
 
 namespace VJBase;
 
@@ -93,11 +94,36 @@ public partial class BaseNPC
 		if (MovementType == VJMoveType.Aquatic)
 		{
 			moveSpeed = moveType == "Calm" ? Aquatic_SwimmingSpeed_Calm : Aquatic_SwimmingSpeed_Alerted;
-			// SKIP: base_aa.lua:73-78 — WaterLevel() check + debug prints — Phase 3 water system
-			// WaterLevel() is Source engine builtin. s&box has no equivalent yet.
-			// SKIP: base_aa.lua:79 — WaterLevel() <= 2 → MaintainIdleBehavior(1)
-			// SKIP: base_aa.lua:82-89 — aquatic vector destination water trace (MASK_WATER)
-			// SKIP: base_aa.lua:92-106 — aquatic entity destination WaterLevel/reachability checks
+			// base_aa.lua:73-78 — debug prints (Phase 3)
+			// base_aa.lua:79 — NPC not fully in water → wander/go deeper
+			if (WaterLevel() <= 2) { MaintainIdleBehavior(1); return; }
+			// base_aa.lua:81-89 — vector destination: MASK_WATER → S&Box: WaterManager.IsPositionInsideAny
+			if (destVec != null)
+			{
+				if (!WaterManager.IsPositionInsideAny(destVec.Value)) { MaintainIdleBehavior(1); return; }
+			}
+			// base_aa.lua:91-106 — entity destination: WaterLevel + reachability trace
+			else
+			{
+				int destWL = destGO != null
+					? (destGO.Components.Get<BaseNPC>()?.WaterLevel()
+					   ?? (WaterManager.IsPositionInsideAny(destGO.WorldPosition) ? 1 : 0))
+					: 0;
+				if (destWL <= 1)
+				{
+					// base_aa.lua:95 — WaterLevel == 0 → wander/go deeper
+					if (destWL == 0) { MaintainIdleBehavior(1); return; }
+					// base_aa.lua:96-103 — reachability: trace 20 units below dest OBB center
+					var destCenter = WorldSpaceCenter_Entity(destGO!);
+					var trReach = Game.ActiveScene.Trace.Ray(destCenter, destCenter + Vector3.Down * 20f)
+						.IgnoreGameObjectHierarchy(GameObject)
+						.IgnoreGameObjectHierarchy(destGO!)
+						.WithoutTags("phys_bone_follower")
+						.Run();
+					// base_aa.lua:103 — if solid ground below → destination is reachable
+					if (trReach.Hit) return;
+				}
+			}
 		}
 
 		// base_aa.lua:109-119 — Movement Calculations — TraceHull
@@ -200,10 +226,10 @@ public partial class BaseNPC
 		{
 			finalPos = finalPos + addPos;
 		}
-		// SKIP: base_aa.lua:199 — WaterLevel() check missing → all aquatic NPCs use dest origin path
-		// Lua: only WaterLevel()<3 takes this branch; WaterLevel()>=3 takes else (OBB center).
-		// Phase 3: add WaterLevel() system, then restore `&& dest:WaterLevel() < 3` condition.
-		else if (MovementType == VJMoveType.Aquatic /* Phase 3: && WaterLevel() < 3 */)
+		else if (MovementType == VJMoveType.Aquatic
+			&& destGO != null
+			&& (destGO.Components.Get<BaseNPC>()?.WaterLevel()
+			    ?? (WaterManager.IsPositionInsideAny(destGO.WorldPosition) ? 3 : 0)) < 3)
 		{
 			finalPos = destGO!.WorldPosition
 				+ destGO!.WorldRotation.Forward * addPos.x
@@ -286,10 +312,14 @@ public partial class BaseNPC
 		// base_aa.lua:272-282 — aquatic initial check
 		if (MovementType == VJMoveType.Aquatic)
 		{
-			// SKIP: base_aa.lua:274 — WaterLevel() < 3 check — Phase 3 water system
-			// AA_StopMoving();
-			// moveDown = true;
-			// SKIP: base_aa.lua:277-279 — WaterLevel() == 0 → return
+			// base_aa.lua:274 — if NOT completely submerged, stop and move deeper
+			if (WaterLevel() < 3)
+			{
+				AA_StopMoving();
+				moveDown = true;
+				// base_aa.lua:277-279 — WaterLevel == 0 → cannot swim at all
+				if (WaterLevel() == 0) return;
+			}
 			moveSpeed = moveType == "Calm" ? Aquatic_SwimmingSpeed_Calm : Aquatic_SwimmingSpeed_Alerted;
 		}
 

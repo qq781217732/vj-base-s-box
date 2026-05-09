@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Sandbox;
 using SWB.Player;
+using RedSnail.WaterTool;
 
 namespace VJBase;
 
@@ -1167,7 +1168,25 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
             _unreachableEnemies[ent] = Time.Now + duration;
     }
 
-    public virtual int WaterLevel() => 0;
+    /// <summary>WaterLevel — Source engine builtin. 0=not in water, 1=feet, 2=waist, 3=submerged.</summary>
+    /// S&Box: uses RedSnail.WaterTool WaterManager static queries.
+    public virtual int WaterLevel()
+    {
+        var pos = GameObject.WorldPosition;
+        if (!WaterManager.IsPositionInsideAny(pos))
+            return 0;
+
+        float surfaceZ = WaterManager.GetWaterHeightAt(pos);
+        float bottom = pos.z;
+        float top = pos.z + OBBMaxs().z;
+        float height = top - bottom;
+        if (height <= 0f) return 1;
+
+        float subDepth = surfaceZ - bottom;
+        if (subDepth >= height * 0.9f) return 3;
+        if (subDepth >= height * 0.5f) return 2;
+        return 1;
+    }
     public virtual void Extinguish() { }
     public virtual void SpawnBloodParticles(DamageInfo dmginfo, int hitgroup) { }
     public virtual void SpawnBloodDecals(DamageInfo dmginfo, int hitgroup)
