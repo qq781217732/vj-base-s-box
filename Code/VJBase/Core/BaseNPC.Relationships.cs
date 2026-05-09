@@ -71,16 +71,119 @@ public partial class BaseNPC
     // ═══════════════════════════════════════════════
     // ResetEnemy — core.lua ENT:ResetEnemy
     // ═══════════════════════════════════════════════
+    // ResetEnemy — creature init.lua:2881-2949 (base version, overridden by HumanNPC)
+    // ═══════════════════════════════════════════════
 
-    protected virtual void ResetEnemy(bool lost, bool schedule)
+    protected virtual void ResetEnemy(bool checkAllies, bool checkVis)
     {
-        // core.lua: core enemy reset — clear enemy + conditions + schedule cleanup
+        // lua:2883 — Dead or (VJ_IsBeingControlled && VJ_TheControllerBullseye == GetEnemy()) guard
+        // SKIP: lua:2883 — VJ_TheControllerBullseye (Phase 3 tool system); Dead guard — Dead NPCs shouldn't be in Think
+        if (Dead) { Enemy.Reset = false; return; }
+
+        // lua:2884-2887
+        var ene = GetEnemy();
+        bool eneValid = ene.IsValid();
+        var eneData = Enemy;
+        float curTime = Time.Now;
+
+        // ---- Block 1: Ally enemy inheritance (lua:2888-2901) ----
+        if (checkAllies)
+        {
+            var getAllies = Allies_Check(1000);
+            if (getAllies != null)
+            {
+                foreach (var ally in getAllies)
+                {
+                    var allyBase = ally.Components.Get<BaseNPC>();
+                    if (allyBase == null) continue;
+                    var allyEne = allyBase.GetEnemy();
+                    if (!allyEne.IsValid()) continue;
+                    if ((curTime - allyBase.Enemy.VisibleTime) >= EnemyTimeout) continue;
+                    var allyEneBase = allyEne.Components.Get<BaseNPC>();
+                    if (allyEneBase != null && allyEneBase.Dead) continue;
+                    if (WorldPosition.Distance(allyEne.WorldPosition) > SightDistance) continue;
+                    if (CheckRelationship(allyEne) != (int)VJBase.Disposition.Hate) continue;
+
+                    ForceSetEnemy(allyEne, false);
+                    eneData.VisibleTime = curTime;
+                    eneData.Reset = false;
+                    return;
+                }
+            }
+        }
+
+        // ---- Block 2: VisibleCount / reachable enemies guard (lua:2902-2914) ----
+        if (checkVis)
+        {
+            // lua:2904 — curEnemies = eneData.VisibleCount // selfData.CurrentReachableEnemies
+            // SKIP: lua:2904-2913 — VisibleCount // CurrentReachableEnemies + MaintainRelationships — Phase 3 reachability
+        }
+
+        // ---- Block 3: Debug print (lua:2916) ----
+        // SKIP: lua:2916 — VJ_DEBUG + convar + VJ.DEBUG_Print — Phase 3 debug system
+
+        // ---- Block 4: Reset state + alert timeout timer (lua:2917-2919) ----
+        eneData.Reset = true;
+        SetNPCState((int)NPCState.Alert);
+        // lua:2919 — timer.Create alert_reset timeout → Alerted=false, SetNPCState(IDLE)
+        // SKIP: lua:2919 — timer.Create — Phase 3 timer system
+
+        // ---- Block 5: OnResetEnemy callback (lua:2920) ----
+        OnResetEnemy();
+
+        // ---- Block 6: Move to last known position (lua:2921-2928) ----
+        Vector3? moveToEnemy = null;
+        if (eneValid)
+        {
+            // lua:2923 — guard: !IsFollowing && !IsGuard && !IsVJBaseSNPC_Tank && ...
+            bool canMoveToEnemy = !IsFollowing
+                && !IsGuard
+                && Components.Get<TankNPC>() == null
+                && !VJ_IsBeingControlled
+                && LastHiddenZone_CanWander == true
+                && !Weapon_UnarmedBehavior_Active
+                && Behavior != VJBehavior.Passive
+                && Behavior != VJBehavior.PassiveNature
+                && !IsBusy()
+                && !Visible(ene);
+            if (canMoveToEnemy)
+            {
+                var lastKnownPos = GetEnemyLastKnownPos();
+                if (lastKnownPos != Vector3.Zero)
+                    moveToEnemy = lastKnownPos;
+            }
+
+            // lua:2926-2928 — MarkEnemyAsEluded + AddEntityRelationship(D_NU)
+            MarkEnemyAsEluded(ene);
+            AddEntityRelationship(ene, (int)VJBase.Disposition.Neutral, 10);
+        }
+
+        // ---- Block 7: LastHiddenZone cleanup (lua:2931-2934) ----
+        LastHiddenZone_CanWander = curTime > LastHiddenZoneT;
+        LastHiddenZoneT = 0;
+
+        // ---- Block 8: Clear dead non-player enemy memory (lua:2932-2935) ----
+        if (eneValid && !ene.Components.Get<PlayerBase>().IsValid() && !Alive(ene))
+        {
+            ClearEnemyMemory(ene);
+        }
+
+        // ---- Block 9: Wander time + SetEnemy(null) (lua:2936-2937) ----
+        NextWanderTime = curTime + VJUtility.Rand(3, 5);
         SetEnemy(null);
-        Enemy.Reset = true;
-        ClearCondition(Condition.SeeEnemy);
-        ClearCondition(Condition.HaveEnemyLOS);
-        SetCondition(Condition.LostEnemy);
-        // SKIP: full ResetEnemy — PlaySoundSystem, schedule handling, enemy memory cleanup Phase 3
+
+        // ---- Block 10: GOTO last known position (lua:2938-2948) ----
+        if (moveToEnemy.HasValue)
+        {
+            SetLastPosition(moveToEnemy.Value);
+            SCHEDULE_GOTO_POSITION("TASK_WALK_PATH", s =>
+            {
+                s.ResetOnFail = true;
+                s.CanShootWhenMoving = true;
+                s.CanBeInterrupted = true;
+                s.TurnData = new TurnData { Type = VJFaceStatus.Enemy };
+            });
+        }
     }
 
     // ═══════════════════════════════════════════════
