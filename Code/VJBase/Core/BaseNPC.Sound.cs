@@ -317,7 +317,7 @@ public partial class BaseNPC
         {
             handle.Parent = GameObject;
             handle.Pitch = sdPitch;
-            // Phase 3: sdLevel (dB) → SoundHandle.Distance / Decibels mapping
+            handle.Distance = DbToDistance(sdLevel);
             OnCreateSound(handle, sdFile);
         }
         return handle;
@@ -337,7 +337,7 @@ public partial class BaseNPC
         if (handle is { IsValid: true })
         {
             handle.Pitch = sdPitch;
-            // Phase 3: sdLevel (dB) → SoundHandle.Distance / Decibels mapping
+            handle.Distance = DbToDistance(sdLevel);
         }
         OnEmitSound(sdFile);
         return handle;
@@ -366,9 +366,37 @@ public partial class BaseNPC
         };
     }
 
-    /// <summary>SoundDuration fallback — S&Box has no SoundDuration(). Returns hardcoded defaults per sdSet.</summary>
-    private static float GetSoundDuration(string sdSet)
+    /// <summary>Maps Source engine SoundLevel (dB) to S&Box SoundHandle.Distance (units).</summary>
+    /// Source SNDLVL mapping: 60dB≈125u, 75dB≈400u, 85dB≈800u, 90dB≈1200u, 100dB≈2000u
+    private static float DbToDistance(int db)
     {
+        return db switch
+        {
+            <= 60 => 125f,
+            <= 65 => 200f,
+            <= 70 => 300f,
+            <= 75 => 400f,
+            <= 80 => 600f,
+            <= 85 => 800f,
+            <= 90 => 1200f,
+            <= 100 => 2000f,
+            _ => 3000f,
+        };
+    }
+
+    /// <summary>
+    /// SoundDuration — Lua SoundDuration(pickedSD). Returns real file duration from S&Box SoundFile API,
+    /// with hardcoded fallback per sdSet when file lookup fails.
+    /// </summary>
+    private static float GetSoundDuration(string sdSet, string sdFile = null)
+    {
+        if (!string.IsNullOrEmpty(sdFile))
+        {
+            var sf = SoundFile.Load(sdFile);
+            if (sf is { IsValid: true, IsLoaded: true } && sf.Duration > 0)
+                return sf.Duration;
+        }
+        // Fallback to hardcoded defaults per sound set
         return sdSet switch
         {
             "IdleDialogueAnswer" => 0f,
@@ -587,7 +615,7 @@ public partial class BaseNPC
                     if (customSD != null) pickedSD = customSD;
                     StopSD(CurrentSpeechSound);
                     StopSD(CurrentIdleSound);
-                    var dur = curTime + GetSoundDuration("OnPlayerSight") + 1;
+                    var dur = curTime + GetSoundDuration("OnPlayerSight", pickedSD) + 1;
                     IdleSoundBlockTime = dur;
                     NextAlertSoundT = curTime + Game.Random.Next(1, 3);
                     CurrentSpeechSound = (sdType != null ? sdType(pickedSD, OnPlayerSightSoundLevel, GetSoundPitch(OnPlayerSightSoundPitch))
@@ -642,7 +670,7 @@ public partial class BaseNPC
                     if (customSD != null) pickedSD = customSD;
                     StopSD(CurrentSpeechSound);
                     StopSD(CurrentIdleSound);
-                    var dur = curTime + GetSoundDuration("Alert") + 1;
+                    var dur = curTime + GetSoundDuration("Alert", pickedSD) + 1;
                     NextIdleSoundT = dur;
                     NextPainSoundT = dur;
                     NextSuppressingSoundT = curTime + 4;
@@ -743,7 +771,7 @@ public partial class BaseNPC
                     if (customSD != null) pickedSD = customSD;
                     StopSD(CurrentSpeechSound);
                     StopSD(CurrentIdleSound);
-                    var dur = curTime + GetSoundDuration("BecomeEnemyToPlayer") + 1;
+                    var dur = curTime + GetSoundDuration("BecomeEnemyToPlayer", pickedSD) + 1;
                     NextPainSoundT = dur;
                     NextAlertSoundT = dur;
                     NextInvestigateSoundT = curTime + 2;
@@ -796,7 +824,7 @@ public partial class BaseNPC
             if (HasPainSounds && curTime > NextPainSoundT)
             {
                 var pickedSD = PickSound(SoundTbl_Pain);
-                var sdDur = GetSoundDuration("Pain");
+                var sdDur = GetSoundDuration("Pain", pickedSD);
                 if ((pickedSD != null && Game.Random.Next(1, PainSoundChance + 1) == 1) || customSD != null)
                 {
                     if (customSD != null) pickedSD = customSD;
@@ -828,7 +856,7 @@ public partial class BaseNPC
             if (HasDamageByPlayerSounds)
             {
                 var pickedSD = PickSound(SoundTbl_DamageByPlayer);
-                var sdDur = GetSoundDuration("DamageByPlayer");
+                var sdDur = GetSoundDuration("DamageByPlayer", pickedSD);
                 if ((pickedSD != null && Game.Random.Next(1, DamageByPlayerSoundChance + 1) == 1) || customSD != null)
                 {
                     if (customSD != null) pickedSD = customSD;

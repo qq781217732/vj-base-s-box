@@ -1307,8 +1307,17 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public virtual void OnResetEnemy() { }
     public virtual void MarkEnemyAsEluded(GameObject ent) { }
     public virtual void ClearEnemyMemory(GameObject ent) { }
+    /// <summary>Head direction for firing cone / aim checks. core.lua:579 (GetHeadDirection).</summary>
+    /// Phase 2: returns body forward; Phase 3: use skeletal head bone direction.
+    public virtual Vector3 GetHeadDirection() => WorldRotation.Forward;
+
     public virtual void MaintainAlertBehavior(bool alwaysChase) { }
-    public virtual Vector3 GetEnemyLastKnownPos() => Vector3.Zero;
+    public virtual Vector3 GetEnemyLastKnownPos()
+    {
+        if (EntityMemory.TryGetValue("enemy_pos", out var v) && v is Vector3 pos)
+            return pos;
+        return Enemy.VisiblePos;
+    }
 
     // ═══ Death Callbacks (Phase 3 stubs) ═══
     public virtual void OnDeath(DamageInfo dmginfo, int hitgroup, string status) { }

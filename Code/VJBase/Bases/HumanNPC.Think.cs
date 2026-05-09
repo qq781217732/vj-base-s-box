@@ -320,7 +320,7 @@ public partial class HumanNPC
         {
             // lua:2369 — angle check: enemy within melee angle radius
             var toEnemy = (ene.WorldPosition - WorldPosition).Normal;
-            var headDir = WorldRotation.Forward; // GetHeadDirection() → Phase 3 skeleton
+            var headDir = GetHeadDirection();
             bool inAngle = headDir.Dot(toEnemy) > MathF.Cos(MathF.PI / 180f * MeleeAttackAngleRadius);
             if (inAngle)
             {
@@ -1135,10 +1135,9 @@ public partial class HumanNPC
             }
             else
             {
-                // lua:3089: attempt to flush enemy from hiding
-                // SKIP: lua:3089 — self:VisibleVec(eneData.VisiblePos) — Phase 3 visibility
-                // SKIP: lua:3089 — ene:GetPos():Distance(eneData.VisiblePos) <= GrenadeAttackMaxDistance
-                bool canFlush = false;
+                // lua:3089 — attempt to flush enemy from hiding
+                bool canFlush = VisibleVec(eneData.VisiblePos)
+                    && ene.WorldPosition.Distance(eneData.VisiblePos) <= GrenadeAttackMaxDistance;
                 if (canFlush)
                 {
                     landDir = "EnemyLastVis";

@@ -216,10 +216,9 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
         if (ene.IsValid())
         {
             var spawnPos = GameObject.WorldPosition;
-            // SKIP: GetAimPosition — Phase 3 aim system; use enemy WorldPosition for now
-            var aimPos = ene.WorldPosition;
+            var aimPos = GetAimPosition(npc, ene, spawnPos);
             var aimDir = (aimPos - spawnPos).Normal;
-            var sightDir = owner.WorldRotation.Forward;
+            var sightDir = npc.GetHeadDirection();
             aimDir = aimDir.WithZ(0).Normal;
             sightDir = sightDir.WithZ(0).Normal;
             float dot = Vector3.Dot(sightDir, aimDir);
@@ -512,17 +511,36 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
     }
 
     /// <summary>
-    /// Get the aim position for the NPC. Lua: GetAimPosition(owner, ene, spawnPos, 0).
+    /// Get the aim position for the NPC. Lua: ENT:GetAimPosition(target, aimOrigin, predictionRate, projectileSpeed).
+    /// core.lua:1185-1206. predictionRate/projectileSpeed deferred to Phase 3.
     /// </summary>
     protected virtual Vector3 GetAimPosition(BaseNPC npc, GameObject ene, Vector3 spawnPos)
     {
         if (ene.IsValid())
         {
-            // Use enemy WorldSpaceCenter as aim target
-            var npcOnEnemy = ene.Components.Get<BaseNPC>();
-            if (npcOnEnemy != null)
-                return npcOnEnemy.WorldSpaceCenter();
-            return ene.WorldPosition;
+            // lua:1189 — if visible, use body target; else fall back to last known position
+            if (npc.Visible(ene))
+            {
+                var npcOnEnemy = ene.Components.Get<BaseNPC>();
+                Vector3 result = npcOnEnemy != null ? npcOnEnemy.WorldSpaceCenter() : ene.WorldPosition;
+
+                // lua:1191 — player Z offset fix
+                if (ene.Components.Get<PlayerBase>() != null)
+                    result.z -= 15f;
+
+                // lua:1193 — if body target is occluded, fall back to head/eye target
+                if (!npc.VisibleVec(result))
+                {
+                    var eyeNpc = ene.Components.Get<BaseNPC>();
+                    if (eyeNpc != null)
+                        result = eyeNpc.EyePosition();
+                    else
+                        result = ene.WorldPosition + Vector3.Up * 72f; // approximate eye/head height
+                }
+                return result;
+            }
+            // lua:1197 — not visible, use last known position
+            return npc.Enemy.VisiblePos;
         }
         return spawnPos + npc.WorldRotation.Forward * 1000f;
     }
