@@ -1185,6 +1185,9 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     }
 
     /// <summary>Place a single blood decal at the given world position</summary>
+    // TODO Phase 3: Source engine util.Decal is a GPU-level decal (zero entity overhead).
+    // S&Box requires a GameObject + Decal component per decal, which is expensive under
+    // high-frequency calls (shotgun, automatic fire). Consider a pooled or GPU-driven approach.
     protected void PlaceBloodDecal(string decalName, Vector3 pos, Vector3 normal)
     {
         var decalGo = new GameObject();

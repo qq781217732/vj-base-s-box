@@ -928,27 +928,43 @@ public partial class HumanNPC
                             }  // C2c-iii
 
                             // ═══ C2c-iv: Random strafing while shooting (lua:3797-3806) ═══
-                            // lua:3797: if Weapon_Strafe && !inCover && !IsGuard && !IsFollowing && !wep.IsMeleeWeapon
-                            //          && (!wep.NPC_StandingOnly) && WeaponAttackState == VJ.WEP_ATTACK_STATE_FIRE_STAND
-                            //          && curTime > NextWeaponStrafeT && (curTime - eneData.TimeAcquired) > 2
-                            //          && eneData.Distance < (Weapon_MaxDistance / 1.25)
+                            // lua:3797 — guard: Weapon_Strafe, not in cover, not guard/following, ranged weapon,
+                            //          NPC_StandingOnly=false, WeaponAttackState==FIRE_STAND,
+                            //          strafe timer expired, enemy acquired > 2s, within max range
                             if (Weapon_Strafe
                                 && !inCover
                                 && !IsGuard
                                 && !IsFollowing
                                 && !IsWeaponMelee(wep)
-                                // SKIP: wep.NPC_StandingOnly, WeaponAttackState == FIRE_STAND, NextWeaponStrafeT, TimeAcquired — Phase 3 weapon state
-                                )
+                                && (wepComp == null || !wepComp.NPC_StandingOnly)
+                                && WeaponAttackState == VJWepAttackState.FireStand
+                                && curTime > NextWeaponStrafeT
+                                && (curTime - eneData.TimeAcquired) > 2f
+                                && eneData.Distance < (Weapon_MaxDistance / 1.25f))
                             {
-                                // SKIP: lua:3798 — OnWeaponStrafe() != false — Phase 3 weapon callback
-                                // lua:3799 — moveCheck = PICK(VJ.TraceDirections(self, "Radial", math.random(150, 400), true, false, 12, true))
-                                var strafeDist = VJUtility.Rand(150f, 400f);
-                                var strafeCheck = VJUtility.PICK(VJUtility.TraceDirections(this, "Radial", strafeDist, true, 12, true, false, false, false));
-                                if (strafeCheck != default)
+                                // lua:3798 — OnWeaponStrafe() != false (virtual callback, default return true)
+                                if (OnWeaponStrafe() != false)
                                 {
-                                    // SKIP: lua:3801-3803 — StopMoving / SetLastPosition / SCHEDULE_GOTO_POSITION(random walk/run, lambda with FACE_ENEMY) — Phase 3
+                                    // lua:3799 — moveCheck = PICK(VJ.TraceDirections(self, "Radial", rand(150,400), true, false, 12, true))
+                                    var strafeDist = Game.Random.Float(150f, 400f);
+                                    var directions = VJUtility.TraceDirections(this, "Radial", strafeDist, true, 12, true, false, false, false);
+                                    var moveCheck = VJUtility.PICK(directions);
+                                    if (moveCheck != default)
+                                    {
+                                        // lua:3801-3803 — StopMoving / SetLastPosition / SCHEDULE_GOTO_POSITION
+                                        StopMoving();
+                                        SetLastPosition(moveCheck);
+                                        var taskType = Game.Random.Next(1, 3) == 1 ? "TASK_RUN_PATH" : "TASK_WALK_PATH";
+                                        SCHEDULE_GOTO_POSITION(taskType, schedule =>
+                                        {
+                                            schedule.EngTask(EngineTask.FaceEnemy, 0);
+                                            schedule.CanShootWhenMoving = true;
+                                            schedule.TurnData = new TurnData { Type = VJFaceStatus.Enemy };
+                                        });
+                                    }
                                 }
-                                // SKIP: lua:3806 — NextWeaponStrafeT = curTime + math.Rand(Weapon_StrafeCooldown.a, Weapon_StrafeCooldown.b) — Phase 3 weapon state
+                                // lua:3806 — NextWeaponStrafeT = curTime + math.Rand(Weapon_StrafeCooldown.a, Weapon_StrafeCooldown.b)
+                                NextWeaponStrafeT = curTime + VJUtility.Rand(Weapon_StrafeCooldown.a, Weapon_StrafeCooldown.b);
                             }
                         }
                         // lua:3808: else — None VJ Base weapons
