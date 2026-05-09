@@ -345,7 +345,7 @@ public partial class HumanNPC
 
         // init.lua:2394-2399 — If enemy unreachable and we have a ranged weapon → LOS chase
         if ((HasCondition(Condition.EnemyUnreachable) || IsUnreachable(ene))
-            && HasWeapon
+            && GetActiveWeapon().IsValid()
             && !IsWeaponMelee(GetActiveWeapon()))
         {
             SCHEDULE_ALERT_CHASE(true);
