@@ -97,10 +97,12 @@ public partial class BaseNPC
 			// base_aa.lua:73-78 — debug prints (Phase 3)
 			// base_aa.lua:79 — NPC not fully in water → wander/go deeper
 			if (WaterLevel() <= 2) { MaintainIdleBehavior(1); return; }
-			// base_aa.lua:81-89 — vector destination: MASK_WATER → TraceMaskWater(sample path for water)
+			// base_aa.lua:81-89 — MASK_WATER: check if destination vector is in water
+			// Source: trace from submerged myPos ignores starting content, only hits at water surface crossings
+			// S&Box: WaterManager.IsPositionInsideAny checks endpoint (functionally equivalent for submerged NPC)
 			if (destVec != null)
 			{
-				if (!BaseNPC.TraceMaskWater(myPos, destVec.Value)) { MaintainIdleBehavior(1); return; }
+				if (!WaterManager.IsPositionInsideAny(destVec.Value)) { MaintainIdleBehavior(1); return; }
 			}
 			// base_aa.lua:91-106 — entity destination: WaterLevel + reachability trace
 			else

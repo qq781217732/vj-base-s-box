@@ -1188,29 +1188,6 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
         return 1;
     }
 
-    /// <summary>
-    /// TraceMaskWater — Source MASK_WATER trace equivalent.
-    /// Samples along the ray from start to end; returns true if any sample point is inside a water body.
-    /// Source: util.TraceLine({mask = MASK_WATER}) checks whether the ray passes through water content.
-    /// S&Box: SceneTrace cannot hit trigger volumes, so we sample N points with WaterManager.IsPositionInsideAny.
-    /// </summary>
-    public static bool TraceMaskWater(Vector3 start, Vector3 end)
-    {
-        var dir = end - start;
-        var dist = dir.Length;
-        if (dist < 1f) return WaterManager.IsPositionInsideAny(end);
-        dir /= dist;
-        // Sample every ~30 units — water bodies are large, fine granularity not needed
-        int samples = Math.Max(2, (int)(dist / 30f));
-        for (int i = 0; i <= samples; i++)
-        {
-            var pos = start + dir * (dist * i / samples);
-            if (WaterManager.IsPositionInsideAny(pos))
-                return true;
-        }
-        return false;
-    }
-
     public virtual void Extinguish() { }
     public virtual void SpawnBloodParticles(DamageInfo dmginfo, int hitgroup) { }
     public virtual void SpawnBloodDecals(DamageInfo dmginfo, int hitgroup)
