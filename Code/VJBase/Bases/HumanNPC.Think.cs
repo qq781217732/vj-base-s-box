@@ -569,13 +569,20 @@ public partial class HumanNPC
                 var sdSrc = GetBestSoundHint(bitsDanger);
                 if (sdSrc != null)
                 {
-                    // lua:3544-3553 — owner/type/vehicle/driver/disposition checks
+                    // lua:3544-3554 — owner/type/vehicle/driver/disposition checks
                     bool allowed = true;
                     var sdOwner = sdSrc.Owner;
                     if (sdOwner.IsValid())
                     {
-                        // lua:3547 — if sdOwner is self or allied, ignore
-                        if (sdOwner == GameObject || Disposition(sdOwner) == (int)VJBase.Disposition.Like)
+                        // lua:3548 — ignore danger sounds from vehicles driven by allies
+                        // SKIP: lua:3548 — IsVehicle() + GetDriver() — Phase 3 vehicle system (no S&Box vehicle component yet)
+                        //    if sdSrc.type == SOUND_DANGER && sdOwner:IsVehicle() && IsValid(sdOwner:GetDriver())
+                        //        && Disposition(GetDriver()) == D_LI → allowed = false
+                        // lua:3551 — ignore sounds from allies OR combat/death sounds from dead NPCs
+                        if (Disposition(sdOwner) == (int)VJBase.Disposition.Like
+                            || (sdSrc.Type == VJSoundType.Combat
+                                && sdOwner.Components.Get<BaseNPC>() != null
+                                && !Alive(sdOwner)))
                             allowed = false;
                     }
                     // lua:3561-3574 — Execute investigation
