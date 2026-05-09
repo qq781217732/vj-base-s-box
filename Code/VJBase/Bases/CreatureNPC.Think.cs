@@ -169,7 +169,23 @@ public partial class CreatureNPC
         var ene = GetEnemy();
         if (!ene.IsValid()) return;
 
-        // lua:1764-1765 — !alwaysChase && (DisableChasingEnemy or IsGuard) → idle
+        // lua:1763-1765 — stationary / following / medic / only-animation → force idle
+        if (MovementType == VJMoveType.Stationary || IsFollowing || Medic.Status != "false"
+            || GetState() == VJState.OnlyAnimation)
+        {
+            SCHEDULE_IDLE_STAND();
+            return;
+        }
+
+        // lua:1768-1773 — Passive / PassiveNature → cover + delay
+        if (Behavior == VJBehavior.Passive || Behavior == VJBehavior.PassiveNature)
+        {
+            SCHEDULE_COVER_ENEMY("TASK_RUN_PATH");
+            NextChaseTime = Time.Now + 3;
+            return;
+        }
+
+        // lua:1776 — !alwaysChase && (DisableChasingEnemy or IsGuard) → idle
         if (!alwaysChase && (DisableChasingEnemy || IsGuard)) { SCHEDULE_IDLE_STAND(); return; }
 
         if (MovementType == VJMoveType.Aerial || MovementType == VJMoveType.Aquatic)
@@ -204,6 +220,10 @@ public partial class CreatureNPC
         {
             SCHEDULE_ALERT_CHASE(false);
         }
+
+        // lua:1793-1796 — Set next chase time (don't override if already set)
+        var enemyDist = ene.WorldPosition.Distance(WorldPosition);
+        NextChaseTime = Time.Now + (enemyDist > 2000 ? 1f : 0.1f);
     }
 
     // ═══ SCHEDULE_ALERT_CHASE — creature_base/init.lua:1724 ═══
