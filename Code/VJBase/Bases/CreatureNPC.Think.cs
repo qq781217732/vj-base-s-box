@@ -758,7 +758,7 @@ public partial class CreatureNPC
             var deathAnimPick = VJUtility.PICK(AnimTbl_Death);
             if (deathAnimPick != null)
             {
-                var deathDur = AnimDurationEx(Activity.Invalid, null, 0f);
+                var deathDur = AnimDurationEx(deathAnimPick, null, 0f);
                 PlayAnim(deathAnimPick, true, deathDur, true);
             }
             // lua:3297 — self.DeathAnimationCodeRan = true

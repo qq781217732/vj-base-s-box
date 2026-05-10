@@ -1033,8 +1033,14 @@ public partial class HumanNPC
                                         && ((coverDist > 150f && !inCoverEntLiving) || (wepInCover && !wepInCoverEntLiving)))
                                     {
                                         // lua:3703-3710 — nearestPos/nearestEntPos — Phase 3 utility (skip NearestPoint positioning)
-                                        // lua:3716-3727 — SCHEDULE_GOTO_POSITION + animation — skip Phase 3 animation
-                                        // SKIP: lua:3716-3727 — TranslateActivity(PICK(AnimTbl_MoveToCover)) + AnimExists + SetMovementActivity + StartSchedule — Phase 3 animation
+                                        // lua:3716-3727 — MoveToCover animation + SCHEDULE_GOTO_POSITION
+                                        var moveToCoverAnim = TranslateActivity(VJUtility.PICK(AnimTbl_MoveToCover));
+                                        if (!VJAnimationMapper.AnimExists(GameObject, moveToCoverAnim))
+                                            SetMovementActivity(moveToCoverAnim.ToString());
+                                        SCHEDULE_GOTO_POSITION("TASK_RUN_PATH", s =>
+                                        {
+                                            s.TurnData = new TurnData { FaceEnemy = true };
+                                        });
                                         // lua:3730 — NextMoveOnGunCoveredT = curTime + 2
                                         NextMoveOnGunCoveredT = curTime + 2f;
                                         goto goto_conditions;
@@ -1051,22 +1057,23 @@ public partial class HumanNPC
                                 {
                                     // lua:3740 — self:OnWeaponAttack()
                                     OnWeaponAttack();
-                                    // lua:3741 — finalAnim = TranslateActivity(PICK(AnimTbl_WeaponAttack))
-                                    // SKIP: lua:3741-3743 — TranslateActivity/PICK(AnimTbl_WeaponAttack) + AnimExists + AnimDuration — Phase 3 animation
-                                    // lua:3742 — if curTime > NextMeleeWeaponAttackT && VJ.AnimExists(self, finalAnim) then
-                                    // NOTE: AnimExists guard missing — Phase 3 animation system needed
-                                    // Without animations: always enters (conservative — melee NPCs still functional)
-                                    if (curTime > NextMeleeWeaponAttackT)
+                                    // lua:3741-3743 — finalAnim = TranslateActivity(PICK(AnimTbl_WeaponAttack)) + AnimExists + AnimDuration
+                                    var meleeAnim = TranslateActivity(VJUtility.PICK(AnimTbl_WeaponAttack));
+                                    if (curTime > NextMeleeWeaponAttackT && VJAnimationMapper.AnimExists(GameObject, meleeAnim))
                                     {
-                                        // lua:3744 — wep.NPC_NextPrimaryFire = animDur (dynamic, based on AnimDuration) → Phase 3
+                                        float meleeDur = AnimDuration(meleeAnim);
+                                        // lua:3744 — wep.NPC_NextPrimaryFire = animDur
+                                        wepComp.NPC_NextPrimaryFire = meleeDur;
                                         // lua:3745 — wep:NPCShoot_Primary()
                                         wepComp.NPCShoot_Primary();
                                         // lua:3746 — VJ.EmitSound(self, wep.NPC_BeforeFireSound, ...)
                                         EmitWeaponSound(wepComp);
-                                        // lua:3747 — NextMeleeWeaponAttackT = curTime + animDur → Phase 3
-                                        NextMeleeWeaponAttackT = curTime + 0.5f; // animDur fallback
-                                        // lua:3748 — WeaponAttackAnim = finalAnim → Phase 3
-                                        // SKIP: lua:3749 — PlayAnim(finalAnim, "LetAttacks", false, true) — Phase 3 animation
+                                        // lua:3747 — NextMeleeWeaponAttackT = curTime + animDur
+                                        NextMeleeWeaponAttackT = curTime + meleeDur;
+                                        // lua:3748 — WeaponAttackAnim = finalAnim
+                                        WeaponAttackAnim = meleeAnim.ToString();
+                                        // lua:3749 — PlayAnim(finalAnim, "LetAttacks", false, true)
+                                        PlayAnim(meleeAnim, "LetAttacks", false, true);
                                         // lua:3750 — WeaponAttackState = FIRE_STAND
                                         WeaponAttackState = VJWepAttackState.FireStand;
                                     }
@@ -1102,9 +1109,27 @@ public partial class HumanNPC
                                         }
                                         else
                                         {
-                                            // SKIP: lua:3778-3786 — TranslateActivity/PICK/AnimExists/crouch condition + PlayAnim — Phase 3 animation
-                                            // lua:3787 — EmitSound(BeforeFireSound)
-                                            EmitWeaponSound(wepComp);
+                                            // lua:3778-3786 — Select and play weapon attack animation
+                                            var rangedAnim = TranslateActivity(VJUtility.PICK(AnimTbl_WeaponAttack));
+                                            // Crouch attack check
+                                            if (Weapon_CanCrouchAttack && !inCover)
+                                            {
+                                                var crouchAnim = TranslateActivity(VJUtility.PICK(AnimTbl_WeaponAttackCrouch));
+                                                if (VJAnimationMapper.AnimExists(GameObject, crouchAnim)
+                                                    && Game.Random.Next(1, Weapon_CrouchAttackChance + 1) == 1)
+                                                    rangedAnim = crouchAnim;
+                                            }
+                                            // lua:3785 — if VJ.AnimExists(self, finalAnim) then
+                                            if (VJAnimationMapper.AnimExists(GameObject, rangedAnim))
+                                            {
+                                                // lua:3787 — EmitSound(BeforeFireSound)
+                                                EmitWeaponSound(wepComp);
+                                                // lua:3788 — PlayAnim(finalAnim, "LetAttacks", AnimDuration(finalAnim), true)
+                                                float rangedDur = AnimDuration(rangedAnim);
+                                                PlayAnim(rangedAnim, "LetAttacks", rangedDur, true);
+                                                // lua:3789 — WeaponAttackAnim = finalAnim
+                                                WeaponAttackAnim = rangedAnim.ToString();
+                                            }
                                         }
                                         // lua:3791 — NextWeaponAttackT_Base = curTime + 0.2
                                         NextWeaponAttackT_Base = curTime + 0.2f;
@@ -2200,7 +2225,7 @@ public partial class HumanNPC
             var deathAnim = VJUtility.PICK(AnimTbl_Death);
             if (deathAnim != null)
             {
-                var deathTime = AnimDurationEx(Activity.Invalid, null, 0f);
+                var deathTime = AnimDurationEx(deathAnim, null, 0f);
                 PlayAnim(deathAnim, true, deathTime, true);
             }
             // lua:4284 — self.DeathAnimationCodeRan = true
