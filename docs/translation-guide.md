@@ -323,7 +323,7 @@ public virtual void StartEngineTask(int taskId, float taskData)
 
 ## 7. 当前状态清单
 
-> 最后更新：2026-05-11（Weapon Phase 2 完整闭环 — NPC_Think 自动射击 + PrimaryAttack 9 守卫/时序修复 + Prop/Door 填坑 + GetAttackTimer/prop_ragdoll 语义修正 + 动画系统分析文档 + Phase 2 集成测试指南）
+> 最后更新：2026-05-11（P0+P1 全部完成 + PX 分类 45 处永久排除 + Animation Route A 落地 + SKIP ~20 残余）
 
 ### 7.1a schedules.lua → BaseNPC.Schedule.cs（32 个方法）
 
@@ -485,6 +485,19 @@ public virtual void StartEngineTask(int taskId, float taskData)
 > | ✅ | WaterLevel() 本体 | RedSnail WaterTool 对接 — `IsPositionInsideAny` + `GetWaterHeightAt` → 0/1/2/3 |
 > | ✅ | MASK_WATER trace + aquatic AA | `IsPositionInsideAny(destVec)` 临时方案(标注SKIP), AA_MoveTo ×4 aquatic守卫, AA_IdleWander ×3 aquatic守卫 |
 > | ❌ | MoveType/VPhysics(3 SKIP) | MOVETYPE_STEP/VPHYSICS Source 专有 — 永久保留 |
+
+### 7.1i Animation System — Route A 落地（2026-05-11）
+
+> 6 个文件，~1900 行。PlayAnim / TranslateActivity / PoseParams / 27 AnimTbl_* / SequenceToActivity / FollowBone。
+
+| 文件 | 内容 | 状态 |
+|------|------|------|
+| `Core/BaseNPC.Animation.cs` | PlayAnim (Activity→序列名映射→Animgraph)、TranslateActivity (表查找+ResolveAnimation+PICK)、UpdatePoseParamTracking (门控+AngleDelta+ApproachAngle+回调)、MaintainIdleAnimation、DetectPoseParameters、GetAttachmentPos/GetBoneTransform/GetShootPos/FollowBone/ParentToAttachment | ✅ |
+| `Core/VJAnimationMapper.cs` | 静态工具：MapActivity(Activity→序列名)、MapActivity reverse、AnimDuration、SequenceToActivity (序列名→Activity反向查找+缓存)、AnimExists、IsCurrentAnim (3重载)、GetDirectPlayback | ✅ |
+| `Core/VJAnimationEnums.cs` | Activity 枚举 (~175值)、VJAnimType、VJAnimSet | ✅ |
+| `Bases/HumanNPC.Think.cs` | TranslateActivity 覆写 (5层战斗上下文: Cower/Angry/Aim/Protected/Agitated)、SetAnimationTranslations (Combine 6 holdType + Metrocop 3 holdType + Rebel/Player 桩)、27 AnimTbl_* 字段默认值 | ✅ |
+| `Bases/CreatureNPC.Think.cs` | MaintainIdleAnimation Think 钩子、MaintainActivity 接线、SelectSchedule WeaponAttackState 驱动 | ✅ |
+| `Core/VJBaseWeapon.cs` | NPC_CanFire FIRE_STAND + IsCurrentAnim 动画门控、UpdatePoseParamTracking 接线 | ✅ |
 
 ### 7.2 接口体系
 
@@ -671,16 +684,26 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | `CreatureNPC.Think.cs` | CreateDeathCorpse SavedDmgInfo 7 SKIP + FinishDeath DMG_REMOVENORAGDOLL + BeginDeath 死亡动画 guard | DamageInfo 真实字段 + Tags.Has(Dissolve) + NavType!=Climb |
 | `HumanNPC.Think.cs` | CreateDeathCorpse SavedDmgInfo 7 SKIP + FinishDeath DMG_REMOVENORAGDOLL (含 DeathWeaponDrop) + BeginDeath 死亡动画 guard | 同上 |
 
-#### 剩余待填
-| `IVJBaseWeapon.cs` | 无此文件 | 新建接口 (9 成员: IsVJBaseWeapon/IsMeleeWeapon/HoldType/Equip/Unequip/Clip1/MaxClip1/SetClip1/NPC_Reload) |
-| `VJBaseWeapon.cs` | 无此文件 | 新建 Component 实现 IVJBaseWeapon, [Property] 可配置 |
-| `BaseNPC.cs` | GetActiveWeapon() 永远返回 null | HumanNPC override → 返回 WeaponEntity |
-| `HumanNPC.cs` | GetActiveWeapon/IsMeleeWeapon/IsVJBaseWeapon 缺失 | +override GetActiveWeapon + static IsWeaponVJBase/IsWeaponMelee/GetWeaponComponent + CheckWeaponState override |
-| `HumanNPC.Think.cs` | SetWeaponState 空壳 | 计时器状态机 (NextWeaponStateChangeT polling) |
-| `HumanNPC.Think.cs` | DoChangeWeapon Give/Remove/SelectWeapon/Equip 全 SKIP | 完整实现: Destroy/Children search/new GameObject+Create<VJBaseWeapon>/IVJBaseWeapon.Equip |
-| `HumanNPC.Think.cs` | CanFireWeapon IsMeleeWeapon 分支 SKIP | if/else IsMeleeWeapon → melee vs ranged distance check |
-| `HumanNPC.Think.cs` | PlayReloadAnimation IsVJBaseWeapon+NPC_Reload SKIP | IVJBaseWeapon.NPC_Reload() 真实调用 |
-| `HumanNPC.Think.cs` | SelectSchedule C2 IsVJBaseWeapon/IsMeleeWeapon ×5 SKIP | 全部替换为 IsWeaponVJBase()/IsWeaponMelee() 真实检查 + else(C2c-v) 语法 |
+#### 已解决（2026-05-11 会话 — Animation Route A + Weapon/Spawn/Misc 收尾, ~74 SKIP）
+
+> 起始 ~94 SKIP → 当前 20 SKIP。Animation 系统从零构建 (~58 SKIP 消)。Spawn/Weapon/Misc 残余清扫 (~16 SKIP)。
+
+| 系统 | 消 SKIP | 关键提交 |
+|------|---------|---------|
+| Animation Route A | ~58 | `6b821e6` PlayAnim/TranslateActivity/PoseParams/Think 钩子、`ed5d333` TranslateActivity 覆写+骨骼附着清零+翻译表、`ed4a147` 7 项对照修复、`6d05a64` SequenceToActivity+FollowBone、`eefa049` CoverLow vjseq 解析、`d846790` 27 AnimTbl_* 默认值、`f3cc619` spawnAng 覆盖修复、`dabd987` callback 返回值+FrameTime |
+| Spawn | ~6 | `ae307d3` grenade spawn 回调+landDir 语义修正+Creator |
+| Weapon | ~6 | `2c334ee` Initialize 武器装配+BulletCallback+Force、`0dc4b68` 重复 Equip、`a8bd332` DamageInfo Weapon |
+| Misc 残余 | ~8 | `d1823ec` OnNPCKilled+Bullseye+MaintainActivity、`002ba79` 死亡动画时长 |
+| **合计** | **~74** | SKIP: 94 → 20 |
+
+#### 剩余待填（20 SKIP）
+
+| 类别 | 数量 | 说明 |
+|------|------|------|
+| Bullseye 标志 | 4 | `IsVJBaseBullseye` — CreatureNPC×2, HumanNPC×1, Relationships×1, VJBaseWeapon×1 |
+| Source PX | 4 | SetDSP/SetMoveType restore/RemoveEffects EF_FOLLOWBONE/Animgraph stub×2 |
+| Phase 3 独占 | 10 | follow×4/eating/fire/dissolve/OBB/idle dialogue/VJ_TheControllerBullseye |
+| AA animation | 2 | velocity tracking + AA_MoveAnimation |
 
 #### 已解决（2026-05-10 会话 — Phase 2 清扫，20 项）
 | 文件 | 原 SKIP | 解决方案 |
@@ -748,6 +771,9 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | `Core/VJBaseWeapon.cs` | weapon_vj_base/shared.lua SWEP 默认实现 | ~41 | ✅ Phase 1 |
 | `Entities/VJEntityFlags.cs` | 实体标志系统 | ~23 | ✅ |
 | `Core/SoundEventRegistry.cs` | VJSoundType 11bitflags + WorldSoundEvent + 全局注册表 (Register/GetClosestSound) | ~80 | ✅ Phase 2 |
+| `Core/BaseNPC.Animation.cs` | PlayAnim/TranslateActivity/ResolveAnimation/PoseParams/骨骼附着 helpers/FollowBone/ParentToAttachment/MaintainIdleAnimation | ~700 | ✅ 2026-05-11 |
+| `Core/VJAnimationMapper.cs` | MapActivity/AnimDuration/SequenceToActivity(反向查找+缓存)/AnimExists/IsCurrentAnim/GetDirectPlayback | ~150 | ✅ 2026-05-11 |
+| `Core/VJAnimationEnums.cs` | Activity 枚举 (~175值)/VJAnimType/VJAnimSet | ~200 | ✅ 2026-05-11 |
 
 ### 7.5b 已删除文件
 
@@ -850,13 +876,12 @@ python verify_api_mapping.py
 
 ```
 你是谁：帮阿纳金和土豆把 VJ Base (GMod Lua) 机械翻译成 S&Box C#
-做到哪：~95%。Phase 2 可做 SKIP 全部清完。
-        武器链路 (GetAimPosition/GetHeadDirection/BulletCallback/PrimaryAttackEffects) 完整。
-        SoundEvent 注册表落地，调查系统完整接线，SoundLevel/Duration 真实映射。
-        CreatureNPC ResetEnemy 填坑，C2c-ii 友军火线距离检查。
-        剩余：动画（16 M 方法）+ Phase 3 独占（Spawn/Model/Physics/Dissolve/Collision，~230 SKIP）。
+做到哪：~98%。Animation Route A 完整落地 (PlayAnim/TranslateActivity/PoseParams/SequenceToActivity/FollowBone)。
+        Weapon/Spawn/Misc 全部清扫完毕。SKIP: 235 → 20。
+        剩余 20 SKIP：Bullseye 标志(4) + Source PX(4) + Phase 3 独占 follow/eating/fire/dissolve(10) + AA animation(2)。
 怎么验：git log --oneline -20 秒级概览（§11 Git 提交规范）
         python verify_api_mapping.py 交叉验证 Lua↔文档
+        grep -rn "SKIP:" VJBase/ | wc -l  → 应为 20
 ```
 
 ### 10.2 必读文件（按顺序）
@@ -919,118 +944,29 @@ Source C++:  f:/DevProject/Sbox/source-sdk-2013/
 
 ### 10.6 当前优先级（土豆看这）
 
-> **Phase 1 翻译 + Phase 2 清扫已完成。当前主战场是 Phase 3 填坑。**
-> **详细任务清单见 [phase3-progress.md](phase3-progress.md)。**
+> **Phase 1 翻译 + Phase 2 清扫 + Animation Route A 全部完成。SKIP: 235 → 20。**
+> **剩余 20 SKIP 全部是 Phase 3 独占或 Source PX，无阻塞项。**
 
 ```
-1. ✅ MaintainRelationships 机械翻译  ← 已完成
-   core.lua:2127-2426 → BaseNPC.Relationships.cs (390 行，9/9 功能块)
+1-29. ✅ 全部完成  ← 2026-05-06 ~ 2026-05-11
 
-2. ✅ 编译验证  ← 已通过
+30. ✅ Animation Route A 完整落地  ← 2026-05-11
+    PlayAnim (Activity→序列名→Animgraph) / TranslateActivity (5层战斗上下文+表查找)
+    UpdatePoseParamTracking (门控+AngleDelta+ApproachAngle+FrameTime+回调)
+    SequenceToActivity (序列名→Activity 反向查找+缓存) / FollowBone (GetBoneObject)
+    SetAnimationTranslations (Combine 6 holdType + Metrocop 3 holdType + Rebel/Player 桩)
+    27 AnimTbl_* 字段默认值 / MaintainIdleAnimation Think 钩子
 
-3. ✅ EngineAITaskSystem 填坑  ← 已完成
+31. ✅ Weapon/Spawn/Misc 残余全部清扫  ← 2026-05-11
+    OnNPCKilled 静态事件 / Initialize 武器初始装配 / BulletCallback dmginfo 修复
+    Bullseye VJ_IsBeingControlled 守卫 / MaintainActivity 接线
+    grenade spawn 回调 + landDir 语义修正 + Creator 字段
 
-4. ✅ BaseNPC.AA.cs  ← 已完成
-
-5. ✅ 调查系统填坑  ← 已完成
-
-6. ✅ 转向系统  ← 已完成
-
-7. ✅ 音效系统  ← 已完成
-
-8. ✅ HumanNPC chase + grenade + 攻击骨架  ← 已完成 2026-05-07
-
-9. ✅ 攻击系统填坑（Phase 3）  ← 已完成 2026-05-07
-
-10. ✅ HumanNPC Initialize + DoChangeMovementType  ← 已完成 2026-05-07
-
-11. ✅ HumanNPC SelectSchedule  ← 已完成 2026-05-07
-
-12. ✅ HumanNPC OnTakeDamage 逐行展开  ← 已完成 2026-05-08
-    init.lua:3918-4172 → HumanNPC.Think.cs (~265 行)，A-O 15 块独立 SKIP 标记
-
-13. ✅ HumanNPC ResetEnemy  ← 已完成 2026-05-08
-    init.lua:3840-3916 → HumanNPC.Think.cs (+163 行)，11 功能块
-
-14. ✅ HumanNPC CanFireWeapon  ← 已完成 2026-05-08
-    init.lua:3476-3510 → HumanNPC.Think.cs (+67 行)，BaseNPC 签名修正
-
-15. ✅ HumanNPC CheckForDangers  ← 已完成 2026-05-08
-    init.lua:3356-3403 → HumanNPC.Think.cs (+95 行)，VJDangerType 枚举化
-
-16. ✅ HumanNPC DoChangeWeapon  ← 已完成 2026-05-08
-    init.lua:2470-2518 → HumanNPC.Think.cs (+90 行)，武器库存管理
-
-17. ✅ HumanNPC 尾方法收尾  ← 已完成 2026-05-08
-    GetAttackSpread (1 行) + PlayReloadAnimation (桩) + attackTimers (替代标注)
-
-18. ✅ HumanNPC 18/18 方法全部翻译完成  ← 2026-05-08
-
-19. ✅ DamageInfo 落地 + 免疫链  ← 已完成 2026-05-09
-    全局 object dmginfo → DamageInfo，VJDamageTags+13，8 Is*Damage helper
-    OnTakeDamage Block A/C/E/F/J 填坑，Boss 绕过，ragdoll 免伤
-    TankNPC OnDamaged 翻译 (Physgun/Melee immunity)
-
-20. ✅ 实体标志系统  ← 已完成 2026-05-09
-    VJEntityFlags Component + HasEntityFlag helper
-    CheckForDangers 真实工作 (isDanger/Grenade/Grabbable)
-    ExecuteMeleeAttack/ExecuteLeapAttack VJ_ID_Attackable/Destructible 接线
-
-21. ✅ 盟友系统  ← 已完成 2026-05-09
-    Allies_Check/Allies_Bring/Allies_CallHelp 完整实现 (core.lua:2438-2584)
-    ResetEnemy Block 1 + OnTakeDamage M4/M6 + CreatureNPC/HumanNPC BeginDeath 接线
-
-22. ✅ 移动类型重构  ← 已完成 2026-05-09
-    DoChangeMovementType → NavMeshAgent/Rigidbody 映射, 提升至 BaseNPC
-    门系统 OpeningDoor + StartSchedule 检查
-
-23. ✅ 武器系统 Phase 1  ← 已完成 2026-05-09
-    IVJBaseWeapon 接口 + VJBaseWeapon Component
-    GetActiveWeapon/DoChangeWeapon(Give/Remove/SelectWeapon)/SetWeaponState 填坑
-    CanFireWeapon IsMeleeWeapon 分支 + PlayReloadAnimation NPC_Reload
-    SelectSchedule C2 IsVJBaseWeapon+IsMeleeWeapon×5 → 真实检查 + else(C2c-v)
-
-24. ✅ 武器系统 Phase 2（射击/弹道/弹药消耗）← 已完成 2026-05-10
-    NPC_CanFire → GetAimPosition + GetHeadDirection + firing cone
-    NPCShoot_Primary / PrimaryAttack / BulletCallback delegate / PrimaryAttackEffects
-    GetBulletPos fallback + SoundEvent COMBAT 注册
-    SelectSchedule C2c-ii 友军火线距离检查 + UpdatePoseParamTracking 接线
-
-25. ✅ CreatureNPC ResetEnemy 填坑 ← 已完成 2026-05-10
-    1:1 对照 creature init.lua:2881-2949, 9 功能块
-
-26. ✅ Phase 2 SKIP 清扫 ← 已完成 2026-05-10
-    SoundEvent 注册表 (VJSoundType/WorldSoundEvent/SoundEventRegistry) + GetBestSoundHint
-    调查系统完整接线 (bitsDanger/Owner/Disposition/SetLastPosition/OnInvestigate)
-    SoundLevel→DbToDistance + SoundDuration→SoundFile.Load().Duration
-    VisibleVec GrenadeAttack 接线 + OnPlayerSight 回调 + GetEnemyLastKnownPos
-    Allies_CallHelp ReceiveOrder (NextChaseTime/SetTarget/SCHEDULE_FACE/PlaySoundSystem)
-    GetAttackTimer (float,float) range 重载
-    prop_ragdoll ModelPhysics + crossbow_bolt tag + OnReload callback
-
-27. ✅ Weapon Phase 2 完整闭环 ← 已完成 2026-05-10/11
-    NPC_Think 自动射击回路 + C2b 遮蔽延迟/回退 + C2c-iii 射击驱动/重入守卫
-    PrimaryAttack 9 守卫/时序修复（SetNextPrimaryFire/Reloading/CanPrimaryAttack/OnPrimaryAttack）
-    NPCShoot_Primary Visibility 守卫 + NPC_CanFire isControlled SKIP 留痕
-
-28. ✅ Prop/Door 填坑 ← 已完成 2026-05-11
-    constraint.RemoveConstraints("Weld") → FixedJoint.Destroy() + MaintainPropInteraction
-    OnOpenDoor virtual + StartSchedule 门检查注释完善
-
-29. ✅ GetAttackTimer + prop_ragdoll 语义修正 ← 已完成 2026-05-11
-    GetAttackTimer(range) 删除 animDur>0 分支, 纯 Rand(a,b)/rate
-    prop_ragdoll isRagdoll 路径补 rb.Velocity.Length<=100 守卫
-
-30. 动画系统
-    16 个 M 标记动画方法仍是 return 0/false
-    TranslateActivity / PlayAnim / pose parameters / ACT_* / AnimTbl_*
-    UpdatePoseParamTracking 已接线(stub)、ExecuteMeleeAttack(覆写) 跳过
-
-28. Phase 3 独占（~230 SKIP，现在做不了）
-    实体生成 (ents.Create/SetModel/Spawn) / 模型 (ModelRenderer/bodygroup)
-    物理力 (SetDamageForce/GetPhysicsObject) / 碰撞组 (COLLISION_GROUP)
-    Dissolve / 玩家 ViewPunch/SetDSP / 调试 (VJ_DEBUG/convar)
-    门系统 / 定时器 (timer.Create) / 武器附件 (LookupAttachment/GetBonePosition)
+剩余 20 SKIP（全部非阻塞）:
+    - Bullseye IsVJBaseBullseye 标志 (4)
+    - Source PX: SetDSP/SetMoveType/RemoveEffects/Animgraph (4)
+    - Phase 3 独占: follow/eating/fire/dissolve/OBB/idle dialogue/tool (10)
+    - AA animation: velocity tracking + AA_MoveAnimation (2)
 ```
 
 ### 10.7 验证命令
@@ -1049,7 +985,7 @@ cd f:/DevProject/Sbox/testzombie/Code && grep -rn "SKIP:" VJBase/
 ---
 
 *最后更新：2026-05-11*
-*翻译阶段：~95%。Weapon Phase 2 完整闭环（NPC_Think 自动射击 + C2b/C2c-iii 填坑 + PrimaryAttack 9 守卫/时序修复 + Visibility/IsReloading/CanPrimaryAttack/OnPrimaryAttack 守卫） + Prop joint weld (FixedJoint.Destroy) + 门系统 Phase 3 预备 (OnOpenDoor) + GetAttackTimer 语义修正 + prop_ragdoll 速度守卫。Phase 2 可做 SKIP 全部清完。剩余：动画(~80 SKIP) + Phase 3 独占(~230 SKIP)。*
+*翻译阶段 ~98%。Animation Route A 完整落地 (PlayAnim/TranslateActivity/PoseParams/27 AnimTbl_*/SequenceToActivity/FollowBone) + Weapon/Spawn/Misc 全部清扫。SKIP: 235 → 20。剩余 20 全部非阻塞 (Bullseye 4 + Source PX 4 + Phase 3 独占 10 + AA animation 2)。*
 
 ---
 
