@@ -197,6 +197,8 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public int DeathAnimationChance { get; set; } = 1;
     public float DeathAnimationDecreaseLengthAmount { get; set; }
     public List<string> AnimTbl_Death { get; set; } = new();
+    public List<string> AnimTbl_WeaponAttackSecondary { get; set; } = new();
+    public List<string> AnimTbl_WeaponAttackGesture { get; set; } = new();
     public int Skin { get; set; } // Source GetSkin/SetSkin → S&Box MaterialGroup fallback
     public bool HasDeathCorpse { get; set; } = true;
     public bool? HasDeathRagdoll { get; set; }

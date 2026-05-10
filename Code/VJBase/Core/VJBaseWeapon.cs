@@ -396,11 +396,14 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
         {
             if (Game.Random.Next(1, NPC_SecondaryFireChance + 1) == 1)
             {
-                // lua:605 — PlayAnim(AnimTbl_WeaponAttackSecondary) → fireTime
-                // SKIP: lua:605-608 — PlayAnim + animDur calculation — Phase 3 animation
+                // lua:605-608 — PlayAnim + animDur calculation
+                var secAnimTbl = (npc as HumanNPC)?.AnimTbl_WeaponAttackSecondary;
+                var (secAnim, secDur, _) = npc.PlayAnim(secAnimTbl ?? (object)Activity.RangeAttack2);
                 // lua:609 — fireTime = (anim==ACT_INVALID && 0) or owner.Weapon_SecondaryFireTime or animDur
-                // Since animation is Phase 3 SKIP, animDur is unavailable; use the config field or 0 (immediate).
-                float fireTime = (npc as HumanNPC)?.Weapon_SecondaryFireTime ?? 0f;
+                float fireTime = secAnim == Activity.Invalid ? 0f
+                    : (npc as HumanNPC)?.Weapon_SecondaryFireTime > 0
+                        ? ((HumanNPC)npc).Weapon_SecondaryFireTime
+                        : secDur;
                 NPC_SecondaryFireNextT = Time.Now + fireTime + 0.5f;
                 NPC_SecondaryFire_BeforeTimer(ene, fireTime);
                 NPC_SecondaryFireTimeT = Time.Now + fireTime;
@@ -523,7 +526,12 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
             }
         }
         // lua:702-705 — Firing gesture (VJ Human NPCs only)
-        // SKIP: lua:702-705 — AnimTbl_WeaponAttackGesture / PlayAnim — Phase 3 animation system
+        // Route A: no gesture overlay support; played as regular sequence instead.
+        if (!IsMeleeWeapon && npc is HumanNPC human)
+        {
+            var gestureOpts = new PlayAnimOptions { AlwaysUseGesture = true };
+            human.PlayAnim(human.AnimTbl_WeaponAttackGesture, false, 0.5f, true, 0f, gestureOpts);
+        }
 
         // ═══ lua:707-742 — MELEE WEAPON ═══
         if (IsMeleeWeapon)
