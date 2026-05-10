@@ -26,8 +26,8 @@ public partial class BaseNPC
     public float PoseYaw { get; set; }
     public float PoseRoll { get; set; }
     public bool UpdatedPoseParam { get; set; }
-    /// <summary>Lua: OnUpdatePoseParamTracking callback — (self, newPitch, newYaw, newRoll)</summary>
-    public Action<BaseNPC, float, float, float> OnUpdatePoseParamTracking { get; set; }
+    /// <summary>Lua: OnUpdatePoseParamTracking callback — (self, newPitch, newYaw, newRoll) → (newPitch, newYaw, newRoll). Return modified values or null for no change.</summary>
+    public Func<BaseNPC, float, float, float, (float pitch, float yaw, float roll)?> OnUpdatePoseParamTracking { get; set; }
 
     // ═══ Animation Translation Table ═══
     /// <summary>ACT_generic → ACT_model_specific (single Activity) or Activity[] (random pick).</summary>
@@ -568,11 +568,12 @@ public partial class BaseNPC
             return;
         }
 
-        // lua:3448 — OnUpdatePoseParamTracking callback
-        OnUpdatePoseParamTracking?.Invoke(this, newPitch, newYaw, newRoll);
+        // lua:3448 — OnUpdatePoseParamTracking callback (can modify pitch/yaw/roll)
+        var cbResult = OnUpdatePoseParamTracking?.Invoke(this, newPitch, newYaw, newRoll);
+        if (cbResult.HasValue) { newPitch = cbResult.Value.pitch; newYaw = cbResult.Value.yaw; newRoll = cbResult.Value.roll; }
 
         // lua:3449-3465 — Apply smoothed poses per axis
-        var speed = PoseParameterLooking_TurningSpeed;
+        var speed = PoseParameterLooking_TurningSpeed * Time.Delta;   // lua: self.PoseParameterLooking_TurningSpeed * FrameTime()
         foreach (var name in PoseParameterLooking_Names)
         {
             float target = 0f;
