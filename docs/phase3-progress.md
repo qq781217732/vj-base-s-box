@@ -50,7 +50,9 @@
 | 人类覆写 | HumanNPC.Think.cs | TranslateActivity 5 层战斗上下文、SetAnimationTranslations 4 模型集（Combine/Metrocop/Rebel/Player） |
 | 默认值 | BaseNPC.cs + HumanNPC.cs | 27 个 AnimTbl_* 字段全部填入 Lua 默认值 |
 
-**已知限制（2 项，无法还原）**：Gesture 叠加层（S&Box 无 AddGesture API）、Sequence 过渡动画（Source 引擎 FindTransitionSequence 独占）。均不影响 NPC 行为。
+**已知限制（1 项，无法还原）**：Gesture 叠加层（S&Box 无 AddGesture API）。不影响 NPC 行为。
+
+> **更新**: Sequence 过渡动画（`FindTransitionSequence`）已通过代码实现替代方案——[VJTransitionTable.cs](../Code/VJBase/Core/VJTransitionTable.cs)，纯资源约定驱动（序列命名 `{from}_to_{to}`），无需 Animgraph。
 
 ---
 

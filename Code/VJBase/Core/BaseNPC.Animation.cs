@@ -180,6 +180,8 @@ public partial class BaseNPC
                 seqName = VJAnimationMapper.MapActivity(GameObject, actDur);
 
             var dp = VJAnimationMapper.GetDirectPlayback(GameObject);
+            // Capture current sequence BEFORE the duration probe overwrites it (needed for transition lookup)
+            var currentSequenceBeforePlay = dp?.Name;
             if (dp != null && seqName != null)
             {
                 dp.Play(seqName);
@@ -233,10 +235,41 @@ public partial class BaseNPC
                 ClearSchedule();
                 ClearGoal();
 
-                if (dp != null && seqName != null)
+                // START: Experimental transition system for sequences
+                float transitionAnimTime = 0;
+                if (isSequence && dp != null && seqName != null)
+                {
+                    var transitionSeq = VJTransitionTable.FindTransitionSequence(
+                        Components.Get<SkinnedModelRenderer>(), currentSequenceBeforePlay, seqName);
+                    if (transitionSeq != null
+                        && !string.Equals(transitionSeq, seqName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        dp.Play(transitionSeq);
+                        transitionAnimTime = dp.Duration / playbackRate;
+
+                        // Schedule the target sequence to play after transition finishes
+                        var capturedSeqName = seqName;
+                        var capturedSeed = LastAnimSeed;
+                        _ = Task.Delay((int)(transitionAnimTime * 1000)).ContinueWith(_ =>
+                        {
+                            if (this.IsValid() && !Dead && LastAnimSeed == capturedSeed)
+                            {
+                                var dp2 = VJAnimationMapper.GetDirectPlayback(GameObject);
+                                if (dp2 != null)
+                                    dp2.Play(capturedSeqName);
+                            }
+                        });
+                    }
+                    else
+                    {
+                        dp.Play(seqName);
+                    }
+                }
+                else if (dp != null && seqName != null)
                 {
                     dp.Play(seqName);
                 }
+                // END: Experimental transition system for sequences
 
                 customFunc?.Invoke(CurrentSchedule, animation);
 
@@ -244,6 +277,8 @@ public partial class BaseNPC
                 {
                     SetTurnTarget("Enemy", animTime, false, faceVis);
                 }
+
+                animTime += transitionAnimTime; // VJBase: adjust animTime for transition (after SetTurnTarget)
             }
 
             // OnFinish callback
