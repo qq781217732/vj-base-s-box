@@ -70,6 +70,65 @@ public static class VJAnimationMapper
         return (AnimDuration(obj, act) - decrease) / rate;
     }
 
+    /// <summary>
+    /// Lua: VJ.SequenceToActivity(ent, "sequence_name") → Activity or null.
+    /// Checks if the named sequence exists on the model, then reverse-looks-up which Activity maps to it.
+    /// If no Activity maps to this sequence, returns null (caller should skip the translation entry).
+    /// </summary>
+    public static Activity? SequenceToActivity(GameObject obj, string sequenceName)
+    {
+        if (string.IsNullOrEmpty(sequenceName) || obj == null) return null;
+        var renderer = obj.Components.Get<SkinnedModelRenderer>();
+        if (renderer == null) return null;
+
+        // Check if the sequence actually exists on this model
+        if (!renderer.Sequence.SequenceNames.Contains(sequenceName, StringComparer.OrdinalIgnoreCase))
+            return null;
+
+        // Reverse lookup: find which Activity maps to this sequence name
+        var map = GetMap(obj);
+        var cachedReverse = GetReverseMap(obj);
+
+        if (cachedReverse.TryGetValue(sequenceName, out var cached))
+            return cached == Activity.Invalid ? null : cached;
+
+        // Try each Activity to find which one maps to this sequence name
+        foreach (var act in Enum.GetValues(typeof(Activity)))
+        {
+            var activity = (Activity)act;
+            if (map.TryGetValue(activity, out var mappedName)
+                && string.Equals(mappedName, sequenceName, StringComparison.OrdinalIgnoreCase))
+            {
+                _reverseCache[GetModelPath(obj)][sequenceName] = activity;
+                return activity;
+            }
+        }
+
+        // Not found in our mapping — sequence exists but unknown Activity
+        _reverseCache[GetModelPath(obj)][sequenceName] = Activity.Invalid;
+        return null;
+    }
+
+    // Reverse cache: model path → sequence name → Activity
+    private static readonly Dictionary<string, Dictionary<string, Activity>> _reverseCache = new();
+
+    private static Dictionary<string, Activity> GetReverseMap(GameObject obj)
+    {
+        var path = GetModelPath(obj);
+        if (!_reverseCache.TryGetValue(path, out var map))
+        {
+            map = new Dictionary<string, Activity>(StringComparer.OrdinalIgnoreCase);
+            _reverseCache[path] = map;
+        }
+        return map;
+    }
+
+    private static string GetModelPath(GameObject obj)
+    {
+        var renderer = obj?.Components.Get<SkinnedModelRenderer>();
+        return renderer?.Model?.ResourcePath ?? renderer?.Model?.Name ?? "";
+    }
+
     /// <summary>Get the animgraph DirectPlayback node for this object, or null.</summary>
     public static AnimGraphDirectPlayback GetDirectPlayback(GameObject obj)
     {

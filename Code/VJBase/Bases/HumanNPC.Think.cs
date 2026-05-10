@@ -225,8 +225,18 @@ public partial class HumanNPC
     private void SetAnimTranslations_Combine(string holdType)
     {
         if (!Weapon_AimTurnDiff.HasValue) Weapon_AimTurnDiff_Def = 0.71120220422745f;
+
+        // Helper: set translation entry only if SequenceToActivity found a mapping, else fall back to hardcoded.
+        Activity? Seq(string name) => VJAnimationMapper.SequenceToActivity(GameObject, name);
+        void TrySet(Activity key, string seqName, Activity fallback)
+        {
+            var result = Seq(seqName);
+            if (result.HasValue) AnimationTranslations[key] = result.Value;
+            else AnimationTranslations[key] = fallback;
+        }
+
         // Shared across all hold types
-        AnimationTranslations[Activity.RangeAttack2] = Activity.RangeAttackAr2; // actually "shootAR2alt" sequence
+        AnimationTranslations[Activity.RangeAttack2] = Seq("shootAR2alt") ?? Activity.RangeAttackAr2;
         AnimationTranslations[Activity.CoverLow] = new Activity[] { Activity.Cover, Activity.CoverLow };
         AnimationTranslations[Activity.WalkCrouch] = Activity.WalkCrouchRifle;
         AnimationTranslations[Activity.WalkCrouchAim] = Activity.WalkCrouchAimRifle;
@@ -246,7 +256,7 @@ public partial class HumanNPC
             }
             else { SetAnimTrans_SMGShared(); }
             AnimationTranslations[Activity.Idle] = Activity.IdleSmg1;
-            AnimationTranslations[Activity.Walk] = Activity.WalkRifle;
+            TrySet(Activity.Walk, "walkeasy_all", Activity.WalkRifle);
             AnimationTranslations[Activity.WalkAgitated] = Activity.WalkRifle;
             AnimationTranslations[Activity.WalkAim] = Activity.WalkAimRifle;
             AnimationTranslations[Activity.RunAim] = Activity.RunAimRifle;
@@ -256,8 +266,8 @@ public partial class HumanNPC
             AnimationTranslations[Activity.RangeAttack1] = Activity.RangeAttackAr2;
             AnimationTranslations[Activity.GestureRangeAttack1] = Activity.GestureRangeAttackAr2;
             AnimationTranslations[Activity.RangeAttack1Low] = Activity.RangeAttackAr2Low;
-            AnimationTranslations[Activity.Idle] = Activity.IdlePistol;
-            AnimationTranslations[Activity.Walk] = Activity.WalkPistol;
+            TrySet(Activity.Idle, "idle_unarmed", Activity.IdlePistol);
+            TrySet(Activity.Walk, "walkunarmed_all", Activity.WalkPistol);
             AnimationTranslations[Activity.WalkAim] = Activity.WalkAimRifle;
             AnimationTranslations[Activity.RunAim] = Activity.RunAimRifle;
         }
@@ -276,17 +286,17 @@ public partial class HumanNPC
         else if (holdType == "melee" || holdType == "melee2" || holdType == "knife")
         {
             AnimationTranslations[Activity.RangeAttack1] = Activity.MeleeAttack1;
-            AnimationTranslations[Activity.GestureRangeAttack1] = Activity.Invalid; // Don't play gesture
-            AnimationTranslations[Activity.Idle] = Activity.IdleSmg1;
-            AnimationTranslations[Activity.IdleAngry] = Activity.IdleSmg1;
-            AnimationTranslations[Activity.Walk] = Activity.WalkRifle;
+            AnimationTranslations[Activity.GestureRangeAttack1] = Activity.Invalid;
+            TrySet(Activity.Idle, "idle_unarmed", Activity.IdleSmg1);
+            TrySet(Activity.IdleAngry, "idle_unarmed", Activity.IdleSmg1);
+            TrySet(Activity.Walk, "walkunarmed_all", Activity.WalkRifle);
             AnimationTranslations[Activity.WalkAim] = Activity.WalkAimRifle;
             AnimationTranslations[Activity.RunAim] = Activity.RunAimRifle;
         }
         else // Unarmed
         {
-            AnimationTranslations[Activity.Idle] = Activity.IdleSmg1;
-            AnimationTranslations[Activity.Walk] = Activity.WalkRifle;
+            TrySet(Activity.Idle, "idle_unarmed", Activity.IdleSmg1);
+            TrySet(Activity.Walk, "walkunarmed_all", Activity.WalkRifle);
         }
     }
 
@@ -333,7 +343,8 @@ public partial class HumanNPC
             AnimationTranslations[Activity.RangeAttack1] = Activity.MeleeAttackSwing;
             AnimationTranslations[Activity.GestureRangeAttack1] = Activity.Invalid;
             AnimationTranslations[Activity.CoverLow] = Activity.Cower;
-            AnimationTranslations[Activity.Idle] = new Activity[] { Activity.Idle, Activity.Idle, Activity.Idle, Activity.Idle, Activity.IdleSmg1 };
+            var plazathreat = VJAnimationMapper.SequenceToActivity(GameObject, "plazathreat1");
+            AnimationTranslations[Activity.Idle] = new Activity[] { Activity.Idle, Activity.Idle, Activity.Idle, Activity.Idle, plazathreat ?? Activity.IdleSmg1 };
             AnimationTranslations[Activity.IdleAngry] = Activity.IdleAngryMelee;
         }
     }
@@ -1523,27 +1534,28 @@ public partial class HumanNPC
             var customPos = OnGrenadeAttack("SpawnPos", customEnt, landDir) as Vector3?;
             if (!customPos.HasValue)
             {
-                // lua:3140-3152 — attachment / bone / fallback hierarchy
+                // lua:3140-3152 — attachment > bone > fallback hierarchy
                 var attach = GetAttachmentPos(GrenadeAttackAttachment);
                 if (attach.HasValue)
                 {
-                    customEnt.Parent = GameObject;
-                    customEnt.WorldPosition = attach.Value.Position;
-                    customEnt.WorldRotation = attach.Value.Rotation;
+                    // lua:3156-3158 — SetParent(self, attachID) + SetPos/SetAngles from attachment
+                    ParentToAttachment(customEnt, GrenadeAttackAttachment);
                 }
                 else
                 {
                     var boneTx = GetBoneTransform(GrenadeAttackBone);
                     if (boneTx.HasValue)
                     {
-                        customEnt.Parent = GameObject;
+                        // lua:3144-3147 — SetPos/SetAngles from bone + FollowBone
                         customEnt.WorldPosition = boneTx.Value.Position;
                         customEnt.WorldRotation = boneTx.Value.Rotation;
+                        FollowBone(customEnt, GrenadeAttackBone);
                     }
                     else
                     {
-                        customEnt.Parent = GameObject;
+                        // lua:3149-3151 — GetShootPos() fallback + SetParent(self)
                         customEnt.WorldPosition = GetShootPos();
+                        customEnt.Parent = GameObject;
                     }
                 }
             }

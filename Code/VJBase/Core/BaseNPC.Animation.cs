@@ -653,7 +653,8 @@ public partial class BaseNPC
     }
 
     /// <summary>
-    /// Attach entity to attachment point. Lua: SetParent(self, attachID).
+    /// Lua: SetParent(self, attachID). Parents to attachment, sets position/rotation from attach data.
+    /// S&Box limitation: attachments don't have GameObjects, so we parent to NPC root + set transform.
     /// </summary>
     public void ParentToAttachment(GameObject child, string attachmentName)
     {
@@ -665,6 +666,22 @@ public partial class BaseNPC
             child.WorldPosition = attach.Value.Position;
             child.WorldRotation = attach.Value.Rotation;
         }
+    }
+
+    /// <summary>
+    /// Lua: FollowBone(self, boneID). Parents child to the bone's GameObject so it follows bone movement.
+    /// S&Box: GetBoneObject → parent child to bone GameObject.
+    /// </summary>
+    public void FollowBone(GameObject child, string boneName)
+    {
+        if (child == null || string.IsNullOrEmpty(boneName)) return;
+        var renderer = Components.Get<SkinnedModelRenderer>();
+        if (renderer == null) { child.Parent = GameObject; return; }
+        var boneObj = renderer.GetBoneObject(boneName);
+        if (boneObj != null)
+            child.Parent = boneObj;
+        else
+            child.Parent = GameObject;
     }
 
     /// <summary>
