@@ -23,6 +23,13 @@ public partial class CreatureNPC
         if (!DisableFootStepSoundTimer)
             PlayFootstepSound();
 
+        // Health regen — human init.lua:2706-2710 / creature init.lua:2013-2017
+        if (!Dead && HealthRegenEnabled && curTime > HealthRegenDelayT)
+        {
+            CurrentHealth = MathF.Min(CurrentHealth + HealthRegenAmount, StartHealth);
+            HealthRegenDelayT = curTime + VJUtility.Rand(HealthRegenDelay.a, HealthRegenDelay.b);
+        }
+
         // Breath sounds — core.lua creature init:1879-1889
         if (!Dead && HasBreathSound && HasSounds && curTime > NextBreathSoundT)
         {
@@ -38,8 +45,23 @@ public partial class CreatureNPC
         OnThink();
         OnThinkActive();
 
-        // Process attack timers — check reset/re-enable polling fields
+        // Process attack timers — check reset/re-enable/bleed polling fields
         ProcessAttackTimers(curTime);
+
+        // Timer polling: alert reset (Source timer.Create → polling)
+        if (NextAlertResetT > 0 && curTime > NextAlertResetT)
+        {
+            NextAlertResetT = 0;
+            if (!GetEnemy().IsValid()) { Alerted = (int)VJAlertState.None; SetNPCState((int)NPCState.Idle); }
+        }
+
+        // Timer polling: death delay (Source timer.Simple → polling)
+        if (NextDeathFinishT > 0 && curTime > NextDeathFinishT)
+        {
+            NextDeathFinishT = 0;
+            if (PendingDeathDmgInfo != null)
+                FinishDeath(PendingDeathDmgInfo, PendingDeathHitgroup);
+        }
 
         var moveType = MovementType;
         bool isAA = moveType == VJMoveType.Aerial || moveType == VJMoveType.Aquatic;
@@ -408,7 +430,11 @@ public partial class CreatureNPC
                         bool targetIsBoss = BaseNPC.HasEntityFlag(ent, "VJ_ID_Boss");
                         if (MeleeAttackBleedEnemy && isLiving && (!targetIsBoss || VJ_ID_Boss) && Game.Random.Next(1, MeleeAttackBleedEnemyChance + 1) == 1)
                         {
-                            // SKIP: lua:2525-2541 — timer.Create bleed system — Phase 3 async timers
+                            // lua:2525-2541 — bleed timer → polling (polled in ProcessAttackTimers)
+                            BleedTarget = ent;
+                            BleedRepsRemaining = MeleeAttackBleedEnemyReps;
+                            BleedDmgAmount = MeleeAttackBleedEnemyDamage;
+                            NextBleedT = Time.Now + MeleeAttackBleedEnemyTime;
                         }
                     }
                     // lua:2544-2553: Player-specific effects
@@ -726,9 +752,13 @@ public partial class CreatureNPC
         }
 
         // lua:3302-3310 — if deathTime > 0 then timer.Simple → FinishDeath else FinishDeath
-        // SKIP: lua:3302-3306 — timer.Simple(deathTime, ...) — Source engine timer; Phase 3 async/Task.Delay
-        // Fallback: call FinishDeath immediately (revisit when async delay system is in place)
-        FinishDeath(dmginfo, hitgroup);
+        // S&Box: polling pattern → NextDeathFinishT (polled in Think)
+        PendingDeathDmgInfo = dmginfo;
+        PendingDeathHitgroup = hitgroup;
+        if (deathTime > 0)
+            NextDeathFinishT = Time.Now + deathTime;
+        else
+            FinishDeath(dmginfo, hitgroup);
     }
 
     // ═══ FinishDeath — creature_base/init.lua:3313-3325 ═══

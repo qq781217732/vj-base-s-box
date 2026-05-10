@@ -1376,10 +1376,8 @@ public partial class HumanNPC
         eneData.Reset = true;
         // lua:3878 — self:SetNPCState(NPC_STATE_ALERT)
         SetNPCState((int)NPCState.Alert);
-        // lua:3879 — timer.Create("alert_reset" .. self:EntIndex(), math.Rand(selfData.AlertTimeout.a, selfData.AlertTimeout.b), 1, function()
-        //   if !IsValid(funcGetEnemy(self)) then selfData.Alerted = false self:SetNPCState(NPC_STATE_IDLE) end end)
-        // SKIP: lua:3879 — timer.Create (Source engine one-shot named timer) — Phase 3 timer system
-        //        Equivalent: NextAlertResetT = curTime + AlertTimeout random; poll in Think → if no enemy → Alerted=false, SetNPCState(Idle)
+        // lua:3879 — timer.Create alert_reset → NextAlertResetT polling (polled in Think)
+        NextAlertResetT = curTime + VJUtility.Rand(AlertTimeout.a, AlertTimeout.b);
 
         // ---- Block 5: OnResetEnemy callback (lua:3880) ----
         // lua:3880 — self:OnResetEnemy()
@@ -1749,7 +1747,44 @@ public partial class HumanNPC
                         }
                     }
                     // lua:4104-4128 — DamageResponse: find attacker or take cover
-                    // SKIP: lua:4104-4128 — DamageResponse (VJ_ID_Living/sightDist/Visible/ForceSetEnemy/cover) — Phase 3 player + cover system
+                    var dmgResponse = DamageResponse;
+                    if (dmgResponse is not false and not null && curTime > TakingCoverT && !IsBusy("Activities"))
+                    {
+                        bool canMove = true;
+
+                        // lua:4107-4122 — Attempt to find who damaged me
+                        if (dmgAttacker.IsValid() && HasEntityFlag(dmgAttacker, "VJ_ID_Living")
+                            && (dmgResponse is true or "OnlySearch"))
+                        {
+                            var sightDist = SightDistance;
+                            sightDist = MathF.Min(MathF.Max(sightDist / 2, sightDist <= 1000 ? sightDist : 1000), sightDist);
+                            if (WorldPosition.Distance(dmgAttacker.WorldPosition) <= sightDist && Visible(dmgAttacker))
+                            {
+                                var dispLvl = Disposition(dmgAttacker);
+                                if (dispLvl == (int)VJBase.Disposition.Hate || dispLvl == (int)VJBase.Disposition.Neutral)
+                                {
+                                    OnSetEnemyFromDamage(dmgInfo, hitgroup);
+                                    NextCallForHelpT = curTime + 1;
+                                    ForceSetEnemy(dmgAttacker, true);
+                                    MaintainAlertBehavior();
+                                    canMove = false;
+                                }
+                            }
+                        }
+
+                        // lua:4125-4128 — If all else failed then take cover
+                        if (canMove && (dmgResponse is true or "OnlyMove") && !IsFollowing
+                            && MovementType != VJMoveType.Stationary
+                            && !dmgInfo.Tags.Has("bleed"))
+                        {
+                            SCHEDULE_COVER_ORIGIN("TASK_RUN_PATH", schedule =>
+                            {
+                                schedule.CanShootWhenMoving = true;
+                                schedule.TurnData = new TurnData { Type = VJFaceStatus.Enemy };
+                            });
+                            TakingCoverT = curTime + 5;
+                        }
+                    }
                 }
 
                 // ---- M5: Passive NPC run away (lua:4130-4134) ----
@@ -1969,9 +2004,13 @@ public partial class HumanNPC
         }
 
         // lua:4289-4297 — if deathTime > 0 then timer.Simple → FinishDeath else FinishDeath
-        // SKIP: lua:4289-4294 — timer.Simple(deathTime, ...) — Source engine timer; Phase 3 async/Task.Delay
-        // Fallback: call FinishDeath immediately
-        FinishDeath(dmginfo, hitgroup);
+        // S&Box: polling pattern → NextDeathFinishT (polled in Think)
+        PendingDeathDmgInfo = dmginfo;
+        PendingDeathHitgroup = hitgroup;
+        if (deathTime > 0)
+            NextDeathFinishT = Time.Now + deathTime;
+        else
+            FinishDeath(dmginfo, hitgroup);
     }
 
     // ═══ FinishDeath — human_base/init.lua:4300-4310 ═══

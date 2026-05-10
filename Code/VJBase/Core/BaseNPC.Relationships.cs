@@ -140,8 +140,8 @@ public partial class BaseNPC
         // ---- Block 4: Reset state + alert timeout timer (lua:2917-2919) ----
         eneData.Reset = true;
         SetNPCState((int)NPCState.Alert);
-        // lua:2919 — timer.Create alert_reset timeout → Alerted=false, SetNPCState(IDLE)
-        // SKIP: lua:2919 — timer.Create — Phase 3 timer system
+        // lua:2919 — timer.Create alert_reset → NextAlertResetT polling (polled in Think)
+        NextAlertResetT = Time.Now + VJUtility.Rand(AlertTimeout.a, AlertTimeout.b);
 
         // ---- Block 5: OnResetEnemy callback (lua:2920) ----
         OnResetEnemy();

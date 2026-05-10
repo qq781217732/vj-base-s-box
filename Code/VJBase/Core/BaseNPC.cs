@@ -165,9 +165,18 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public float NextAlertResetT { get; set; }
     public bool Flinching { get; set; }
     public float NextFlinchT { get; set; }
+    // Timer polling replacements (Source timer.Create/timer.Simple → polling pattern)
+    public float NextDeathFinishT { get; set; } // death delay → FinishDeath
+    public DamageInfo PendingDeathDmgInfo { get; set; }
+    public int PendingDeathHitgroup { get; set; }
+    public float NextBleedT { get; set; }
+    public GameObject BleedTarget { get; set; }
+    public int BleedRepsRemaining { get; set; }
+    public float BleedDmgAmount { get; set; }
     public bool HealthRegenEnabled { get; set; }
     public bool HealthRegenResetOnDmg { get; set; }
-    public float HealthRegenDelay { get; set; }
+    public float HealthRegenAmount { get; set; } = 1f;
+    public (float a, float b) HealthRegenDelay { get; set; } = (3f, 5f);
     public float HealthRegenDelayT { get; set; }
     public float NextCombineBallDmgT { get; set; }
     public float CurrentHealth { get; set; } // Phase 3→HealthComponent; current basic tracking
@@ -857,6 +866,19 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
         if (GrenadeExecTime > 0 && curTime > GrenadeExecTime)
         {
             GrenadeExecTime = 0;
+        }
+
+        // lua:2525-2541 — bleed timer polling (replaces timer.Create bleed loop)
+        if (NextBleedT > 0 && curTime > NextBleedT && BleedRepsRemaining > 0 && BleedTarget.IsValid())
+        {
+            var bleedDmg = new DamageInfo { Damage = BleedDmgAmount, Attacker = GameObject };
+            foreach (var d in BleedTarget.Components.GetAll<IDamageable>())
+                d.OnDamage(bleedDmg);
+            BleedRepsRemaining--;
+            if (BleedRepsRemaining > 0)
+                NextBleedT = curTime + MeleeAttackBleedEnemyTime;
+            else
+                NextBleedT = 0;
         }
 
         // lua:1833-1835 — re-enable timer (fires independently, may fire before reset)
