@@ -931,17 +931,7 @@ Source C++:  f:/DevProject/Sbox/source-sdk-2013/
 
 **坑 13: Lua table → C# string 类型窄化。** Lua `PlaySoundSystem` 的 `customSD` 可以是 string 或 table（PICK 随机选）。C# 签名是 `string`，不支持 table。调用方需先 `PickSound()` 选好再传入。Lua 的 `StartsWith("{")` table-string hack 已删除。
 
-**坑 14: Route A 适配不是"删掉重写"。** `dp.Play()` 替代 `StartSchedule(TASK_VJ_PLAY_*)` 是播放方式变化，不是删除功能。锁定计时器（AnimLockTime/NextChaseTime/NextIdleTime）仍需 1:1 维护——它们才是行为门控的核心。
-
-**坑 15: SequenceToActivity 需要反向查询。** Lua 的 `VJ.SequenceToActivity(self, "walkeasy_all")` 调用 Source `GetSequenceActivity(LookupSequence(name))` 查询引擎内部活动映射表。S&Box 无此数据。需要运行时扫描 `SequenceNames` + 反向匹配 `Activity→序列名` 映射表。不存在时返回 null 让调用方 fallback，不能硬编码。
-
-**坑 16: AnimTbl_* 默认值不能为空列表。** Phase 1 翻译只建了字段壳（`= new()`），必须填入 Lua 默认值。空列表 → `VJUtility.PICK(空) → null → PlayAnim 返回 Invalid`，所有动画静默跳过，没有任何编译错误或运行时异常。
-
-**坑 17: IsBusy 空壳让动画锁全部失效。** `IsBusy()` 返回 false 意味着 NPC 永远不忙——动画播放期间 SelectSchedule 可以随时抢走控制权。必须检查 `PauseAttacks`/`AnimLockTime`/`AttackAnimTime`。
-
-**坑 18: TranslateActivity 不是简单 key→value 查表。** HumanNPC 覆写有 5 层前置 if/elseif 判断（Cower/Angry/Aim-Move/Protected/Agitated），必须严格按 Lua 分支顺序实现，否则战斗动画选择错误。
-
-**坑 19: "还原度"评估必须有对照表。** 笼统的百分比（60%/88%/93%）没有意义。必须列出每个 Lua 方法/块的 C# 对应行和差异点，否则评估是自欺欺人。
+> 动画系统的专项踩坑记录见 [animation-system-analysis.md](animation-system-analysis.md) §10。
 
 ### 10.5 机械翻译 vs 自己造（红线）
 

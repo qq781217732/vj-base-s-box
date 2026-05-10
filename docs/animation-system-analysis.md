@@ -473,4 +473,22 @@ renderer.Set("b_attack", true);       // 触发攻击
 
 ---
 
-*分析完成于 2026-05-10，基于 VJ-Base-master Lua 源码 89 文件全量扫描*
+## 10. 实现踩坑记录
+
+> 2026-05-11 动画系统 Route A 落地过程中发现的 6 个陷阱。
+
+**坑 1: Route A 适配不是"删掉重写"。** `dp.Play()` 替代 `StartSchedule(TASK_VJ_PLAY_*)` 是播放方式变化，不是删除功能。锁定计时器（AnimLockTime/NextChaseTime/NextIdleTime）仍需 1:1 维护——它们才是行为门控的核心。
+
+**坑 2: SequenceToActivity 需要反向查询。** Lua 的 `VJ.SequenceToActivity(self, "walkeasy_all")` 调用 Source `GetSequenceActivity(LookupSequence(name))` 查询引擎内部活动映射表。S&Box 无此数据。需要运行时扫描 `SequenceNames` + 反向匹配 `Activity→序列名` 映射表。不存在时返回 null 让调用方 fallback，不能硬编码。
+
+**坑 3: AnimTbl_* 默认值不能为空列表。** Phase 1 翻译只建了字段壳（`= new()`），必须填入 Lua 默认值。空列表 → `VJUtility.PICK(空) → null → PlayAnim 返回 Invalid`，所有动画静默跳过，没有任何编译错误或运行时异常。
+
+**坑 4: IsBusy 空壳让动画锁全部失效。** `IsBusy()` 返回 false 意味着 NPC 永远不忙——动画播放期间 SelectSchedule 可以随时抢走控制权。必须检查 `PauseAttacks`/`AnimLockTime`/`AttackAnimTime`。
+
+**坑 5: TranslateActivity 不是简单 key→value 查表。** HumanNPC 覆写有 5 层前置 if/elseif 判断（Cower/Angry/Aim-Move/Protected/Agitated），必须严格按 Lua 分支顺序实现，否则战斗动画选择错误。
+
+**坑 6: "还原度"评估必须有对照表。** 笼统的百分比（60%/88%/93%）没有意义。必须列出每个 Lua 方法/块的 C# 对应行和差异点，否则评估是自欺欺人。
+
+---
+
+*分析完成于 2026-05-10，实现完成于 2026-05-11。基于 VJ-Base-master Lua 源码 89 文件全量扫描。*
