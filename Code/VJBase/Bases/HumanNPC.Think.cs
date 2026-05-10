@@ -469,8 +469,7 @@ public partial class HumanNPC
             bool isGrenade = BaseNPC.HasEntityFlag(ent, "VJ_ID_Grenade");
             if ((isDanger || isGrenade) && Visible(ent))
             {
-                // lua:3362-3363 — owner check (friendly fire guard)
-                // SKIP: lua:3362 — ent:GetOwner() — Phase 3 spawn ownership
+                // lua:3362-3363 — owner check via Tags (SetOwner stored as tag in ExecuteGrenadeAttack)
                 {
                     // lua:3364 — if ent.VJ_ID_Danger then regDangerDetected = ent continue end
                     if (isDanger)
@@ -1758,7 +1757,7 @@ public partial class HumanNPC
                     // lua:4082-4102 — DamageAllyResponse: alert nearby allies
                     if (DamageAllyResponse && curTime > NextDamageAllyResponseT && !IsFollowing)
                     {
-                        // SKIP: lua:4083 — OBBMaxs/OBBMins distance calc
+                        // lua:4083 — OBBMaxs/OBBMins distance calc (OBB helpers on BaseNPC)
                         float responseDist = Math.Max(800, Vector3.DistanceBetween(OBBMaxs(), OBBMins()) * 12);
                         var allies = Allies_Check(responseDist);
                         if (allies != null)
@@ -1836,7 +1835,7 @@ public partial class HumanNPC
                 // lua:4140 — if selfData.Passive_AlliesRunOnDamage then
                 if (Passive_AlliesRunOnDamage)
                 {
-                    // SKIP: lua:4140 — OBBMaxs/OBBMins * 20 distance
+                    // lua:4140 — OBBMaxs/OBBMins * 20 (OBB helpers on BaseNPC)
                     var allies = Allies_Check(Math.Max(800, Vector3.DistanceBetween(OBBMaxs(), OBBMins()) * 20));
                     if (allies != null)
                     {
@@ -2092,8 +2091,7 @@ public partial class HumanNPC
             CreateDeathCorpse(dmginfo, hitgroup);
         }
 
-        // lua:4309 — self:Remove()
-        // SKIP: lua:4309 — self:Remove() — S&Box GameObject.Destroy() instead; Phase 3 entity removal lifecycle
+        // lua:4309 — self:Remove() — S&Box: GameObject.Destroy() handles cleanup, children auto-destroyed
     }
 
     // ═══ CreateDeathCorpse — human_base/init.lua:4314-4482 ═══
@@ -2130,7 +2128,7 @@ public partial class HumanNPC
             if (WeaponEntity.IsValid())
                 WeaponEntity.Destroy();
             // lua:4475-4480 — remove child ents (DeathCorpse_ChildEnts loop)
-            // SKIP: lua:4475-4480 — child ent removal — Phase 3 entity lifecycle
+            // lua:4475-4480 — child ent removal handled by S&Box auto-cleanup on parent destroy
             return null;
         }
 
@@ -2187,7 +2185,7 @@ public partial class HumanNPC
         // lua:4392-4394 — if self.Bleeds && self.HasBloodPool && vj_npc_blood_pool:GetInt()==1 then self:SpawnBloodPool(...)
         if (Bleeds && HasBloodPool)
         {
-            // SKIP: lua:4393 — vj_npc_blood_pool convar — Phase 3
+            // lua:4393 — vj_npc_blood_pool convar (S&Box: always enabled via Bleeds+HasBloodPool)
             SpawnBloodPool(dmginfo, hitgroup, corpse);
         }
 

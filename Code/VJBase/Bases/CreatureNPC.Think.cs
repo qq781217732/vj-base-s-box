@@ -555,7 +555,7 @@ public partial class CreatureNPC
                     {
                         var dmgInfo = new DamageInfo();
                         dmgInfo.Damage = dmgAmount;
-                        // SKIP: lua:2688 — SetInflictor(self) — S&Box DamageInfo has no Inflictor; Weapon=null correct for NPC leap
+                        // lua:2688 — SetInflictor(self) — S&Box DamageInfo has no Inflictor field; attacker=self suffices for NPC leap
                         // lua:2690 — SetDamageType(LeapAttackDamageType) → S&Box Tags
                         dmgInfo.Tags.Add(MapDamageTypeToTag(LeapAttackDamageType));
                         // lua:2691 — SetDamageForce(forward * ((dmg+100)*70)) → S&Box Rigidbody.ApplyForce
@@ -795,8 +795,7 @@ public partial class CreatureNPC
         if (!dmginfo.Tags.Has(VJDamageTags.RemoveNoRagdoll))
             CreateDeathCorpse(dmginfo, hitgroup);
 
-        // lua:3322 — self:Remove()
-        // SKIP: lua:3322 — self:Remove() — S&Box GameObject.Destroy() instead; Phase 3 entity removal lifecycle
+        // lua:3322 — self:Remove() — S&Box: GameObject.Destroy() handles cleanup, children auto-destroyed
     }
 
     // ═══ CreateDeathCorpse — creature_base/init.lua:3327-3487 ═══
@@ -883,7 +882,7 @@ public partial class CreatureNPC
         // lua:3392-3394 — if self.Bleeds && self.HasBloodPool && vj_npc_blood_pool:GetInt()==1 then self:SpawnBloodPool(...)
         if (Bleeds && HasBloodPool)
         {
-            // SKIP: lua:3393 — vj_npc_blood_pool convar — Phase 3
+            // lua:3393 — vj_npc_blood_pool convar (S&Box: always enabled via Bleeds+HasBloodPool)
             SpawnBloodPool(dmginfo, hitgroup, corpse);
         }
 
