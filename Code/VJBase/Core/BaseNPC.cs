@@ -121,6 +121,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public bool HasRangeAttack { get; set; }
     public List<string> RangeAttackProjectiles { get; set; }
     public List<string> RangeAttackEntityToSpawn { get; set; }
+    public List<string> RangeAttackProjectileModel { get; set; }
     public float RangeAttackMinDistance { get; set; } = 800;
     public float RangeAttackMaxDistance { get; set; } = 2000;
     public float RangeAttackAngleRadius { get; set; } = 100;
@@ -192,6 +193,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public int DeathAnimationChance { get; set; } = 1;
     public float DeathAnimationDecreaseLengthAmount { get; set; }
     public List<string> AnimTbl_Death { get; set; } = new();
+    public int Skin { get; set; } // Source GetSkin/SetSkin → S&Box MaterialGroup fallback
     public bool HasDeathCorpse { get; set; } = true;
     public bool? HasDeathRagdoll { get; set; }
     public string DeathCorpseEntityClass { get; set; }
@@ -778,13 +780,38 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
         MaintainAlertBehavior(false);
     }
 
-    /// <summary>SpawnRangeProjectile — creature init.lua:2635-2657. Virtual, override in derived types for specific projectiles.</summary>
+    /// <summary>SpawnRangeProjectile — creature init.lua:2635-2657. Creates projectile entity with ModelRenderer + Rigidbody + ModelCollider.</summary>
     public virtual void SpawnRangeProjectile(string projectileClass, GameObject target)
     {
-        // Phase 3: actual S&Box prefab spawning — callers should override with game-specific projectile types.
-        // Lua flow: ents.Create(projectileClass) → SetPos(spawnPos) → SetAngles(angleTowardEnemy) →
-        //           OnRangeAttackExecute("PreSpawn") → SetOwner(self) → Spawn() → Activate() →
-        //           SetVelocity(RangeAttackProjVel) → OnRangeAttackExecute("PostSpawn")
+        // lua:2635 — ents.Create(projectileClass) + model from RangeAttackProjectileModel
+        var proj = new GameObject(true, projectileClass);
+        // lua:2635b — SetModel if RangeAttackProjectileModel configured
+        var modelPath = VJUtility.PICK(RangeAttackProjectileModel);
+        if (!string.IsNullOrEmpty(modelPath))
+        {
+            var renderer = proj.Components.Create<ModelRenderer>();
+            renderer.Model = Model.Load(modelPath);
+        }
+        // lua:2636-2637 — SetPos
+        var spawnPos = RangeAttackProjPos(proj);
+        proj.WorldPosition = spawnPos;
+        // lua:2638 — SetAngles toward enemy
+        if (target.IsValid())
+            proj.WorldRotation = Rotation.LookAt((target.WorldPosition - spawnPos).Normal);
+        // lua:2639 — OnRangeAttackExecute("PreSpawn") + Spawn/Activate (N/A in S&Box)
+        OnRangeAttackExecute("PreSpawn", target, proj);
+        // lua:2640-2641 — SetOwner + SetPhysicsAttacker (Source only, S&Box uses Network.Owner)
+        // lua:2644 — constraint.NoCollide(self, projectile) Phase 3: collision ignore setup
+
+        // lua:2645-2655 — Apply physics velocity via Rigidbody
+        var vel = RangeAttackProjVel(proj);
+        var rb = proj.Components.Create<Rigidbody>();
+        rb.Enabled = true;
+        rb.Gravity = false;
+        rb.Velocity = vel;
+        proj.WorldRotation = Rotation.LookAt(vel.Normal);
+        // lua:2656 — OnRangeAttackExecute("PostSpawn")
+        OnRangeAttackExecute("PostSpawn", target, proj);
     }
 
     /// <summary>MapDamageTypeToTag — converts Source DMG_* int → VJDamageTags string for DamageInfo.Tags.</summary>

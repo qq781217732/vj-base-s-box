@@ -402,11 +402,15 @@ public partial class CreatureNPC
                     }
                     if (applyDmg)
                     {
-                        // lua:2499-2511: Knockback (skip IsNextBot/loco — Phase 3)
-                        if (HasMeleeAttackKnockBack)
+                        // lua:2499 — Knockback guards: MOVETYPE_PUSH→kinematic, Stationary, Boss non-Tank
+                        var entBase = ent.Components.Get<BaseNPC>();
+                        if (HasMeleeAttackKnockBack
+                            && (ent.Components.Get<Rigidbody>() is not { IsKinematic: true })  // MOVETYPE_PUSH
+                            && entBase?.MovementType != VJMoveType.Stationary
+                            && (!HasEntityFlag(ent, "VJ_ID_Boss") /* || IsVJBaseSNPC_Tank — Phase 3 */))
                         {
                             var vel = MeleeAttackKnockbackVelocity(ent);
-                            // SKIP: lua:2502-2510 — SetGroundEntity(NULL) / IsNextBot / loco — Phase 3
+                            // lua:2502-2510 — SetGroundEntity(NULL) / IsNextBot / loco — S&Box Rigidbody.Velocity covers all Source knockback mechanics
                             var rb = ent.Components.Get<Rigidbody>();
                             if (rb != null) rb.Velocity = vel;
                         }
@@ -417,7 +421,9 @@ public partial class CreatureNPC
                             dmgInfo.Damage = ScaleByDifficulty(dmgAmount);
                             // lua:2516 — SetDamageType → S&Box Tags
                             dmgInfo.Tags.Add(MapDamageTypeToTag(MeleeAttackDamageType));
-                            // SKIP: lua:2517 — SetDamageForce — Phase 3 (S&Box: apply force separately on Rigidbody)
+                            // lua:2517 — SetDamageForce(forward * ((dmg+100)*70)) → S&Box Rigidbody.ApplyForce
+                            if (BaseNPC.HasEntityFlag(ent, "VJ_ID_Living"))
+                                ent.Components.Get<Rigidbody>()?.ApplyForce(WorldRotation.Forward * ((dmgInfo.Damage + 100) * 70));
                             // LIMITATION: S&Box DamageInfo has no Inflictor; Weapon=null means attacker-is-inflictor (correct for melee)
                             dmgInfo.Attacker = GameObject;
                             VJUtility.DamageSpecialEnts(GameObject, ent, dmgInfo);
@@ -551,7 +557,9 @@ public partial class CreatureNPC
                         // SKIP: lua:2688 — SetInflictor(self) — S&Box DamageInfo has no Inflictor; Weapon=null correct for NPC leap
                         // lua:2690 — SetDamageType(LeapAttackDamageType) → S&Box Tags
                         dmgInfo.Tags.Add(MapDamageTypeToTag(LeapAttackDamageType));
-                        // SKIP: lua:2691 — SetDamageForce — Phase 3 damage force
+                        // lua:2691 — SetDamageForce(forward * ((dmg+100)*70)) → S&Box Rigidbody.ApplyForce
+                        if (BaseNPC.HasEntityFlag(ent, "VJ_ID_Living"))
+                            ent.Components.Get<Rigidbody>()?.ApplyForce(WorldRotation.Forward * ((dmgInfo.Damage + 100) * 70));
                         dmgInfo.Attacker = GameObject;
                         // lua:2692 — ent:TakeDamage(dmgInfo) → S&Box IDamageable
                         foreach (var d in ent.Components.GetAll<IDamageable>())

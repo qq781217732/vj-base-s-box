@@ -104,11 +104,27 @@ public static class VJUtility
     /// <summary>VJ.IsCurrentAnim — checks if entity is currently playing animation (Phase 3)</summary>
     public static bool IsCurrentAnim(GameObject ent, string anim) => false;
 
-    /// <summary>VJ.Corpse_Add — funcs.lua corpse.lua:64-83. Corpse list management with limit. P2 (depends on timer + convar).</summary>
-    public static void Corpse_Add(GameObject corpse) { /* P2: corpse limit system */ }
+    /// <summary>VJ.Corpse_Add — funcs.lua corpse.lua:64-83. Corpse list management with limit (default 5).</summary>
+    private static readonly List<GameObject> _corpseList = new();
+    public static void Corpse_Add(GameObject corpse)
+    {
+        if (corpse == null || !corpse.IsValid()) return;
+        _corpseList.Add(corpse);
+        // lua: limit to 5 corpses, destroy oldest
+        while (_corpseList.Count > 5)
+        {
+            var oldest = _corpseList[0];
+            _corpseList.RemoveAt(0);
+            if (oldest.IsValid()) oldest.Destroy();
+        }
+    }
 
-    /// <summary>VJ.Corpse_AddStinky — funcs.lua corpse.lua:43-58. Stink timer + material check. P2 (depends on timer).</summary>
-    public static void Corpse_AddStinky(GameObject corpse, bool checkMat = true) { /* P2: stink timer system */ }
+    /// <summary>VJ.Corpse_AddStinky — funcs.lua corpse.lua:43-58. Mark corpse for stink timer. P2: timer deferred.</summary>
+    public static void Corpse_AddStinky(GameObject corpse, bool checkMat = true)
+    {
+        if (corpse == null || !corpse.IsValid()) return;
+        corpse.Tags.Add("vj_corpse_stinky");
+    }
 
     /// <summary>VJ.AnimDurationEx — Calculate animation duration with override (Phase 3)</summary>
     public static float AnimDurationEx(GameObject ent, string anim, object overrideVal, float decrease = 0) => 0f;
@@ -226,5 +242,53 @@ public static class VJUtility
         if (npc == null) return new List<Vector3>();
         return TraceDirections(npc, trType, maxDist, requireFullDist, numDirections,
             excludeForward, excludeBack, excludeLeft, excludeRight);
+    }
+
+    // ═══ Trajectory Calculation (funcs.lua:497-625) ═══
+
+    /// <summary>
+    /// VJ.CalculateTrajectory — calculates projectile launch velocity.
+    /// funcs.lua:497-625. Supports "Line" (straight, no-gravity) and "Curve" (parabolic arc).
+    /// </summary>
+    public static Vector3 CalculateTrajectory(GameObject self, GameObject target,
+        string algorithmType, Vector3 startPos, Vector3 targetPos, float strength,
+        float gravityOverride = 800f)
+    {
+        // lua:619-624 — prediction re-run: Phase 3 (needs GetAimPosition integration)
+        // if predict is set, recalculate using GetAimPosition
+
+        if (algorithmType == "Line")
+        {
+            return (targetPos - startPos).Normal * strength;
+        }
+        else if (algorithmType == "Curve")
+        {
+            float gravity = gravityOverride > 0 ? gravityOverride : 800f;
+            float dist = startPos.Distance(targetPos);
+            var midPoint = startPos + (targetPos - startPos) * 0.5f;
+
+            float verticalAdjustment = MathF.Abs(startPos.z - targetPos.z)
+                + Math.Clamp(strength, -dist, dist);
+            if (dist > strength * 9.5f && dist > 2000f)
+                verticalAdjustment += dist * 0.1f;
+
+            midPoint.z += verticalAdjustment;
+
+            if (midPoint.z < startPos.z || midPoint.z < targetPos.z)
+                midPoint = targetPos;
+
+            float distance1 = midPoint.z - startPos.z;
+            float distance2 = midPoint.z - targetPos.z;
+
+            float time1 = MathF.Sqrt(MathF.Max(0.001f, distance1) / (0.5f * gravity));
+            float time2 = MathF.Sqrt(MathF.Max(0.001f, distance2) / (0.5f * gravity));
+
+            var result = (targetPos - startPos) / (time1 + time2);
+            result.z = gravity * time1;
+            return result;
+        }
+
+        // lua:613-615 — invalid algorithm type, log error
+        return default;
     }
 }

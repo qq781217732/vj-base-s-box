@@ -97,7 +97,7 @@ public partial class BaseNPC
 			// base_aa.lua:73-78 — debug prints (Phase 3)
 			// base_aa.lua:79 — NPC not fully in water → wander/go deeper
 			if (WaterLevel() <= 2) { MaintainIdleBehavior(1); return; }
-			// SKIP: base_aa.lua:82 — MASK_WATER trace (util.TraceLine mask=MASK_WATER) — Phase 3 water surface trace
+			// lua:82 — MASK_WATER trace → S&Box WaterManager.IsPositionInsideAny(destVec)
 			// Source detects water surface crossings from submerged origin → hit at water/air boundary.
 			// S&Box SceneTrace cannot hit trigger volumes (WaterTool bodies are triggers). No content-based trace.
 			// Temporary: IsPositionInsideAny(destVec) checks endpoint only. Misses case where dest is in a

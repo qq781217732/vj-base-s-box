@@ -86,10 +86,27 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
     [Property] public int Primary_TakeAmmo { get; set; } = 1;
     [Property] public float MeleeWeaponDistance { get; set; } = 75f;
 
+    // ═══ Primary Fire Sounds (shared.lua:142-150) ═══
+    [Property] public List<string> Primary_Sound { get; set; } = new();
+    [Property] public float Primary_SoundLevel { get; set; } = 80f;
+    [Property] public float Primary_SoundPitchA { get; set; } = 90f;
+    [Property] public float Primary_SoundPitchB { get; set; } = 110f;
+    [Property] public float Primary_SoundVolume { get; set; } = 1f;
+    public (float a, float b) Primary_SoundPitch => (Primary_SoundPitchA, Primary_SoundPitchB);
+
+    [Property] public bool Primary_HasDistantSound { get; set; } = true;
+    [Property] public List<string> Primary_DistantSound { get; set; } = new();
+    [Property] public float Primary_DistantSoundLevel { get; set; } = 140f;
+    [Property] public float Primary_DistantSoundPitchA { get; set; } = 90f;
+    [Property] public float Primary_DistantSoundPitchB { get; set; } = 110f;
+    [Property] public float Primary_DistantSoundVolume { get; set; } = 1f;
+    public (float a, float b) Primary_DistantSoundPitch => (Primary_DistantSoundPitchA, Primary_DistantSoundPitchB);
+
     // ═══ Runtime State ═══
     public float NPC_NextPrimaryFireT { get; set; }
     public float NPC_NextDrySoundT { get; set; }
     public float NPC_SecondaryFireNextT { get; set; }
+    public float NPC_SecondaryFireTimeT { get; set; }
     public float NPC_DelayedFireTime { get; set; }
     public float NPC_ExtraFireSoundTime_T { get; set; }
 
@@ -110,7 +127,20 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
 
     public virtual void NPC_Reload()
     {
+        var owner = WeaponOwner;
+        if (!owner.IsValid()) return;
+
+        // lua:994 — Push back grenade throw by 2s
+        var human = owner.Components.Get<HumanNPC>();
+        if (human != null)
+            human.NextThrowGrenadeT += 2f;
+
+        // lua:995 — OnReload("Start")
         OnReloadAction?.Invoke();
+
+        // lua:996 — Play reload sound
+        if (NPC_HasReloadSound && !string.IsNullOrEmpty(NPC_ReloadSound))
+            Sound.Play(NPC_ReloadSound, owner.WorldPosition);
     }
 
     // ═══ Weapon lifecycle callbacks ═══
@@ -140,6 +170,20 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
         // Only fire if this is the owner's active weapon
         var activeWep = npc.GetActiveWeapon();
         if (activeWep != GameObject) return;
+
+        // Secondary fire delayed spawn (lua:612-621 — timer.Simple(fireTime, ...))
+        if (NPC_SecondaryFireTimeT > 0 && Time.Now >= NPC_SecondaryFireTimeT)
+        {
+            NPC_SecondaryFireTimeT = 0;
+            if (owner.IsValid() && npc.GetEnemy().IsValid())
+            {
+                NPC_SecondaryFire();
+                var fireSd = VJUtility.PICK(NPC_SecondaryFireSound);
+                if (fireSd != null)
+                    Sound.Play(fireSd, owner.WorldPosition);
+                NPC_SecondaryFireNextT = Time.Now + Game.Random.Float(NPC_SecondaryFireNextA, NPC_SecondaryFireNextB);
+            }
+        }
 
         // Delayed fire completion FIRST (lua:629 — timer.Simple expired → PrimaryAttack)
         // Must check before auto-fire to avoid NPCShoot_Primary re-arming delay and overwriting the pending shot
@@ -243,6 +287,48 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
     /// </summary>
     public virtual bool OnPrimaryAttack(string type, GameObject ent = null) => false;
 
+    // ═══ Secondary Fire (shared.lua:221-242) ═══
+
+    /// <summary>
+    /// NPC_SecondaryFire_BeforeTimer — Lua:222. Called before secondary fire timer starts.
+    /// Override for custom pre-fire behavior.
+    /// </summary>
+    public virtual void NPC_SecondaryFire_BeforeTimer(GameObject eneEnt, float fireTime) { }
+
+    /// <summary>
+    /// NPC_SecondaryFire — Lua:223-242. Default implementation: spawns NPC_SecondaryFireEnt
+    /// as a projectile and applies trajectory velocity.
+    /// Override for custom secondary attack behavior.
+    /// </summary>
+    public virtual void NPC_SecondaryFire()
+    {
+        var owner = WeaponOwner;
+        if (!owner.IsValid()) return;
+
+        var ene = owner.Components.Get<BaseNPC>()?.GetEnemy();
+        var spawnPos = GetBulletPos(owner);
+        var targetPos = ene.IsValid() ? ene.WorldPosition + ene.WorldRotation.Forward * 40f : spawnPos + owner.WorldRotation.Forward * 1000f;
+
+        // lua:227 — ents.Create(self.NPC_SecondaryFireEnt)
+        var proj = new GameObject(true, NPC_SecondaryFireEnt);
+        proj.WorldPosition = spawnPos;
+        proj.WorldRotation = owner.WorldRotation;
+        // lua:230 — SetOwner(owner)
+        // Phase 3: set entity ownership
+
+        // lua:231-233 — Spawn + Activate
+        // Phase 3: proper entity activation
+
+        // lua:234-241 — Apply trajectory
+        if (proj.Components.TryGet<Sandbox.Rigidbody>(out var rb))
+        {
+            rb.Enabled = true;
+            var vel = VJUtility.CalculateTrajectory(owner, ene, "Curve", spawnPos, targetPos, 1f);
+            rb.Velocity = vel;
+            proj.WorldRotation = Rotation.LookAt(vel.Normal);
+        }
+    }
+
     /// <summary>OnPrimaryAttack_BulletCallback — shared.lua:753-755. Fired when bullet trace hits.</summary>
     public Action<GameObject, TraceResult, DamageInfo> OnPrimaryAttack_BulletCallback { get; set; }
 
@@ -275,9 +361,12 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
         {
             if (Game.Random.Next(1, NPC_SecondaryFireChance + 1) == 1)
             {
-                NPC_SecondaryFireNextT = Time.Now + Game.Random.Float(NPC_SecondaryFireNextA, NPC_SecondaryFireNextB);
-                // Secondary fire animation + delayed spawn — Phase 3 animation + entity system
-                // SKIP: lua:605-621 — secondary fire animation, timer, NPC_SecondaryFire
+                // lua:605 — PlayAnim(AnimTbl_WeaponAttackSecondary) → fireTime
+                // SKIP: lua:605-608 — PlayAnim + animDur calculation — Phase 3 animation
+                float fireTime = npc.Weapon_SecondaryFireTime; // configurable override (default 0 = fire immediately)
+                NPC_SecondaryFireNextT = Time.Now + fireTime + 0.5f;
+                NPC_SecondaryFire_BeforeTimer(ene, fireTime);
+                NPC_SecondaryFireTimeT = Time.Now + fireTime;
                 return;
             }
             else
@@ -375,7 +464,26 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
             NPC_ExtraFireSoundTime_T = curTime + NPC_ExtraFireSoundTime;
 
         // lua:687-693 — Primary firing sound
-        // SKIP: lua:687-705 — Primary.Sound/EmitSound + DistantSound + gesture — Phase 3 sound system
+        var fireSd = VJUtility.PICK(Primary_Sound);
+        if (fireSd != null)
+        {
+            var handle = Sound.Play(fireSd, owner.WorldPosition);
+            handle.Volume = Primary_SoundVolume;
+            handle.Pitch = Game.Random.Float(Primary_SoundPitchA, Primary_SoundPitchB);
+        }
+        // lua:694-700 — Distant sound
+        if (Primary_HasDistantSound)
+        {
+            var distantSd = VJUtility.PICK(Primary_DistantSound);
+            if (distantSd != null)
+            {
+                var farHandle = Sound.Play(distantSd, owner.WorldPosition);
+                farHandle.Volume = Primary_DistantSoundVolume;
+                farHandle.Pitch = Game.Random.Float(Primary_DistantSoundPitchA, Primary_DistantSoundPitchB);
+            }
+        }
+        // lua:702-705 — Firing gesture (VJ Human NPCs only)
+        // SKIP: lua:702-705 — AnimTbl_WeaponAttackGesture / PlayAnim — Phase 3 animation system
 
         // ═══ lua:707-742 — MELEE WEAPON ═══
         if (IsMeleeWeapon)
@@ -419,7 +527,9 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
                 float dmgAmount = isNPC ? npc.ScaleByDifficulty(Primary_Damage) : Primary_Damage;
                 var dmginfo = new DamageInfo();
                 dmginfo.Damage = dmgAmount;
-                // SKIP: lua:718 — SetDamageForce for VJ_ID_Living — Phase 3
+                // lua:718 — SetDamageForce(forward * ((dmg+100)*70)) → S&Box Rigidbody.ApplyForce
+                if (BaseNPC.HasEntityFlag(ent, "VJ_ID_Living"))
+                    ent.Components.Get<Rigidbody>()?.ApplyForce(owner.WorldRotation.Forward * ((dmginfo.Damage + 100) * 70));
                 // LIMITATION: S&Box DamageInfo has no Inflictor; Attacker=owner is correct (weapon is owned by attacker)
                 dmginfo.Attacker = owner;
                 dmginfo.Tags.Add("melee");

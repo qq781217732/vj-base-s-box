@@ -20,6 +20,13 @@ public partial class HumanNPC : CreatureNPC
     public bool AllowWeaponOcclusionDelay { get; set; }
     public float NextThrowGrenadeT { get; set; }
 
+    private static readonly List<string> _sdWepSwitch = new()
+    {
+        "physics/metal/weapon_impact_soft1.wav",
+        "physics/metal/weapon_impact_soft2.wav",
+        "physics/metal/weapon_impact_soft3.wav"
+    };
+
     // ═══ Attack Config (human-specific values set in constructor) ═══
     public bool HasGrenadeAttack { get; set; }
 

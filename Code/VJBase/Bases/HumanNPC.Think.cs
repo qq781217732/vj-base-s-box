@@ -182,7 +182,9 @@ public partial class HumanNPC
                     }
                 }
                 // lua:2485 — VJ.EmitSound(self, sdWepSwitch, 70)
-                // SKIP: lua:2485 — VJ.EmitSound(sdWepSwitch, 70) — Phase 3 weapon sound
+                var wepSwitchSd = VJUtility.PICK(_sdWepSwitch);
+                if (wepSwitchSd != null)
+                    Sound.Play(wepSwitchSd, WorldPosition);
                 // lua:2486 — curWep = wep
                 curWep = targetWep; // null if not found → falls through to Block 3 else → None
             }
@@ -1301,9 +1303,9 @@ public partial class HumanNPC
             var rb = grenade.Components.Get<Rigidbody>();
             if (rb != null)
             {
-                rb.Sleeping = false;
-                // SKIP: lua:3317 — AddAngleVelocity — Phase 3
-                rb.Velocity = vel;
+                rb.Sleeping = false;                                // lua:3316 — phys:Wake()
+                rb.AngularVelocity += new Vector3(500, 500, 500);  // lua:3317 — AddAngleVelocity(math.Rand(500,500), ...) → spin tumble
+                rb.Velocity = vel;                                 // lua:3318 — SetVelocity(vel)
             }
         }
 
@@ -2095,7 +2097,8 @@ public partial class HumanNPC
         if (!HasDeathCorpse || HasDeathRagdoll == false)
         {
             // lua:4474 — if IsValid(self.WeaponEntity) then self.WeaponEntity:Remove() end
-            // SKIP: lua:4474 — WeaponEntity:Remove() — Phase 3 weapon entity removal lifecycle
+            if (WeaponEntity.IsValid())
+                WeaponEntity.Destroy();
             // lua:4475-4480 — remove child ents (DeathCorpse_ChildEnts loop)
             // SKIP: lua:4475-4480 — child ent removal — Phase 3 entity lifecycle
             return null;
@@ -2195,26 +2198,38 @@ public partial class HumanNPC
     public virtual void DeathWeaponDrop(DamageInfo dmginfo, int hitgroup)
     {
         // lua:4485 — activeWep = funcGetActiveWeapon(self)
-        var activeWep = GetActiveWeapon(); // Phase 3 stub: returns null
+        var activeWep = GetActiveWeapon();
         // lua:4486 — if !self.DropWeaponOnDeath or !IsValid(activeWep) then return end
         if (!DropWeaponOnDeath || !activeWep.IsValid()) return;
 
-        // lua:4488-4490 — Save original pos & ang
-        // SKIP: lua:4488-4490 — activeWep:GetPos() / activeWep:GetAngles() — Phase 3 weapon transform
+        // lua:4488-4490 — Save original pos & ang before DropWeapon changes them
+        var orgPos = activeWep.WorldPosition;
+        var orgAng = activeWep.WorldRotation;
 
-        // lua:4491 — self:DropWeapon(activeWep, nil, self:GetForward())
-        // SKIP: lua:4491 — DropWeapon(activeWep, nil, GetForward) — Phase 3 weapon drop system
+        // lua:4491 — DropWeapon: un-parent from NPC
+        activeWep.Parent = null;
+        // lua:4492-4495 — if WorldModel_UseCustomPosition then restore saved pos/ang
+        // Phase 3: WorldModel_UseCustomPosition — weapon model attachment system
 
-        // lua:4492-4495 — if activeWep.WorldModel_UseCustomPosition then restore pos/ang
-        // SKIP: lua:4492-4495 — WorldModel_UseCustomPosition + SetPos/SetAngles — Phase 3 weapon model
-
-        // lua:4496 — phys = activeWep:GetPhysicsObject()
-        // SKIP: lua:4496 — GetPhysicsObject() — Phase 3 physics (Rigidbody component)
-        // lua:4497 — if IsValid(phys) then
-        // SKIP: lua:4497-4508 — physics block:
-        //        DMG_DISSOLVE/prop_combine_ball → EnableGravity(false)+SetVelocity
-        //        else → dmgForce calculation + SetMass(1)+ApplyForceCenter — Phase 3 physics
-
+        // lua:4496-4508 — Apply drop physics
+        if (activeWep.Components.TryGet<Sandbox.Rigidbody>(out var rb))
+        {
+            rb.Enabled = true;
+            // lua:4498 — DMG_DISSOLVE → anti-gravity launch
+            if (dmginfo != null && dmginfo.Tags.Has(VJDamageTags.Dissolve))
+            {
+                rb.Gravity = false;
+                rb.Velocity = WorldRotation.Forward * -150f + WorldRotation.Right * Game.Random.Float(-100f, 100f) + WorldRotation.Up * 50f;
+            }
+            else
+            {
+                // lua:4502-4505 — dmgForce = (SavedDmgInfo.force / 40) + moveVelocity
+                var dmgForce = (dmginfo?.Force ?? 0) / 40f;
+                // Phase 3: DeathAnimationCodeRan → use GroundSpeedVelocity
+                rb.MassOverride = 1f;
+                rb.ApplyForce(dmgForce * WorldRotation.Forward);
+            }
+        }
         // lua:4510 — self.WeaponEntity = activeWep
         WeaponEntity = activeWep;
         // lua:4512 — self:OnDeathWeaponDrop(dmginfo, hitgroup, activeWep)
@@ -2285,11 +2300,12 @@ public partial class HumanNPC
 
                     // lua:3009-3021 — Knockback (skip doors, trains, stationary, Boss non-Tank)
                     if (HasMeleeAttackKnockBack
-                        // SKIP: lua:3009 — ent:GetMoveType() != MOVETYPE_PUSH — Source engine move type, no S&Box equivalent
+                        // lua:3009 — GetMoveType()!=MOVETYPE_PUSH → S&Box: skip kinematic Rigidbody (doors/elevators)
+                        && (ent.Components.Get<Rigidbody>() is not { IsKinematic: true })
                         && entBase?.MovementType != VJMoveType.Stationary
                         && (!HasEntityFlag(ent, "VJ_ID_Boss") /* || ent.IsVJBaseSNPC_Tank — Phase 3 */))
                     {
-                        // SKIP: lua:3010-3019 — IsNextBot / SetGroundEntity(NULL) / loco:Approach/Jump/SetVelocity — Phase 3 NextBot
+                        // SKIP: lua:3010-3019 — IsNextBot / SetGroundEntity(NULL) / loco:Approach/Jump/SetVelocity — S&Box Rigidbody.Velocity accomplishes same knockback without Source NextBot
                         var vel = MeleeAttackKnockbackVelocity(ent); // lua:3014
                         var rb = ent.Components.Get<Rigidbody>();
                         if (rb != null)
@@ -2304,7 +2320,9 @@ public partial class HumanNPC
                         var dmgInfo = new DamageInfo();
                         dmgInfo.Damage = dmgAmount;                     // lua:3025 — SetDamage(dmgAmount) (already scaled)
                         dmgInfo.Tags.Add(MapDamageTypeToTag(MeleeAttackDamageType)); // lua:3026 — SetDamageType
-                        // SKIP: lua:3027 — SetDamageForce — Phase 3 (S&Box DamageInfo no Force field; use Rigidbody.ApplyForce)
+                        // lua:3027 — SetDamageForce(forward * ((dmg+100)*70)) → S&Box Rigidbody.ApplyForce
+                        if (BaseNPC.HasEntityFlag(ent, "VJ_ID_Living"))
+                            ent.Components.Get<Rigidbody>()?.ApplyForce(WorldRotation.Forward * ((dmgInfo.Damage + 100) * 70));
                         // LIMITATION: S&Box DamageInfo has no Inflictor; Weapon=null means attacker-is-inflictor
                         dmgInfo.Attacker = GameObject;                  // lua:3029 — SetAttacker(self)
                         VJUtility.DamageSpecialEnts(GameObject, ent, dmgInfo); // lua:3030
