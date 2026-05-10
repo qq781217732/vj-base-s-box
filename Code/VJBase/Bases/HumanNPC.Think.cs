@@ -1202,13 +1202,12 @@ public partial class HumanNPC
         else if (landDir == "EnemyLastVis")
         {
             // lua:3120 — SetTurnTarget(eneData.VisiblePos, AttackAnimDuration or 1.5)
-            if (Enemy.Visible) SetTurnTarget(Enemy.VisiblePos, AttackAnimDuration > 0 ? AttackAnimDuration : 1.5f);
+            SetTurnTarget(Enemy.VisiblePos, AttackAnimDuration > 0 ? AttackAnimDuration : 1.5f);
         }
         else
         {
-            // lua:3122-3126 — VJ.TraceDirections("Quick", 300, 6, excludeBack=true, excludeLeft=true, excludeRight=true) + PICK
-            var trs = VJUtility.TraceDirections(this, "Quick", 300f, requireFullDist: false, numDirections: 6,
-                excludeBack: true, excludeLeft: true, excludeRight: true);
+            // lua:3122-3123 — bestPos = PICK(VJ.TraceDirections(self, "Quick", 200, true, false, 8))
+            var trs = VJUtility.TraceDirections(this, "Quick", 200f, requireFullDist: true, numDirections: 8);
             if (trs != null && trs.Count > 0)
                 SetTurnTarget(VJUtility.PICK(trs), AttackAnimDuration > 0 ? AttackAnimDuration : 1.5f);
         }
@@ -1281,8 +1280,8 @@ public partial class HumanNPC
         }
         else
         {
-            // lua:3249-3253 — VJ.TraceDirections("Quick", 300, 6, excludeBack=true) + PICK result
-            var trs = VJUtility.TraceDirections(this, "Quick", 300f, requireFullDist: false, numDirections: 6, excludeBack: true);
+            // lua:3249-3253 — bestPos = PICK(VJ.TraceDirections(self, "Quick", 200, true, false, 8))
+            var trs = VJUtility.TraceDirections(this, "Quick", 200f, requireFullDist: true, numDirections: 8);
             if (trs != null && trs.Count > 0)
                 landingPos = VJUtility.PICK(trs);
         }
