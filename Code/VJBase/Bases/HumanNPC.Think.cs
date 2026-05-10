@@ -683,12 +683,23 @@ public partial class HumanNPC
                                     // SKIP: lua:2805 — playReloadAnimation(self, TranslateActivity(PICK(AnimTbl_WeaponReload))) — Phase 3 animation
                                     PlayReloadAnimation(null);
                                 }
-                                // lua:2806-2822 — SCHEDULE_COVER_RELOAD: find cover, run, wait, on-finish reload
+                                // lua:2806-2822 — SCHEDULE_COVER_RELOAD: find cover position, run, reload
                                 else
                                 {
-                                    // SKIP: lua:2807-2822 — SCHEDULE_COVER_RELOAD (TASK_FIND_COVER_FROM_ENEMY) — Phase 3 cover/navmesh system
-                                    // Fallback to standing reload so NPC doesn't get stuck
-                                    PlayReloadAnimation(null);
+                                    var moveCheck = VJUtility.PICK(VJUtility.TraceDirections(this, "Quick", 200f, true, 8, true, false, false, false));
+                                    if (moveCheck != default)
+                                    {
+                                        SCHEDULE_GOTO_POSITION("TASK_RUN_PATH", schedule =>
+                                        {
+                                            schedule.EngTask(EngineTask.FaceEnemy, 0);
+                                            schedule.RunCodeOnFinish = () => PlayReloadAnimation(null);
+                                        });
+                                        SetLastPosition(moveCheck);
+                                    }
+                                    else
+                                    {
+                                        PlayReloadAnimation(null);
+                                    }
                                 }
                             }
                         }
@@ -917,8 +928,12 @@ public partial class HumanNPC
                                     {
                                         // lua:3688 — self:StopMoving()
                                         StopMoving();
-                                        // lua:3689 — if IsGuard then GuardData.Position = moveCheck ... end
-                                        // SKIP: lua:3689 — GuardData.Position/Direction — Phase 3 guard system
+                                        // lua:3689 — if IsGuard then GuardData.Position = moveCheck, Direction = angle
+                                        if (IsGuard)
+                                        {
+                                            Guard.Position = moveCheck;
+                                            Guard.Direction = (moveCheck - myPos).Normal;
+                                        }
                                         // lua:3690 — self:SetLastPosition(moveCheck)
                                         SetLastPosition(moveCheck);
                                         // lua:3691 — NextChaseTime = curTime + 1
@@ -1354,17 +1369,15 @@ public partial class HumanNPC
         }
 
         // ---- Block 2: VisibleCount / reachable enemies guard (lua:3862-3874) ----
-        // lua:3862 — if checkVis then
         if (checkVis)
         {
-            // lua:3864 — curEnemies = eneData.VisibleCount // selfData.CurrentReachableEnemies
-            // SKIP: lua:3864 — VisibleCount // CurrentReachableEnemies (Lua integer divide) — Phase 3 reachability
-            // lua:3865 — if (eneValid && (curEnemies - 1) >= 1) or (!eneValid && curEnemies >= 1) then
-            // SKIP: lua:3865 — reachable enemies guard — Phase 3
-            // lua:3866 — self:MaintainRelationships() — Select a new enemy
-            // SKIP: lua:3866 — MaintainRelationships — Phase 3
-            // lua:3869-3872 — if eneData.VisibleCount > 0 then eneData.Reset = false return false end
-            // SKIP: lua:3869-3872 — VisibleCount > 0 guard — Phase 3
+            // lua:3864 — curEnemies = VisibleCount // CurrentReachableEnemies
+            int curEnemies = CurrentReachableEnemies > 0 ? Enemy.VisibleCount / CurrentReachableEnemies : 0;
+            if ((eneValid && (curEnemies - 1) >= 1) || (!eneValid && curEnemies >= 1))
+            {
+                MaintainRelationships();
+                if (Enemy.VisibleCount > 0) { Enemy.Reset = false; return; }
+            }
         }
 
         // ---- Block 3: Debug print (lua:3876) ----
@@ -1518,14 +1531,18 @@ public partial class HumanNPC
         // SKIP: lua:3936 — dmginfo:GetDamageType() — Source engine CTakeDamageInfo API
         // lua:3937 — curTime = CurTime()
         float curTime = Time.Now;
-        // lua:3938
-        // lua:3939 — if self:IsOnFire() then extend fire (lua:3939-3942)
-        // lua:3940 — isFireEnt = dmgInflictor/dmgAttacker:GetClass()=="entityflame" → S&Box: tag check
-        var dmgInflictor = dmgInfo.Weapon; // S&Box: Weapon is closest to Source Inflictor
-        bool isFireEnt = dmgInflictor.IsValid() && dmgInflictor.Tags.Has("entityflame")
-            && dmgAttacker.IsValid() && dmgAttacker.Tags.Has("entityflame");
-        // lua:3941 — if self:WaterLevel() > 1 then self:Extinguish() end
-        if (WaterLevel() > 1) Extinguish();
+        // lua:3938 — local isFireEnt = false
+        bool isFireEnt = false;
+        // lua:3939 — if self:IsOnFire() then
+        if (IsOnFire())
+        {
+            // lua:3940 — isFireEnt = entityflame class check → S&Box: tag check
+            var dmgInflictor = dmgInfo.Weapon;
+            isFireEnt = dmgInflictor.IsValid() && dmgInflictor.Tags.Has("entityflame")
+                && dmgAttacker.IsValid() && dmgAttacker.Tags.Has("entityflame");
+            // lua:3941 — if self:WaterLevel() > 1 then self:Extinguish() end
+            if (WaterLevel() > 1) Extinguish();
+        }
 
         // ---- Block E: Boss bypass (lua:3944-3947) ----
         // lua:3945-3946 — if dmgAttacker && ForceDamageFromBosses && dmgAttacker.VJ_ID_Boss then goto skip_immunity

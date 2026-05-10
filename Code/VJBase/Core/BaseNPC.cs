@@ -1220,10 +1220,10 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
             else
             {
                 // lua:2467-2481 — enemy is close enough, tell ally to attack
-                // lua:2469-2470 — player-specific: override friendly disposition
+                // lua:2469-2470 — player-specific: override friendly disposition to hate
                 if (eneIsPlayer && ally.Disposition(ene) == (int)VJBase.Disposition.Like)
                 {
-                    // SKIP: lua:2470 — SetRelationshipMemory(ent, ene, MEM_OVERRIDE_DISPOSITION, D_HT) — Phase 3 relationship memory
+                    ally.SetRelationshipMemory(ene, "override_disposition", (int)VJBase.Disposition.Hate);
                 }
                 ally.ForceSetEnemy(ene, true);
                 // lua:2473-2481 — chase gate + visible→FaceTarget, !visible→PlaySound+AlertBehavior

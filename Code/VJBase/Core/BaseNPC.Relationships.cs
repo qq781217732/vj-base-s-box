@@ -130,8 +130,13 @@ public partial class BaseNPC
         // ---- Block 2: VisibleCount / reachable enemies guard (lua:2902-2914) ----
         if (checkVis)
         {
-            // lua:2904 — curEnemies = eneData.VisibleCount // selfData.CurrentReachableEnemies
-            // SKIP: lua:2904-2913 — VisibleCount // CurrentReachableEnemies + MaintainRelationships — Phase 3 reachability
+            // lua:2904 — curEnemies = VisibleCount // CurrentReachableEnemies (floor div)
+            int curEnemies = CurrentReachableEnemies > 0 ? Enemy.VisibleCount / CurrentReachableEnemies : 0;
+            if ((eneValid && (curEnemies - 1) >= 1) || (!eneValid && curEnemies >= 1))
+            {
+                MaintainRelationships();
+                if (Enemy.VisibleCount > 0) { Enemy.Reset = false; return; }
+            }
         }
 
         // ---- Block 3: Debug print (lua:2916) ----
