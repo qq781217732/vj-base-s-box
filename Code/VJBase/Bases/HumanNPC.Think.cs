@@ -237,7 +237,25 @@ public partial class HumanNPC
 
         // Shared across all hold types
         AnimationTranslations[Activity.RangeAttack2] = Seq("shootAR2alt") ?? Activity.RangeAttackAr2;
-        AnimationTranslations[Activity.CoverLow] = new Activity[] { Activity.Cover, Activity.CoverLow };
+        // lua: {ACT_COVER, "vjseq_Leanwall_CrouchLeft_A_idle"×4} → 5-entry random pool
+        // Check each vjseq_ name: if stripped sequence exists on model, try reverse lookup; fallback to CoverLow
+        Activity ResolveVjseq(string vjseqName, Activity fallback)
+        {
+            var name = vjseqName.StartsWith("vjseq_") ? vjseqName[6..] : vjseqName;
+            // First verify the raw sequence exists on the model
+            if (!VJAnimationMapper.AnimExists(GameObject, name))
+                return fallback;
+            var resolved = VJAnimationMapper.SequenceToActivity(GameObject, name);
+            return resolved ?? fallback;
+        }
+        AnimationTranslations[Activity.CoverLow] = new Activity[]
+        {
+            Activity.Cover,
+            ResolveVjseq("vjseq_Leanwall_CrouchLeft_A_idle", Activity.CoverLow),
+            ResolveVjseq("vjseq_Leanwall_CrouchLeft_B_idle", Activity.CoverLow),
+            ResolveVjseq("vjseq_Leanwall_CrouchLeft_C_idle", Activity.CoverLow),
+            ResolveVjseq("vjseq_Leanwall_CrouchLeft_D_idle", Activity.CoverLow),
+        };
         AnimationTranslations[Activity.WalkCrouch] = Activity.WalkCrouchRifle;
         AnimationTranslations[Activity.WalkCrouchAim] = Activity.WalkCrouchAimRifle;
         AnimationTranslations[Activity.Run] = Activity.RunRifle;
