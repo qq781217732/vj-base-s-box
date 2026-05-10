@@ -5,7 +5,7 @@
 > **PX 排除清单**：[px-permanent-exclusions.md](px-permanent-exclusions.md)
 
 **最后更新**：2026-05-11
-**当前状态**：P0 ✅ | P1 ✅ | P2 Animation ✅ (93%) | 剩余 ~8 SKIP + 45 PX
+**当前状态**：P0 ✅ | P1 ✅ | P2 Animation ✅ | 剩余 19 SKIP + 45 PX | ~98%
 
 ---
 
@@ -13,119 +13,116 @@
 
 | 优先级 | 子系统 | 状态 | 说明 |
 |--------|-------|------|------|
-| **P0** | VJUtility 缺口 | ✅ | GetNearestDistance/TraceDirections/DamageSpecialEnts |
-| **P0** | Collision/Bounds | ✅ | OBB 包围盒/碰撞组 |
-| **P0** | Flag System | ✅ | FL_* 标志位 + 难度系统 |
-| **P0** | Damage/Health | ✅ | NPC 伤害/死亡核心回路 + 免疫链 |
-| **P0** | Timer 替换 | ✅ | Bleed/Death/Alert timer → 轮询 |
-| **P0** | AI/Nav/Schedule | ✅ | 掩体/关系记忆/可达性/盟友系统 |
-| **P0** | Sound 核心 | ✅ | PlaySoundSystem 35 分支 + SoundLevel/Duration 真实映射 |
-| **P0** | Perception | ✅ | AISenses 感知层 + LookForObjects |
-| **P1** | Weapon 系统 | ✅ | IVJBaseWeapon + VJBaseWeapon + 射击回路 + PrimaryAttack 守卫 |
-| **P1** | Entity Spawn | ✅ | grenade spawn 回调 + landDir + Creator |
-| **P1** | Movement | ✅ | DoChangeMovementType NavMeshAgent 映射 + Water + Door |
-| **P1** | Prop 交互 | ✅ | FixedJoint.Destroy + MaintainPropInteraction |
-| **P1** | I/O 系统 | ✅ | TriggerOutput + OnNPCKilled static event |
-| **P1** | Player 交互 | ➖ PX / 延后 | ViewPunch→PX, Controller→PX, SetDSP→延后 |
-| **P1** | Physics/Force | ➖ PX | SetDamageForce→S&Box Rigidbody 已覆盖, IsNextBot→PX |
-| **P2** | Animation 系统 | ✅ 完成 | PlayAnim/TranslateActivity/SetAnimationTranslations/PoseParam/IsBusy/IsCurrentAnim 全部 1:1；27 AnimTbl_* 默认值补全；Combine/Metrocop/Rebel/Player 4 模型集翻译表完整 |
-| **P2** | Effects | ⬜ | MuzzleFlash/Particles/ShellEject/BloodDecals |
-| **P2** | Corpse 系统 | ⚠️ 部分完成 | CreateDeathCorpse 骨架, Dissolve→Phase 3 |
+| **P0** | VJUtility / Collision / Flag / Damage / Timer / AI / Sound / Perception | ✅ | 核心回路全部就位 |
+| **P1** | Weapon / Spawn / Movement / Prop / I/O | ✅ | 武器双阶段 + 完整移动系统 |
+| **P1** | Player 交互 / Physics | ➖ PX | ViewPunch/SetDSP/IsNextBot → PX |
+| **P2** | **Animation** | ✅ | Route A 完整落地，4 模型集翻译表就位 |
+| **P2** | Effects / Corpse | ⬜ | MuzzleFlash/ShellEject/Dissolve/GibOnDeath |
+| **P3** | Follow / Fire / Eating / Bullseye / Idle | ⬜ | 边缘系统，~16 行 SKIP |
 | PX | Source 永久独占 | ➖ 45 处 | 见 [px-permanent-exclusions.md](px-permanent-exclusions.md) |
 
 ---
 
-## P0 完成摘要（2026-05-06 ~ 2026-05-11）
+## 已完成子系统摘要
 
-| 会话 | 子系统 | 关键提交 |
-|------|--------|---------|
-| 2026-05-06 | MaintainRelationships 全翻译 + 关系系统 + EngineAITaskSystem | BaseNPC.Relationships.cs |
-| 2026-05-06 | base_aa 机械翻译 + TurnData 转向系统 + 调查系统 | BaseNPC.AA.cs |
-| 2026-05-06 | PlaySoundSystem 35 分支完整翻译 | BaseNPC.Sound.cs |
-| 2026-05-07 | CreatureNPC 攻击系统 ExecuteMelee/ExecuteRange/ExecuteLeap | CreatureNPC.Think.cs |
-| 2026-05-07 | HumanNPC 手雷系统 + 攻击配置字段 | HumanNPC.Think.cs |
-| 2026-05-07 | HumanNPC SelectSchedule ~275 行机械翻译 | HumanNPC.Think.cs |
-| 2026-05-08 | HumanNPC OnTakeDamage A-O 15 块逐行展开 | HumanNPC.Think.cs |
-| 2026-05-08 | HumanNPC ResetEnemy + CanFireWeapon + CheckForDangers + DoChangeWeapon | HumanNPC.Think.cs |
-| 2026-05-09 | DamageInfo 全局落地 + 免疫链 8 类型 | 全局 |
-| 2026-05-09 | 实体标志系统 VJEntityFlags + 盟友系统 Allies_* | Core + Bases |
-| 2026-05-09 | DoChangeMovementType 重构 + 门系统 + 武器 Phase 1 | 全局 |
-| 2026-05-10 | 掩体/射线/玩家交互 3 子系统 | 全局 |
-| 2026-05-10 | 水系统 WaterLevel + SoundEvent 注册表 + 调查系统接线 | 全局 |
-| 2026-05-10 | Weapon Phase 2 核心回路 NPC_Think + C2b/C2c-iii + PrimaryAttack 9 守卫 | VJBaseWeapon.cs |
-| 2026-05-10 | GetAttackTimer 语义修正 + prop_ragdoll 速度守卫 | BaseNPC.cs |
-| 2026-05-11 | Prop joint weld + 门系统 Phase 3 预备 | CreatureNPC.Think.cs |
-| 2026-05-11 | Animation Route A 落地: VJAnimationEnums + Mapper + PlayAnim + PoseParams | 3 新文件 ~1500 行 |
-| 2026-05-11 | Animation 内容层: TranslateActivity 覆写 + Combine/Metrocop/Rebel/Player 翻译表 | HumanNPC.Think.cs |
-| 2026-05-11 | Animation 修复: IsBusy + SequenceToActivity + FollowBone + AnimTbl_* 默认值 + 7 bug | 全局 |
-| 2026-05-11 | OnNPCKilled event + Bullseye 守卫 + MaintainActivity | CreatureNPC + HumanNPC |
-| 2026-05-11 | Initialize 武器初始装配 + BulletCallback dmginfo 修复 + Force | HumanNPC.Think.cs + VJBaseWeapon.cs |
-| 2026-05-11 | Entity Spawn grenade spawn 回调 + landDir + Creator | VJEntitySpawner.cs |
-| 2026-05-11 | PX 分类：~45 处 Source 独有 SKIP → PX | 全局 |
-| 2026-05-11 | DamageInfo Weapon 构造器修复 | VJBaseWeapon.cs |
+| 子系统 | 文件 | 关键内容 |
+|--------|------|---------|
+| **Schedule** | BaseNPC.Schedule.cs | 32 方法，双轨已消除 |
+| **AA Movement** | BaseNPC.AA.cs | 5 方法（4 完成 + 1 Phase 3 stub） |
+| **Sound** | BaseNPC.Sound.cs | PlaySoundSystem 35 分支 + SoundLevel/Duration 真实映射 + SoundEventRegistry |
+| **Relationships** | BaseNPC.Relationships.cs | MaintainRelationships 9/9 块 + 敌人选择 + 调查系统 |
+| **Damage** | 全局 | DamageInfo 落地 + 免疫链 8 类型 + 8 Is*Damage helper |
+| **Entity Flags** | VJEntityFlags.cs | 9 VJ_ID_*/VJ_ST_* 标志 + HasEntityFlag helper |
+| **Allies** | BaseNPC.cs | Allies_Check/Bring/CallHelp + 5 处接线 |
+| **Movement** | BaseNPC.cs | DoChangeMovementType → NavMeshAgent/Rigidbody 映射 + Water + Door |
+| **Weapon** | VJBaseWeapon.cs | IVJBaseWeapon 接口 + NPC_Think 射击回路 + PrimaryAttack 9 守卫 |
+| **Spawn** | VJEntitySpawner.cs | grenade spawn 回调 + landDir + Creator |
+| **Cover/Trace** | VJUtility.cs | DoCoverTrace + TraceDirections + IsPlayerDetection |
+| **Animation** | BaseNPC.Animation.cs + 3 新文件 | 详见下方 |
 
----
+### 动画系统（2026-05-11，~1800 行，9 提交）
 
-## 当前剩余 SKIP（~8 行）
+| 层 | 文件 | 内容 |
+|----|------|------|
+| 枚举 | VJAnimationEnums.cs | 175+ ACT_* 常量 + VJAnimType + VJAnimSet |
+| 映射 | VJAnimationMapper.cs | 运行时序列探测，Activity↔序列名双向映射，AnimExists/AnimDuration/IsCurrentAnim/SequenceToActivity |
+| 核心 | BaseNPC.Animation.cs | PlayAnim、TranslateActivity、MaintainIdleAnimation、UpdatePoseParamTracking、IsBusy、FollowBone、ParentToAttachment、GetAttachmentPos/GetBoneTransform |
+| 人类覆写 | HumanNPC.Think.cs | TranslateActivity 5 层战斗上下文、SetAnimationTranslations 4 模型集（Combine/Metrocop/Rebel/Player） |
+| 默认值 | BaseNPC.cs + HumanNPC.cs | 27 个 AnimTbl_* 字段全部填入 Lua 默认值 |
 
-### P1 剩余
-
-| # | 任务 | 文件 | 说明 |
-|---|------|------|------|
-| 1 | SetDSP 耳鸣音效 | CreatureNPC.Think.cs:458 | 延后，等音频系统成熟 |
-| 2 | Immune_Dissolve | HumanNPC.Think.cs:1995 | 特定 NPC 溶解免疫 |
-
-### P2 剩余
-
-| # | 类别 | 数量 | 说明 |
-|---|------|------|------|
-| 3 | AA_MoveAnimation | 1 | 飞行/水上移动时根据速度选动画 (base_aa.lua:1906) |
-| 4 | Idle dialogue 定时器 | 1 | 闲逛音效循环 |
-| 5 | Follow 跟随系统 | 2 | NPC 跟随玩家/盟友 |
-| 6 | Bullseye 靶子系统 | 3 | VJ Base 工具链 |
-| 7 | Fire/Eating 子系统 | 2 | 着火反应 + 进食行为 |
-| 8 | MoveType 跟踪 + Effects | 2 | SetMoveType restore + RemoveEffects |
-
-### MuzzleFlash / Effects / Corpse（无 SKIP 标记，但有大量 Phase 3 stub）
-
-| 类别 | 说明 |
-|------|------|
-| MuzzleFlash | 枪口火焰粒子，S&Box ParticleSystem |
-| ShellEject | 弹壳弹出，粒子或物理 |
-| BloodDecals | GPU decal 投影 |
-| Dissolve | Entity:Dissolve → shader/Material 渐变 |
-| GibOnDeath | 碎尸/布娃娃 |
+**已知限制（2 项，无法还原）**：Gesture 叠加层（S&Box 无 AddGesture API）、Sequence 过渡动画（Source 引擎 FindTransitionSequence 独占）。均不影响 NPC 行为。
 
 ---
 
-## PX 永久排除（45 处）
+## 剩余任务
+
+### Phase 3 可执行（~16 SKIP，~8 小时）
+
+| # | 系统 | SKIP | 文件 | 估算 |
+|---|------|------|------|------|
+| 1 | **Follow 跟随** | 3 | CreatureNPC.Think.cs + HumanNPC.Think.cs ×2 | 2h |
+| 2 | **AA_MoveAnimation** | 1 | CreatureNPC.Think.cs | 1h |
+| 3 | **OBB + MoveType** | 2 | HumanNPC.Think.cs（OBB 偏移 + SetMoveType restore） | 1h |
+| 4 | **Idle dialogue** | 1 | BaseNPC.cs（FindInSphere + timer + OnIdleDialogue） | 0.5h |
+| 5 | **Fire 系统** | 1 | HumanNPC.Think.cs（!isFireEnt guard） | 1h |
+| 6 | **Eating 系统** | 1 | HumanNPC.Think.cs（CanEat + ResetEatingBehavior） | 1h |
+| 7 | **Immune_Dissolve** | 1 | HumanNPC.Think.cs（特定 NPC 溶解免疫守卫） | 0.5h |
+| 8 | **RemoveEffects** | 1 | HumanNPC.Think.cs（EF_FOLLOWBONE 移除） | 0.5h |
+
+### 可延后（~7 SKIP）
+
+| # | 系统 | SKIP | 原因 |
+|---|------|------|------|
+| 9 | Bullseye 靶子 | 5 | VJ Base 工具链，非核心 NPC 行为 |
+| 10 | SetDSP | 1 | S&Box 音频效果系统未成熟 |
+| 11 | Controller/Tool | 2 | 玩家控制 NPC 工具，不在当前范围 |
+
+### 效果/视觉层（无 SKIP 标记，Phase 3 stub）
+
+| # | 内容 | 估算 | 说明 |
+|---|------|------|------|
+| 12 | **MuzzleFlash** | 2h | 枪口火焰，ParticleSystem |
+| 13 | **ShellEject** | 1h | 弹壳弹出 |
+| 14 | **Dissolve** | 3h | 死亡溶解效果，Material 参数动画 |
+| 15 | **GibOnDeath** | 2h | 碎尸/布娃娃 |
+| 16 | **BloodDecals** | 1h | GPU decal 投影 |
+
+### PX 永久排除（45 处）
 
 详见 [px-permanent-exclusions.md](px-permanent-exclusions.md)。
 
 | 类别 | 数量 | 原因 |
 |------|------|------|
 | 碰撞/物理初始化 | ~7 | S&Box 自动生成 |
-| 引擎能力标记 | ~3 | NavMeshAgent 替代 |
-| Convar / 难度 | ~8 | Inspector Property 替代 |
-| 聊天/消息 | ~4 | 非核心 |
-| 调试系统 | ~5 | 可换 Log |
-| 视野引擎设置 | ~2 | AISenses 已覆盖 |
-| Save/Restore | ~2 | 不同持久化系统 |
+| Convar / 难度 / 调试 | ~13 | Inspector Property 替代 |
 | ViewPunch | 4 | 无原生 API |
 | 控制器输入 | 2 | 不在范围 |
-| Source 实体/计分 | ~5 | HL2 独有 |
-| Blood/DSP/Misc | ~3 | 各自原因 |
+| Source 实体/计分/其他 | ~19 | HL2 独有或各自原因 |
 
 ---
 
-## 下一步建议
+## 动画系统经验总结
 
-1. **Follow 系统** — 功能性，用 NavMeshAgent 跟随，1-2 小时
-2. **AA_MoveAnimation** — 飞行/水生移动动画，~50 行，1 小时
-3. **MuzzleFlash + ShellEject** — 纯视觉效果，用 S&Box ParticleSystem，1-2 小时
-4. **Dissolve** — 死亡效果，Material 参数动画，2-3 小时
+### 新增陷阱
 
-### 动画系统已知限制（无法还原）
+14. **Route A 适配不是"删掉重写"**：`dp.Play()` 替代 `StartSchedule(TASK_VJ_PLAY_*)` 是播放方式变化，不是删除功能。锁定计时器（AnimLockTime/NextChaseTime/NextIdleTime）仍需 1:1 维护——它们才是行为门控的核心。
+15. **SequenceToActivity 需要反向查询**：Lua 的 `VJ.SequenceToActivity(self, "name")` 调用 Source `GetSequenceActivity(LookupSequence(name))` 查询引擎内部活动表。S&Box 无此数据，需要运行时扫描 `SequenceNames` + 反向匹配 `Activity→序列名` 映射表。不存在时返回 null 让调用方 fallback。
+16. **AnimTbl_* 默认值不能为空**：Phase 1 翻译只建了字段壳（`= new()`），必须填入 Lua 默认值，否则 `VJUtility.PICK(空列表) → null → PlayAnim 返回 Invalid`，所有动画静默跳过。
+17. **IsBusy 空壳会让动画锁失效**：`IsBusy()` 返回 false 意味着 NPC 永远不忙——动画播放期间 SelectSchedule 可以随时抢走控制权。必须检查 `PauseAttacks`/`AnimLockTime`/`AttackAnimTime`。
+18. **TranslateActivity 是查表入口点**：不是简单的 key→value 映射。HumanNPC 覆写有 5 层前置判断（Cower/Angry/Aim-Move/Protected/Agitated），必须严格按 if/elseif 顺序实现。
 
-1. **Gesture 叠加层** — S&Box 无 `AddGesture` API，手势当普通序列播放
-2. **Sequence 过渡动画** — Source 引擎 `FindTransitionSequence` 独占
+### 自审强化
+
+- 动画系统的 bug 全部是 **"看上去能编译、跑起来静默无效"** 类型——空列表 PICK 返回 null、IsBusy 永远 false、翻译表空导致 AnimExists 失败。逐行对照 Lua 原文的 `§5.5` 自审流程对这类问题最有效。
+- **"还原度"评估必须有对照表支撑。** 笼统的百分比（60%/88%/93%）没有意义——必须列出每个 Lua 方法/块的 C# 对应行和差异点。
+
+---
+
+## 下一步建议（按优先级）
+
+1. **Follow 跟随系统** — 功能性，NavMeshAgent 跟随，2h
+2. **AA_MoveAnimation** — 飞行/水生移动动画，1h
+3. **OBB + MoveType + RemoveEffects + Idle** — 残余 SKIP 批量清扫，2h
+4. **Fire + Eating + Immune_Dissolve** — 边缘系统守卫，2h
+5. **MuzzleFlash + ShellEject** — 视觉效果，ParticleSystem，3h
+6. **Dissolve + GibOnDeath** — 死亡效果，Material/布娃娃，5h
