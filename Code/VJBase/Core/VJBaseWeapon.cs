@@ -632,10 +632,8 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
                 }
 
                 // lua:749-786 — Build bullet table + FireBullets → C# Trace + DamageInfo
-                var bulDmg = new DamageInfo();
-                bulDmg.Damage = npc.ScaleByDifficulty(Primary_Damage);
-                bulDmg.Attacker = owner;
-                bulDmg.Force = dir * Primary_Force;                    // lua:749 — bullet.Force
+                var bulDmg = new DamageInfo(npc.ScaleByDifficulty(Primary_Damage), owner, GameObject);
+                bulDmg.Force = dir * Primary_Force;                    // lua:749,752 — bullet.Force + bullet.Inflictor (Weapon)
                 bulDmg.Tags.Add("bullet");
 
                 // lua:786 — owner:FireBullets(bullet) → C# Trace
