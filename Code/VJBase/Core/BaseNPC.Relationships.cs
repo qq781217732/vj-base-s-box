@@ -45,9 +45,19 @@ public partial class BaseNPC
         return !tr.Hit || tr.GameObject == target;
     }
 
-    // OBBMaxs/OBBMins — Phase 3: model/collider bounds from renderer or collider component
-    protected virtual Vector3 OBBMaxs() => new(32, 32, 72);
-    protected virtual Vector3 OBBMins() => new(-32, -32, 0);
+    // OBBMaxs/OBBMins — funcs.lua (ent:OBBMins/ent:OBBMaxs). S&Box: ModelRenderer.LocalBounds or hardcoded fallback.
+    protected virtual Vector3 OBBMaxs()
+    {
+        var renderer = GameObject.Components.Get<ModelRenderer>();
+        if (renderer != null) return renderer.LocalBounds.Maxs;
+        return new(32, 32, 72);
+    }
+    protected virtual Vector3 OBBMins()
+    {
+        var renderer = GameObject.Components.Get<ModelRenderer>();
+        if (renderer != null) return renderer.LocalBounds.Mins;
+        return new(-32, -32, 0);
+    }
 
     // WorldSpaceCenter = WorldPosition + OBB center offset. Source: GetAbsOrigin() + (Mins+Maxs)/2
     public Vector3 WorldSpaceCenter()
@@ -64,7 +74,12 @@ public partial class BaseNPC
             var obbCenter = (baseNPC.OBBMins() + baseNPC.OBBMaxs()) * 0.5f;
             return ent.WorldPosition + obbCenter;
         }
-        // Phase 3: read collider/model bounds for non-VJ entities
+        var renderer = ent.Components.Get<ModelRenderer>();
+        if (renderer != null)
+        {
+            var b = renderer.LocalBounds;
+            return ent.WorldPosition + (b.Mins + b.Maxs) * 0.5f;
+        }
         return ent.WorldPosition;
     }
 
@@ -239,8 +254,7 @@ public partial class BaseNPC
                 memories[ent] = entMemory = new Dictionary<string, object>();
 
             // core.lua:2167: ent:IsFlagSet(FL_NOTARGET) or !ent:Alive()
-            // Phase 3: FL_NOTARGET flag check via HasEntityFlag stub (always false until flag system)
-            if (HasEntityFlag(ent, FL_NOTARGET) || !Alive(ent))
+            if (HasEntityFlag(ent, "FL_NOTARGET") || !Alive(ent))
             {
                 if (GetEnemy() == ent)
                     ResetEnemy(true, false);

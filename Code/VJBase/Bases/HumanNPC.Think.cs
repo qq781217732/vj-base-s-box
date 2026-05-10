@@ -86,7 +86,8 @@ public partial class HumanNPC
         // SKIP: lua:2212 — SetFOV(SightAngle) — S&Box engine handles FOV
         // SKIP: lua:2213 — SetNPCState / GetNPCState — Source engine NPC state
         // SKIP: lua:2214 — GetCreator / IsGuard from creator — Phase 3 spawn system
-        // SKIP: lua:2215 — StartSoundTrack() — Phase 3 sound system
+        // lua:2215 — StartSoundTrack()
+        StartSoundTrack();
         // SKIP: lua:2218-2235 — LookupPoseParameter("aim_pitch"/"head_pitch"/"aim_yaw"/"head_yaw"/"aim_roll"/"head_roll") — Phase 3 animation pose params
         // lua:2237-2265: Weapon setup
         if (Weapon_Disabled)
@@ -1704,8 +1705,8 @@ public partial class HumanNPC
                     // lua:4082-4102 — DamageAllyResponse: alert nearby allies
                     if (DamageAllyResponse && curTime > NextDamageAllyResponseT && !IsFollowing)
                     {
-                        // SKIP: lua:4083 — OBBMaxs/OBBMins distance calc — Phase 3 collision bounds
-                        float responseDist = 800;
+                        // SKIP: lua:4083 — OBBMaxs/OBBMins distance calc
+                        float responseDist = Math.Max(800, Vector3.DistanceBetween(OBBMaxs(), OBBMins()) * 12);
                         var allies = Allies_Check(responseDist);
                         if (allies != null)
                         {
@@ -1745,8 +1746,8 @@ public partial class HumanNPC
                 // lua:4140 — if selfData.Passive_AlliesRunOnDamage then
                 if (Passive_AlliesRunOnDamage)
                 {
-                    // SKIP: lua:4140 — OBBMaxs/OBBMins * 20 distance — Phase 3 collision bounds
-                    var allies = Allies_Check(800);
+                    // SKIP: lua:4140 — OBBMaxs/OBBMins * 20 distance
+                    var allies = Allies_Check(Math.Max(800, Vector3.DistanceBetween(OBBMaxs(), OBBMins()) * 20));
                     if (allies != null)
                     {
                         foreach (var ally in allies)
@@ -1814,8 +1815,7 @@ public partial class HumanNPC
         // ---- Ally death response (lua:4188-4238) ----
         {
             // lua:4189 — responseDist = math_max(800, self:OBBMaxs():Distance(self:OBBMins()) * 12)
-            // SKIP: lua:4189 — OBBMaxs/OBBMins — Phase 3 collision bounds
-            float responseDist = 800;
+            float responseDist = Math.Max(800, Vector3.DistanceBetween(OBBMaxs(), OBBMins()) * 12);
             // lua:4190 — allies = self:Allies_Check(responseDist)
             var allies = Allies_Check(responseDist);
             if (allies != null)
@@ -1905,7 +1905,7 @@ public partial class HumanNPC
 
         // ---- Post-death setup (lua:4261-4264) ----
         // lua:4261 — self:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
-        // SKIP: lua:4261 — SetCollisionGroup(COLLISION_GROUP_DEBRIS) — Phase 3 collision groups
+        SetCollisionGroup("COLLISION_GROUP_DEBRIS");
         // lua:4262 — self:GibOnDeath(dmginfo, hitgroup)
         GibOnDeath(dmginfo, hitgroup);
         // lua:4263 — self:PlaySoundSystem("Death")
@@ -2054,7 +2054,10 @@ public partial class HumanNPC
         }
 
         // ---- Collision (lua:4397-4404) ----
-        // SKIP: lua:4397-4404 — SetCollisionGroup / undo.ReplaceEntity / Corpse_Add / cleanup.ReplaceEntity — Phase 3
+        var corpseNPC = corpse?.Components.Get<BaseNPC>();
+        // lua:4397 — corpse:SetCollisionGroup(self.DeathCorpseCollisionType)
+        if (corpseNPC != null) corpseNPC.SetCollisionGroup("custom_" + DeathCorpseCollisionType);
+        // SKIP: lua:4398-4404 — ai_serverragdolls convar / Corpse_Add / undo.ReplaceEntity / cleanup.ReplaceEntity — Phase 3
 
         // ---- On fire (lua:4407-4413) ----
         // lua:4407 — if self:IsOnFire() then

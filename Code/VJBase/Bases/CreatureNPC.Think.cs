@@ -19,6 +19,10 @@ public partial class CreatureNPC
         if (doHeavyProcesses)
             NextProcessT = curTime + NextProcessTime;
 
+        // Footstep sounds — core.lua:1131 (shared Think)
+        if (!DisableFootStepSoundTimer)
+            PlayFootstepSound();
+
         // Breath sounds — core.lua creature init:1879-1889
         if (!Dead && HasBreathSound && HasSounds && curTime > NextBreathSoundT)
         {
@@ -581,8 +585,7 @@ public partial class CreatureNPC
 
         // ---- Ally death response (lua:3199-3249) ----
         // lua:3200 — responseDist = math_max(800, self:OBBMaxs():Distance(self:OBBMins()) * 12)
-        // SKIP: lua:3200 — OBBMaxs/OBBMins — Phase 3 collision bounds
-        float responseDist = 800;
+        float responseDist = Math.Max(800, Vector3.DistanceBetween(OBBMaxs(), OBBMins()) * 12);
         // lua:3201 — allies = self:Allies_Check(responseDist)
         var allies = Allies_Check(responseDist);
         if (allies != null)
@@ -673,7 +676,7 @@ public partial class CreatureNPC
 
         // ---- Post-death setup (lua:3274-3277) ----
         // lua:3274 — self:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
-        // SKIP: lua:3274 — SetCollisionGroup(COLLISION_GROUP_DEBRIS) — Phase 3 collision groups
+        SetCollisionGroup("COLLISION_GROUP_DEBRIS");
         // lua:3275 — self:GibOnDeath(dmginfo, hitgroup)
         GibOnDeath(dmginfo, hitgroup);
         // lua:3276 — self:PlaySoundSystem("Death")
@@ -819,7 +822,9 @@ public partial class CreatureNPC
         }
 
         // ---- Collision (lua:3397-3404) ----
-        // SKIP: lua:3397 — corpse:SetCollisionGroup(self.DeathCorpseCollisionType) — Phase 3 collision
+        // lua:3397 — corpse:SetCollisionGroup(self.DeathCorpseCollisionType)
+        var corpseNPC = corpse?.Components.Get<BaseNPC>();
+        if (corpseNPC != null) corpseNPC.SetCollisionGroup("custom_" + DeathCorpseCollisionType);
         // SKIP: lua:3398-3399 — ai_serverragdolls convar + undo.ReplaceEntity — Phase 3
         // SKIP: lua:3400-3403 — VJ.Corpse_Add / undo.ReplaceEntity / cleanup.ReplaceEntity — Phase 3
 
