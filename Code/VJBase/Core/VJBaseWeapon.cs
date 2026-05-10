@@ -246,8 +246,10 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
         // Attack state check
         if (isVJHuman)
         {
+            // lua:557 — FIRE_STAND only valid when WeaponAttackAnim is actually playing
             bool inFireState = human.WeaponAttackState == VJWepAttackState.Fire
-                || (human.WeaponAttackState == VJWepAttackState.FireStand /* && VJ.IsCurrentAnim — Phase 3 */);
+                || (human.WeaponAttackState == VJWepAttackState.FireStand
+                    && VJAnimationMapper.IsCurrentAnim(owner, human.WeaponAttackAnim));
             if (!inFireState) return false;
         }
         // Non-VJ-human: skip attack state check (lua:557 — (!isVJHuman) → bypass animation guard)
@@ -264,7 +266,7 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
         }
 
         // lua:575 — Firing cone check (always runs for non-controlled NPCs)
-        // SKIP: lua:575 — isControlled && IN_ATTACK2 guard — Phase 3 player controller input
+        // PX: lua:575 — isControlled && IN_ATTACK2 guard — player-controller NPC not in scope
         // When VJ_IsBeingControlled: Lua requires IN_ATTACK2 (right mouse) to fire; C# always allows when conditions met.
         if (ene.IsValid())
         {

@@ -17,9 +17,17 @@ public partial class BaseNPC
     /// <summary>Pose parameter names detected on the model (e.g. "aim_pitch", "head_yaw").</summary>
     public string[] PoseParameterLooking_Names { get; set; }
     public bool HasPoseParameterLooking { get; set; } = true;
+    public bool PoseParameterLooking_InvertPitch { get; set; }
+    public bool PoseParameterLooking_InvertYaw { get; set; }
+    public bool PoseParameterLooking_InvertRoll { get; set; }
+    public bool PoseParameterLooking_CanReset { get; set; } = true;
+    public float PoseParameterLooking_TurningSpeed { get; set; } = 10f;
     public float PosePitch { get; set; }
     public float PoseYaw { get; set; }
     public float PoseRoll { get; set; }
+    public bool UpdatedPoseParam { get; set; }
+    /// <summary>Lua: OnUpdatePoseParamTracking callback — (self, newPitch, newYaw, newRoll)</summary>
+    public Action<BaseNPC, float, float, float> OnUpdatePoseParamTracking { get; set; }
 
     // ═══ Animation Translation Table ═══
     /// <summary>ACT_generic → ACT_model_specific (single Activity) or Activity[] (random pick).</summary>
@@ -69,11 +77,19 @@ public partial class BaseNPC
             if (stripped != animStr) animation = stripped;
             animStr = stripped;
 
-            // vjges_ activity fallback: if gesture-only and LookupSequence fails, treat as int Activity
-            if (isGesture && !isSequence && int.TryParse(animStr, out var actId))
+            // vjges_ activity fallback: if gesture-only, try Enum.Parse or int parse
+            if (isGesture && !isSequence)
             {
-                animation = (Activity)actId;
-                isString = false;
+                if (Enum.TryParse<Activity>(animStr, true, out var actParsed))
+                {
+                    animation = actParsed;
+                    isString = false;
+                }
+                else if (int.TryParse(animStr, out var actId))
+                {
+                    animation = (Activity)actId;
+                    isString = false;
+                }
             }
         }
 
@@ -153,7 +169,11 @@ public partial class BaseNPC
             var playbackRate = customRate > 0 ? customRate : originalRate;
             if (playbackRate <= 0f) playbackRate = 1f;
 
+            // lua:732 — SetPlaybackRate(playbackRate) so AnimDurationEx reads the correct rate
+            AnimPlaybackRate = playbackRate;
             var animTime = AnimDurationEx((Activity)(animation is Activity a ? a : Activity.Invalid), null, 0f);
+            AnimPlaybackRate = originalRate;
+
             // Duration calc: use AnimgraphDirectPlayback after Play()
             var seqName = animation as string;
             if (animation is Activity actDur)
@@ -508,7 +528,7 @@ public partial class BaseNPC
     /// Per-frame pose parameter update — smooth tracking toward target position.
     /// Uses SkinnedModelRenderer.ParameterAccessor.Set(name, value).
     /// </summary>
-    public virtual void UpdatePoseParamTracking(bool reset)
+    public virtual void UpdatePoseParamTracking(bool resetPoses)
     {
         var renderer = Components.Get<SkinnedModelRenderer>();
         if (renderer == null) return;
@@ -519,46 +539,57 @@ public partial class BaseNPC
             HasPoseParameterLooking = PoseParameterLooking_Names.Length > 0;
         }
 
+        // lua:3428 — Gate: skip unless being controlled, or in attack state with visible enemy, or WeaponAttackState >= FIRE
         if (!HasPoseParameterLooking) return;
-        if (reset)
+        if (!VJ_IsBeingControlled)
         {
-            foreach (var name in PoseParameterLooking_Names)
-                renderer.Parameters.Set(name, 0f);
+            if (WeaponAttackState == VJWepAttackState.None) return;
+            if (!Enemy.Visible && WeaponAttackState < VJWepAttackState.Fire) return;
+        }
+
+        // lua:3431-3446 — Calculate target pitch/yaw/roll
+        float newPitch = 0, newYaw = 0, newRoll = 0;
+        var ene = GetEnemy();
+        if (!resetPoses && ene.IsValid())
+        {
+            var myEyePos = WorldPosition + ViewOffset;
+            var myAng = WorldRotation.Angles();
+            var eneAng = (ene.WorldPosition - myEyePos).Normal.EulerAngles;
+
+            newPitch = AngleDelta(eneAng.pitch, myAng.pitch);
+            if (PoseParameterLooking_InvertPitch) newPitch = -newPitch;
+            newYaw = AngleDelta(eneAng.yaw, myAng.yaw);
+            if (PoseParameterLooking_InvertYaw) newYaw = -newYaw;
+            newRoll = AngleDelta(eneAng.roll, myAng.roll);
+            if (PoseParameterLooking_InvertRoll) newRoll = -newRoll;
+        }
+        else if (!PoseParameterLooking_CanReset)
+        {
             return;
         }
 
-        // Calculate pitch/yaw/roll from eye position to target in NPC local space
-        var eyePos = WorldPosition + ViewOffset;
-        var targetPos = (EnemyData?.Target?.WorldPosition)
-            ?? (Enemy != null ? Enemy.WorldPosition : eyePos + Rotation.Forward * 100f);
+        // lua:3448 — OnUpdatePoseParamTracking callback
+        OnUpdatePoseParamTracking?.Invoke(this, newPitch, newYaw, newRoll);
 
-        var delta = targetPos - eyePos;
-        if (delta.Length < 1f) return;
-
-        // Convert world-space direction to local space relative to NPC rotation
-        var localDir = GameObject.WorldRotation.Inverse * delta.Normal;
-        float targetPitch = MathF.Asin(Math.Clamp(localDir.z, -1f, 1f)) * (180f / MathF.PI);
-        float targetYaw = MathF.Atan2(localDir.y, localDir.x) * (180f / MathF.PI);
-        float targetRoll = 0f;
-
-        float frameTime = Time.Delta;
-        float approachSpeed = 5f;
-
+        // lua:3449-3465 — Apply smoothed poses per axis
+        var speed = PoseParameterLooking_TurningSpeed;
         foreach (var name in PoseParameterLooking_Names)
         {
             float target = 0f;
-            if (name.Contains("pitch")) target = targetPitch;
-            else if (name.Contains("yaw")) target = targetYaw;
-            else if (name.Contains("roll")) target = targetRoll;
+            if (name.Contains("pitch")) target = newPitch;
+            else if (name.Contains("yaw")) target = newYaw;
+            else if (name.Contains("roll")) target = newRoll;
 
             float current = renderer.Parameters.GetFloat(name);
-            float next = ApproachAngle(current, target, approachSpeed * frameTime);
+            float next = ApproachAngle(current, target, speed);
             renderer.Parameters.Set(name, next);
         }
 
-        PosePitch = targetPitch;
-        PoseYaw = targetYaw;
-        PoseRoll = targetRoll;
+        // lua:3466
+        UpdatedPoseParam = true;
+        PosePitch = newPitch;
+        PoseYaw = newYaw;
+        PoseRoll = newRoll;
     }
 
     // ── Pose parameter detection ──

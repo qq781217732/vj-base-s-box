@@ -342,7 +342,7 @@ public partial class CreatureNPC
                 bool isPlayer = ent.Components.Get<PlayerBase>() != null;
                 if (isPlayer)
                 {
-                    // SKIP: ent.VJ_IsControllingNPC — PX: Source player field, no S&Box equivalent
+                    // PX: ent.VJ_IsControllingNPC — Source player field, no S&Box equivalent
                     if (!Alive(ent) || VJInit.vj_npc_ignoreplayers) continue;
                 }
                 else if (entBase1?.VJ_IsBeingControlled == true) continue;
@@ -544,7 +544,7 @@ public partial class CreatureNPC
                 bool isPlayer = ent.Components.Get<PlayerBase>() != null;
                 if (isPlayer)
                 {
-                    // SKIP: ent.VJ_IsControllingNPC — PX: Source player field, no S&Box equivalent
+                    // PX: ent.VJ_IsControllingNPC — Source player field, no S&Box equivalent
                     if (!Alive(ent) || VJInit.vj_npc_ignoreplayers) continue;
                 }
                 else if (entBase2?.VJ_IsBeingControlled == true) continue;
@@ -671,7 +671,7 @@ public partial class CreatureNPC
                             allyBase.AddEntityRelationship(dmgAttacker, (int)VJBase.Disposition.Hate, 2);
                             allyBase.PlaySoundSystem("BecomeEnemyToPlayer");
                             // SKIP: lua:3236 — ResetFollowBehavior — Phase 3 follow system
-                            // SKIP: lua:3240 — CanChatMessage — Phase 3 chat system
+                            // PX: lua:3240 — CanChatMessage — Source chat system, requires Creator Player, no S&Box equivalent
                         }
                         // lua:3245 — ally.Alerted = true
                         allyBase.Alerted = VJAlertState.Enemy;
@@ -785,7 +785,7 @@ public partial class CreatureNPC
     public virtual void FinishDeath(DamageInfo dmginfo, int hitgroup)
     {
         // lua:3314 — VJ_DEBUG + GetConVar debug print
-        // SKIP: lua:3314 — VJ_DEBUG / GetConVar — Phase 3 debug system
+        // PX: lua:3314 — VJ_DEBUG / GetConVar — Source debug/convar system, no S&Box equivalent
 
         // lua:3315 — self:SetSaveValue("m_lifeState", 2) — LIFE_DEAD
         SetSaveValue("m_lifeState", 2);
