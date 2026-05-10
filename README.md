@@ -1,6 +1,6 @@
-# NPC Zombie Horde
+# VJBASE-S&BOX
 
-Left 4 Dead 风格 s&box 游戏模式，包含 TTT 模式资源。
+VJ Base NPC AI framework ported to s&box C# — community-driven, open for contribution.
 
 基于 [DrVrej's VJ Base](https://steamcommunity.com/sharedfiles/filedetails/?id=131759821)（GMod Lua NPC AI 框架），完整移植到 s&box C#，并在此基础上构建僵尸生存 / TTT 玩法。持续开发中。
 
