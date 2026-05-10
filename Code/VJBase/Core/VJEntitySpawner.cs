@@ -89,7 +89,7 @@ public static class VJEntitySpawner
     /// Simulate Source Dissolve: fade alpha to 0 over fadeTime, then destroy after total duration.
     /// Source: ent:Dissolve(0, 1). S&Box has no built-in dissolve — use Tint alpha fade + Destroy.
     /// </summary>
-    public static async void DissolveEntity(GameObject ent, float duration = 2f, float fadeTime = 1f)
+    public static async Task DissolveEntity(GameObject ent, float duration = 2f, float fadeTime = 1f)
     {
         if (ent == null || !ent.IsValid()) return;
 
@@ -104,13 +104,15 @@ public static class VJEntitySpawner
         float elapsed = 0f;
         while (elapsed < fadeTime && ent.IsValid() && renderer.IsValid())
         {
-            float t = elapsed / fadeTime;
+            float t = Math.Min(elapsed / fadeTime, 1f);
             renderer.Tint = startColor.WithAlpha(1f - t);
             await Task.Delay(50);
             elapsed += 0.05f;
         }
 
-        await Task.Delay((int)((duration - fadeTime) * 1000f));
+        float remainDuration = duration - fadeTime;
+        if (remainDuration > 0)
+            await Task.Delay((int)(remainDuration * 1000f));
         if (ent.IsValid()) ent.Destroy();
     }
 
