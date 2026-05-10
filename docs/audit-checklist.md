@@ -68,8 +68,8 @@
 | 37 | CreateDeathCorpse | 3309 | — | [ ] | [ ] | [ ] | [ ] |  |  |  |
 | 38 | math_angDif | 2731 | — | [ ] | [ ] | [ ] | [ ] |  |  |  |
 | 39 | DoBleed | 2981 | — | [ ] | [ ] | [ ] | [ ] |  |  |  |
-| 40 | SetAutomaticFrameAdvance | 11 | — | [ ] | [ ] | [ ] | [ ] |  |  |  |
-| 41 | MatFootStepQCEvent | 15 | — | [ ] | [ ] | [ ] | [ ] |  |  |  |
+| 40 | SetAutomaticFrameAdvance | 12 | SetAutomaticFrameAdvance | [x] | [x] | [x] | [x] | PASS | Codex | `CreatureNPC.cs` 设置 `AutomaticFrameAdvance`；HumanNPC 继承同一实现 |
+| 41 | MatFootStepQCEvent | 16 | MatFootStepQCEvent | [x] | [x] | [x] | [x] | PASS | Codex | 返回 `false`，C# 用 `bool?` 保留 Lua nil/true/false 扩展空间 |
 | 42 | Init | 27 | — | [ ] | [ ] | [ ] | [ ] |  |  |  |
 | 43 | Initialize | 54 | — | [ ] | [ ] | [ ] | [ ] |  |  |  |
 | 44 | Draw | 58 | — | [ ] | [ ] | [ ] | [ ] |  |  |  |
@@ -212,8 +212,8 @@ C# 均 **GAP**。Lua的AA_*状态字段用于跟踪移动超时/动画/位置：
 | 47 | GetAttackSpread | 4495 | — | [ ] | [ ] | [ ] | [ ] |  |  |  |
 | 48 | InitConvars | 1736 | — | [ ] | [ ] | [ ] | [ ] |  |  |  |
 | 49 | DoBleed | 3950 | — | [ ] | [ ] | [ ] | [ ] |  |  |  |
-| 50 | SetAutomaticFrameAdvance | 11 | — | [ ] | [ ] | [ ] | [ ] |  |  |  |
-| 51 | MatFootStepQCEvent | 15 | — | [ ] | [ ] | [ ] | [ ] |  |  |  |
+| 50 | SetAutomaticFrameAdvance | 12 | SetAutomaticFrameAdvance | [x] | [x] | [x] | [x] | PASS | Codex | 继承 `CreatureNPC` shared 实现 |
+| 51 | MatFootStepQCEvent | 16 | MatFootStepQCEvent | [x] | [x] | [x] | [x] | PASS | Codex | 继承 `CreatureNPC` shared 实现 |
 | 52 | Init | 27 | — | [ ] | [ ] | [ ] | [ ] |  |  |  |
 | 53 | Initialize | 54 | — | [ ] | [ ] | [ ] | [ ] |  |  |  |
 | 54 | Draw | 58 | — | [ ] | [ ] | [ ] | [ ] |  |  |  |
@@ -286,10 +286,10 @@ C# 均 **GAP**。Lua的AA_*状态字段用于跟踪移动超时/动画/位置：
 | 20 | Tank_PlaySoundSystem | 464 | — | [ ] | [ ] | [ ] | [ ] |  |  |  |
 | 21 | PhysicsCollide | 11 | — | [ ] | [ ] | [ ] | [ ] |  |  |  |
 | 22 | PhysicsUpdate | 13 | — | [ ] | [ ] | [ ] | [ ] |  |  |  |
-| 23 | SCHEDULE_FACE | 26 | — | [x] | [x] | [x] | [x] | ➖ N/A | Claude | Lua空桩(return end)。坦克不转弯。C#无需覆盖(基类无此方法) |
-| 24 | MaintainAlertBehavior | 28 | — | [x] | [x] | [x] | [x] | ➖ N/A | Claude | Lua空桩(return end)。坦克不追逐。C# SelectCombatSchedule替代 |
-| 25 | OnDamaged | 30 | — | [x] | [x] | [x] | [x] | ❌ FAIL | Claude | **GAP** — Lua有真实伤害过滤逻辑:跳过physgun/crossbow伤害(Init阶段);近战非boss/弱伤害(<30)归零;boss强近战减半(PreDamage阶段)。C#无OnDamaged覆盖 |
-| 26 | Tank_AngleDiffuse | 47 | AngleDiffuse | [x] | [x] | [x] | [x] | ✅ PASS | Claude | C#用while替代if(更鲁棒),参数/返回值等价。静态方法✅ |
+| 23 | SCHEDULE_FACE | 31 | SCHEDULE_FACE | [x] | [x] | [x] | [x] | PASS | Codex | 真正 override 基类签名；坦克不走普通转向 schedule |
+| 24 | MaintainAlertBehavior | 33 | MaintainAlertBehavior | [x] | [x] | [x] | [x] | PASS | Codex | override no-op；坦克不追逐 |
+| 25 | OnDamaged | 35 | OnDamaged | [x] | [x] | [x] | [x] | SEMI | Codex | Init/PreDamage 分支已翻译；`crossbow_bolt` 依赖 Phase 3 projectile tag 填充 |
+| 26 | Tank_AngleDiffuse | 52 | Tank_AngleDiffuse | [x] | [x] | [x] | [x] | PASS | Codex | 参数/返回值和 -180/180 wrap 逻辑等价 |
 
 ### 字段 Fields (38)
 

@@ -4,7 +4,7 @@
 > **地面真相 (Ground Truth):** Lua 源码 (`F:/DevProject/Sbox/VJ-Base-master/lua/`)
 > **要修改的:** C# 代码 (`F:/DevProject/Sbox/testzombie/Code/VJBase/`)
 > **架构指南:** `docs/translation-guide.md`
-> **上次更新:** 2026-05-09（DamageInfo + 实体标志 + 盟友 + 移动类型重构）
+> **上次更新:** 2026-05-10（长期清单对照审计：creature shared、base_tank、tank shared）
 
 ---
 
@@ -13,11 +13,11 @@
 | 优先级 | 总数 | ⬜ | 🔵 | ✅ | ⚠️ | 完成率 |
 |--------|------|----|----|----|----|--------|
 | P0: AI核心 | 5 | 0 | 0 | 5 | 0 | 100% ✅ |
-| P1: 实体基类 | 15 | 10 | 2 | 2 | 1 | 13% |
+| P1: 实体基类 | 15 | 8 | 2 | 4 | 1 | 26.7% |
 | P2: 工具设施 | 14 | 13 | 1 | 0 | 0 | 0% |
 | P3: 武器 | 18 | 17 | 1 | 0 | 0 | 0% |
 | P4: 简单实体 | 33 | 33 | 0 | 0 | 0 | 0% |
-| **总计** | **85** | **73** | **4** | **7** | **1** | **8.2%** |
+| **总计** | **85** | **71** | **4** | **9** | **1** | **10.6%** |
 
 > 进度在此更新，每个文件审计完成后改数字。
 
@@ -48,7 +48,7 @@
 | 1 | `lua/vj_base/ai/core.lua` | `Core/BaseNPC.cs` + `Relationships.cs` | — | ✅ | ForceSetEnemy/DoEnemyAlert/DoReadyAlert + **MaintainRelationships 完整翻译**（7/9 功能块）+ 关系系统（AddEntityRelationship/Disposition）+ Alive 检查。 |
 | 2 | `lua/vj_base/ai/schedules.lua` | `Core/BaseNPC.Schedule.cs` | 32/32 | ✅ | 全部 32 个 ENT: 方法翻译完成。SCHEDULE_* 构建器从 ScheduleRunner 搬入。双轨已消除。Schedule 链完整：StartSchedule → Tasks → DoSchedule → NextTask → ScheduleFinished。 |
 | 3 | `lua/vj_base/ai/base_aa.lua` | `Core/BaseNPC.AA.cs` | 5/5 | ✅ | AA_StopMoving / AA_MoveTo / AA_IdleWander / AA_ChaseEnemy 完整翻译（AA_MoveAnimation Phase 3 stub）。字段从 CreatureNPC 搬到 BaseNPC。 |
-| 4 | `lua/vj_base/ai/base_tank.lua` | `Bases/TankNPC.cs` | 4/2 | ⚠️ | 部分字段存在但分散。完整坦克逻辑 Phase 3。 |
+| 4 | `lua/vj_base/ai/base_tank.lua` | `Bases/TankNPC.cs` | 4/4 方法 + 字段 | ✅ | 字段默认值、`SCHEDULE_FACE`/`MaintainAlertBehavior` no-op、`OnDamaged`、`Tank_AngleDiffuse` 已对照。`crossbow_bolt` 依赖 Phase 3 projectile tag。见 `docs/audit-base-tank.md`。 |
 | 5 | `lua/includes/modules/vj_ai_task.lua` | `Schedule/AITask.cs` + `EngineAITaskSystem.cs` | 8/12 | ✅ | Task 结构完成。**EngineAITaskSystem 已重写**（Movement/Face/Wait 任务实际驱动 NavMeshAgent）。 |
 
 ---
@@ -58,11 +58,11 @@
 | # | Lua 源文件 | C# 目标 | 方法/字段 | 状态 | 备注 |
 |---|-----------|---------|----------|------|------|
 | 6 | `lua/entities/npc_vj_creature_base/init.lua` | `Bases/CreatureNPC.cs` + `.Think.cs` | — | 🔵 | Think/RunAI/SelectSchedule/SCHEDULE_ALERT_CHASE 完成。Melee/Range/Leap 攻击 Phase 3。 |
-| 7 | `lua/entities/npc_vj_creature_base/shared.lua` | `Bases/CreatureNPC.cs` | — | ⬜ | |
+| 7 | `lua/entities/npc_vj_creature_base/shared.lua` | `Bases/CreatureNPC.cs` | 2/2 | ✅ | 共享标志、`SetAutomaticFrameAdvance`、`MatFootStepQCEvent` 已对照补齐；GMod 客户端 Draw/LOD/IK 块判定 N/A。见 `docs/audit-creature-shared.md`。 |
 | 8 | `lua/entities/npc_vj_human_base/init.lua` | `Bases/HumanNPC.cs` + `.Think.cs` | 18/18 + 2 local | ✅ | 全部 24 方法翻译完成。2026-05-09: DamageInfo 免疫链 + 实体标志 + 盟友系统填坑。 |
 | 9 | `lua/entities/npc_vj_human_base/shared.lua` | `Bases/HumanNPC.cs` | — | ✅ | 字段默认值全部搬入 HumanNPC.cs 构造器。 |
 | 10 | `lua/entities/npc_vj_tank_base/init.lua` | `Bases/TankNPC.cs` | — | ⚠️ | 仅基架。 |
-| 11 | `lua/entities/npc_vj_tank_base/shared.lua` | `Bases/TankNPC.cs` | — | ⬜ | |
+| 11 | `lua/entities/npc_vj_tank_base/shared.lua` | `Bases/TankNPC.cs` | 2/2 方法 + 3/3 字段 | ✅ | Tank/Chassis/Vehicle 标志和 `PhysicsCollide`/`PhysicsUpdate` 空桩已对照。见 `docs/audit-tank-shared.md`。 |
 | 12 | `lua/entities/npc_vj_tankg_base/init.lua` | `Bases/TankGNPC.cs` | — | ⬜ | |
 | 13-20 | 弹道/控制器/生成器/Gib 基类 (8 文件) | VJProjectile/VJSpawner/... | — | ⬜ | 未开始 |
 
