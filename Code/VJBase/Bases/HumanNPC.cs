@@ -39,7 +39,7 @@ public partial class HumanNPC : CreatureNPC
     public string GrenadeAttackBone { get; set; } = "ValveBiped.Bip01_R_Hand";
     public float GrenadeAttackFuseTime { get; set; } = 2f;
     public float GrenadeAttackMaxDistance { get; set; } = 1500;
-    public List<string> AnimTbl_GrenadeAttack { get; set; }
+    public List<string> AnimTbl_GrenadeAttack { get; set; } = new() { "grenThrow" };
     public Vector3? GrenadeAttack_LastLandDir { get; set; }
 
     // ═══ Constructor: human-specific defaults (override BaseNPC/CreatureNPC defaults) ═══
@@ -69,6 +69,10 @@ public partial class HumanNPC : CreatureNPC
         SoundTbl_MeleeAttackExtra = new() { "Flesh.ImpactHard" };
         SoundTbl_MeleeAttackMiss = new() { "Zombie.AttackMiss" };
         SoundTbl_Impact = new() { "Flesh.BulletImpact" };
+
+        // Human-specific AnimTbl overrides (differ from creature defaults)
+        AnimTbl_CallForHelp = new() { "ACT_SIGNAL_ADVANCE", "ACT_SIGNAL_FORWARD" };
+        AnimTbl_DamageAllyResponse = new() { "ACT_SIGNAL_GROUP" };
     }
 
     // ═══ Spawn Config — human_base/init.lua:14-323 ═══
@@ -111,12 +115,12 @@ public partial class HumanNPC : CreatureNPC
     public float Weapon_AimTurnDiff_Def { get; set; } = 1f;
 
     // ═══ Animation Table Config (ported from init.lua:153,301-305) ═══
-    public List<string> AnimTbl_MoveToCover { get; set; } = new();
-    public List<string> AnimTbl_WeaponAttack { get; set; } = new();
-    public List<string> AnimTbl_WeaponAttackCrouch { get; set; } = new();
+    public List<string> AnimTbl_MoveToCover { get; set; } = new() { "ACT_RUN_CROUCH" };
+    public List<string> AnimTbl_WeaponAttack { get; set; } = new() { "ACT_RANGE_ATTACK1" };
+    public List<string> AnimTbl_WeaponAttackCrouch { get; set; } = new() { "ACT_RANGE_ATTACK1_LOW" };
     public List<string> AnimTbl_WeaponAim { get; set; } = new();
-    public List<string> AnimTbl_WeaponReload { get; set; } = new();
-    public List<string> AnimTbl_WeaponReloadCovered { get; set; } = new();
+    public List<string> AnimTbl_WeaponReload { get; set; } = new() { "ACT_RELOAD" };
+    public List<string> AnimTbl_WeaponReloadCovered { get; set; } = new() { "ACT_RELOAD_LOW" };
 
     // ═══ Weapon Runtime State (ported from init.lua:1649-1662) ═══
     public float WeaponLastShotTime { get; set; }
@@ -148,8 +152,7 @@ public partial class HumanNPC : CreatureNPC
     // ═══ Ally Damage Response (ported from init.lua:4082-4100) ═══
     public bool DamageAllyResponse { get; set; } = true;
     public (float a, float b) DamageAllyResponse_Cooldown { get; set; } = (9f, 12f);
-    public List<string> AnimTbl_DamageAllyResponse { get; set; } = new();
-    public List<string> AnimTbl_TakingCover { get; set; } = new();
+    public List<string> AnimTbl_TakingCover { get; set; } = new() { "ACT_COVER_LOW" };
     public bool Passive_AlliesRunOnDamage { get; set; } = true;
 
     // ═══ Death / Weapon Drop (ported from human_base init.lua:233) ═══

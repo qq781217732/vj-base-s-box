@@ -32,10 +32,10 @@ public partial class BaseNPC
 	public float AA_GroundLimit { get; set; } = 500;
 	public int AA_MinWanderDist { get; set; } = 500;
 	public float AA_MoveAccelerate { get; set; }
-	public List<string> Aerial_AnimTbl_Calm { get; set; } = new();
-	public List<string> Aerial_AnimTbl_Alerted { get; set; } = new();
-	public List<string> Aquatic_AnimTbl_Calm { get; set; } = new();
-	public List<string> Aquatic_AnimTbl_Alerted { get; set; } = new();
+	public List<string> Aerial_AnimTbl_Calm { get; set; } = new() { "ACT_FLY" };
+	public List<string> Aerial_AnimTbl_Alerted { get; set; } = new() { "ACT_FLY" };
+	public List<string> Aquatic_AnimTbl_Calm { get; set; } = new() { "ACT_SWIM" };
+	public List<string> Aquatic_AnimTbl_Alerted { get; set; } = new() { "ACT_SWIM" };
 
 	// ═══ Trace offset constants (base_aa.lua:54-55) ═══
 	private static readonly Vector3 VecStart = new(0, 0, 30);

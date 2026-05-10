@@ -199,6 +199,13 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public List<string> AnimTbl_Death { get; set; } = new();
     public List<string> AnimTbl_WeaponAttackSecondary { get; set; } = new();
     public List<string> AnimTbl_WeaponAttackGesture { get; set; } = new();
+    public List<string> AnimTbl_CallForHelp { get; set; } = new();                                   // creature: false, human: {ACT_SIGNAL_ADVANCE, ACT_SIGNAL_FORWARD}
+    public List<string> AnimTbl_Medic_GiveHealth { get; set; } = new() { "ACT_SPECIAL_ATTACK1" };
+    public List<string> AnimTbl_Flinch { get; set; } = new() { "ACT_FLINCH_PHYSICS" };
+    public List<string> AnimTbl_DamageAllyResponse { get; set; } = new();                            // creature: false, human: {ACT_SIGNAL_GROUP}
+    public List<string> AnimTbl_MeleeAttack { get; set; } = new() { "ACT_MELEE_ATTACK1" };
+    public List<string> AnimTbl_RangeAttack { get; set; } = new() { "ACT_RANGE_ATTACK1" };
+    public List<string> AnimTbl_LeapAttack { get; set; } = new() { "ACT_SPECIAL_ATTACK1" };
     public int Skin { get; set; } // Source GetSkin/SetSkin → S&Box MaterialGroup fallback
     public bool HasDeathCorpse { get; set; } = true;
     public bool? HasDeathRagdoll { get; set; }
