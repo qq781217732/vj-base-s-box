@@ -2,73 +2,73 @@
 
 VJ Base NPC AI framework ported to s&box C# — community-driven, open for contribution.
 
-基于 [DrVrej's VJ Base](https://steamcommunity.com/sharedfiles/filedetails/?id=131759821)（GMod Lua NPC AI 框架），完整移植到 s&box C#，并在此基础上构建僵尸生存 / TTT 玩法。持续开发中。
+Built on [DrVrej's VJ Base](https://steamcommunity.com/sharedfiles/filedetails/?id=131759821) (GMod Lua NPC AI framework), fully ported to s&box C# with zombie survival / TTT gameplay on top. Active development.
 
-> **注意**：武器模型和僵尸动画源文件不在本仓库分发。
-
----
-
-## 状态
-
-VJ Base 翻译进度约 **98%**。核心 AI 回路（感知、调度、移动、攻击、音效、动画）已完整运行。
-
-| 子系统 | 状态 |
-|--------|------|
-| Schedule（32 方法） | ✅ |
-| AA 移动 / 音效 / 关系系统 | ✅ |
-| HumanNPC（18 方法 + SelectSchedule） | ✅ |
-| DamageInfo + 免疫链 / 实体标志 / 盟友 | ✅ |
-| 武器系统 + 动画系统（Route A, ~1800 行） | ✅ |
-| 边缘系统（Follow / Fire / Eating / Bullseye） | ⬜ ~19 SKIP |
+> **Note**: Weapon model and zombie animation sources are not included in this repository.
 
 ---
 
-## 结构
+## Status
+
+VJ Base translation is ~**98%** complete. Core AI loop (sensing, scheduling, movement, combat, sound, animation) is fully functional.
+
+| Subsystem | Status |
+|-----------|--------|
+| Schedule (32 methods) | ✅ |
+| AA movement / Sound / Relationships | ✅ |
+| HumanNPC (18 methods + SelectSchedule) | ✅ |
+| DamageInfo + immunity chain / Entity flags / Allies | ✅ |
+| Weapon system + Animation system (Route A, ~1800 lines) | ✅ |
+| Edge systems (Follow / Fire / Eating / Bullseye) | ⬜ ~19 SKIP |
+
+---
+
+## Structure
 
 ```
 ├── Code/
-│   ├── VJBase/                     — VJ Base C# 翻译（NPC AI 框架）
-│   │   ├── Core/                   — BaseNPC、Schedule、Animation、Sound 等
-│   │   ├── Engine/                 — AISenses 感知层
-│   │   ├── Schedule/               — 调度/任务数据结构
+│   ├── VJBase/                     — VJ Base C# port (NPC AI framework)
+│   │   ├── Core/                   — BaseNPC, Schedule, Animation, Sound, etc.
+│   │   ├── Engine/                 — AISenses perception layer
+│   │   ├── Schedule/               — Schedule / task data structures
 │   │   └── Bases/                  — CreatureNPC / HumanNPC / TankNPC
-│   ├── Zombies/                    — 僵尸 NPC 类型
-│   ├── Gamemodes/                  — TTT / Zombie Horde 模式
-│   ├── Weapons/                    — 自定义武器
-│   ├── Player/                     — 玩家相关
-│   ├── AI/                         — AI 导演 / 遭遇系统
-│   ├── swb_base/ / swb_player/     — SWB 武器基础
-│   └── ui/                         — UI 组件
-├── Assets/                         — 游戏资源（模型、材质、音效等）
-├── docs/                           — 翻译规范、进度、API 映射
-└── tools/                          — 辅助脚本
+│   ├── Zombies/                    — Zombie NPC types
+│   ├── Gamemodes/                  — TTT / Zombie Horde modes
+│   ├── Weapons/                    — Custom weapons
+│   ├── Player/                     — Player systems
+│   ├── AI/                         — AI director / encounter system
+│   ├── swb_base/ / swb_player/     — SWB weapon base
+│   └── ui/                         — UI components
+├── Assets/                         — Game assets (models, materials, sounds, etc.)
+├── docs/                           — Translation guides, progress, API mapping
+└── tools/                          — Utility scripts
 ```
 
 ---
 
-## 参与贡献
+## Contributing
 
-欢迎提交 Issue 和 Pull Request。
+Issues and Pull Requests welcome.
 
-- 翻译规范：[docs/translation-guide.md](docs/translation-guide.md)
-- 剩余任务：[docs/phase3-progress.md](docs/phase3-progress.md)
-- 动画系统：[docs/animation-system-analysis.md](docs/animation-system-analysis.md)
+- Translation guide: [docs/translation-guide.md](docs/translation-guide.md)
+- Remaining tasks: [docs/phase3-progress.md](docs/phase3-progress.md)
+- Animation system: [docs/animation-system-analysis.md](docs/animation-system-analysis.md)
 
-### 提交规范
+### Commit convention
 
 ```
-type(scope): 中文简述
+type(scope): short description
 ```
 
 `type`: `translate` / `fill` / `fix` / `cleanup` / `field` / `docs`
 
-### 开发环境
+### Development
 
-- [s&box](https://sbox.game) 客户端
-- 用 s&box IDE 打开 `testzombie.sbproj`
+- [s&box](https://sbox.game) client
+- Open `testzombie.sbproj` in the s&box IDE
 
 ---
 
-## 协议
+## License
 
-本项目代码仅供学习参考。VJ Base 版权归 [DrVrej](https://steamcommunity.com/sharedfiles/filedetails/?id=131759821) 所有。
+Source code is for educational reference. VJ Base copyright belongs to [DrVrej](https://steamcommunity.com/sharedfiles/filedetails/?id=131759821).
