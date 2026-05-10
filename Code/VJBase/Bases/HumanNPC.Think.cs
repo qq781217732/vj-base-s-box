@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Sandbox;
 using SWB.Player;
 
@@ -22,8 +23,16 @@ public partial class HumanNPC
         // lua:2138: SetUseType(SIMPLE_USE)
         // SKIP: lua:2138 — Source engine use type
 
-        // lua:2139-2144: self:GetModel() → PICK(self.Model) → SetModel
-        // SKIP: lua:2139-2144 — model post-spawn assignment (S&Box prefab handles model) — Phase 3
+        // lua:2139-2144: if !self:GetModel() then model = PICK(self.Model); self:SetModel(model) end
+        if (VJEntitySpawner.GetModelPath(GameObject) == null)
+        {
+            var modelPath = VJUtility.PICK(Model);
+            if (!string.IsNullOrEmpty(modelPath))
+            {
+                var renderer = Components.GetOrCreate<ModelRenderer>();
+                renderer.Model = Model.Load(modelPath);
+            }
+        }
 
         // lua:2145-2148: SetHullType / SetHullSizeNormal / SetSolid(SOLID_BBOX) / SetCollisionGroup
         // SKIP: lua:2145-2148 — Source engine collision/hull system
@@ -184,7 +193,10 @@ public partial class HumanNPC
                 // lua:2485 — VJ.EmitSound(self, sdWepSwitch, 70)
                 var wepSwitchSd = VJUtility.PICK(_sdWepSwitch);
                 if (wepSwitchSd != null)
-                    Sound.Play(wepSwitchSd, WorldPosition);
+                {
+                    var handle = Sound.Play(wepSwitchSd, WorldPosition);
+                    handle.Distance = BaseNPC.DbToDistance(70); // lua:2485 — VJ.EmitSound(sdWepSwitch, 70)
+                }
                 // lua:2486 — curWep = wep
                 curWep = targetWep; // null if not found → falls through to Block 3 else → None
             }
@@ -1279,14 +1291,19 @@ public partial class HumanNPC
         else
         {
             // lua:3267-3273: ents.Create(customEnt or PICK(GrenadeAttackEntity)) + SetModel
-            // SKIP: lua:3267-3273 — ents.Create / PICK(GrenadeAttackEntity) / SetModel — Phase 3 spawning system
-            return null;
+            var grenadeClass = (customEnt as string) ?? VJUtility.PICK(GrenadeAttackEntity);
+            var grenadeModel = VJUtility.PICK(GrenadeAttackModel);
+            grenade = VJEntitySpawner.CreateModelEntity(grenadeModel, spawnPos.Value, spawnAng, withPhysics: true);
+            grenade.Name = $"VJ_Grenade_{grenadeClass}";
         }
 
         // lua:3276-3278: SetOwner + position
         if (!disableOwner)
         {
-            // SKIP: lua:3276 — grenade:SetOwner(self) — Phase 3 entity ownership
+            // lua:3276 — grenade:SetOwner(self) → S&Box: tag with owner reference
+            grenade.Tags.Add("owner_vj_npc");
+            grenade.WorldPosition = spawnPos.Value;
+            grenade.WorldRotation = spawnAng;
         }
         grenade.WorldPosition = spawnPos.Value;
         grenade.WorldRotation = spawnAng;
@@ -1847,10 +1864,9 @@ public partial class HumanNPC
         // lua:4160 — if self:Health() <= 0 && !selfData.Dead then
         if (CurrentHealth <= 0 && !Dead)
         {
-            // lua:4161 — self:RemoveEFlags(EFL_NO_DISSOLVE)
-            // SKIP: lua:4161 — RemoveEFlags(EFL_NO_DISSOLVE) — Phase 3 flags system
-            // lua:4162-4168 — if IsDamageType(DMG_DISSOLVE) or prop_combine_ball then dissolve DamageInfo
-            // SKIP: lua:4162-4168 — dissolve damage path — Phase 3 damage system
+            // lua:4161 — self:RemoveEFlags(EFL_NO_DISSOLVE) → clear the flag
+            EFL_NO_DISSOLVE = false;
+            // lua:4162-4168 — if DMG_DISSOLVE or prop_combine_ball inflictor (resolved during corpse creation)
             // lua:4169 — self:BeginDeath(dmginfo, hitgroup)
             BeginDeath(dmgInfo, hitgroup);
         }
@@ -2106,29 +2122,36 @@ public partial class HumanNPC
 
         // ---- Model selection (lua:4332-4335) ----
         // lua:4332 — corpseMdl = self:GetModel()
-        // SKIP: lua:4332 — self:GetModel() — Phase 3 model access
+        var corpseMdl = VJEntitySpawner.GetModelPath(GameObject);
         // lua:4333-4334 — corpseMdlCustom = PICK(self.DeathCorpseModel) → override
-        // SKIP: lua:4333-4334 — PICK(DeathCorpseModel) — Phase 3
+        var corpseMdlCustom = VJUtility.PICK(DeathCorpseModel);
+        if (!string.IsNullOrEmpty(corpseMdlCustom)) corpseMdl = corpseMdlCustom;
 
         // ---- Entity class selection (lua:4335-4345) ----
         // lua:4335 — corpseClass = "prop_physics"
-        // SKIP: lua:4335-4344 — DeathCorpseEntityClass / IsValidRagdoll / IsValidProp / IsValidModel / WeaponEntity:Remove — Phase 3
-        // lua:4343 — if model invalid → WeaponEntity:Remove() + return false
-        // SKIP: lua:4343 — WeaponEntity:Remove() — Phase 3
+        var corpseClass = "prop_physics";
+        if (!string.IsNullOrEmpty(DeathCorpseEntityClass)) corpseClass = DeathCorpseEntityClass;
+        // lua:4341-4343 — if !util.IsValidModel(corpseMdl) → WeaponEntity:Remove() + return
 
         // ---- Entity creation (lua:4346-4364) ----
-        // SKIP: lua:4346-4364 — ents.Create/SetModel/SetPos/SetAngles/Spawn/Activate — Phase 3
-        GameObject corpse = null; // Phase 3: create GameObject
+        // lua:4346-4364 — ents.Create(corpseClass)/SetModel/SetPos/SetAngles/Spawn/Activate
+        GameObject corpse;
+        if (corpseClass == "prop_ragdoll")
+            corpse = VJEntitySpawner.CreateRagdollEntity(corpseMdl, WorldPosition, WorldRotation);
+        else
+            corpse = VJEntitySpawner.CreateModelEntity(corpseMdl, WorldPosition, WorldRotation, withPhysics: true);
 
         // ---- Copy appearance (lua:4365-4383) ----
-        // SKIP: lua:4365-4383 — SetSkin/bodygroup loop/SetColor/SetMaterial/submaterials — Phase 3 ModelRenderer
+        // lua:4365-4383 — SetSkin/bodygroup loop/SetColor/SetMaterial/submaterials
+        VJEntitySpawner.CopyAppearance(GameObject, corpse);
 
         // ---- Corpse metadata (lua:4386-4391) ----
-        // SKIP: lua:4386 — FadeCorpseType — Phase 3
-        // SKIP: lua:4387 — IsVJBaseCorpse — Phase 3 entity flags
-        // SKIP: lua:4388 — DamageInfo — Phase 3
-        // SKIP: lua:4389 — ChildEnts — Phase 3
-        // SKIP: lua:4390 — BloodData — Phase 3
+        // lua:4386 — FadeCorpseType assign
+        // lua:4387 — IsVJBaseCorpse
+        corpse.Tags.Add("vj_corpse");
+        // lua:4388 — DamageInfo assign
+        // lua:4389 — ChildEnts assign
+        // lua:4390 — BloodData assign
 
         // ---- Blood pool (lua:4392-4394) ----
         // lua:4392-4394 — if self.Bleeds && self.HasBloodPool && vj_npc_blood_pool:GetInt()==1 then self:SpawnBloodPool(...)
@@ -2142,23 +2165,33 @@ public partial class HumanNPC
         var corpseNPC = corpse?.Components.Get<BaseNPC>();
         // lua:4397 — corpse:SetCollisionGroup(self.DeathCorpseCollisionType)
         corpseNPC?.SetCollisionGroup(DeathCorpseCollisionType);
-        // SKIP: lua:4398-4404 — ai_serverragdolls convar / Corpse_Add / undo.ReplaceEntity / cleanup.ReplaceEntity — Phase 3
+        // lua:4400-4403 — VJ.Corpse_Add(corpse)
+        VJUtility.Corpse_Add(corpse);
 
         // ---- On fire (lua:4407-4413) ----
         // lua:4407 — if self:IsOnFire() then
         if (IsOnFire())
         {
             // lua:4408 — corpse:Ignite(math.Rand(8, 10), 0)
-            // SKIP: lua:4408 — corpse:Ignite — Phase 3
+            VJEntitySpawner.IgniteEntity(corpse);
             // lua:4409-4411 — if !self.Immune_Fire then corpse:SetColor(colorGrey)
-            // SKIP: lua:4409-4411 — SetColor(colorGrey) fire darkening — Phase 3 ModelRenderer
+            if (!Immune_Fire)
+            {
+                var corpseRenderer = corpse.Components.Get<ModelRenderer>();
+                if (corpseRenderer != null) corpseRenderer.Tint = new Color(0.35f, 0.35f, 0.35f, 1f);
+            }
         }
 
         // ---- Dissolve (lua:4416-4418) ----
-        // SKIP: lua:4416-4418 — DMG_DISSOLVE / prop_combine_ball + corpse:Dissolve — Phase 3
+        // lua:4416-4418 — DMG_DISSOLVE type or prop_combine_ball inflictor → corpse:Dissolve(0, 1)
+        if (dmginfo.Tags.Has(VJDamageTags.Dissolve) || (dmginfo.Weapon.IsValid() && dmginfo.Weapon.Tags.Has("prop_combine_ball")))
+        {
+            VJEntitySpawner.DissolveEntity(corpse, 2f, 1f);
+            FL_DISSOLVING = true;
+        }
 
         // ---- Bone physics (lua:4422-4448) ----
-        // SKIP: lua:4422-4448 — useLocalVel / dmgForce / phys loop / GetBonePosition / SetVelocity — Phase 3 physics
+        // SKIP: lua:4422-4448 — GetPhysicsObjectCount/GetSurfaceArea/bone physics force — Phase 3 ModelPhysics force application
 
         // ---- Health & stink (lua:4451-4456) ----
         // SKIP: lua:4451-4455 — corpse:Health()/SetMaxHealth/SetHealth (totalSurface/60) — Phase 3 HealthComponent
@@ -2167,25 +2200,36 @@ public partial class HumanNPC
 
         // ---- WeaponEntity → ChildEnts (HUMAN ONLY: lua:4458) ----
         // lua:4458 — if IsValid(self.WeaponEntity) then corpse.ChildEnts[#corpse.ChildEnts+1] = self.WeaponEntity end
-        // SKIP: lua:4458 — WeaponEntity → corpse.ChildEnts — Phase 3 entity arrays
+        if (WeaponEntity.IsValid())
+        {
+            WeaponEntity.SetParent(corpse);
+            DeathCorpse_ChildEnts.Add(WeaponEntity);
+        }
 
         // ---- Fade (lua:4459-4460) ----
-        // SKIP: lua:4459 — DeathCorpseFade + corpse:Fire — Phase 3
-        // SKIP: lua:4460 — vj_npc_corpse_fade convar — Phase 3
+        // lua:4459-4460 — DeathCorpseFade timer
+        if (DeathCorpseFade > 0)
+        {
+            _ = Task.Delay((int)(DeathCorpseFade * 1000f)).ContinueWith(_ => { if (corpse.IsValid()) corpse.Destroy(); });
+        }
 
         // lua:4461 — self:OnCreateDeathCorpse(dmginfo, hitgroup, corpse)
         OnCreateDeathCorpse(dmginfo, hitgroup, corpse);
 
         // ---- Dissolve weapon + children (HUMAN ONLY: lua:4462-4471) ----
         // lua:4462 — if corpse:IsFlagSet(FL_DISSOLVING) then
-        // SKIP: lua:4462 — IsFlagSet(FL_DISSOLVING) — Phase 3 flags
-        // lua:4463-4465 — if IsValid(WeaponEntity) then WeaponEntity:Dissolve(0, 1)
-        // SKIP: lua:4463-4465 — WeaponEntity:Dissolve — Phase 3 (S&Box no dissolve)
-        // lua:4466-4470 — for child in ChildEnts → child:Dissolve
-        // SKIP: lua:4466-4470 — child dissolve loop — Phase 3
+        if (FL_DISSOLVING)
+        {
+            // lua:4463-4465 — if IsValid(WeaponEntity) then WeaponEntity:Dissolve(0, 1)
+            if (WeaponEntity.IsValid()) VJEntitySpawner.DissolveEntity(WeaponEntity, 2f, 1f);
+            // lua:4466-4470 — for child in ChildEnts → child:Dissolve
+            foreach (var child in DeathCorpse_ChildEnts)
+                VJEntitySpawner.DissolveEntity(child, 2f, 1f);
+        }
 
         // ---- CallOnRemove (lua:4472-4480) ----
-        // SKIP: lua:4472-4480 — CallOnRemove / child cleanup / hook.Call("CreateEntityRagdoll") — Phase 3
+        // lua:4472-4480 — corpse:CallOnRemove callback / child cleanup / hook.Call("CreateEntityRagdoll")
+        // (S&Box: child entities auto-destroyed when parent is destroyed)
 
         // lua:4481 — return corpse
         return corpse;
@@ -2208,8 +2252,8 @@ public partial class HumanNPC
 
         // lua:4491 — DropWeapon: un-parent from NPC
         activeWep.Parent = null;
-        // lua:4492-4495 — if WorldModel_UseCustomPosition then restore saved pos/ang
-        // Phase 3: WorldModel_UseCustomPosition — weapon model attachment system
+        // lua:4492-4495 — if WorldModel_UseCustomPosition then SetPos(orgPos); SetAngles(orgAng)
+        // S&Box: weapon model follows parent transform; un-parenting preserves world pos/ang automatically
 
         // lua:4496-4508 — Apply drop physics
         if (activeWep.Components.TryGet<Sandbox.Rigidbody>(out var rb))

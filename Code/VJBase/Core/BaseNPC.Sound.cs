@@ -371,7 +371,7 @@ public partial class BaseNPC
 
     /// <summary>Maps Source engine SoundLevel (dB) to S&Box SoundHandle.Distance (units).</summary>
     /// Source SNDLVL mapping: 60dB≈125u, 75dB≈400u, 85dB≈800u, 90dB≈1200u, 100dB≈2000u
-    private static float DbToDistance(int db)
+    public static float DbToDistance(int db)
     {
         return db switch
         {

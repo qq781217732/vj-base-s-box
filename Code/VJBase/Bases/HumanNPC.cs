@@ -29,6 +29,8 @@ public partial class HumanNPC : CreatureNPC
 
     // ═══ Attack Config (human-specific values set in constructor) ═══
     public bool HasGrenadeAttack { get; set; }
+    /// <summary>human_base/init.lua:308. Secondary fire projectile release time. 0 = immediate (Lua: false = auto-calculate from anim).</summary>
+    public float Weapon_SecondaryFireTime { get; set; }
 
     // ═══ Grenade Config — human_base/init.lua:14-323 ═══
     public List<string> GrenadeAttackEntity { get; set; }

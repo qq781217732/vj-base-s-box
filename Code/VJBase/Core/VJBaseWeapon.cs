@@ -140,7 +140,10 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
 
         // lua:996 — Play reload sound
         if (NPC_HasReloadSound && !string.IsNullOrEmpty(NPC_ReloadSound))
-            Sound.Play(NPC_ReloadSound, owner.WorldPosition);
+        {
+            var handle = Sound.Play(NPC_ReloadSound, owner.WorldPosition);
+            handle.Distance = BaseNPC.DbToDistance((int)NPC_ReloadSoundLevel);
+        }
     }
 
     // ═══ Weapon lifecycle callbacks ═══
@@ -178,9 +181,13 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
             if (owner.IsValid() && npc.GetEnemy().IsValid())
             {
                 NPC_SecondaryFire();
+                // lua:615-617 — secondary fire sound
                 var fireSd = VJUtility.PICK(NPC_SecondaryFireSound);
                 if (fireSd != null)
-                    Sound.Play(fireSd, owner.WorldPosition);
+                {
+                    var handle = Sound.Play(fireSd, owner.WorldPosition);
+                    handle.Distance = BaseNPC.DbToDistance((int)NPC_SecondaryFireSoundLevel);
+                }
                 NPC_SecondaryFireNextT = Time.Now + Game.Random.Float(NPC_SecondaryFireNextA, NPC_SecondaryFireNextB);
             }
         }
@@ -204,8 +211,9 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
             NPC_ExtraFireSoundTime_T = 0;
             if (!string.IsNullOrEmpty(NPC_ExtraFireSound))
             {
-                var pitch = Game.Random.Float(NPC_ExtraFireSoundPitchA, NPC_ExtraFireSoundPitchB);
-                Sound.Play(NPC_ExtraFireSound, owner.WorldPosition);
+                var handle = Sound.Play(NPC_ExtraFireSound, owner.WorldPosition);
+                handle.Distance = BaseNPC.DbToDistance((int)NPC_ExtraFireSoundLevel);
+                handle.Pitch = Game.Random.Float(NPC_ExtraFireSoundPitchA, NPC_ExtraFireSoundPitchB);
             }
         }
     }
@@ -307,7 +315,6 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
 
         var ene = owner.Components.Get<BaseNPC>()?.GetEnemy();
         var spawnPos = GetBulletPos(owner);
-        var targetPos = ene.IsValid() ? ene.WorldPosition + ene.WorldRotation.Forward * 40f : spawnPos + owner.WorldRotation.Forward * 1000f;
 
         // lua:227 — ents.Create(self.NPC_SecondaryFireEnt)
         var proj = new GameObject(true, NPC_SecondaryFireEnt);
@@ -319,11 +326,24 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
         // lua:231-233 — Spawn + Activate
         // Phase 3: proper entity activation
 
-        // lua:234-241 — Apply trajectory
+        // lua:234-241 — Apply trajectory (gravity-enabled → Curve, else → Line)
+        // lua:237/239 — both use targetPos=1 (predict=true) → GetAimPosition re-run; Phase 3 prediction not yet implemented
         if (proj.Components.TryGet<Sandbox.Rigidbody>(out var rb))
         {
             rb.Enabled = true;
-            var vel = VJUtility.CalculateTrajectory(owner, ene, "Curve", spawnPos, targetPos, 1f);
+            // Fallback target without prediction: aim at enemy center + lead offset
+            var targetPos = ene.IsValid() ? ene.WorldPosition + ene.WorldRotation.Forward * 40f : spawnPos + owner.WorldRotation.Forward * 1000f;
+            Vector3 vel;
+            if (rb.Gravity)
+            {
+                // lua:237 — VJ.CalculateTrajectory("Curve", predict=true, strength=1)
+                vel = VJUtility.CalculateTrajectory(owner, ene, "Curve", spawnPos, targetPos, 1f);
+            }
+            else
+            {
+                // lua:239 — VJ.CalculateTrajectory("Line", predict=true, strength=2000)
+                vel = VJUtility.CalculateTrajectory(owner, ene, "Line", spawnPos, targetPos, 2000f);
+            }
             rb.Velocity = vel;
             proj.WorldRotation = Rotation.LookAt(vel.Normal);
         }
@@ -363,7 +383,9 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
             {
                 // lua:605 — PlayAnim(AnimTbl_WeaponAttackSecondary) → fireTime
                 // SKIP: lua:605-608 — PlayAnim + animDur calculation — Phase 3 animation
-                float fireTime = npc.Weapon_SecondaryFireTime; // configurable override (default 0 = fire immediately)
+                // lua:609 — fireTime = (anim==ACT_INVALID && 0) or owner.Weapon_SecondaryFireTime or animDur
+                // Since animation is Phase 3 SKIP, animDur is unavailable; use the config field or 0 (immediate).
+                float fireTime = (npc as HumanNPC)?.Weapon_SecondaryFireTime ?? 0f;
                 NPC_SecondaryFireNextT = Time.Now + fireTime + 0.5f;
                 NPC_SecondaryFire_BeforeTimer(ene, fireTime);
                 NPC_SecondaryFireTimeT = Time.Now + fireTime;
@@ -447,8 +469,9 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
             var drySd = VJUtility.PICK(DryFireSound);
             if (drySd != null)
             {
-                var dryPitch = Game.Random.Float(DryFireSoundPitchA, DryFireSoundPitchB);
-                Sound.Play(drySd, owner.WorldPosition);
+                var handle = Sound.Play(drySd, owner.WorldPosition);
+                handle.Distance = BaseNPC.DbToDistance((int)DryFireSoundLevel);
+                handle.Pitch = Game.Random.Float(DryFireSoundPitchA, DryFireSoundPitchB);
             }
             return;
         }
@@ -468,6 +491,7 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
         if (fireSd != null)
         {
             var handle = Sound.Play(fireSd, owner.WorldPosition);
+            handle.Distance = BaseNPC.DbToDistance((int)Primary_SoundLevel);
             handle.Volume = Primary_SoundVolume;
             handle.Pitch = Game.Random.Float(Primary_SoundPitchA, Primary_SoundPitchB);
         }
@@ -478,6 +502,7 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
             if (distantSd != null)
             {
                 var farHandle = Sound.Play(distantSd, owner.WorldPosition);
+                farHandle.Distance = BaseNPC.DbToDistance((int)Primary_DistantSoundLevel);
                 farHandle.Volume = Primary_DistantSoundVolume;
                 farHandle.Pitch = Game.Random.Float(Primary_DistantSoundPitchA, Primary_DistantSoundPitchB);
             }
@@ -552,7 +577,10 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
             {
                 var hitSd = VJUtility.PICK(MeleeWeaponSound_Hit);
                 if (hitSd != null)
-                    Sound.Play(hitSd, owner.WorldPosition);
+                {
+                    var handle = Sound.Play(hitSd, owner.WorldPosition);
+                    handle.Distance = BaseNPC.DbToDistance(70); // lua:733 — EmitSound(sd, 70, ...)
+                }
             }
             else
             {
@@ -560,7 +588,10 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
                 if (isNPC) npc.OnMeleeAttackExecute("Miss");
                 var missSd = VJUtility.PICK(MeleeWeaponSound_Miss);
                 if (missSd != null)
-                    Sound.Play(missSd, owner.WorldPosition);
+                {
+                    var handle = Sound.Play(missSd, owner.WorldPosition);
+                    handle.Distance = BaseNPC.DbToDistance(70); // lua:739 — EmitSound(sd, 70, ...)
+                }
             }
         }
         // ═══ lua:743-786 — RANGED WEAPON ═══
