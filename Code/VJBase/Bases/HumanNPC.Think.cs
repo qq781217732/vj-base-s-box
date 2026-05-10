@@ -928,11 +928,11 @@ public partial class HumanNPC
                                     {
                                         // lua:3688 — self:StopMoving()
                                         StopMoving();
-                                        // lua:3689 — if IsGuard then GuardData.Position = moveCheck, Direction = angle
+                                        // lua:3689 — if IsGuard then GuardData.Position = moveCheck; GuardData.Direction = moveCheck + GetForward()*51
                                         if (IsGuard)
                                         {
                                             Guard.Position = moveCheck;
-                                            Guard.Direction = (moveCheck - myPos).Normal;
+                                            Guard.Direction = moveCheck + WorldRotation.Forward * 51f;
                                         }
                                         // lua:3690 — self:SetLastPosition(moveCheck)
                                         SetLastPosition(moveCheck);
