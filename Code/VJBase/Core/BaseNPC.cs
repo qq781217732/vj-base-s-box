@@ -32,7 +32,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public bool FL_NOTARGET { get; set; }
     public bool FL_DISSOLVING { get; set; }
     public bool FL_OBJECT { get; set; }
-    public bool EFL_NO_DISSOLVE { get; set; }
+    public bool EFL_NO_DISSOLVE { get; set; } = true; // creature init.lua:1556 + human init.lua:2137 — prevents dissolve before death
     public float NPCClass { get; set; }
     public float MaxYawSpeed { get; set; }
     public bool VJ_DEBUG { get; set; }
