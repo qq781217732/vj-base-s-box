@@ -44,6 +44,8 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public bool IsFollowing { get; set; }
     public bool IsGuard { get; set; }
     public bool CanReceiveOrders { get; set; } = true;
+    /// <summary>Entity that created/spawned this NPC. Source: GetCreator(). Set by spawn system.</summary>
+    public GameObject Creator { get; set; }
     public bool DisableChasingEnemy { get; set; }
     public bool PauseAttacks { get; set; }
     public float AnimLockTime { get; set; }
@@ -152,6 +154,8 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public virtual bool MaintainPropInteraction(GameObject ent) => true;
     /// <summary>OnOpenDoor — schedules.lua:360. Called when NPC is about to open a door. Phase 3: nav mesh door detection sets OpeningDoor, then this fires.</summary>
     public virtual void OnOpenDoor(GameObject door) { }
+    /// <summary>SetupGrenadeFuse — ExecuteGrenadeAttack:3286-3303. Set fuse/explode timer on grenade entity. Grenade Components override this to handle type-specific fuse logic.</summary>
+    public virtual void SetupGrenadeFuse(GameObject grenade, float fuseTime) { }
     public virtual Vector3 RangeAttackProjPos(GameObject projectile) => WorldPosition + WorldRotation.Forward * 50;
     public virtual Vector3 RangeAttackProjVel(GameObject projectile) => (GetEnemy()?.WorldPosition - WorldPosition ?? Vector3.Forward).Normal * 800;
     public virtual bool OnRangeAttackExecute(string status, GameObject ent = null, GameObject projectile = null) => false;

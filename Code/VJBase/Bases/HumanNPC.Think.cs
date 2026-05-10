@@ -93,7 +93,9 @@ public partial class HumanNPC
         // SKIP: lua:2211 — SetMaxLookDistance(SightDistance) — S&Box engine handles vision range
         // SKIP: lua:2212 — SetFOV(SightAngle) — S&Box engine handles FOV
         // SKIP: lua:2213 — SetNPCState / GetNPCState — Source engine NPC state
-        // SKIP: lua:2214 — GetCreator / IsGuard from creator — Phase 3 spawn system
+        // lua:2214 — GetCreator / IsGuard from creator
+        if (Creator.IsValid() && Creator.Tags.Has("vj_spawn_guard"))
+            IsGuard = true;
         // lua:2215 — StartSoundTrack()
         StartSoundTrack();
         // SKIP: lua:2218-2235 — LookupPoseParameter("aim_pitch"/"head_pitch"/"aim_yaw"/"head_yaw"/"aim_roll"/"head_roll") — Phase 3 animation pose params
@@ -1161,7 +1163,7 @@ public partial class HumanNPC
         var eneData = Enemy;
         var ene = eneData.Target;
         var isLiveEnt = customEnt != null && customEnt.IsValid();
-        var landDir = "FindBest";
+        object landDir = "FindBest";
 
         // lua:3083-3097: Determine landing direction
         if (ene.IsValid())
@@ -1187,7 +1189,7 @@ public partial class HumanNPC
         }
 
         // lua:3099: OnGrenadeAttack("Init")
-        if (OnGrenadeAttack("Init", customEnt)) return false;
+        if (OnGrenadeAttack("Init", customEnt) is true) return false;
         var seed = Time.Now;
         AttackSeed = (int)(seed * 1000);
 
@@ -1206,16 +1208,41 @@ public partial class HumanNPC
         }
         else
         {
-            // lua:3122-3123 — bestPos = PICK(VJ.TraceDirections(self, "Quick", 200, true, false, 8))
+            // lua:3122-3126 — bestPos = PICK(VJ.TraceDirections(self, "Quick", 200, true, false, 8))
             var trs = VJUtility.TraceDirections(this, "Quick", 200f, requireFullDist: true, numDirections: 8);
             if (trs != null && trs.Count > 0)
-                SetTurnTarget(VJUtility.PICK(trs), AttackAnimDuration > 0 ? AttackAnimDuration : 1.5f);
+            {
+                var bestPosStr = VJUtility.PICK(trs);
+                landDir = bestPosStr;  // lua:3124 — save the position so ExecuteGrenadeAttack can use it directly
+                SetTurnTarget(bestPosStr, AttackAnimDuration > 0 ? AttackAnimDuration : 1.5f);  // lua:3125
+            }
         }
 
         // lua:3130-3164: Handle live entity positioning
         if (isLiveEnt)
         {
-            // SKIP: lua:3131-3164 — customEnt.VJ_ST_Grabbed / SetMoveType / FollowBone / GetAttachment / LookupBone / GetBonePosition — Phase 3 entity parenting
+            // lua:3131 — customEnt.VJ_ST_Grabbed = true
+            var flags = customEnt.Components.GetOrCreate<VJEntityFlags>();
+            flags.VJ_ST_Grabbed = true;
+
+            // lua:3132 — customEnt.VJ_ST_GrabOrgMoveType = customEnt:GetMoveType()
+            // Phase 3: store original Rigidbody.Enabled / NavMeshAgent.Enabled state for restore
+
+            // lua:3138 — customPos = self:OnGrenadeAttack("SpawnPos", customEnt, landDir)
+            var customPos = OnGrenadeAttack("SpawnPos", customEnt, landDir) as Vector3?;
+            if (!customPos.HasValue)
+            {
+                // lua:3140-3152 — attachment / bone / fallback hierarchy
+                // SKIP: lua:3140-3152 — LookupAttachment/GetAttachment/LookupBone/GetBonePosition/FollowBone — Phase 3 animation bone system
+                customEnt.Parent = GameObject;                              // lua:3151 — SetParent(self) (fallback)
+                customEnt.WorldPosition = WorldPosition + WorldRotation.Forward * 30; // lua:3149 — GetShootPos() fallback
+            }
+            else
+            {
+                customEnt.WorldPosition = customPos.Value;                  // lua:3161 — SetPos(customPos)
+                customEnt.WorldRotation = customPos.Value.Normal.EulerAngles; // lua:3162 — SetAngles(customPos:Angle())
+                customEnt.Parent = GameObject;                              // lua:3163 — SetParent(self)
+            }
         }
 
         // lua:3167-3169: Attack state + sound
@@ -1255,49 +1282,69 @@ public partial class HumanNPC
         var fuseTime = GrenadeAttackFuseTime;
 
         // lua:3215-3234: Determine spawn position and angle
-        Vector3? spawnPos = null;
+        // Priority: 1.Custom callback → 2.Attachment → 3.Bone → 4.Fallback(GetShootPos)
+        var spawnPos = OnGrenadeAttack("SpawnPos", customEnt, landDir) as Vector3?;  // lua:3215
         Angles spawnAng = Angles.Zero;
-        // SKIP: lua:3215 — OnGrenadeAttack("SpawnPos") custom position — Phase 3
-        // SKIP: lua:3218-3233 — LookupAttachment / GetAttachment / LookupBone / GetBonePosition / GetShootPos — Phase 3 bone/animation system
-        spawnPos = WorldPosition + WorldRotation.Forward * 30;
+        if (!spawnPos.HasValue)
+        {
+            // lua:3218-3223 — LookupAttachment / LookupBone → Phase 3 animation bone system
+            // SKIP: lua:3218-3223 — LookupAttachment/GetAttachment/LookupBone/GetBonePosition — Phase 3 animation
+            spawnPos = WorldPosition + WorldRotation.Forward * 30;                   // lua:3224 — GetShootPos() fallback
+        }
+        spawnAng = ((Vector3)spawnPos - WorldPosition).Normal.EulerAngles;           // lua:3233 — spawnPos:Angle()
 
         // lua:3238-3254: Determine landing position
         var landingPos = WorldPosition + WorldRotation.Forward * 200;
         if (landDir is string ld)
         {
-            if (ld == "Enemy")
+            if (ld == "Enemy")                                              // lua:3239-3241
             {
                 landingPos = GetEnemyLastKnownPos();
             }
-            else if (ld == "EnemyLastVis")
+            else if (ld == "EnemyLastVis")                                  // lua:3242-3245
             {
                 if (Enemy.Visible) landingPos = Enemy.VisiblePos;
             }
+            else                                                            // lua:3248-3253 — "FindBest" or unrecognized
+            {
+                var trs = VJUtility.TraceDirections(this, "Quick", 200f, requireFullDist: true, numDirections: 8);
+                if (trs != null && trs.Count > 0)
+                    landingPos = VJUtility.PICK(trs);
+            }
         }
-        else if (landDir is Vector3 vec)
+        else if (landDir is Vector3 vec)                                    // lua:3246-3247 — isvector(landDir)
         {
             landingPos = vec;
-        }
-        else
-        {
-            // lua:3249-3253 — bestPos = PICK(VJ.TraceDirections(self, "Quick", 200, true, false, 8))
-            var trs = VJUtility.TraceDirections(this, "Quick", 200f, requireFullDist: true, numDirections: 8);
-            if (trs != null && trs.Count > 0)
-                landingPos = VJUtility.PICK(trs);
         }
 
         // lua:3258-3274: Create or reuse grenade entity
         if (isLiveEnt)
         {
             // lua:3259-3263: clean up parent/move type/follow bone
-            // SKIP: lua:3259-3263 — SetParent(NULL) / SetMoveType / RemoveEffects(EF_FOLLOWBONE) — Phase 3 entity system
+            // lua:3259 — customEnt.VJ_ST_Grabbed = false
+            var flags = customEnt.Components.Get<VJEntityFlags>();
+            if (flags != null) flags.VJ_ST_Grabbed = false;
+            // lua:3261 — customEnt:SetParent(NULL)
+            customEnt.Parent = null;
+            // SKIP: lua:3262 — SetMoveType(VJ_ST_GrabOrgMoveType) restore — Phase 3 move type tracking
+            // SKIP: lua:3263 — RemoveEffects(EF_FOLLOWBONE) — Phase 3 effects system
             grenade = customEnt;
         }
         else
         {
             // lua:3267-3273: ents.Create(customEnt or PICK(GrenadeAttackEntity)) + SetModel
-            var grenadeClass = (customEnt as string) ?? VJUtility.PICK(GrenadeAttackEntity);
-            var grenadeModel = VJUtility.PICK(GrenadeAttackModel);
+            // lua:3268 — if !customEnt then SetModel (skip model override for custom entity classes)
+            string grenadeClass;
+            string grenadeModel = null;
+            if (customEnt is string customClass)
+            {
+                grenadeClass = customClass;
+            }
+            else
+            {
+                grenadeClass = VJUtility.PICK(GrenadeAttackEntity);
+                grenadeModel = VJUtility.PICK(GrenadeAttackModel);  // lua:3269-3271
+            }
             grenade = VJEntitySpawner.CreateModelEntity(grenadeModel, spawnPos.Value, spawnAng, withPhysics: true);
             grenade.Name = $"VJ_Grenade_{grenadeClass}";
         }
@@ -1313,21 +1360,42 @@ public partial class HumanNPC
         grenade.WorldPosition = spawnPos.Value;
         grenade.WorldRotation = spawnAng;
 
-        // SKIP: lua:3280-3308 — GetClass-based fuse timer dispatch (npc_grenade_frag / obj_vj_grenade / etc.) — Phase 3 grenade class system
+        // lua:3280-3308: Fuse timer dispatch
+        if (isLiveEnt)
+        {
+            // lua:3282-3284 — if GetClass()=="npc_grenade_frag" && detonateTime<0 → Input("SetTimer")
+            // Phase 3: component-based live grenade activation (check for VJGrenade component + IsActive)
+            SetupGrenadeFuse(grenade, fuseTime);
+        }
+        else
+        {
+            // lua:3286-3303 — GetClass-based dispatch of fuse times/explode delay per grenade type
+            // S&Box: class check replaced with virtual method; grenade components override SetupGrenadeFuse
+            SetupGrenadeFuse(grenade, fuseTime);
 
-        // lua:3305-3307: OnGrenadeAttackExecute + Spawn
-        // SKIP: lua:3305-3307 — OnGrenadeAttackExecute("PreSpawn") / grenade:Spawn() / grenade:Activate() — Phase 3 spawning
+            // lua:3305-3307: OnGrenadeAttackExecute("PreSpawn") + Spawn + Activate
+            OnGrenadeAttackExecute("PreSpawn", grenade, customEnt, landDir, landingPos);
+            // grenade:Spawn() / grenade:Activate() — S&Box GameObjects are live on creation, no spawn/activate needed
+        }
 
         // lua:3311-3322: Throw velocity
         {
-            // SKIP: lua:3312 — OnGrenadeAttackExecute("PostSpawn") — Phase 3
-            var vel = (landingPos - grenade.WorldPosition) + (Vector3.Up * 200 + WorldRotation.Forward * 500 + WorldRotation.Right * Game.Random.Next(-20, 21));
-            var rb = grenade.Components.Get<Rigidbody>();
-            if (rb != null)
+            var postSpawnResult = OnGrenadeAttackExecute("PostSpawn", grenade, customEnt, landDir, landingPos);  // lua:3312
+            if (postSpawnResult is true)
             {
-                rb.Sleeping = false;                                // lua:3316 — phys:Wake()
-                rb.AngularVelocity += new Vector3(500, 500, 500);  // lua:3317 — AddAngleVelocity(math.Rand(500,500), ...) → spin tumble
-                rb.Velocity = vel;                                 // lua:3318 — SetVelocity(vel)
+                // Callback handled velocity — skip default throw
+            }
+            else
+            {
+                // lua:3313 — postSpawnResult or (default velocity calc)
+                var vel = (postSpawnResult as Vector3?) ?? ((landingPos - grenade.WorldPosition) + (Vector3.Up * 200 + WorldRotation.Forward * 500 + WorldRotation.Right * Game.Random.Next(-20, 21)));
+                var rb = grenade.Components.Get<Rigidbody>();
+                if (rb != null)
+                {
+                    rb.Sleeping = false;                                // lua:3316 — phys:Wake()
+                    rb.AngularVelocity += new Vector3(500, 500, 500);  // lua:3317 — AddAngleVelocity(math.Rand(500,500), ...) → spin tumble
+                    rb.Velocity = vel;                                 // lua:3318 — SetVelocity(vel)
+                }
             }
         }
 

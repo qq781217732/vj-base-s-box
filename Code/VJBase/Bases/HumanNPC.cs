@@ -226,8 +226,8 @@ public partial class HumanNPC : CreatureNPC
     }
 
     // ═══ Virtual Callbacks (stubs — override in derived types) ═══
-    public virtual bool OnGrenadeAttack(string status, object customEnt, string landDir = null) => false;
-    public virtual bool OnGrenadeAttackExecute(string status, object grenade, object customEnt, Vector3? landDir, Vector3? landingPos) => false;
+    public virtual object? OnGrenadeAttack(string status, object customEnt, string landDir = null) => false;
+    public virtual object? OnGrenadeAttackExecute(string status, object grenade, object customEnt, Vector3? landDir, Vector3? landingPos) => false;
     public virtual void OnWeaponChange(GameObject newWeapon, GameObject oldWeapon, bool invSwitch) { }
     public virtual bool OnWeaponCanFire() => true;
     public virtual void OnWeaponAttack() { }
