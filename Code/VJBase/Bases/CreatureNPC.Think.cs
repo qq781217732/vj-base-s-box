@@ -836,8 +836,23 @@ public partial class CreatureNPC
 
         // ---- Entity class selection (lua:3350-3357) ----
         // lua:3350 — if self.DeathCorpseEntityClass then corpseClass = self.DeathCorpseEntityClass
-        if (!string.IsNullOrEmpty(DeathCorpseEntityClass)) corpseClass = DeathCorpseEntityClass;
-        // lua:3351-3357 — else util.IsValidRagdoll/IsValidProp/IsValidModel checks → S&Box uses same creation path
+        if (!string.IsNullOrEmpty(DeathCorpseEntityClass))
+            corpseClass = DeathCorpseEntityClass;
+        else
+        {
+            // lua:3352-3354 — util.IsValidRagdoll → "prop_ragdoll"
+            Model loaded;
+            if (VJEntitySpawner.TryLoadModel(corpseMdl, out loaded))
+            {
+                if (VJEntitySpawner.IsValidRagdollModel(loaded))
+                    corpseClass = "prop_ragdoll";
+            }
+            // lua:3354 — !util.IsValidProp || !util.IsValidModel → return false
+            else if (!string.IsNullOrEmpty(corpseMdl))
+            {
+                return null;
+            }
+        }
 
         // ---- Entity creation (lua:3358-3364) ----
         // lua:3358 — corpse = ents.Create(corpseClass)

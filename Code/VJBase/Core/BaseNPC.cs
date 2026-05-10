@@ -1199,10 +1199,34 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
         OnTakeDamage( info, 0 );
     }
 
-    /// <summary>OnTakeDamage — base implementation. Override in derived types for full immunity/flinch/death logic.</summary>
+    /// <summary>OnTakeDamage — base implementation. Handles death with dissolve re-application for CreatureNPC.</summary>
     public virtual int OnTakeDamage( DamageInfo dmgInfo, int hitgroup )
     {
         CurrentHealth -= dmgInfo.Damage;
+
+        // lua: creature init.lua:3171-3181 — death + dissolve re-application
+        if ( CurrentHealth <= 0 && !Dead )
+        {
+            EFL_NO_DISSOLVE = false;
+
+            // lua:3172-3178 — if DMG_DISSOLVE or prop_combine_ball inflictor, re-tag as dissolve death
+            // Source: creates new DamageInfo with DMG_DISSOLVE + TakeDamageInfo (recursive).
+            // S&Box: replace dmgInfo so CreateDeathCorpse sees DMG_DISSOLVE tag, avoiding recursion.
+            if ( dmgInfo.Tags.Has( VJDamageTags.Dissolve ) ||
+                 (dmgInfo.Weapon.IsValid() && dmgInfo.Weapon.Tags.Has( "prop_combine_ball" )) )
+            {
+                var dissolveDmg = new DamageInfo();
+                dissolveDmg.Damage = dmgInfo.Damage;
+                dissolveDmg.Attacker = dmgInfo.Attacker;
+                dissolveDmg.Position = dmgInfo.Position;
+                dissolveDmg.Weapon = dmgInfo.Weapon;
+                dissolveDmg.Tags.Add( VJDamageTags.Dissolve );
+                dmgInfo = dissolveDmg;
+            }
+
+            BeginDeath( dmgInfo, hitgroup );
+        }
+
         return 1; // allow damage
     }
 
@@ -1704,17 +1728,47 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     /// <summary>Called by GetClosestSound to let NPC filter sounds</summary>
     public virtual bool ShouldIgnoreSound(SoundEvent pSound) => false;
 
-    /// <summary>FL_* flag check — Phase 3: proper flag system. Currently returns false.</summary>
-    public virtual bool HasEntityFlag(GameObject ent, int flag) => false;
+    // ═══ Source Engine Flag Constants ═══
+    public const int FL_NOTARGET_BIT         = 1 << 16; // Source: FL_NOTARGET — AI ignores this entity
+    public const int SF_NPC_WAIT_TILL_SEEN   = 1 << 8;  // Source: NPC spawn flag — wait until seen
+
+    /// <summary>FL_* int flag check. Maps Source engine entity flags to S&Box bool properties.</summary>
+    public virtual bool HasEntityFlag(GameObject ent, int flag)
+    {
+        if (ent == null || !ent.IsValid()) return false;
+        // Check BaseNPC component first
+        var npc = ent.Components.Get<BaseNPC>();
+        if (npc != null)
+        {
+            if (flag == FL_NOTARGET_BIT) return npc.FL_NOTARGET;
+        }
+        // Check VJEntityFlags fallback
+        var ext = ent.Components.Get<VJEntityFlags>();
+        if (ext != null)
+        {
+            if (flag == FL_NOTARGET_BIT) return ext.FL_NOTARGET;
+        }
+        return false;
+    }
 
     /// <summary>Sound priority for best-sound selection</summary>
     public virtual int GetSoundPriority(SoundEvent pSound) => (int)SoundPriority.Medium;
 
-    /// <summary>SF_NPC_WAIT_TILL_SEEN flag check — Phase 3: spawn flag system</summary>
-    public virtual bool HasSpawnFlag(int flag) => false;
+    /// <summary>SF_NPC_WAIT_TILL_SEEN spawn flag. NPC won't activate senses until seen by player.</summary>
+    public bool SF_WaitTillSeen { get; set; }
 
-    /// <summary>Clear a spawn flag — Phase 3</summary>
-    public virtual void ClearSpawnFlag(int flag) { }
+    /// <summary>SF_* spawn flag check. Maps Source NPC spawn flags to S&Box properties.</summary>
+    public virtual bool HasSpawnFlag(int flag)
+    {
+        if (flag == SF_NPC_WAIT_TILL_SEEN) return SF_WaitTillSeen;
+        return false;
+    }
+
+    /// <summary>Clear a spawn flag. For SF_WAIT_TILL_SEEN, this activates the NPC's senses.</summary>
+    public virtual void ClearSpawnFlag(int flag)
+    {
+        if (flag == SF_NPC_WAIT_TILL_SEEN) SF_WaitTillSeen = false;
+    }
 
     // ═══════════════════════════════════════════════
     // Perception tick — replaces GatherConditions

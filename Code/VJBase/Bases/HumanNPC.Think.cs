@@ -19,9 +19,8 @@ public partial class HumanNPC
         // Phase 3: delegate to OnInit/OnSpawn lifecycle
 
         // lua:2135-2137: SetSpawnEffect(false) + SetRenderMode + AddEFlags(EFL_NO_DISSOLVE)
-        // SKIP: lua:2135-2137 — Source engine render/effects system
-        // lua:2138: SetUseType(SIMPLE_USE)
-        // SKIP: lua:2138 — Source engine use type
+        EFL_NO_DISSOLVE = true; // Prevent dissolve until death; cleared in Block O
+        // lua:2138: SetUseType(SIMPLE_USE) — Source engine; S&Box uses Component interactions
 
         // lua:2139-2144: if !self:GetModel() then model = PICK(self.Model); self:SetModel(model) end
         if (VJEntitySpawner.GetModelPath(GameObject) == null)
@@ -1866,9 +1865,24 @@ public partial class HumanNPC
         {
             // lua:4161 — self:RemoveEFlags(EFL_NO_DISSOLVE) → clear the flag
             EFL_NO_DISSOLVE = false;
-            // lua:4162-4168 — if DMG_DISSOLVE or prop_combine_ball inflictor (resolved during corpse creation)
+
+            // lua:4162-4168 — DMG_DISSOLVE or prop_combine_ball inflictor → re-tag as dissolve death
+            // Source: creates new DamageInfo with DMG_DISSOLVE + TakeDamageInfo (recursive).
+            // S&Box: replace dmgInfo so CreateDeathCorpse sees DMG_DISSOLVE tag, avoiding recursion.
+            if ( dmgInfo.Tags.Has( VJDamageTags.Dissolve ) ||
+                 (dmgInfo.Weapon.IsValid() && dmgInfo.Weapon.Tags.Has( "prop_combine_ball" )) )
+            {
+                var dissolveDmg = new DamageInfo();
+                dissolveDmg.Damage = dmgInfo.Damage;
+                dissolveDmg.Attacker = dmgInfo.Attacker;
+                dissolveDmg.Position = dmgInfo.Position;
+                dissolveDmg.Weapon = dmgInfo.Weapon;
+                dissolveDmg.Tags.Add( VJDamageTags.Dissolve );
+                dmgInfo = dissolveDmg;
+            }
+
             // lua:4169 — self:BeginDeath(dmginfo, hitgroup)
-            BeginDeath(dmgInfo, hitgroup);
+            BeginDeath( dmgInfo, hitgroup );
         }
 
         // lua:4171 — return 1
@@ -2130,8 +2144,24 @@ public partial class HumanNPC
         // ---- Entity class selection (lua:4335-4345) ----
         // lua:4335 — corpseClass = "prop_physics"
         var corpseClass = "prop_physics";
-        if (!string.IsNullOrEmpty(DeathCorpseEntityClass)) corpseClass = DeathCorpseEntityClass;
-        // lua:4341-4343 — if !util.IsValidModel(corpseMdl) → WeaponEntity:Remove() + return
+        if (!string.IsNullOrEmpty(DeathCorpseEntityClass))
+            corpseClass = DeathCorpseEntityClass;
+        else
+        {
+            // lua:4339-4340 — util.IsValidRagdoll → "prop_ragdoll"
+            Model loaded;
+            if (VJEntitySpawner.TryLoadModel(corpseMdl, out loaded))
+            {
+                if (VJEntitySpawner.IsValidRagdollModel(loaded))
+                    corpseClass = "prop_ragdoll";
+            }
+            // lua:4341-4343 — !util.IsValidProp || !util.IsValidModel → WeaponEntity:Remove() + return false
+            else if (!string.IsNullOrEmpty(corpseMdl))
+            {
+                if (WeaponEntity.IsValid()) WeaponEntity.Destroy();
+                return null;
+            }
+        }
 
         // ---- Entity creation (lua:4346-4364) ----
         // lua:4346-4364 — ents.Create(corpseClass)/SetModel/SetPos/SetAngles/Spawn/Activate

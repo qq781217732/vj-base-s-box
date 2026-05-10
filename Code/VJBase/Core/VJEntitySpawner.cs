@@ -147,4 +147,27 @@ public static class VJEntitySpawner
         // S&Box Model has BodyGroups info, but we cap at 32 (Source max)
         return 32;
     }
+
+    /// <summary>
+    /// Try to load a model. Returns true if model exists and can be loaded.
+    /// Source: util.IsValidModel(modelPath).
+    /// </summary>
+    public static bool TryLoadModel(string modelPath, out Model model)
+    {
+        model = null;
+        if (string.IsNullOrEmpty(modelPath)) return false;
+        try { model = Model.Load(modelPath); return model != null; }
+        catch { return false; }
+    }
+
+    /// <summary>
+    /// Check if a model is valid for ragdoll physics (has skeleton / physics data).
+    /// Source: util.IsValidRagdoll(modelPath).
+    /// </summary>
+    public static bool IsValidRagdollModel(Model model)
+    {
+        if (model == null) return false;
+        // S&Box: models with Physics data can be used as ragdolls via ModelPhysics component
+        return model.Physics != null;
+    }
 }

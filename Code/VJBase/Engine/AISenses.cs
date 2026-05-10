@@ -874,8 +874,16 @@ public class AISenses
 	}
 
 	// ═══ Flag stubs — Phase 3: proper flag system ═══
-	protected bool HasEntityFlag(GameObject ent, int flag) => false;    // Phase 3: FL_* system
-	protected bool HasSpawnFlag(GameObject ent, int flag) => false;     // Phase 3: SF_* system
+	protected bool HasEntityFlag(GameObject ent, int flag)
+	{
+		var npc = ent?.Components.Get<BaseNPC>();
+		return npc != null && npc.HasEntityFlag(ent, flag);
+	}
+	protected bool HasSpawnFlag(GameObject ent, int flag)
+	{
+		var npc = ent?.Components.Get<BaseNPC>();
+		return npc != null && npc.HasSpawnFlag(flag);
+	}
 
 	/// <summary>CanBeSeenBy callback — Phase 3</summary>
 	protected virtual bool CanBeSeenBy(GameObject pSightEnt)
