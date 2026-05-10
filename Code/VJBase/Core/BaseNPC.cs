@@ -165,6 +165,9 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public float NextAlertResetT { get; set; }
     public bool Flinching { get; set; }
     public float NextFlinchT { get; set; }
+    public bool HealthRegenEnabled { get; set; }
+    public bool HealthRegenResetOnDmg { get; set; }
+    public float HealthRegenDelay { get; set; }
     public float HealthRegenDelayT { get; set; }
     public float NextCombineBallDmgT { get; set; }
     public float CurrentHealth { get; set; } // Phase 3→HealthComponent; current basic tracking
@@ -361,24 +364,19 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public VJWepAttackState WeaponAttackState { get; set; } = VJWepAttackState.None;
 
     // ═══ Collision ═══
-    public int DeathCorpseCollisionType { get; set; }
+    public int DeathCorpseCollisionType { get; set; } = 1; // COLLISION_GROUP_DEBRIS
     public bool CanGib { get; set; } = true;
 
-    /// <summary>SetCollisionGroup — Source collision group → S&Box tags. P0: tags-based, full collision layers Phase 3.</summary>
-    public virtual void SetCollisionGroup(string group)
+    /// <summary>SetCollisionGroup — Source collision group (int const) → S&Box tags. P0: tags-based, full collision layers Phase 3.</summary>
+    public virtual void SetCollisionGroup(int group)
     {
-        switch (group)
+        var tag = group switch
         {
-            case "COLLISION_GROUP_DEBRIS":
-                GameObject.Tags.Add("collision_debris");
-                break;
-            case "COLLISION_GROUP_NONE":
-                GameObject.Tags.Add("collision_none");
-                break;
-            default:
-                GameObject.Tags.Add("collision_" + group.ToLower());
-                break;
-        }
+            1 => "collision_debris",     // COLLISION_GROUP_DEBRIS
+            0 => "collision_none",       // COLLISION_GROUP_NONE
+            _ => "collision_custom_" + group,
+        };
+        GameObject.Tags.Add(tag);
     }
 
     // ═══ List fields ═══
@@ -1318,8 +1316,19 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public virtual bool IsGibDamage(int dmgType) => false;
     public virtual void GibOnDeath(DamageInfo dmginfo, int hitgroup) { GibbedOnDeath = true; }
 
-    // ═══ Phase 3 engine stubs (called by OnTakeDamage) ═══
-    public virtual bool IsOnFire() => false;
+    // ═══ Fire system (P0: bool flag; P2: particle + progressive damage) ═══
+    private bool _onFire;
+    public virtual bool IsOnFire() => _onFire;
+    public virtual void Ignite(float duration = 0, float damagePerTick = 0)
+    {
+        _onFire = true;
+        GameObject.Tags.Add("on_fire");
+    }
+    public virtual void Extinguish()
+    {
+        _onFire = false;
+        GameObject.Tags.Remove("on_fire");
+    }
     // ═══ Enemy Memory — CAI_BaseNPC IsUnreachable / RememberUnreachable ═══
     /// <summary>Maps entity → unreachable expiry time. Source engine CAI_BaseNPC enemy memory.</summary>
     private Dictionary<GameObject, float> _unreachableEnemies = new();
@@ -1363,7 +1372,6 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
         return 1;
     }
 
-    public virtual void Extinguish() { }
     public virtual void SpawnBloodParticles(DamageInfo dmginfo, int hitgroup) { }
     public virtual void SpawnBloodDecals(DamageInfo dmginfo, int hitgroup)
     {

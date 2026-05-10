@@ -352,12 +352,16 @@ public partial class CreatureNPC
                                 // lua:2485 — constraint.RemoveConstraints(ent, "Weld") → destroy FixedJoint components
                                 foreach (var joint in ent.Components.GetAll<FixedJoint>())
                                     joint.Destroy();
-                                // lua:2475 — true/"OnlyDamage" + health → applyDmg = true
-                                // SKIP: lua:2475 — ent:Health() / ent:GetInternalVariable("m_takedamage") — Phase 3
+                                // lua:2475 — true/"OnlyDamage" + health → applyDmg = true (only if target alive/has health)
                                 if (piBool || piStr == "OnlyDamage")
                                 {
-                                    hitRegistered = true;
-                                    applyDmg = true;
+                                    var targetNPC = ent.Components.Get<BaseNPC>();
+                                    // Lua: !isLiving or (isLiving && (Health()>0 or m_takedamage>1)). S&Box: skip m_takedamage.
+                                    if (!isLiving || targetNPC == null || targetNPC.CurrentHealth > 0)
+                                    {
+                                        hitRegistered = true;
+                                        applyDmg = true;
+                                    }
                                 }
                                 // lua:2477-2478 — OnlyPush → applyDmg = false
                                 else if (piStr == "OnlyPush")
@@ -392,7 +396,7 @@ public partial class CreatureNPC
                             // lua:2516 — SetDamageType → S&Box Tags
                             dmgInfo.Tags.Add(MapDamageTypeToTag(MeleeAttackDamageType));
                             // SKIP: lua:2517 — SetDamageForce — Phase 3 (S&Box: apply force separately on Rigidbody)
-                            // SKIP: lua:2518 — SetInflictor(self) — S&Box DamageInfo has no Inflictor; Weapon=null means attacker-is-inflictor (correct for melee)
+                            // LIMITATION: S&Box DamageInfo has no Inflictor; Weapon=null means attacker-is-inflictor (correct for melee)
                             dmgInfo.Attacker = GameObject;
                             VJUtility.DamageSpecialEnts(GameObject, ent, dmgInfo);
                             // lua:2521 — ent:TakeDamage(dmgInfo) → S&Box IDamageable
@@ -676,7 +680,7 @@ public partial class CreatureNPC
 
         // ---- Post-death setup (lua:3274-3277) ----
         // lua:3274 — self:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
-        SetCollisionGroup("COLLISION_GROUP_DEBRIS");
+        SetCollisionGroup(1); // COLLISION_GROUP_DEBRIS
         // lua:3275 — self:GibOnDeath(dmginfo, hitgroup)
         GibOnDeath(dmginfo, hitgroup);
         // lua:3276 — self:PlaySoundSystem("Death")
@@ -829,7 +833,7 @@ public partial class CreatureNPC
         // ---- Collision (lua:3397-3404) ----
         // lua:3397 — corpse:SetCollisionGroup(self.DeathCorpseCollisionType)
         var corpseNPC = corpse?.Components.Get<BaseNPC>();
-        if (corpseNPC != null) corpseNPC.SetCollisionGroup("custom_" + DeathCorpseCollisionType);
+        corpseNPC?.SetCollisionGroup(DeathCorpseCollisionType);
         // SKIP: lua:3398-3399 — ai_serverragdolls convar + undo.ReplaceEntity — Phase 3
         // SKIP: lua:3400-3403 — VJ.Corpse_Add / undo.ReplaceEntity / cleanup.ReplaceEntity — Phase 3
 

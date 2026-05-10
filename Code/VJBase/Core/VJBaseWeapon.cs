@@ -420,7 +420,7 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
                 var dmginfo = new DamageInfo();
                 dmginfo.Damage = dmgAmount;
                 // SKIP: lua:718 — SetDamageForce for VJ_ID_Living — Phase 3
-                // SKIP: lua:719 — SetInflictor(owner) — Phase 3
+                // LIMITATION: S&Box DamageInfo has no Inflictor; Attacker=owner is correct (weapon is owned by attacker)
                 dmginfo.Attacker = owner;
                 dmginfo.Tags.Add("melee");
                 VJUtility.DamageSpecialEnts(owner, ent, dmginfo); // lua:722

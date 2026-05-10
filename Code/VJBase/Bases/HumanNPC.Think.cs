@@ -1521,13 +1521,13 @@ public partial class HumanNPC
         // lua:3937 — curTime = CurTime()
         float curTime = Time.Now;
         // lua:3938
-        bool isFireEnt = false;
-        // lua:3939 — if self:IsOnFire() then
-        // SKIP: lua:3939 — self:IsOnFire() — Phase 3 fire system
-        // lua:3940 — isFireEnt = dmgInflictor && dmgAttacker && dmgInflictor:GetClass() == "entityflame" && dmgAttacker:GetClass() == "entityflame"
-        // SKIP: lua:3940 — entityflame class check — Phase 3 fire entity type
+        // lua:3939 — if self:IsOnFire() then extend fire (lua:3939-3942)
+        // lua:3940 — isFireEnt = dmgInflictor/dmgAttacker:GetClass()=="entityflame" → S&Box: tag check
+        var dmgInflictor = dmgInfo.Weapon; // S&Box: Weapon is closest to Source Inflictor
+        bool isFireEnt = dmgInflictor.IsValid() && dmgInflictor.Tags.Has("entityflame")
+            && dmgAttacker.IsValid() && dmgAttacker.Tags.Has("entityflame");
         // lua:3941 — if self:WaterLevel() > 1 then self:Extinguish() end
-        // SKIP: lua:3941 — WaterLevel() > 1 → Extinguish() — Phase 3 water/fire system
+        if (WaterLevel() > 1) Extinguish();
 
         // ---- Block E: Boss bypass (lua:3944-3947) ----
         // lua:3945-3946 — if dmgAttacker && ForceDamageFromBosses && dmgAttacker.VJ_ID_Boss then goto skip_immunity
@@ -1587,14 +1587,14 @@ public partial class HumanNPC
         OnDamaged(dmgInfo, hitgroup, "PreDamage");
         // lua:3978 — only take damage if above 0
         if (dmgInfo.Damage <= 0) return 0;
-        // lua:3980-3990 — selfData.SavedDmgInfo = { dmginfo, attacker, inflictor, amount, pos, type, force, ammoType, hitgroup }
-        // SKIP: lua:3980-3990 — SavedDmgInfo snapshot table (GMod resets dmginfo after tick) — Phase 3
+        // lua:3980-3990 — SavedDmgInfo snapshot (GMod resets dmginfo after tick). S&Box: DamageInfo persistent, no snapshot needed.
         // lua:3991 — self:SetHealth(self:Health() - dmginfo:GetDamage())
         CurrentHealth -= dmgInfo.Damage;
         // lua:3992 — VJ_DEBUG damage print
         // SKIP: lua:3992 — VJ_DEBUG && vj_npc_debug_damage:GetInt()==1 → VJ.DEBUG_Print — Phase 3 debug
-        // lua:3993-3995 — healthRegen = selfData.HealthRegenParams; if healthRegen.Enabled && healthRegen.ResetOnDmg then HealthRegenDelayT = ...
-        // SKIP: lua:3993-3995 — HealthRegenParams (Enabled, ResetOnDmg, Delay) — Phase 3 health regen
+        // lua:3993-3995 — HealthRegenParams: if Enabled && ResetOnDmg then delay next regen
+        if (HealthRegenEnabled && HealthRegenResetOnDmg)
+            HealthRegenDelayT = curTime + HealthRegenDelay;
         // lua:3997-3998 — self:SetSaveValue("m_iDamageCount", ...) / self:SetSaveValue("m_flLastDamageTime", curTime)
         // SKIP: lua:3997-3998 — SetSaveValue (Source engine save/restore) — Phase 3 persistence
         // lua:3999 — self:OnDamaged(dmginfo, hitgroup, "PostDamage")
@@ -1617,9 +1617,9 @@ public partial class HumanNPC
 
         // ---- Block L: Pain sounds (lua:4010-4011) ----
         // lua:4010 — stillAlive = self:Health() > 0
-        // SKIP: lua:4010 — Health() > 0 guard — Phase 3 HealthComponent
         // lua:4011 — if stillAlive then self:PlaySoundSystem("Pain") end
-        PlaySoundSystem("Pain");
+        if (CurrentHealth > 0)
+            PlaySoundSystem("Pain");
 
         // ---- Block M: AI response (lua:4013-4151) ----
         // lua:4013 — if VJ_CVAR_AI_ENABLED && self:GetState() != VJ_STATE_FREEZE then
@@ -1630,7 +1630,7 @@ public partial class HumanNPC
             var isPassive = Behavior == VJBehavior.Passive || Behavior == VJBehavior.PassiveNature;
 
             // lua:4015 — if stillAlive then
-            // SKIP: lua:4015 — stillAlive guard (outer) — Phase 3 HealthComponent
+            if (CurrentHealth > 0)
             {
                 // ---- M1: Flinch (lua:4016-4017) ----
                 // lua:4016 — if !isFireEnt then
@@ -1693,19 +1693,30 @@ public partial class HumanNPC
                 PlaySoundSystem("Pain");
 
                 // ---- M3: Combat damage response — take cover from visible enemy (lua:4056-4076) [HUMAN ONLY] ----
-                // lua:4057 — eneData = selfData.EnemyData
-                // lua:4058 — if !isPassive && selfData.CombatDamageResponse && IsValid(eneData.Target) && curTime > selfData.NextCombatDamageResponseT && !selfData.IsFollowing && !selfData.AttackType && !self:IsBusy() && curTime > selfData.TakingCoverT && eneData.Visible && self:GetWeaponState() != VJ.WEP_STATE_RELOADING && eneData.Distance < selfData.Weapon_MaxDistance then
-                // SKIP: lua:4058 — CombatDamageResponse multi-guard — Phase 3 combat damage response
-                // lua:4059 — wep = funcGetActiveWeapon(self)
-                // SKIP: lua:4059 — funcGetActiveWeapon — Phase 3 weapon system
-                // lua:4060 — canMove = true
-                // lua:4061 — if self:DoCoverTrace(self:GetPos() + self:OBBCenter(), eneData.Target:EyePos()) then
-                // SKIP: lua:4061 — DoCoverTrace + OBBCenter + EyePos — Phase 3 cover + collision
-                // lua:4062-4069 — AnimTbl_TakingCover play + timer setup (hideTime, NextChaseTime, TakingCoverT, WeaponAttackState, NextCombatDamageResponseT)
-                // SKIP: lua:4062-4069 — PlayAnim(AnimTbl_TakingCover) → ACT_INVALID guard — Phase 3 animation
-                // lua:4072 — if canMove && !self:IsMoving() && (!IsValid(wep) or (IsValid(wep) && !wep.IsMeleeWeapon)) then
-                // SKIP: lua:4072-4075 — SCHEDULE_COVER_ENEMY("TASK_RUN_PATH") with FACE_ENEMY turn + NextCombatDamageResponseT — Phase 3 cover + weapon
-                // SKIP: lua:4056-4076 — full M3 combat-damage-response block — Phase 3 combat damage response
+                var eneData = Enemy;
+                if (!isPassive && CombatDamageResponse && GetEnemy().IsValid()
+                    && curTime > NextCombatDamageResponseT && !IsFollowing
+                    && AttackType == VJAttackType.None && !IsBusy() && curTime > TakingCoverT
+                    && eneData.Visible && GetWeaponState() != VJWepState.Reloading
+                    && eneData.Distance < Weapon_MaxDistance)
+                {
+                    var wep = GetActiveWeapon();
+                    bool canMove = true;
+                    if (DoCoverTrace(WorldSpaceCenter(), GetAimPosition(GetEnemy())).isCover)
+                    {
+                        // SKIP: lua:4062-4069 — AnimTbl_TakingCover + ACT_INVALID guard + hideTime + NextChaseTime — Phase 3 animation
+                    }
+                    // lua:4072-4075 — if canMove && !IsMoving && (!wep or !wep.IsMeleeWeapon) then SCHEDULE_COVER_ENEMY
+                    if (canMove && !IsMoving()
+                        && (!wep.IsValid() || !VJUtility.HasValue(WeaponInventory_MeleeList, wep.Name)))
+                    {
+                        SCHEDULE_COVER_ENEMY("TASK_RUN_PATH", schedule =>
+                        {
+                            schedule.EngineTask.FaceEnemy = true;
+                        });
+                        NextCombatDamageResponseT = curTime + VJUtility.Rand(CombatDamageResponse_Cooldown.a, CombatDamageResponse_Cooldown.b);
+                    }
+                }
 
                 // ---- M4: No enemy response — ally alert + damage response (lua:4078-4128) ----
                 // lua:4078 — if !isPassive && !IsValid(funcGetEnemy(self)) then
@@ -1914,7 +1925,7 @@ public partial class HumanNPC
 
         // ---- Post-death setup (lua:4261-4264) ----
         // lua:4261 — self:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
-        SetCollisionGroup("COLLISION_GROUP_DEBRIS");
+        SetCollisionGroup(1); // COLLISION_GROUP_DEBRIS
         // lua:4262 — self:GibOnDeath(dmginfo, hitgroup)
         GibOnDeath(dmginfo, hitgroup);
         // lua:4263 — self:PlaySoundSystem("Death")
@@ -2071,7 +2082,7 @@ public partial class HumanNPC
         // ---- Collision (lua:4397-4404) ----
         var corpseNPC = corpse?.Components.Get<BaseNPC>();
         // lua:4397 — corpse:SetCollisionGroup(self.DeathCorpseCollisionType)
-        if (corpseNPC != null) corpseNPC.SetCollisionGroup("custom_" + DeathCorpseCollisionType);
+        corpseNPC?.SetCollisionGroup(DeathCorpseCollisionType);
         // SKIP: lua:4398-4404 — ai_serverragdolls convar / Corpse_Add / undo.ReplaceEntity / cleanup.ReplaceEntity — Phase 3
 
         // ---- On fire (lua:4407-4413) ----
@@ -2238,7 +2249,7 @@ public partial class HumanNPC
                         dmgInfo.Damage = dmgAmount;                     // lua:3025 — SetDamage(dmgAmount) (already scaled)
                         dmgInfo.Tags.Add(MapDamageTypeToTag(MeleeAttackDamageType)); // lua:3026 — SetDamageType
                         // SKIP: lua:3027 — SetDamageForce — Phase 3 (S&Box DamageInfo no Force field; use Rigidbody.ApplyForce)
-                        // SKIP: lua:3028 — SetInflictor(self) — S&Box DamageInfo no Inflictor; Weapon=null means attacker-is-inflictor
+                        // LIMITATION: S&Box DamageInfo has no Inflictor; Weapon=null means attacker-is-inflictor
                         dmgInfo.Attacker = GameObject;                  // lua:3029 — SetAttacker(self)
                         VJUtility.DamageSpecialEnts(GameObject, ent, dmgInfo); // lua:3030
                         foreach (var d in ent.Components.GetAll<IDamageable>()) // lua:3031 — TakeDamageInfo
