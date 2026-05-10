@@ -1201,11 +1201,16 @@ public partial class HumanNPC
         }
         else if (landDir == "EnemyLastVis")
         {
-            // SKIP: lua:3120 — SetTurnTarget(eneData.VisiblePos, AttackAnimDuration or 1.5) — Phase 3
+            // lua:3120 — SetTurnTarget(eneData.VisiblePos, AttackAnimDuration or 1.5)
+            if (Enemy.Visible) SetTurnTarget(Enemy.VisiblePos, AttackAnimDuration > 0 ? AttackAnimDuration : 1.5f);
         }
         else
         {
-            // SKIP: lua:3122-3126 — VJ.TraceDirections / PICK / SetTurnTarget(bestPos) — Phase 3
+            // lua:3122-3126 — VJ.TraceDirections("Quick", 300, 6, excludeBack=true, excludeLeft=true, excludeRight=true) + PICK
+            var trs = VJUtility.TraceDirections(this, "Quick", 300f, requireFullDist: false, numDirections: 6,
+                excludeBack: true, excludeLeft: true, excludeRight: true);
+            if (trs != null && trs.Count > 0)
+                SetTurnTarget(VJUtility.PICK(trs), AttackAnimDuration > 0 ? AttackAnimDuration : 1.5f);
         }
 
         // lua:3130-3164: Handle live entity positioning
@@ -1263,11 +1268,11 @@ public partial class HumanNPC
         {
             if (ld == "Enemy")
             {
-                // SKIP: landingPos = GetEnemyLastKnownPos() — Phase 3
+                landingPos = GetEnemyLastKnownPos();
             }
             else if (ld == "EnemyLastVis")
             {
-                // SKIP: landingPos = Enemy.VisiblePos — Phase 3
+                if (Enemy.Visible) landingPos = Enemy.VisiblePos;
             }
         }
         else if (landDir is Vector3 vec)
@@ -1276,7 +1281,10 @@ public partial class HumanNPC
         }
         else
         {
-            // SKIP: lua:3249-3253 — VJ.TraceDirections / PICK — Phase 3 utility
+            // lua:3249-3253 — VJ.TraceDirections("Quick", 300, 6, excludeBack=true) + PICK result
+            var trs = VJUtility.TraceDirections(this, "Quick", 300f, requireFullDist: false, numDirections: 6, excludeBack: true);
+            if (trs != null && trs.Count > 0)
+                landingPos = VJUtility.PICK(trs);
         }
 
         // lua:3258-3274: Create or reuse grenade entity
