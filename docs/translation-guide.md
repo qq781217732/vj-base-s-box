@@ -350,7 +350,7 @@ public virtual void StartEngineTask(int taskId, float taskData)
 ### 动画系统
 
 Route A 完整落地。详见 [animation-system-analysis.md](animation-system-analysis.md)。
-已知限制 2 项（Gesture 叠加、Sequence 过渡），不影响 NPC 行为。
+已知限制 1 项（Gesture 叠加，S&Box 无 AddGesture API）。Sequence 过渡已通过 VJTransitionTable.cs 实现。不影响 NPC 行为。
 
 ---
 ## 8. 翻译执行清单
