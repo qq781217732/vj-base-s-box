@@ -871,14 +871,26 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
         // lua:2525-2541 — bleed timer polling (replaces timer.Create bleed loop)
         if (NextBleedT > 0 && curTime > NextBleedT && BleedRepsRemaining > 0 && BleedTarget.IsValid())
         {
-            var bleedDmg = new DamageInfo { Damage = BleedDmgAmount, Attacker = GameObject };
-            foreach (var d in BleedTarget.Components.GetAll<IDamageable>())
-                d.OnDamage(bleedDmg);
-            BleedRepsRemaining--;
-            if (BleedRepsRemaining > 0)
-                NextBleedT = curTime + MeleeAttackBleedEnemyTime;
-            else
+            // lua:2528 — if !IsValid(ent) or ent:Health() <= 0 then timer.Remove
+            var targetNpc = BleedTarget.Components.Get<BaseNPC>();
+            if (targetNpc != null && (targetNpc.Dead || targetNpc.CurrentHealth <= 0))
+            {
                 NextBleedT = 0;
+                BleedRepsRemaining = 0;
+            }
+            else
+            {
+                // lua:2529-2537 — bleed dmg with DMG_GENERIC + VJ.DMG_BLEED
+                var bleedDmg = new DamageInfo { Damage = BleedDmgAmount, Attacker = GameObject };
+                bleedDmg.Tags.Add("bleed");
+                foreach (var d in BleedTarget.Components.GetAll<IDamageable>())
+                    d.OnDamage(bleedDmg);
+                BleedRepsRemaining--;
+                if (BleedRepsRemaining > 0)
+                    NextBleedT = curTime + MeleeAttackBleedEnemyTime;
+                else
+                    NextBleedT = 0;
+            }
         }
 
         // lua:1833-1835 — re-enable timer (fires independently, may fire before reset)

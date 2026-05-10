@@ -431,9 +431,10 @@ public partial class CreatureNPC
                         if (MeleeAttackBleedEnemy && isLiving && (!targetIsBoss || VJ_ID_Boss) && Game.Random.Next(1, MeleeAttackBleedEnemyChance + 1) == 1)
                         {
                             // lua:2525-2541 — bleed timer → polling (polled in ProcessAttackTimers)
+                            // lua:2526 — bleedDmg = ScaleByDifficulty(MeleeAttackBleedEnemyDamage)
                             BleedTarget = ent;
                             BleedRepsRemaining = MeleeAttackBleedEnemyReps;
-                            BleedDmgAmount = MeleeAttackBleedEnemyDamage;
+                            BleedDmgAmount = ScaleByDifficulty(MeleeAttackBleedEnemyDamage);
                             NextBleedT = Time.Now + MeleeAttackBleedEnemyTime;
                         }
                     }
