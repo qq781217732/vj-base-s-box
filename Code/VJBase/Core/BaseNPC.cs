@@ -453,8 +453,38 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
         };
     }
 
-    // ═══ Busy checks ═══
-    public virtual bool IsBusy(string checkType = null) => false; // Phase 3
+    // ═══ Busy checks — core.lua:881-902 ═══
+    /// <summary>
+    /// IsBusy: checks if NPC is busy with animations/activities/behaviors.
+    /// checkType: null=all, "Behaviors"=following+medic, "Activities"=animation locks+attack+nav.
+    /// </summary>
+    public virtual bool IsBusy(string checkType = null)
+    {
+        bool checkAll = checkType == null;
+
+        // ── Behaviors: following a player or healing an ally ──
+        if (checkAll)
+        {
+            if (Follow.Moving || !string.IsNullOrEmpty(Medic.Status) && Medic.Status != "false")
+                return true;
+        }
+        else if (checkType == "Behaviors")
+        {
+            return Follow.Moving || (!string.IsNullOrEmpty(Medic.Status) && Medic.Status != "false");
+        }
+
+        // ── Activities: animation lock / attack animation / nav jump-climb ──
+        if (checkAll || checkType == "Activities")
+        {
+            if (PauseAttacks) return true;
+            float curTime = Time.Now;
+            if (AnimLockTime > curTime || AttackAnimTime > curTime) return true;
+            var nav = GetNavType();
+            return nav == (int)NavType.Jump || nav == (int)NavType.Climb;
+        }
+
+        return false;
+    }
 
     // ═══ Animation — see BaseNPC.Animation.cs for full implementations ═══
     public virtual void MaintainIdleBehavior(int? idleType = null) { } // Phase 3
