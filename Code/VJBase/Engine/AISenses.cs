@@ -261,7 +261,7 @@ public class AISenses
 
 		// ai_senses.cpp:154 — FL_NOTARGET check
 		// Phase 3: flag system
-		if (EntityIsPlayer(pSightEnt) && HasEntityFlag(pSightEnt, 256 /*FL_NOTARGET*/))
+		if (EntityIsPlayer(pSightEnt) && HasEntityFlag(pSightEnt, "FL_NOTARGET"))
 			return false;
 
 		// ai_senses.cpp:158 — SF_NPC_WAIT_TILL_SEEN

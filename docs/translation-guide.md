@@ -4,6 +4,18 @@
 > **撰写：阿纳金（Anakin）**
 > 这份文档记录了本项目的翻译架构、规则、踩过的坑和清单。读通再动手。
 
+## 文档索引
+
+| 文档 | 用途 |
+|------|------|
+| **[phase3-progress.md](phase3-progress.md)** | **Phase 3 填坑进度 — 当前任务的主战场** |
+| [migration-master-checklist.md](migration-master-checklist.md) | 85 文件逐行状态总清单 |
+| [migration-plan.md](migration-plan.md) | 迁移计划与文件清单 |
+| [api-mapping.md](api-mapping.md) | M/Sw/C/X 方法签名映射 |
+| [audit-template.md](audit-template.md) | 单行审计标准（4 维等价检查） |
+| [animation-system-analysis.md](animation-system-analysis.md) | 动画系统 API 对照 + 迁移路线 |
+| [phase2-testing-guide.md](phase2-testing-guide.md) | Phase 2 集成测试指南 |
+
 ---
 
 ## 1. 核心哲学
@@ -906,6 +918,9 @@ Source C++:  f:/DevProject/Sbox/source-sdk-2013/
 **如果 Lua 有，就翻译。Lua 没有的，Phase 3 才造。**
 
 ### 10.6 当前优先级（土豆看这）
+
+> **Phase 1 翻译 + Phase 2 清扫已完成。当前主战场是 Phase 3 填坑。**
+> **详细任务清单见 [phase3-progress.md](phase3-progress.md)。**
 
 ```
 1. ✅ MaintainRelationships 机械翻译  ← 已完成

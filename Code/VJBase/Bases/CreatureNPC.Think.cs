@@ -684,8 +684,13 @@ public partial class CreatureNPC
         // lua:3277 — //AA_StopMoving() commented out
 
         // ---- I/O events (lua:3280-3285) ----
-        // lua:3280 — if IsValid(dmgAttacker) then
-        // SKIP: lua:3280-3285 — TriggerOutput / Fire("KilledNPC") — Phase 3 I/O system (TriggerOutput stub exists)
+        // lua:3281-3284 — if dmgAttacker:IsValid() then TriggerOutput("OnDeath", dmgAttacker) else TriggerOutput("OnDeath", self)
+        var deathAttacker = dmginfo.Attacker;
+        if (deathAttacker.IsValid())
+            TriggerOutput("OnDeath", deathAttacker);
+        else
+            TriggerOutput("OnDeath", GameObject);
+        // lua:3285 — self:Fire("KilledNPC") — PX: Source I/O, use OnTriggerOutput("OnDeath") instead
 
         // ---- Death animation + delay → FinishDeath (lua:3288-3310) ----
         // lua:3288 — deathTime = self.DeathDelayTime

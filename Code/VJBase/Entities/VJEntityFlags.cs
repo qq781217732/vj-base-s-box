@@ -21,4 +21,10 @@ public class VJEntityFlags : Component
     // ═══ State flags (VJ_ST_*) ═══
     public bool VJ_ST_Grabbed { get; set; }
     public bool VJ_ST_Eating { get; set; }
+
+    // ═══ Source engine flags (FL_* / EFL_*) ═══
+    public bool FL_NOTARGET { get; set; }
+    public bool FL_DISSOLVING { get; set; }
+    public bool FL_OBJECT { get; set; }
+    public bool EFL_NO_DISSOLVE { get; set; }
 }

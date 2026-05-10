@@ -1603,8 +1603,17 @@ public partial class HumanNPC
         DoBleed();
 
         // ---- Block K: I/O events (lua:4002-4008) ----
-        // lua:4003-4007 — if dmgAttacker then self:TriggerOutput("OnDamaged", dmgAttacker) self:MarkTookDamageFromEnemy(dmgAttacker) else self:TriggerOutput("OnDamaged", self) end
-        // SKIP: lua:4003-4007 — TriggerOutput / MarkTookDamageFromEnemy — Phase 3 I/O system (stubs exist)
+        // lua:4003-4007 — if dmgAttacker then self:TriggerOutput("OnDamaged", dmgAttacker);
+        //     self:MarkTookDamageFromEnemy(dmgAttacker) else self:TriggerOutput("OnDamaged", self) end
+        if (dmgAttacker.IsValid())
+        {
+            TriggerOutput("OnDamaged", dmgAttacker);
+            MarkTookDamageFromEnemy(dmgAttacker);
+        }
+        else
+        {
+            TriggerOutput("OnDamaged", GameObject);
+        }
 
         // ---- Block L: Pain sounds (lua:4010-4011) ----
         // lua:4010 — stillAlive = self:Health() > 0
@@ -1913,7 +1922,13 @@ public partial class HumanNPC
         // lua:4264 — //AA_StopMoving() commented out
 
         // ---- I/O events (lua:4266-4272) ----
-        // SKIP: lua:4266-4272 — TriggerOutput / Fire("KilledNPC") — Phase 3 I/O system
+        // lua:4267-4270 — if dmgAttacker:IsValid() then TriggerOutput("OnDeath", dmgAttacker) else TriggerOutput("OnDeath", self)
+        var deathAttacker = dmginfo.Attacker;
+        if (deathAttacker.IsValid())
+            TriggerOutput("OnDeath", deathAttacker);
+        else
+            TriggerOutput("OnDeath", GameObject);
+        // lua:4271 — self:Fire("KilledNPC") — PX: Source I/O, use OnTriggerOutput("OnDeath") instead
 
         // ---- Death animation + delay → FinishDeath (lua:4274-4297) ----
         // lua:4275 — deathTime = self.DeathDelayTime

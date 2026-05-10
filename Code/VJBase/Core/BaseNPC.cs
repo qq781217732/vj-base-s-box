@@ -28,6 +28,11 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     // ═══ VJ_ST_* State Flags ═══
     public bool VJ_ST_Grabbed { get; set; }
     public bool VJ_ST_Eating { get; set; }
+    // ═══ FL_* / EFL_* Source Engine Flags ═══
+    public bool FL_NOTARGET { get; set; }
+    public bool FL_DISSOLVING { get; set; }
+    public bool FL_OBJECT { get; set; }
+    public bool EFL_NO_DISSOLVE { get; set; }
     public float NPCClass { get; set; }
     public float MaxYawSpeed { get; set; }
     public bool VJ_DEBUG { get; set; }
@@ -359,6 +364,23 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public int DeathCorpseCollisionType { get; set; }
     public bool CanGib { get; set; } = true;
 
+    /// <summary>SetCollisionGroup — Source collision group → S&Box tags. P0: tags-based, full collision layers Phase 3.</summary>
+    public virtual void SetCollisionGroup(string group)
+    {
+        switch (group)
+        {
+            case "COLLISION_GROUP_DEBRIS":
+                GameObject.Tags.Add("collision_debris");
+                break;
+            case "COLLISION_GROUP_NONE":
+                GameObject.Tags.Add("collision_none");
+                break;
+            default:
+                GameObject.Tags.Add("collision_" + group.ToLower());
+                break;
+        }
+    }
+
     // ═══ List fields ═══
     public List<string> TimersToRemove { get; set; } = new();
     public List<Condition> IgnoreConditions { get; set; } = new();
@@ -379,7 +401,33 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public virtual VJState GetState() => AIState;
 
     // ═══ Difficulty ═══
-    public virtual float ScaleByDifficulty(float num) => num; // Phase 3: implement scaling
+    /// <summary>
+    /// Scale value by NPC difficulty. core.lua:1411-1447.
+    /// Below Normal: fraction with floor at 1. Normal: identity. Above Normal: multiplier.
+    /// </summary>
+    public virtual float ScaleByDifficulty(float num)
+    {
+        return (VJDifficulty)SelectedDifficulty switch
+        {
+            VJDifficulty.Neanderthal => MathF.Max(num * 0.01f, 1),
+            VJDifficulty.Puny => MathF.Max(num * 0.10f, 1),
+            VJDifficulty.Trivial => MathF.Max(num * 0.25f, 1),
+            VJDifficulty.Easy => MathF.Max(num * 0.50f, 1),
+            VJDifficulty.Beginner => MathF.Max(num * 0.75f, 1),
+            VJDifficulty.Normal => num,
+            VJDifficulty.Difficult => num * 1.25f,
+            VJDifficulty.Hard => num * 1.5f,
+            VJDifficulty.Expert => num * 1.75f,
+            VJDifficulty.Insane => num * 2,
+            VJDifficulty.Impossible => num * 2.5f,
+            VJDifficulty.Lunatic => num * 3,
+            VJDifficulty.Nightmare => num * 3.5f,
+            VJDifficulty.HellOnEarth => num * 4.5f,
+            VJDifficulty.TotalAnnihilation => num * 6,
+            VJDifficulty.Extinction => num * 10,
+            _ => num
+        };
+    }
 
     // ═══ Busy checks ═══
     public virtual bool IsBusy(string checkType = null) => false; // Phase 3
@@ -513,8 +561,104 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     /// <summary>UpdatePoseParamTracking — human init.lua:3426. Phase 3 animation.</summary>
     public virtual void UpdatePoseParamTracking(bool reset) { }
 
-    /// <summary>PlayIdleSound — core.lua:2836. Phase 3 sound system.</summary>
-    public virtual void PlayIdleSound(float? delayA = null, float? delayB = null, bool hasEnemy = false) { }
+    /// <summary>PlayIdleSound — core.lua:2836-2942. Combat idle + regular idle sound with timer.</summary>
+    public virtual bool PlayIdleSound(string customSD = null, string sdType = null, bool combatIdle = false)
+    {
+        if (!HasSounds || !HasIdleSounds) return false;
+
+        float curTime = Time.Now;
+        if (IdleSoundBlockTime >= curTime || NextIdleSoundT >= curTime) return false;
+
+        bool setTimer = true;
+        if (customSD != null)
+            customSD = VJUtility.PICK(customSD);
+
+        // combatIdle guard: if no combat idle sounds and not reg-while-alert, skip
+        if (combatIdle && VJUtility.PICK(SoundTbl_CombatIdle) == null && !IdleSoundsRegWhileAlert)
+            combatIdle = false;
+
+        if (combatIdle)
+        {
+            var pickedSD = customSD ?? VJUtility.PICK(SoundTbl_CombatIdle);
+            if ((pickedSD != null && Game.Random.Next(1, CombatIdleSoundChance + 1) == 1) || customSD != null)
+            {
+                StopSD(CurrentIdleSound);
+                CurrentIdleSound = sdType == "EmitSound"
+                    ? EmitSound(pickedSD, CombatIdleSoundLevel, GetSoundPitch(CombatIdleSoundPitch))
+                    : CreateSound(pickedSD, CombatIdleSoundLevel, GetSoundPitch(CombatIdleSoundPitch));
+            }
+        }
+        else if (Game.Random.Next(1, IdleSoundChance + 1) == 1 || customSD != null)
+        {
+            // lua:2863-2930 idle dialogue — SKIP: Phase 3 timer system (FindInSphere + timer.Simple + OnIdleDialogue)
+            var pickedSD = customSD ?? VJUtility.PICK(SoundTbl_Idle);
+            if (pickedSD != null)
+            {
+                StopSD(CurrentIdleSound);
+                CurrentIdleSound = sdType == "EmitSound"
+                    ? EmitSound(pickedSD, IdleSoundLevel, GetSoundPitch(IdleSoundPitch))
+                    : CreateSound(pickedSD, IdleSoundLevel, GetSoundPitch(IdleSoundPitch));
+            }
+        }
+
+        if (setTimer)
+            NextIdleSoundT = curTime + VJUtility.Rand(NextSoundTime_Idle.a, NextSoundTime_Idle.b);
+
+        return true;
+    }
+
+    /// <summary>PlayFootstepSound — core.lua:2807-2833. Event-driven or timer-based footstep sounds.</summary>
+    public virtual void PlayFootstepSound(string customSD = null)
+    {
+        if (!HasSounds || !HasFootstepSounds || MovementType == VJMoveType.Stationary || !IsOnGround())
+            return;
+
+        if (DisableFootStepSoundTimer)
+        {
+            var pickedSD = customSD != null ? VJUtility.PICK(customSD) : VJUtility.PICK(SoundTbl_FootStep);
+            if (pickedSD != null)
+            {
+                EmitSound(pickedSD, FootstepSoundLevel, GetSoundPitch(FootstepSoundPitch));
+                OnFootstepSound?.Invoke("Event", pickedSD);
+            }
+            return;
+        }
+
+        float curTime = Time.Now;
+        if (IsMoving() && curTime > NextFootstepSoundT && GetMoveDelay() <= 0)
+        {
+            var pickedSD = customSD != null ? VJUtility.PICK(customSD) : VJUtility.PICK(SoundTbl_FootStep);
+            if (pickedSD != null)
+            {
+                EmitSound(pickedSD, FootstepSoundLevel, GetSoundPitch(FootstepSoundPitch));
+                // lua:2821-2828 — distinguish Run vs Walk via GetMovementActivity → ACT_RUN/ACT_WALK
+                // Phase 3 animation: use FootstepSoundTimerWalk as default, FootstepSoundTimerRun when sprinting
+                float interval = FootstepSoundTimerWalk > 0 ? FootstepSoundTimerWalk : 0.5f;
+                OnFootstepSound?.Invoke("Walk", pickedSD);
+                NextFootstepSoundT = curTime + interval;
+            }
+        }
+    }
+
+    /// <summary>StartSoundTrack — core.lua:3456-3468. Global music track for all clients.</summary>
+    public virtual void StartSoundTrack()
+    {
+        if (!HasSounds || !HasSoundTrack) return;
+        if (Game.Random.Next(1, SoundTrackChance + 1) != 1) return;
+
+        var pickedSD = VJUtility.PICK(SoundTbl_SoundTrack);
+        if (pickedSD == null) return;
+
+        VJ_SD_PlayingMusic = true;
+        // lua: net.Start("vj_music_cl") → GMod networking; S&Box Sound.Play plays for all clients by default
+        var handle = Sound.Play(pickedSD);
+        handle.Volume = SoundTrackVolume;
+        handle.Pitch = SoundTrackPlaybackRate;
+        CurrentSoundTrack = handle;
+    }
+
+    /// <summary>Currently playing sound track handle.</summary>
+    public SoundHandle CurrentSoundTrack { get; set; }
 
     /// <summary>GetActiveWeapon — Source engine NPC:GetActiveWeapon. Base returns null. HumanNPC overrides to return WeaponEntity.</summary>
     public virtual GameObject GetActiveWeapon() => null;
@@ -700,6 +844,10 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
             "VJ_ID_Vehicle" => (npc?.VJ_ID_Vehicle ?? false) || (ext?.VJ_ID_Vehicle ?? false),
             "VJ_ST_Grabbed" => (npc?.VJ_ST_Grabbed ?? false) || (ext?.VJ_ST_Grabbed ?? false),
             "VJ_ST_Eating" => (npc?.VJ_ST_Eating ?? false) || (ext?.VJ_ST_Eating ?? false),
+            "FL_NOTARGET" => (npc?.FL_NOTARGET ?? false) || (ext?.FL_NOTARGET ?? false),
+            "FL_DISSOLVING" => (npc?.FL_DISSOLVING ?? false) || (ext?.FL_DISSOLVING ?? false),
+            "FL_OBJECT" => (npc?.FL_OBJECT ?? false) || (ext?.FL_OBJECT ?? false),
+            "EFL_NO_DISSOLVE" => (npc?.EFL_NO_DISSOLVE ?? false) || (ext?.EFL_NO_DISSOLVE ?? false),
             _ => false,
         };
     }
@@ -1271,7 +1419,14 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
         decal.LifeTime = 30f;
         // Phase 3: load decal ColorTexture/NormalTexture from decalName asset
     }
-    public virtual void TriggerOutput(string output, GameObject activator) { }
+    /// <summary>Source I/O system → C# event delegate. Subscribe to react to NPC events ("OnDamaged", "OnDeath").</summary>
+    public Action<string, GameObject> OnTriggerOutput { get; set; }
+
+    public virtual void TriggerOutput(string output, GameObject activator)
+    {
+        OnTriggerOutput?.Invoke(output, activator);
+    }
+
     public virtual void MarkTookDamageFromEnemy(GameObject attacker) { }
     public virtual void SetSaveValue(string key, object value) { }
 
@@ -1369,6 +1524,12 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public Vector3 GetLastPosition() => LastPosition;
     public float GetMaxYawSpeed() => MaxYawSpeed;
     public void SetMaxYawSpeed(float speed) => MaxYawSpeed = speed;
+
+    public bool IsOnGround()
+    {
+        if (MovementType == VJMoveType.Aerial || MovementType == VJMoveType.Aquatic) return false;
+        return true;
+    }
 
     public bool IsMoving()
     {

@@ -28,6 +28,7 @@ public partial class BaseNPC
     public bool IdleSoundsWhileAttacking { get; set; }
     public bool HasIdleDialogueSounds { get; set; } = true;
     public bool HasIdleDialogueAnswerSounds { get; set; } = true;
+    public bool IdleSoundsRegWhileAlert { get; set; }
 
     // Event / Speech
     public bool HasAlertSounds { get; set; } = true;
@@ -260,6 +261,8 @@ public partial class BaseNPC
     public float FootstepSoundTimerRun { get; set; } = 0.5f;
     public float SoundTrackVolume { get; set; } = 1f;
     public float SoundTrackPlaybackRate { get; set; } = 1f;
+    public int SoundTrackChance { get; set; } = 1;
+    public bool VJ_SD_PlayingMusic { get; set; }
 
     // ═══════════════════════════════════════════════
     // Missing timers (used by PlaySoundSystem)
@@ -425,6 +428,9 @@ public partial class BaseNPC
 
     /// <summary>Called after EmitSound plays a fire-and-forget sound.</summary>
     public virtual void OnEmitSound(string sdFile) { }
+
+    /// <summary>Called after PlayFootstepSound. Args: "Event", "Walk", or "Run"; then the picked sound file.</summary>
+    public Action<string, string> OnFootstepSound { get; set; }
 
     // ═══════════════════════════════════════════════
     // StopAllSounds — stops all active sound handles
