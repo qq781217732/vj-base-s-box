@@ -323,7 +323,7 @@ public partial class CreatureNPC
                 if (((isLiving && Disposition(ent) != (int)VJBase.Disposition.Like) || isAttackable || isDestructible) && inAngle)
                 {
                     // lua:2466: prop attack living distance check
-                    // SKIP: lua:2466 — VJ.GetNearestDistance(self, ent, true) > MeleeAttackDistance — Phase 3 utility
+                    if (VJUtility.GetNearestDistance(GameObject, ent, true) > MeleeAttackDistance) continue;
                     var applyDmg = true;
                     // lua:2468 — VJ_ID_Attackable → isProp
                     bool isProp = isAttackable;
@@ -390,7 +390,7 @@ public partial class CreatureNPC
                             // SKIP: lua:2517 — SetDamageForce — Phase 3 (S&Box: apply force separately on Rigidbody)
                             // SKIP: lua:2518 — SetInflictor(self) — S&Box DamageInfo has no Inflictor; Weapon=null means attacker-is-inflictor (correct for melee)
                             dmgInfo.Attacker = GameObject;
-                            // SKIP: lua:2520 — VJ.DamageSpecialEnts — Phase 3 damage utility
+                            VJUtility.DamageSpecialEnts(GameObject, ent, dmgInfo);
                             // lua:2521 — ent:TakeDamage(dmgInfo) → S&Box IDamageable
                             foreach (var d in ent.Components.GetAll<IDamageable>())
                                 d.OnDamage(dmgInfo);

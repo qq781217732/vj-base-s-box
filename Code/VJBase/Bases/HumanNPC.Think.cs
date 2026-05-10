@@ -2222,7 +2222,7 @@ public partial class HumanNPC
                         // SKIP: lua:3027 — SetDamageForce — Phase 3 (S&Box DamageInfo no Force field; use Rigidbody.ApplyForce)
                         // SKIP: lua:3028 — SetInflictor(self) — S&Box DamageInfo no Inflictor; Weapon=null means attacker-is-inflictor
                         dmgInfo.Attacker = GameObject;                  // lua:3029 — SetAttacker(self)
-                        // SKIP: lua:3030 — VJ.DamageSpecialEnts — Phase 3 damage utility
+                        VJUtility.DamageSpecialEnts(GameObject, ent, dmgInfo); // lua:3030
                         foreach (var d in ent.Components.GetAll<IDamageable>()) // lua:3031 — TakeDamageInfo
                             d.OnDamage(dmgInfo);
                     }

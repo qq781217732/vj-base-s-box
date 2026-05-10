@@ -423,8 +423,7 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
                 // SKIP: lua:719 — SetInflictor(owner) — Phase 3
                 dmginfo.Attacker = owner;
                 dmginfo.Tags.Add("melee");
-                // SKIP: lua:721 — DMG_CLUB — Phase 3 damage type
-                // SKIP: lua:722 — VJ.DamageSpecialEnts — Phase 3
+                VJUtility.DamageSpecialEnts(owner, ent, dmginfo); // lua:722
 
                 foreach (var d in ent.Components.GetAll<IDamageable>())
                     d.OnDamage(dmginfo);

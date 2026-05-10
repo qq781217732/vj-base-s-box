@@ -41,13 +41,62 @@ public static class VJUtility
         return 1f;
     }
 
-    /// <summary>Nearest positions between two entities (Phase 3)</summary>
-    public static Vector3 GetNearestPositions(GameObject self, GameObject other, bool centerNPC = false)
-        => other.WorldPosition;
+    /// <summary>
+    /// Get world-space OBB center for any GameObject.
+    /// Source: ent:GetPos() + ent:OBBCenter(). S&Box: ModelRenderer.Bounds.Center or WorldPosition.
+    /// </summary>
+    private static Vector3 GetOBBWorldCenter(GameObject ent)
+    {
+        if (ent == null || !ent.IsValid()) return Vector3.Zero;
+        var npc = ent.Components.Get<BaseNPC>();
+        if (npc != null) return npc.WorldSpaceCenter();
+        var renderer = ent.Components.Get<ModelRenderer>();
+        if (renderer != null) return renderer.Bounds.Center;
+        return ent.WorldPosition;
+    }
 
-    /// <summary>Nearest distance between two entities (Phase 3)</summary>
+    /// <summary>
+    /// Find nearest point on entity to a target position.
+    /// Source: ent:NearestPoint(targetPos). S&Box: Rigidbody.FindClosestPoint or BBox clamp.
+    /// </summary>
+    private static Vector3 FindNearestPoint(GameObject ent, Vector3 targetPos)
+    {
+        if (ent == null || !ent.IsValid()) return targetPos;
+        var rb = ent.Components.Get<Rigidbody>();
+        if (rb != null && rb.PhysicsBody != null)
+            return rb.FindClosestPoint(targetPos);
+        var renderer = ent.Components.Get<ModelRenderer>();
+        if (renderer != null)
+        {
+            var b = renderer.Bounds;
+            return new Vector3(
+                Math.Clamp(targetPos.x, b.Mins.x, b.Maxs.x),
+                Math.Clamp(targetPos.y, b.Mins.y, b.Maxs.y),
+                Math.Clamp(targetPos.z, b.Mins.z, b.Maxs.z));
+        }
+        return ent.WorldPosition;
+    }
+
+    /// <summary>VJ.GetNearestPositions — funcs.lua:146-159. Two entities' nearest points to each other.</summary>
+    public static (Vector3 nearSelf, Vector3 nearOther) GetNearestPositions(GameObject self, GameObject other, bool centerNPC = false)
+    {
+        var otherCenter = GetOBBWorldCenter(other);
+        var nearSelf = FindNearestPoint(self, otherCenter);
+        if (centerNPC)
+        {
+            nearSelf.x = self.WorldPosition.x;
+            nearSelf.y = self.WorldPosition.y;
+        }
+        var nearOther = FindNearestPoint(other, nearSelf);
+        return (nearSelf, nearOther);
+    }
+
+    /// <summary>VJ.GetNearestDistance — funcs.lua:172-182. Distance between two entities' nearest surface points.</summary>
     public static float GetNearestDistance(GameObject self, GameObject other, bool centerNPC = false)
-        => Vector3.DistanceBetween(self.WorldPosition, other.WorldPosition);
+    {
+        var (nearSelf, nearOther) = GetNearestPositions(self, other, centerNPC);
+        return Vector3.DistanceBetween(nearSelf, nearOther);
+    }
 
     /// <summary>VJ.AnimExists — checks if animation exists on entity (Phase 3)</summary>
     public static bool AnimExists(GameObject ent, string anim) => true;
@@ -55,14 +104,35 @@ public static class VJUtility
     /// <summary>VJ.IsCurrentAnim — checks if entity is currently playing animation (Phase 3)</summary>
     public static bool IsCurrentAnim(GameObject ent, string anim) => false;
 
-    /// <summary>VJ.Corpse_Add — Add entity to VJ corpse list (Phase 3 corpse limit system)</summary>
-    public static void Corpse_Add(GameObject corpse) { }
+    /// <summary>VJ.Corpse_Add — funcs.lua corpse.lua:64-83. Corpse list management with limit. P2 (depends on timer + convar).</summary>
+    public static void Corpse_Add(GameObject corpse) { /* P2: corpse limit system */ }
 
-    /// <summary>VJ.Corpse_AddStinky — Add entity to stinky entity list (Phase 3)</summary>
-    public static void Corpse_AddStinky(GameObject corpse, bool checkMat = true) { }
+    /// <summary>VJ.Corpse_AddStinky — funcs.lua corpse.lua:43-58. Stink timer + material check. P2 (depends on timer).</summary>
+    public static void Corpse_AddStinky(GameObject corpse, bool checkMat = true) { /* P2: stink timer system */ }
 
     /// <summary>VJ.AnimDurationEx — Calculate animation duration with override (Phase 3)</summary>
     public static float AnimDurationEx(GameObject ent, string anim, object overrideVal, float decrease = 0) => 0f;
+
+    /// <summary>
+    /// VJ.DamageSpecialEnts — funcs.lua:762-771. Apply extra damage effects to special entities.
+    /// Source: npc_turret_floor selfdestruct + physics force. S&Box: component/tag-based check.
+    /// </summary>
+    public static void DamageSpecialEnts(GameObject attacker, GameObject ent, DamageInfo dmgInfo)
+    {
+        if (ent == null || !ent.IsValid()) return;
+        // Source: ent:GetClass() == "npc_turret_floor". S&Box: check VJ_NPC_Class
+        var npc = ent.Components.Get<BaseNPC>();
+        if (npc == null || !npc.VJ_NPC_Class.Contains("npc_turret_floor")) return;
+        if (ent.Tags.Has("self_destructing")) return;
+        ent.Tags.Add("self_destructing");
+        npc.TriggerOutput("selfdestruct", attacker);
+        var rb = ent.Components.Get<Rigidbody>();
+        if (rb != null)
+        {
+            rb.MotionEnabled = true;
+            rb.ApplyForce(attacker.WorldRotation.Forward * 1000f);
+        }
+    }
 
     /// <summary>VJ.TraceDirections — funcs.lua:204-300. Multi-direction trace to find valid movement positions.</summary>
     public static List<Vector3> TraceDirections(BaseNPC npc, string trType, float maxDist = 200f,
