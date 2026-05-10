@@ -35,8 +35,8 @@ public partial class HumanNPC : CreatureNPC
     // ═══ Grenade Config — human_base/init.lua:14-323 ═══
     public List<string> GrenadeAttackEntity { get; set; }
     public List<string> GrenadeAttackModel { get; set; }
-    public string GrenadeAttackAttachment { get; set; }
-    public string GrenadeAttackBone { get; set; }
+    public string GrenadeAttackAttachment { get; set; } = "anim_attachment_RH";
+    public string GrenadeAttackBone { get; set; } = "ValveBiped.Bip01_R_Hand";
     public float GrenadeAttackFuseTime { get; set; } = 2f;
     public float GrenadeAttackMaxDistance { get; set; } = 1500;
     public List<string> AnimTbl_GrenadeAttack { get; set; }

@@ -592,6 +592,54 @@ public partial class BaseNPC
         if (d < -180f) d += 360f;
         return d;
     }
+
+    // ═══ Bone / Attachment Helpers ═══
+    // Lua: LookupAttachment / GetAttachment / LookupBone / GetBonePosition
+    // S&Box: SkinnedModelRenderer.GetAttachment / TryGetBoneTransform / GetBoneObject
+
+    /// <summary>
+    /// Get world-space attachment transform. Lua: LookupAttachment → GetAttachment.
+    /// Returns null if attachment not found.
+    /// </summary>
+    public Transform? GetAttachmentPos(string attachmentName)
+    {
+        if (string.IsNullOrEmpty(attachmentName)) return null;
+        var renderer = Components.Get<SkinnedModelRenderer>();
+        return renderer?.GetAttachment(attachmentName, true);
+    }
+
+    /// <summary>
+    /// Get world-space bone transform. Lua: LookupBone → GetBonePosition.
+    /// Returns null if bone not found.
+    /// </summary>
+    public Transform? GetBoneTransform(string boneName)
+    {
+        if (string.IsNullOrEmpty(boneName)) return null;
+        var renderer = Components.Get<SkinnedModelRenderer>();
+        if (renderer == null) return null;
+        return renderer.TryGetBoneTransform(boneName, out var tx) ? tx : null;
+    }
+
+    /// <summary>
+    /// Attach entity to attachment point. Lua: SetParent(self, attachID).
+    /// </summary>
+    public void ParentToAttachment(GameObject child, string attachmentName)
+    {
+        if (child == null) return;
+        child.Parent = GameObject;
+        var attach = GetAttachmentPos(attachmentName);
+        if (attach.HasValue)
+        {
+            child.WorldPosition = attach.Value.Position;
+            child.WorldRotation = attach.Value.Rotation;
+        }
+    }
+
+    /// <summary>
+    /// Get shoot position fallback. Lua: GetShootPos() — WorldPosition + forward offset.
+    /// </summary>
+    public Vector3 GetShootPos()
+        => WorldPosition + WorldRotation.Forward * 30f;
 }
 
 /// <summary>

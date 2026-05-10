@@ -454,8 +454,8 @@ public partial class CreatureNPC
                     // lua:2544-2553: Player-specific effects
                     if (isPlayer)
                     {
-                        // SKIP: lua:2545 — ent:ViewPunch(Angle(...)) — Phase 3 player camera (no native S&Box API)
-                        // SKIP: lua:2547-2548 — ent:SetDSP(MeleeAttackDSP) — Phase 3 audio (Source DSP index→S&Box mapping needed)
+                        // PX: lua:2545 — ent:ViewPunch(Angle(...)) — no native S&Box camera shake API, not in scope
+                        // SKIP: lua:2547-2548 — ent:SetDSP(MeleeAttackDSP) — Phase 3 audio (deferred, revisit when audio effect system matures)
                         if (MeleeAttackPlayerSpeed)
                             DoMeleeAttackPlayerSpeed(ent, MeleeAttackPlayerSpeedWalk, MeleeAttackPlayerSpeedRun, MeleeAttackPlayerSpeedTime);
                     }
@@ -574,7 +574,7 @@ public partial class CreatureNPC
                     }
                     if (isPlayer)
                     {
-                        // SKIP: lua:2694-2695 — ent:ViewPunch(Angle(...)) — Phase 3 player camera (no native S&Box API)
+                        // PX: lua:2694-2695 — ent:ViewPunch(Angle(...)) — no native S&Box camera shake API, not in scope
                     }
                     hitRegistered = true;
                     if (LeapAttackStopOnHit) break;
@@ -715,7 +715,7 @@ public partial class CreatureNPC
 
         // ---- Attacker check (lua:3269-3272) ----
         // lua:3269 — if IsValid(dmgAttacker) then
-        // SKIP: lua:3269-3272 — dmgAttacker:GetClass()=="npc_barnacle" / AddFrags — Phase 3 DamageInfo + Source engine score
+        // PX: lua:3269-3272 — npc_barnacle GetClass() (HL2 entity, check via Tags) / AddFrags (Source score system, no S&Box equivalent)
 
         // lua:3273 — gamemode.Call("OnNPCKilled", self, dmgAttacker, dmgInflictor)
         OnNPCKilled?.Invoke(GameObject, dmginfo.Attacker, dmginfo.Weapon);

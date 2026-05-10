@@ -588,7 +588,7 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
                 foreach (var d in ent.Components.GetAll<IDamageable>())
                     d.OnDamage(dmginfo);
 
-                // SKIP: lua:724-726 — Player ViewPunch — Phase 3
+                // PX: lua:724-726 — Player ViewPunch — no native S&Box camera shake API, not in scope
 
                 // lua:727 — OnPrimaryAttack("MeleeHit", ent)
                 OnPrimaryAttack("MeleeHit", ent);
@@ -683,7 +683,15 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
     {
         if (!string.IsNullOrEmpty(NPC_BulletSpawnAttachment))
         {
-            // SKIP: attachment lookup (LookupAttachment/GetAttachment) — Phase 3 animation/model system
+            // Try weapon's own renderer first, then owner's renderer
+            var renderer = Components.Get<SkinnedModelRenderer>()
+                ?? owner?.Components.Get<SkinnedModelRenderer>();
+            if (renderer != null)
+            {
+                var attach = renderer.GetAttachment(NPC_BulletSpawnAttachment, true);
+                if (attach.HasValue)
+                    return attach.Value.Position;
+            }
         }
         return GameObject.WorldPosition + WorldRotation.Forward * 40f;
     }

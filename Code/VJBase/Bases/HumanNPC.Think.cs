@@ -92,7 +92,7 @@ public partial class HumanNPC
         // lua:2209-2281: Delayed init (timer.Simple 0.1)
         // SKIP: lua:2211 — SetMaxLookDistance(SightDistance) — S&Box engine handles vision range
         // SKIP: lua:2212 — SetFOV(SightAngle) — S&Box engine handles FOV
-        // SKIP: lua:2213 — SetNPCState / GetNPCState — Source engine NPC state
+        // PX: lua:2213 — SetNPCState(NPC_STATE_NONE) — Source engine call; redundant: NPCState already defaults to None
         // lua:2214 — GetCreator / IsGuard from creator
         if (Creator.IsValid() && Creator.Tags.Has("vj_spawn_guard"))
             IsGuard = true;
@@ -161,6 +161,210 @@ public partial class HumanNPC
         // If ideal activity is not idle OR current activity is not idle, force idle via MaintainIdleAnimation(true).
         // Route A: approximating GetIdealActivity via last PlayAnim target. Mark for Phase 3 refinement.
         // funcAnimThink hook.Add("Think") → now wired in CreatureNPC.Think() via MaintainIdleAnimation(false).
+    }
+
+    // ═══ TranslateActivity — HumanNPC override with combat context ═══
+    // Lua: human init.lua:2417-2466. Adds scared/angry/aim-move logic before falling back to table lookup.
+
+    public override Activity TranslateActivity(Activity act)
+    {
+        // ── ACT_IDLE: scared → cower; alert + weapon → angry ──
+        if (act == Activity.Idle)
+        {
+            if (Weapon_UnarmedBehavior_Active)
+                return Activity.Cower;
+            if (Alerted != VJAlertState.None && GetWeaponState() != VJWepState.Holstered
+                && GetActiveWeapon().IsValid())
+                return Activity.IdleAngry;
+        }
+        // ── ACT_RUN: scared + not controlled → protected ──
+        else if (act == Activity.Run && Weapon_UnarmedBehavior_Active && !VJ_IsBeingControlled)
+        {
+            return Activity.RunProtected;
+        }
+        // ── ACT_RUN / ACT_WALK + alert: aim-move or agitated ──
+        else if ((act == Activity.Run || act == Activity.Walk) && Alerted != VJAlertState.None)
+        {
+            var eneData = EnemyData;
+            if (Weapon_CanMoveFire && eneData.Target.IsValid()
+                && (eneData.Visible || (eneData.VisibleTime + 5f) > Time.Now)
+                && CurrentSchedule != null && CurrentSchedule.CanShootWhenMoving
+                && CanFireWeapon(true, false))
+            {
+                var aimAct = act == Activity.Run ? Activity.RunAim : Activity.WalkAim;
+                var anim = base.TranslateActivity(aimAct);
+                if (VJAnimationMapper.AnimExists(GameObject, anim))
+                {
+                    WeaponAttackState = eneData.Visible
+                        ? VJWepAttackState.Fire
+                        : VJWepAttackState.AimMove;
+                    return anim;
+                }
+            }
+            // Fallback: agitated run/walk
+            var angryAct = act == Activity.Run ? Activity.RunAgitated : Activity.WalkAgitated;
+            var angryAnim = base.TranslateActivity(angryAct);
+            if (VJAnimationMapper.AnimExists(GameObject, angryAnim))
+                return angryAnim;
+        }
+
+        // ── Table lookup (delegates to BaseNPC.TranslateActivity for AnimationTranslations) ──
+        return base.TranslateActivity(act);
+    }
+
+    // ═══ SetAnimationTranslations — HumanNPC override: 4 model sets × 7 hold types ═══
+    // Lua: human init.lua:904-1050. Builds the AnimationTranslations table per model set + weapon hold type.
+
+    public override void SetAnimationTranslations(string wepHoldType)
+    {
+        if (AnimModelSet == VJAnimSet.Combine)
+            SetAnimTranslations_Combine(wepHoldType);
+        else if (AnimModelSet == VJAnimSet.Metrocop)
+            SetAnimTranslations_Metrocop(wepHoldType);
+        else if (AnimModelSet == VJAnimSet.Rebel)
+            SetAnimTranslations_Rebel(wepHoldType);
+        else if (AnimModelSet == VJAnimSet.Player)
+            SetAnimTranslations_Player(wepHoldType);
+    }
+
+    // ── Combine model set ──
+    private void SetAnimTranslations_Combine(string holdType)
+    {
+        if (!Weapon_AimTurnDiff.HasValue) Weapon_AimTurnDiff_Def = 0.71120220422745f;
+        // Shared across all hold types
+        AnimationTranslations[Activity.RangeAttack2] = Activity.RangeAttackAr2; // actually "shootAR2alt" sequence
+        AnimationTranslations[Activity.CoverLow] = new Activity[] { Activity.Cover, Activity.CoverLow };
+        AnimationTranslations[Activity.WalkCrouch] = Activity.WalkCrouchRifle;
+        AnimationTranslations[Activity.WalkCrouchAim] = Activity.WalkCrouchAimRifle;
+        AnimationTranslations[Activity.Run] = Activity.RunRifle;
+        AnimationTranslations[Activity.RunAgitated] = Activity.RunRifle;
+        AnimationTranslations[Activity.RunProtected] = Activity.RunCrouchRifle;
+        AnimationTranslations[Activity.RunCrouch] = Activity.RunCrouchRifle;
+        AnimationTranslations[Activity.RunCrouchAim] = Activity.RunCrouchAimRifle;
+
+        if (holdType == "ar2" || holdType == "smg" || holdType == "rpg")
+        {
+            if (holdType == "ar2")
+            {
+                AnimationTranslations[Activity.RangeAttack1] = Activity.RangeAttackAr2;
+                AnimationTranslations[Activity.GestureRangeAttack1] = Activity.GestureRangeAttackAr2;
+                AnimationTranslations[Activity.RangeAttack1Low] = Activity.RangeAttackAr2Low;
+            }
+            else { SetAnimTrans_SMGShared(); }
+            AnimationTranslations[Activity.Idle] = Activity.IdleSmg1;
+            AnimationTranslations[Activity.Walk] = Activity.WalkRifle;
+            AnimationTranslations[Activity.WalkAgitated] = Activity.WalkRifle;
+            AnimationTranslations[Activity.WalkAim] = Activity.WalkAimRifle;
+            AnimationTranslations[Activity.RunAim] = Activity.RunAimRifle;
+        }
+        else if (holdType == "pistol" || holdType == "revolver")
+        {
+            AnimationTranslations[Activity.RangeAttack1] = Activity.RangeAttackAr2;
+            AnimationTranslations[Activity.GestureRangeAttack1] = Activity.GestureRangeAttackAr2;
+            AnimationTranslations[Activity.RangeAttack1Low] = Activity.RangeAttackAr2Low;
+            AnimationTranslations[Activity.Idle] = Activity.IdlePistol;
+            AnimationTranslations[Activity.Walk] = Activity.WalkPistol;
+            AnimationTranslations[Activity.WalkAim] = Activity.WalkAimRifle;
+            AnimationTranslations[Activity.RunAim] = Activity.RunAimRifle;
+        }
+        else if (holdType == "crossbow" || holdType == "shotgun")
+        {
+            AnimationTranslations[Activity.RangeAttack1] = Activity.RangeAttackShotgun;
+            AnimationTranslations[Activity.GestureRangeAttack1] = holdType == "crossbow"
+                ? Activity.GestureRangeAttackAr2 : Activity.GestureRangeAttackShotgun;
+            AnimationTranslations[Activity.RangeAttack1Low] = Activity.RangeAttackShotgunLow;
+            AnimationTranslations[Activity.Idle] = Activity.IdleSmg1;
+            AnimationTranslations[Activity.IdleAngry] = Activity.IdleAngryShotgun;
+            AnimationTranslations[Activity.Walk] = Activity.WalkAimShotgun;
+            AnimationTranslations[Activity.WalkAim] = Activity.WalkAimShotgun;
+            AnimationTranslations[Activity.RunAim] = Activity.RunAimShotgun;
+        }
+        else if (holdType == "melee" || holdType == "melee2" || holdType == "knife")
+        {
+            AnimationTranslations[Activity.RangeAttack1] = Activity.MeleeAttack1;
+            AnimationTranslations[Activity.GestureRangeAttack1] = Activity.Invalid; // Don't play gesture
+            AnimationTranslations[Activity.Idle] = Activity.IdleSmg1;
+            AnimationTranslations[Activity.IdleAngry] = Activity.IdleSmg1;
+            AnimationTranslations[Activity.Walk] = Activity.WalkRifle;
+            AnimationTranslations[Activity.WalkAim] = Activity.WalkAimRifle;
+            AnimationTranslations[Activity.RunAim] = Activity.RunAimRifle;
+        }
+        else // Unarmed
+        {
+            AnimationTranslations[Activity.Idle] = Activity.IdleSmg1;
+            AnimationTranslations[Activity.Walk] = Activity.WalkRifle;
+        }
+    }
+
+    // ── Metrocop model set ──
+    private void SetAnimTranslations_Metrocop(string holdType)
+    {
+        if (!Weapon_AimTurnDiff.HasValue) Weapon_AimTurnDiff_Def = 0.71120220422745f;
+        AnimationTranslations[Activity.RunCrouch] = Activity.WalkCrouch;
+
+        if (holdType == "smg" || holdType == "rpg" || holdType == "ar2" || holdType == "crossbow" || holdType == "shotgun")
+        {
+            SetAnimTrans_SMGShared();
+            AnimationTranslations[Activity.Reload] = Activity.ReloadSmg1;
+            AnimationTranslations[Activity.ReloadLow] = Activity.ReloadSmg1Low;
+            AnimationTranslations[Activity.CoverLow] = Activity.CoverSmg1Low;
+            AnimationTranslations[Activity.Idle] = Activity.IdleSmg1;
+            AnimationTranslations[Activity.IdleAngry] = Activity.IdleAngrySmg1;
+            AnimationTranslations[Activity.Walk] = Activity.WalkRifle;
+            AnimationTranslations[Activity.WalkAim] = Activity.WalkAimRifle;
+            AnimationTranslations[Activity.WalkCrouchAim] = Activity.WalkCrouchAimRifle;
+            AnimationTranslations[Activity.Run] = Activity.RunRifle;
+            AnimationTranslations[Activity.RunAim] = Activity.RunAimRifle;
+            AnimationTranslations[Activity.RunCrouchAim] = Activity.RunCrouchAimRifle;
+        }
+        else if (holdType == "pistol" || holdType == "revolver")
+        {
+            AnimationTranslations[Activity.RangeAttack1] = Activity.RangeAttackPistol;
+            AnimationTranslations[Activity.GestureRangeAttack1] = Activity.GestureRangeAttackPistol;
+            AnimationTranslations[Activity.RangeAttack1Low] = Activity.RangeAttackPistolLow;
+            AnimationTranslations[Activity.CoverLow] = Activity.CoverPistolLow;
+            AnimationTranslations[Activity.Reload] = Activity.ReloadPistol;
+            AnimationTranslations[Activity.ReloadLow] = Activity.ReloadPistolLow;
+            AnimationTranslations[Activity.Idle] = Activity.IdlePistol;
+            AnimationTranslations[Activity.IdleAngry] = Activity.IdleAngryPistol;
+            AnimationTranslations[Activity.WalkAgitated] = Activity.WalkPistol;
+            AnimationTranslations[Activity.WalkAim] = Activity.WalkAimPistol;
+            AnimationTranslations[Activity.WalkCrouchAim] = Activity.WalkCrouchAimRifle;
+            AnimationTranslations[Activity.RunAgitated] = Activity.RunPistol;
+            AnimationTranslations[Activity.RunAim] = Activity.RunAimPistol;
+            AnimationTranslations[Activity.RunCrouchAim] = Activity.RunCrouchAimRifle;
+        }
+        else if (holdType == "melee" || holdType == "melee2" || holdType == "knife")
+        {
+            AnimationTranslations[Activity.RangeAttack1] = Activity.MeleeAttackSwing;
+            AnimationTranslations[Activity.GestureRangeAttack1] = Activity.Invalid;
+            AnimationTranslations[Activity.CoverLow] = Activity.Cower;
+            AnimationTranslations[Activity.Idle] = new Activity[] { Activity.Idle, Activity.Idle, Activity.Idle, Activity.Idle, Activity.IdleSmg1 };
+            AnimationTranslations[Activity.IdleAngry] = Activity.IdleAngryMelee;
+        }
+    }
+
+    // ── Rebel model set ──
+    private void SetAnimTranslations_Rebel(string holdType)
+    {
+        // Similar structure, will be populated with Rebel-specific mappings
+        // For now, fall through to base which leaves table empty
+    }
+
+    // ── Player model set ──
+    private void SetAnimTranslations_Player(string holdType)
+    {
+        // HL2MP player model mappings
+        // For now, fall through to base which leaves table empty
+    }
+
+    // Shared helper: SMG/AR2/RPG common translations (used by Combine + Metrocop)
+    private void SetAnimTrans_SMGShared()
+    {
+        AnimationTranslations[Activity.RangeAttack1] = Activity.RangeAttackSmg1;
+        AnimationTranslations[Activity.GestureRangeAttack1] = Activity.GestureRangeAttackSmg1;
+        AnimationTranslations[Activity.RangeAttack1Low] = Activity.RangeAttackSmg1Low;
+        AnimationTranslations[Activity.IdleAngry] = Activity.IdleAngrySmg1;
     }
 
     // ═══ ProcessAttackTimers override — adds grenade execution ═══
@@ -710,9 +914,8 @@ public partial class HumanNPC
                 }
                 else
                 {
-                    // Player-controlled: R key + partial mag
-                    // SKIP: lua:2778 — KeyDown(IN_RELOAD) — Phase 3 player controller input
-                    shouldReload = false; // wepComp.GetMaxClip1() > wepComp.GetClip1()
+                    // PX: lua:2778 — KeyDown(IN_RELOAD) — player-controller NPC not in scope
+                    shouldReload = false;
                 }
 
                 if (shouldReload)
@@ -1327,9 +1530,28 @@ public partial class HumanNPC
             if (!customPos.HasValue)
             {
                 // lua:3140-3152 — attachment / bone / fallback hierarchy
-                // SKIP: lua:3140-3152 — LookupAttachment/GetAttachment/LookupBone/GetBonePosition/FollowBone — Phase 3 animation bone system
-                customEnt.Parent = GameObject;                              // lua:3151 — SetParent(self) (fallback)
-                customEnt.WorldPosition = WorldPosition + WorldRotation.Forward * 30; // lua:3149 — GetShootPos() fallback
+                var attach = GetAttachmentPos(GrenadeAttackAttachment);
+                if (attach.HasValue)
+                {
+                    customEnt.Parent = GameObject;
+                    customEnt.WorldPosition = attach.Value.Position;
+                    customEnt.WorldRotation = attach.Value.Rotation;
+                }
+                else
+                {
+                    var boneTx = GetBoneTransform(GrenadeAttackBone);
+                    if (boneTx.HasValue)
+                    {
+                        customEnt.Parent = GameObject;
+                        customEnt.WorldPosition = boneTx.Value.Position;
+                        customEnt.WorldRotation = boneTx.Value.Rotation;
+                    }
+                    else
+                    {
+                        customEnt.Parent = GameObject;
+                        customEnt.WorldPosition = GetShootPos();
+                    }
+                }
             }
             else
             {
@@ -1381,9 +1603,27 @@ public partial class HumanNPC
         Angles spawnAng = Angles.Zero;
         if (!spawnPos.HasValue)
         {
-            // lua:3218-3223 — LookupAttachment / LookupBone → Phase 3 animation bone system
-            // SKIP: lua:3218-3223 — LookupAttachment/GetAttachment/LookupBone/GetBonePosition — Phase 3 animation
-            spawnPos = WorldPosition + WorldRotation.Forward * 30;                   // lua:3224 — GetShootPos() fallback
+            // lua:3218-3223 — Attachment / Bone hierarchy
+            var attach = GetAttachmentPos(GrenadeAttackAttachment);
+            if (attach.HasValue)
+            {
+                spawnPos = attach.Value.Position;
+                spawnAng = attach.Value.Rotation.Angles();
+            }
+            else
+            {
+                var boneTx = GetBoneTransform(GrenadeAttackBone);
+                if (boneTx.HasValue)
+                {
+                    spawnPos = boneTx.Value.Position;
+                    spawnAng = boneTx.Value.Rotation.Angles();
+                }
+                else
+                {
+                    spawnPos = GetShootPos();   // lua:3224 — GetShootPos() fallback
+                    spawnAng = WorldRotation.Angles();
+                }
+            }
         }
         spawnAng = ((Vector3)spawnPos - WorldPosition).Normal.EulerAngles;           // lua:3233 — spawnPos:Angle()
 
@@ -2183,7 +2423,7 @@ public partial class HumanNPC
 
         // ---- Attacker check (lua:4256-4259) ----
         // lua:4256 — if IsValid(dmgAttacker) then
-        // SKIP: lua:4256-4259 — dmgAttacker:GetClass()=="npc_barnacle" / vj_npc_ply_frag / AddFrags — Phase 3 DamageInfo + Source engine
+        // PX: lua:4256-4259 — npc_barnacle GetClass() (HL2 entity) / vj_npc_ply_frag convar / AddFrags (Source score system)
 
         // lua:4260 — gamemode.Call("OnNPCKilled", self, dmgAttacker, dmgInflictor)
         OnNPCKilled?.Invoke(GameObject, dmginfo.Attacker, dmginfo.Weapon);
@@ -2603,7 +2843,7 @@ public partial class HumanNPC
                     }
 
                     // lua:3033-3035 — Player ViewPunch
-                    // SKIP: lua:3033-3035 — ViewPunch(Angle(...)) — Phase 3 player camera
+                    // PX: lua:3033-3035 — ViewPunch(Angle(...)) — no native S&Box camera shake API, not in scope
 
                     // lua:3036-3038 — non-prop → hitRegistered, stop on hit
                     if (!isProp)
