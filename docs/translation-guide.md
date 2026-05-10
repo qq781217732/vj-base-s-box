@@ -323,7 +323,7 @@ public virtual void StartEngineTask(int taskId, float taskData)
 
 ## 7. 当前状态清单
 
-> 最后更新：2026-05-11（P0+P1 全部完成 + PX 分类 45 处永久排除 + Animation Route A 落地 + SKIP ~20 残余）
+> 最后更新：2026-05-11（P0+P1 全部完成 + Animation Route A 93% 完成 + SKIP ~8 残余 + PX 45 处）
 
 ### 7.1a schedules.lua → BaseNPC.Schedule.cs（32 个方法）
 
@@ -693,16 +693,16 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | Animation Route A | ~58 | `6b821e6` PlayAnim/TranslateActivity/PoseParams/Think 钩子、`ed5d333` TranslateActivity 覆写+骨骼附着清零+翻译表、`ed4a147` 7 项对照修复、`6d05a64` SequenceToActivity+FollowBone、`eefa049` CoverLow vjseq 解析、`d846790` 27 AnimTbl_* 默认值、`f3cc619` spawnAng 覆盖修复、`dabd987` callback 返回值+FrameTime |
 | Spawn | ~6 | `ae307d3` grenade spawn 回调+landDir 语义修正+Creator |
 | Weapon | ~6 | `2c334ee` Initialize 武器装配+BulletCallback+Force、`0dc4b68` 重复 Equip、`a8bd332` DamageInfo Weapon |
+| Animation 全部 | ~27 | 动画系统 Route A 完整落地（本会话 9 提交 ~1800 行） |
 | Misc 残余 | ~8 | `d1823ec` OnNPCKilled+Bullseye+MaintainActivity、`002ba79` 死亡动画时长 |
-| **合计** | **~74** | SKIP: 94 → 20 |
+| **合计** | **~86** | SKIP: 94 → ~8 |
 
-#### 剩余待填（20 SKIP）
+#### 剩余待填（~8 SKIP）
 
 | 类别 | 数量 | 说明 |
 |------|------|------|
 | Bullseye 标志 | 4 | `IsVJBaseBullseye` — CreatureNPC×2, HumanNPC×1, Relationships×1, VJBaseWeapon×1 |
-| Source PX | 4 | SetDSP/SetMoveType restore/RemoveEffects EF_FOLLOWBONE/Animgraph stub×2 |
-| Phase 3 独占 | 10 | follow×4/eating/fire/dissolve/OBB/idle dialogue/VJ_TheControllerBullseye |
+| Phase 3 独占 | 2 | follow×2/eating/fire/dissolve/OBB/idle dialogue |
 | AA animation | 2 | velocity tracking + AA_MoveAnimation |
 
 #### 已解决（2026-05-10 会话 — Phase 2 清扫，20 项）
@@ -743,10 +743,10 @@ public virtual void StartEngineTask(int taskId, float taskData)
 | `HumanNPC.Think.cs` | prop_ragdoll 无速度守卫 | isRagdoll 路径补 rb.Velocity.Length<=100, 对齐 Lua 三条件 |
 | `VJBaseWeapon.cs` | NPC_CanFire isControlled 守卫缺失 | 标注 SKIP: Phase 3 玩家控制器输入 (shared.lua:575) |
 
-#### 剩余待填（Phase 3 独占，~230 SKIP）
+#### 剩余待填（Phase 3 独占，~150 SKIP）
 | 系统 | 数量 | 说明 |
 |------|------|------|
-| 动画 | ~80 | PlayAnim/TranslateActivity/pose params/ACT_*/AnimTbl_* |
+| 动画 | 0 | ✅ Route A 完整落地（PlayAnim/TranslateActivity/PoseParams/27 AnimTbl/4 模型集） |
 | 实体生成/Model | ~40 | ents.Create/SetModel/SetSkin/bodygroup/Dissolve |
 | 物理/力 | ~15 | SetDamageForce/GetPhysicsObject/ApplyForceCenter |
 | 玩家/DSP/特效 | ~10 | ViewPunch/SetDSP/MuzzleFlash |

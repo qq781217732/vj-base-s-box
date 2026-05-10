@@ -5,7 +5,7 @@
 > **PX 排除清单**：[px-permanent-exclusions.md](px-permanent-exclusions.md)
 
 **最后更新**：2026-05-11
-**当前状态**：P0 ✅ | P1 ✅ | P2 Animation ✅ | 剩余 20 SKIP + 45 PX
+**当前状态**：P0 ✅ | P1 ✅ | P2 Animation ✅ (93%) | 剩余 ~8 SKIP + 45 PX
 
 ---
 
@@ -28,7 +28,7 @@
 | **P1** | I/O 系统 | ✅ | TriggerOutput + OnNPCKilled static event |
 | **P1** | Player 交互 | ➖ PX / 延后 | ViewPunch→PX, Controller→PX, SetDSP→延后 |
 | **P1** | Physics/Force | ➖ PX | SetDamageForce→S&Box Rigidbody 已覆盖, IsNextBot→PX |
-| **P2** | Animation 系统 | ⚠️ 部分完成 | PlayAnim/TranslateActivity/PlayReloadAnimation 已填；pose params/AnimTbl_* 剩余 |
+| **P2** | Animation 系统 | ✅ 完成 | PlayAnim/TranslateActivity/SetAnimationTranslations/PoseParam/IsBusy/IsCurrentAnim 全部 1:1；27 AnimTbl_* 默认值补全；Combine/Metrocop/Rebel/Player 4 模型集翻译表完整 |
 | **P2** | Effects | ⬜ | MuzzleFlash/Particles/ShellEject/BloodDecals |
 | **P2** | Corpse 系统 | ⚠️ 部分完成 | CreateDeathCorpse 骨架, Dissolve→Phase 3 |
 | PX | Source 永久独占 | ➖ 45 处 | 见 [px-permanent-exclusions.md](px-permanent-exclusions.md) |
@@ -55,7 +55,9 @@
 | 2026-05-10 | Weapon Phase 2 核心回路 NPC_Think + C2b/C2c-iii + PrimaryAttack 9 守卫 | VJBaseWeapon.cs |
 | 2026-05-10 | GetAttackTimer 语义修正 + prop_ragdoll 速度守卫 | BaseNPC.cs |
 | 2026-05-11 | Prop joint weld + 门系统 Phase 3 预备 | CreatureNPC.Think.cs |
-| 2026-05-11 | Animation 系统基础 PlayAnim/TranslateActivity/MaintainIdleAnimation | BaseNPC.Animation.cs |
+| 2026-05-11 | Animation Route A 落地: VJAnimationEnums + Mapper + PlayAnim + PoseParams | 3 新文件 ~1500 行 |
+| 2026-05-11 | Animation 内容层: TranslateActivity 覆写 + Combine/Metrocop/Rebel/Player 翻译表 | HumanNPC.Think.cs |
+| 2026-05-11 | Animation 修复: IsBusy + SequenceToActivity + FollowBone + AnimTbl_* 默认值 + 7 bug | 全局 |
 | 2026-05-11 | OnNPCKilled event + Bullseye 守卫 + MaintainActivity | CreatureNPC + HumanNPC |
 | 2026-05-11 | Initialize 武器初始装配 + BulletCallback dmginfo 修复 + Force | HumanNPC.Think.cs + VJBaseWeapon.cs |
 | 2026-05-11 | Entity Spawn grenade spawn 回调 + landDir + Creator | VJEntitySpawner.cs |
@@ -64,7 +66,7 @@
 
 ---
 
-## 当前剩余 SKIP（~20 行）
+## 当前剩余 SKIP（~8 行）
 
 ### P1 剩余
 
@@ -77,15 +79,12 @@
 
 | # | 类别 | 数量 | 说明 |
 |---|------|------|------|
-| 3 | AA_MoveAnimation | 1 | 飞行/水上移动时根据速度选动画 |
+| 3 | AA_MoveAnimation | 1 | 飞行/水上移动时根据速度选动画 (base_aa.lua:1906) |
 | 4 | Idle dialogue 定时器 | 1 | 闲逛音效循环 |
-| 5 | Pose 参数 (UpdatePoseParamTracking) | ~5 | aim_pitch/head_yaw 等，已接线 stub |
-| 6 | AnimTbl_* / 动画选表 | ~5 | 剩余动画配置表翻译 |
-| 7 | Follow 跟随系统 | 2 | NPC 跟随玩家/盟友 |
-| 8 | Bullseye 靶子系统 | 3 | VJ Base 工具链 |
-| 9 | Fire/Eating 子系统 | 2 | 着火反应 + 进食行为 |
-| 10 | 附件/骨骼位置 | 2 | OBBCenter + LookupBone/GetAttachment |
-| 11 | MoveType 跟踪 + Effects | 2 | SetMoveType restore + RemoveEffects |
+| 5 | Follow 跟随系统 | 2 | NPC 跟随玩家/盟友 |
+| 6 | Bullseye 靶子系统 | 3 | VJ Base 工具链 |
+| 7 | Fire/Eating 子系统 | 2 | 着火反应 + 进食行为 |
+| 8 | MoveType 跟踪 + Effects | 2 | SetMoveType restore + RemoveEffects |
 
 ### MuzzleFlash / Effects / Corpse（无 SKIP 标记，但有大量 Phase 3 stub）
 
@@ -121,7 +120,12 @@
 
 ## 下一步建议
 
-1. **MuzzleFlash + ShellEject** — 纯视觉效果，用 S&Box ParticleSystem，1-2 小时
-2. **Pose 参数 (UpdatePoseParamTracking)** — 动画质量，SkinnedModelRenderer.SetFloat，2-3 小时
-3. **Follow 系统** — 功能性，用 NavMeshAgent 跟随，1-2 小时
+1. **Follow 系统** — 功能性，用 NavMeshAgent 跟随，1-2 小时
+2. **AA_MoveAnimation** — 飞行/水生移动动画，~50 行，1 小时
+3. **MuzzleFlash + ShellEject** — 纯视觉效果，用 S&Box ParticleSystem，1-2 小时
 4. **Dissolve** — 死亡效果，Material 参数动画，2-3 小时
+
+### 动画系统已知限制（无法还原）
+
+1. **Gesture 叠加层** — S&Box 无 `AddGesture` API，手势当普通序列播放
+2. **Sequence 过渡动画** — Source 引擎 `FindTransitionSequence` 独占
