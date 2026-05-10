@@ -3,20 +3,23 @@
 > **目标**：把 Phase 1 翻译产物中的 SKIP 注释逐个实现，使 NPC 能在 S&Box 中完整运行。
 > **前序文档**：[translation-guide.md](translation-guide.md) — 翻译架构、Phase 1/3 定义、文件映射、Submit 规范
 > **创建日期**：2026-05-10
-> **最后更新**：2026-05-10（零依赖批次完成 — Difficulty/Flags/IdleSound/Footstep/SoundTrack/TriggerOutput）
-> **数据源**：`grep -c "SKIP:" VJBase/` = 235 SKIP 行；`grep -c "Phase 3" VJBase/` = 333（含空壳方法体注释、TODO、PX 说明，非全部是 SKIP）
+> **最后更新**：2026-05-10（P0 全部完成，~43 SKIP 消，当前剩余 ~192）
+> **数据源**：`grep -c "SKIP:" VJBase/` = 192 SKIP 行（起始 235，-43）
 
 ---
-## 已完成（2026-05-10 零依赖批次）
+## P0 完成摘要（2026-05-10）
 
-| 任务 | 优先级 | 文件变更 | 说明 |
-|------|--------|---------|------|
-| `ScaleByDifficulty` | P0 | BaseNPC.cs | switch 表达式 1:1 对照 Lua 查表公式（17 档），5 个调用方已接线 |
-| Flag System `FL_*` / `EFL_*` | P0 | VJEntityFlags.cs + BaseNPC.cs + Relationships.cs + AISenses.cs | 4 个 bool 标志 + HasEntityFlag(string) switch 补全 + 2 处 int→string 转换 |
-| `PlayIdleSound` | 独立 | BaseNPC.cs + BaseNPC.Sound.cs (+1 field) | 空壳→完整实现（combat idle + regular idle），idle dialogue 标 SKIP（依赖 timer） |
-| `PlayFootstepSound` | 独立 | BaseNPC.cs + BaseNPC.Sound.cs (+1 callback) + CreatureNPC.Think.cs | 新建方法 + IsOnGround() + Think loop 接线，OnFootstepSound 委托 |
-| `StartSoundTrack` | 独立 | BaseNPC.cs + BaseNPC.Sound.cs (+2 fields) + HumanNPC.Think.cs | 新建方法 + Sound.Play() 替代 GMod net.Start/Broadcast + HumanNPC Initialize 接线 |
-| `TriggerOutput` | P1-4 | BaseNPC.cs + HumanNPC.Think.cs + CreatureNPC.Think.cs | 空壳→Action<string,GameObject> 委托 + 3 处 SKIP 消除（OnDamaged/OnDeath） |
+| 步骤 | 子系统 | SKIP 消 | 关键提交 |
+|------|--------|---------|---------|
+| P0-5 | VJUtility | 5 | GetNearestDistance/Positions (FindNearestPoint), DamageSpecialEnts |
+| P0-3 | Collision/Bounds | 10 | OBBMins/OBBMaxs→ModelRenderer.LocalBounds, SetCollisionGroup(int), DeathCorpseCollisionType=1 |
+| P0-1 | Damage/Health | 12 | SetInflictor→LIMITATION, Health守卫, IsOnFire/Ignite/Extinguish, HealthRegen, M3 CombatDamageResponse, isFireEnt守卫修复 |
+| P0-4 | Timer | 7 | Bleed/Death/Alert timer→轮询 (NextBleedT/NextDeathFinishT/NextAlertResetT) |
+| P0-2 | AI/Nav/Schedule | 7 | SCHEDULE_COVER_RELOAD, GuardData, VisibleCount, SetRelationshipMemory |
+| 零依赖 | Flag/Difficulty/Sound/TriggerOutput | ~15 | FL_*标志, ScaleByDifficulty 17档, PlayIdleSound/FootstepSound/SoundTrack, TriggerOutput委托 |
+| **P0 合计** | | **~56** | 起始 235 SKIP → 当前 ~192 |
+
+> P0 剩余合理 SKIP：ResetEatingBehavior(P2), CombineBall(P2), Dissolve(P2), SetSaveValue(P2), MASK_WATER trace(P2), SetDamageForce(P2)
 
 ---
 
@@ -63,23 +66,27 @@
 
 ## 总体进度
 
-| 优先级 | 子系统 | SKIP 数 | 状态 | 依赖 | 目标 |
-|--------|-------|---------|------|------|------|
-| **P0** | **VJUtility 缺口** | **~5** | ⬜ | 无 | GetNearestDistance/TraceDirections/DamageSpecialEnts |
-| **P0** | **Collision/Bounds** | **~11** | ⬜ | 无 | OBB 包围盒/碰撞组 |
-| **P0** | **Flag System** | **~10** | ⬜ | 无 | FL_* 标志位（P0 AI 在消费它） |
-| **P0** | **难度系统** | **~1** | ⬜ | 无 | ScaleByDifficulty 真实系数 |
-| **P0** | **Damage/Health** | **~37** | ⬜ | P0-5 + P0-3 | NPC 伤害/死亡核心回路 |
-| **P0** | **Timer 替换** | **~8** | ⬜ | P0-1 | 异步 timer 替代方案 |
-| **P0** | **AI/Nav/Schedule 剩余** | **~7** | ⬜ | P0-3 + P0-4 | 掩体/关系记忆/可达性 |
-| *独立* | *Sound 增强* | *~15* | ⬜ | 无 | 随时可做：PlayIdleSound/FootstepSound 空壳填充 |
-| *独立* | *Entity Spawn* | *~43* | ⬜ | 无 | 可提前：API 映射，P1-1 弹体/手雷的前置 |
-| P1 | Weapon 系统 | ~56 | ⬜ | P0-5 + P2-2 | 武器创建/弹体/手雷 |
-| P1 | Physics/Force | ~14 | ⬜ | P0-1 | Rigidbody/速度/地面 |
-| P1 | Player 交互 | ~6 | ⬜ | P1-1 | 相机/音频/玩家控制器 |
-| P1 | I/O 系统 | ~2 | ⬜ | 无 | TriggerOutput Scene Event 替代 |
-| P2 | Animation | ~58 | ⬜ | P2-2 | PlayAnim/ACT_*/pose params（需先有 Model） |
-| P2 | Corpse 系统 | ~32 | ⬜ | P2-2 | 尸体创建/褪色/碰撞（需先有 Spawn） |
+| 优先级 | 子系统 | SKIP 数 | 状态 | 目标 |
+|--------|-------|---------|------|------|
+| **P0** | **VJUtility 缺口** | **~5** | ✅ | GetNearestDistance/TraceDirections/DamageSpecialEnts |
+| **P0** | **Collision/Bounds** | **~11** | ✅ | OBB 包围盒/碰撞组 |
+| **P0** | **Flag System** | **~10** | ✅ | FL_* 标志位 + 难度系统 |
+| **P0** | **Damage/Health** | **~37** | ✅ | NPC 伤害/死亡核心回路 |
+| **P0** | **Timer 替换** | **~8** | ✅ | 异步 timer → 轮询模式 |
+| **P0** | **AI/Nav/Schedule 剩余** | **~7** | ✅ | 掩体/关系记忆/可达性 |
+| *独立* | *Sound 增强* | *~15* | ✅ | PlayIdleSound/FootstepSound/SoundTrack 填充 |
+| *独立* | *Entity Spawn* | *~43* | ⬜ | 可提前：API 映射，P1-1 弹体/手雷的前置 |
+| P1 | Weapon 系统 | ~56 | ⬜ | 武器创建/弹体/手雷 |
+| P1 | Physics/Force | ~14 | ⬜ | Rigidbody/速度/地面 |
+| P1 | Player 交互 | ~6 | ⬜ | 相机/音频/玩家控制器 |
+| P1 | I/O 系统 | ~2 | ✅ | TriggerOutput Scene Event 替代 |
+| P2 | Animation | ~58 | ⬜ | PlayAnim/ACT_*/pose params |
+| P2 | Corpse 系统 | ~32 | ⬜ | 尸体创建/褪色/碰撞 |
+| P2 | Effects | ~23 | ⬜ | 粒子/弹壳/血渍/MuzzleFlash |
+| P2 | Sound 增强 | ~15 | ⬜ | SoundTrack/idle sound/wep sound |
+| P2 | Flag System | ~10 | ⬜ | FL_* 标志位 + 持久化 |
+| P2 | 难度系统 | ~1 | ⬜ | GetConVar/vj_npc_difficulty → [Property] 替代 |
+| PX | Source 永久独占 | ~10 | ➖ | gamemode.Call / hook.Call / SetNPCState / ... |
 | P2 | Effects | ~23 | ⬜ | P2-2 | 粒子/弹壳/血渍/MuzzleFlash（需先有 Spawn） |
 | PX | Source 永久独占 | ~10 | ➖ | — | gamemode.Call / hook.Call / SetNPCState / ... |
 
