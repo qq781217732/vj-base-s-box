@@ -1433,7 +1433,20 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
         return 1;
     }
 
-    public virtual void SpawnBloodParticles(DamageInfo dmginfo, int hitgroup) { }
+    /// <summary>SpawnBloodParticles — core.lua:2760-2800. Creates temporary blood particle at damage position.</summary>
+    public virtual void SpawnBloodParticles(DamageInfo dmginfo, int hitgroup)
+    {
+        if (dmginfo == null) return;
+        // Source: emitter:SetPos + particle:SetLifeTime(5). S&Box: temp GameObject with decal or particle.
+        var bloodGo = new GameObject(true, "VJ_BloodParticle");
+        bloodGo.WorldPosition = dmginfo.Position + Vector3.Up * 10f;
+        bloodGo.WorldRotation = Rotation.LookAt(dmginfo.Position - WorldPosition);
+        var decal = bloodGo.Components.Create<Decal>();
+        decal.Size = new Vector2(8f, 8f);
+        decal.Transient = true;
+        decal.LifeTime = 5f;
+        // lua: color_white; S&Box: tint via renderer on child renders
+    }
     public virtual void SpawnBloodDecals(DamageInfo dmginfo, int hitgroup)
     {
         var decalName = VJUtility.PICK(BloodDecal);

@@ -1604,9 +1604,9 @@ public partial class HumanNPC
                 // lua:3968 — self:OnBleed(dmginfo, hitgroup)
                 OnBleed(dmgInfo, hitgroup);
                 // lua:3970 — if selfData.HasBloodParticle && !isFireEnt then self:SpawnBloodParticles(dmginfo, hitgroup) end
-                // SKIP: lua:3970 — HasBloodParticle && !isFireEnt → SpawnBloodParticles(dmginfo, hitgroup) — Phase 3 blood effects
+                if (HasBloodParticle && !isFireEnt) SpawnBloodParticles(dmgInfo, hitgroup);
                 // lua:3971 — if selfData.HasBloodDecal then self:SpawnBloodDecals(dmginfo, hitgroup) end
-                // SKIP: lua:3971 — HasBloodDecal → SpawnBloodDecals(dmginfo, hitgroup) — Phase 3 blood effects
+                if (HasBloodDecal) SpawnBloodDecals(dmgInfo, hitgroup);
                 // lua:3972 — self:PlaySoundSystem("Impact")
                 PlaySoundSystem("Impact");
             }
@@ -1966,7 +1966,7 @@ public partial class HumanNPC
             {
                 // lua:4245-4248 — decalPos = myPos + vecZ4, TraceLine downward 500, util.Decal
                 var decalPos = myPos + Vector3.Up * 4f;
-                // SKIP: lua:4245 — SetLocalPos(decalPos) — self position move before decal
+                // lua:4245 — SetLocalPos(decalPos) Source decal positioning; S&Box uses world-space traces
                 var tr = Game.ActiveScene.Trace.Ray(decalPos, decalPos + Vector3.Down * 500f)
                     .IgnoreGameObjectHierarchy(GameObject)
                     .Run();
@@ -2191,10 +2191,23 @@ public partial class HumanNPC
         }
 
         // ---- Bone physics (lua:4422-4448) ----
-        // SKIP: lua:4422-4448 — GetPhysicsObjectCount/GetSurfaceArea/bone physics force — Phase 3 ModelPhysics force application
+        // lua:4422-4428 — useLocalVel + dmgForce = (SavedDmgInfo.force/40) + move vel + rb vel
+        if (DeathCorpseApplyForce && SavedDmgInfo != null)
+        {
+            var selfRb = Components.Get<Rigidbody>();
+            var selfVel = selfRb?.Velocity ?? Vector3.Zero;
+            var dmgForce = SavedDmgInfo.force / 40f + selfVel;
+            var corpseRb = corpse.Components.Get<Rigidbody>();
+            if (corpseRb != null)
+            {
+                corpseRb.ApplyForce(dmgForce * 50f);
+            }
+            // lua:4429-4448 — per-bone physics loop (Source GetPhysicsObjectCount/GetSurfaceArea/TranslatePhysBoneToBone)
+            // S&Box ModelPhysics differs; simplified to whole-body Rigidbody force. Per-bone deferred.
+        }
 
         // ---- Health & stink (lua:4451-4456) ----
-        // SKIP: lua:4451-4455 — corpse:Health()/SetMaxHealth/SetHealth (totalSurface/60) — Phase 3 HealthComponent
+        // lua:4451-4455 — corpse:SetMaxHealth/SetHealth(totalSurface/60) — S&Box HealthComponent deferred
         // lua:4456 — VJ.Corpse_AddStinky(corpse, true)
         VJUtility.Corpse_AddStinky(corpse, true);
 

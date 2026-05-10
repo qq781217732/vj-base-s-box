@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Sandbox;
 
 namespace VJBase;
@@ -352,8 +353,22 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
     /// <summary>OnPrimaryAttack_BulletCallback — shared.lua:753-755. Fired when bullet trace hits.</summary>
     public Action<GameObject, TraceResult, DamageInfo> OnPrimaryAttack_BulletCallback { get; set; }
 
-    /// <summary>PrimaryAttackEffects — shared.lua:812. Muzzle flash, shell eject. Phase 3 effects.</summary>
-    public virtual void PrimaryAttackEffects(GameObject owner) { }
+    /// <summary>PrimaryAttackEffects — shared.lua:812. Muzzle flash dynamic light + basic flash effect.</summary>
+    public virtual void PrimaryAttackEffects(GameObject owner)
+    {
+        if (!owner.IsValid()) return;
+        // lua:852 — dynamic light at muzzle
+        var muzzlePos = owner.WorldPosition + owner.WorldRotation.Forward * 40f + owner.WorldRotation.Up * 55f;
+        var flashGo = new GameObject(true, "VJ_MuzzleFlash");
+        flashGo.WorldPosition = muzzlePos;
+        var light = flashGo.Components.Create<PointLight>();
+        light.Brightness = 4f;
+        light.Range = 120f;
+        light.Color = new Color(1f, 0.59f, 0.24f);
+        // lua:859 — timer.Simple(0.02) → remove light
+        _ = Task.Delay(20).ContinueWith(_ => { if (flashGo.IsValid()) flashGo.Destroy(); });
+        // lua:822-840 — muzzle particles + shell eject (Phase 3 attachment system)
+    }
 
     // ═══ Execute primary fire (weapon_vj_base/shared.lua:593-650) ═══
     /// <summary>

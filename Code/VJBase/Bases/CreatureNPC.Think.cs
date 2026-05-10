@@ -903,10 +903,23 @@ public partial class CreatureNPC
         }
 
         // ---- Bone physics (lua:3422-3448) ----
-        // SKIP: lua:3422-3448 — GetPhysicsObjectCount/GetSurfaceArea/bone physics force — Phase 3 ModelPhysics force application
+        // lua:3422-3428 — useLocalVel + dmgForce = (SavedDmgInfo.force/40) + move vel + rb vel
+        if (DeathCorpseApplyForce && SavedDmgInfo != null)
+        {
+            var selfRb = Components.Get<Rigidbody>();
+            var selfVel = selfRb?.Velocity ?? Vector3.Zero;
+            var dmgForce = SavedDmgInfo.force / 40f + selfVel;
+            var corpseRb = corpse.Components.Get<Rigidbody>();
+            if (corpseRb != null)
+            {
+                corpseRb.ApplyForce(dmgForce * 50f);
+            }
+            // lua:3429-3448 — per-bone physics loop (Source GetPhysicsObjectCount/GetSurfaceArea/TranslatePhysBoneToBone)
+            // S&Box ModelPhysics differs; simplified to whole-body Rigidbody force. Per-bone deferred.
+        }
 
         // ---- Health & stink (lua:3451-3456) ----
-        // SKIP: lua:3451-3455 — corpse:Health()/SetMaxHealth/SetHealth (totalSurface/60) — Phase 3 HealthComponent
+        // lua:3451-3455 — corpse:SetMaxHealth/SetHealth(totalSurface/60) — S&Box HealthComponent deferred
         // lua:3456 — VJ.Corpse_AddStinky(corpse, true)
         VJUtility.Corpse_AddStinky(corpse, true);
 
