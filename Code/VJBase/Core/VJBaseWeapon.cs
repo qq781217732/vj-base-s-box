@@ -631,24 +631,26 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
                     dir = (aimDir + randOff).Normal;
                 }
 
+                // lua:749-786 — Build bullet table + FireBullets → C# Trace + DamageInfo
+                var bulDmg = new DamageInfo();
+                bulDmg.Damage = npc.ScaleByDifficulty(Primary_Damage);
+                bulDmg.Attacker = owner;
+                bulDmg.Force = dir * Primary_Force;                    // lua:749 — bullet.Force
+                bulDmg.Tags.Add("bullet");
+
                 // lua:786 — owner:FireBullets(bullet) → C# Trace
                 var result = Game.ActiveScene.Trace.Ray(spawnPos, spawnPos + dir * NPC_FiringDistanceMax)
                     .IgnoreGameObjectHierarchy(owner)
                     .UseHitPosition(true)
                     .Run();
 
-                // lua:753-755 — OnPrimaryAttack_BulletCallback(attacker, tr, dmginfo)
-                OnPrimaryAttack_BulletCallback?.Invoke(owner, result, dmginfo);
                 if (result.Hit && result.GameObject.IsValid())
                 {
-                    var dmginfo = new DamageInfo();
-                    dmginfo.Damage = npc.ScaleByDifficulty(Primary_Damage);
-                    dmginfo.Attacker = owner;
-                    dmginfo.Position = result.HitPosition;
-                    dmginfo.Tags.Add("bullet");
-                    // SKIP: lua:749 — Force — Phase 3
+                    bulDmg.Position = result.HitPosition;
+                    // lua:753-755 — OnPrimaryAttack_BulletCallback(attacker, tr, dmginfo) — callback can modify dmginfo
+                    OnPrimaryAttack_BulletCallback?.Invoke(owner, result, bulDmg);
                     foreach (var d in result.GameObject.Components.GetAll<IDamageable>())
-                        d.OnDamage(dmginfo);
+                        d.OnDamage(bulDmg);
                 }
             }
         }

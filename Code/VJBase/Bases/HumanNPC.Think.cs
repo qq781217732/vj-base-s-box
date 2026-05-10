@@ -106,10 +106,57 @@ public partial class HumanNPC
         }
         else
         {
-            // SKIP: lua:2240 — funcGetActiveWeapon(self) — Phase 3 weapon system
-            // lua:2247-2258: AntiArmor + Melee weapon inventory from PICK of lists
-            // SKIP: lua:2247-2258 — Give(weaponClass) / SelectWeapon / Equip — Phase 3 weapon inventory
-            // SKIP: lua:2261-2263 — CanChatMessage / PrintMessage warnings — Phase 3 messaging
+            // lua:2240 — local wep = funcGetActiveWeapon(self)
+            var wep = GetActiveWeapon();
+            // Fallback: search children for equipped VJBaseWeapon component
+            if (!wep.IsValid())
+            {
+                foreach (var child in GameObject.Children)
+                {
+                    if (child.Components.Get<VJBaseWeapon>() != null)
+                    { wep = child; break; }
+                }
+            }
+
+            if (wep.IsValid())
+            {
+                // lua:2242 — self.WeaponEntity = self:DoChangeWeapon()
+                WeaponEntity = DoChangeWeapon();
+                // lua:2243 — self.WeaponInventory.Primary = wep
+                WeaponInventory.Primary = wep;
+                // lua:2244-2246 — VJBaseWeapon check + warning (Phase 3 messaging SKIP)
+
+                // lua:2247-2251 — AntiArmor weapon from inventory list
+                var antiArmorClass = VJUtility.PICK(WeaponInventory_AntiArmorList);
+                if (antiArmorClass != null && wep.Name != antiArmorClass)
+                {
+                    var aaWep = GiveWeapon(antiArmorClass);
+                    if (aaWep.IsValid())
+                    {
+                        WeaponInventory.AntiArmor = aaWep;
+                        DoChangeWeapon(wep.Name, invSwitch: true);   // lua:2250 — SelectWeapon(wep) switch back
+                        wep.Components.Get<IVJBaseWeapon>()?.Equip(GameObject); // lua:2251 — wep:Equip(self)
+                    }
+                }
+
+                // lua:2253-2258 — Melee weapon from inventory list
+                var meleeClass = VJUtility.PICK(WeaponInventory_MeleeList);
+                if (meleeClass != null && wep.Name != meleeClass)
+                {
+                    var meleeWep = GiveWeapon(meleeClass);
+                    if (meleeWep.IsValid())
+                    {
+                        WeaponInventory.Melee = meleeWep;
+                        DoChangeWeapon(wep.Name, invSwitch: true);   // lua:2256 — SelectWeapon(wep) switch back
+                        wep.Components.Get<IVJBaseWeapon>()?.Equip(GameObject); // lua:2257 — wep:Equip(self)
+                    }
+                }
+            }
+            else
+            {
+                // SKIP: lua:2260 — UpdateAnimationTranslations() — Phase 3 animation
+                // lua:2261-2263 — CanChatMessage + PrintMessage warning — Phase 3 messaging
+            }
         }
         // SKIP: lua:2266-2268 — GetIdealActivity() / MaintainIdleAnimation(true) — Phase 3 animation
         // SKIP: lua:2269-2279 — hook.Add("Think", self, funcAnimThink) — Phase 3 animation hook system
@@ -268,6 +315,22 @@ public partial class HumanNPC
         }
         // lua:2517 — return curWep
         return curWep;
+    }
+
+    /// <summary>
+    /// GiveWeapon — Source ENT:Give(weaponClassName). Creates a weapon GameObject as child of NPC,
+    /// adds VJBaseWeapon component, and returns it. Does NOT modify WeaponInventory.Primary.
+    /// Used for AntiArmor / Melee inventory slot creation.
+    /// </summary>
+    public virtual GameObject GiveWeapon(string weaponClass)
+    {
+        if (string.IsNullOrEmpty(weaponClass)) return null;
+        var wep = new GameObject(GameObject, true, weaponClass);
+        var wepComp = wep.Components.Create<VJBaseWeapon>();
+        wepComp.Equip(GameObject);
+        wep.WorldPosition = WorldPosition;
+        wep.WorldRotation = WorldRotation;
+        return wep;
     }
 
     // ═══ SCHEDULE_ALERT_CHASE — human_base/init.lua:2340 ═══
