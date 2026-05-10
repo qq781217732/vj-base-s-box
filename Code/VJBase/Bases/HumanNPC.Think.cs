@@ -33,35 +33,29 @@ public partial class HumanNPC
             }
         }
 
-        // lua:2145-2148: SetHullType / SetHullSizeNormal / SetSolid(SOLID_BBOX) / SetCollisionGroup
-        // SKIP: lua:2145-2148 — Source engine collision/hull system
-        // lua:2149: SetMaxYawSpeed(self.TurningSpeed)
-        // SKIP: lua:2149 — Source engine yaw speed
-        // lua:2150: SetSaveValue("m_HackedGunPos", defShootVec)
-        // SKIP: lua:2150 — Source engine save value
+        // PX: lua:2145-2148 — SetHullType/SetHullSizeNormal/SetSolid/SetCollisionGroup — Source engine collision/hull, no S&Box equivalent
+        // PX: lua:2149 — SetMaxYawSpeed(TurningSpeed) — Source engine NPC yaw speed, no S&Box equivalent
+        // PX: lua:2150 — SetSaveValue("m_HackedGunPos") — Source engine save/restore, no S&Box equivalent
 
-        // lua:2152-2158: Set a name if it doesn't have one
-        // SKIP: lua:2152-2158 — Source engine NPC naming (list.Get("NPC"))
+        // PX: lua:2152-2158 — list.Get("NPC") name assignment — Source engine NPC naming convention, not needed in S&Box
 
-        // lua:2160-2170: Initialize variables
-        // SKIP: lua:2161 — InitConvars(self) — Phase 3 convar system
+        // PX: lua:2161 — InitConvars(self) — Source convar system, no S&Box equivalent
         NextProcessTime = 0.1f; // lua:2162: vj_npc_processtime:GetInt()
-        // SKIP: lua:2163 — SelectedDifficulty = vj_npc_difficulty:GetInt() — Phase 3 difficulty system
+        // PX: lua:2163 — SelectedDifficulty = vj_npc_difficulty:GetInt() — Source convar, no S&Box equivalent
         RelationshipEnts ??= new();
         RelationshipMemory ??= new();
         AnimationTranslations = new();
         WeaponInventory = new();
         IdleSoundBlockTime = Time.Now + Game.Random.Next(3, 61) / 10f; // lua:2168: math.random(0.3, 6)
         MainSoundPitchValue = 0; // lua:2169: default 0
-        // SKIP: lua:2170 — vj_npc_sight_distance convar override — Phase 3 convar
+        // PX: lua:2170 — vj_npc_sight_distance convar override — Source convar, no S&Box equivalent
 
         // lua:2173: DoChangeMovementType(MovementType)
         DoChangeMovementType(MovementType);
 
         // lua:2174-2175: CapabilitiesAdd(capBitsDefault) + door caps
-        // SKIP: lua:2174-2175 — Source engine bit-flag capabilities (CAP_MOVE_*, capBitsDefault)
-        // lua:2176-2179: LookupAttachment("eyes"/"forward") → CAP_ANIMATEDFACE
-        // SKIP: lua:2176-2179 — Source engine attachment-based capability
+        // PX: lua:2174-2175 — CapabilitiesAdd(capBitsDefault/door caps) — Source engine bit-flag capabilities, no S&Box equivalent
+        // PX: lua:2176-2179 — LookupAttachment("eyes"/"forward") → CAP_ANIMATEDFACE — Source engine attachment capability detection, no S&Box equivalent
         // lua:2180-2182: Passive → Weapon_Disabled + Weapon_IgnoreSpawnMenu
         if (Behavior == VJBehavior.Passive || Behavior == VJBehavior.PassiveNature)
         {
@@ -79,19 +73,19 @@ public partial class HumanNPC
         // Phase 3: delegate to child class override; backwards compat not needed
 
         // lua:2196-2205: Collision-based computations
-        // SKIP: lua:2196-2205 — GetCollisionBounds / SetSurroundingBounds / WorldSpaceAABB — Source engine collision
+        // PX: lua:2196-2205 — GetCollisionBounds/SetSurroundingBounds/WorldSpaceAABB — Source engine collision, no S&Box equivalent
         // lua:2203-2204: Auto-compute MeleeAttackDistance / MeleeAttackDamageDistance from collision bounds
         // Phase 3: compute from model bounds when animation system is in place
 
         // lua:2205: SetupBloodColor(BloodColor)
-        // SKIP: lua:2205 — Source engine blood system
+        // PX: lua:2205 — SetupBloodColor(BloodColor) — Source engine blood/decal system, no S&Box equivalent
 
         // lua:2207: preserve spawner-set value, else compute default
         NextWanderTime = (NextWanderTime != 0 ? NextWanderTime : Time.Now + (IdleAlwaysWander ? 0 : 1));
 
         // lua:2209-2281: Delayed init (timer.Simple 0.1)
-        // SKIP: lua:2211 — SetMaxLookDistance(SightDistance) — S&Box engine handles vision range
-        // SKIP: lua:2212 — SetFOV(SightAngle) — S&Box engine handles FOV
+        // PX: lua:2211 — SetMaxLookDistance(SightDistance) — S&Box engine handles vision range, not needed
+        // PX: lua:2212 — SetFOV(SightAngle) — S&Box engine handles FOV, not needed
         // PX: lua:2213 — SetNPCState(NPC_STATE_NONE) — Source engine call; redundant: NPCState already defaults to None
         // lua:2214 — GetCreator / IsGuard from creator
         if (Creator.IsValid() && Creator.Tags.Has("vj_spawn_guard"))
@@ -154,7 +148,7 @@ public partial class HumanNPC
             else
             {
                 UpdateAnimationTranslations();
-                // SKIP: lua:2261-2263 — CanChatMessage + PrintMessage warning — Phase 3 messaging
+                // PX: lua:2261-2263 — CanChatMessage + PrintMessage warning — Source chat system, requires Creator Player, no S&Box equivalent
             }
         }
         // lua:2266-2268 — GetIdealActivity() / GetActivity() Source engine concepts
@@ -858,7 +852,7 @@ public partial class HumanNPC
                     if (sdOwner.IsValid())
                     {
                         // lua:3548 — ignore danger sounds from vehicles driven by allies
-                        // SKIP: lua:3548 — IsVehicle() + GetDriver() — Phase 3 vehicle system (no S&Box vehicle component yet)
+                        // PX: lua:3548 — IsVehicle() + GetDriver() — Source vehicle system, no S&Box equivalent
                         //    if sdSrc.type == SOUND_DANGER && sdOwner:IsVehicle() && IsValid(sdOwner:GetDriver())
                         //        && Disposition(GetDriver()) == D_LI → allowed = false
                         // lua:3551 — ignore sounds from allies OR combat/death sounds from dead NPCs
@@ -1625,7 +1619,10 @@ public partial class HumanNPC
                 }
             }
         }
-        spawnAng = ((Vector3)spawnPos - WorldPosition).Normal.EulerAngles;           // lua:3233 — spawnPos:Angle()
+        else
+        {
+            spawnAng = ((Vector3)spawnPos).Normal.EulerAngles;          // lua:3233 — spawnPos:Angle() (custom position only)
+        }
 
         // lua:3238-3254: Determine landing position
         var landingPos = WorldPosition + WorldRotation.Forward * 200;
@@ -1808,7 +1805,7 @@ public partial class HumanNPC
 
         // ---- Block 3: Debug print (lua:3876) ----
         // lua:3876 — if selfData.VJ_DEBUG && GetConVar("vj_npc_debug_resetenemy"):GetInt() == 1 then VJ.DEBUG_Print(self, "ResetEnemy", tostring(ene)) end
-        // SKIP: lua:3876 — VJ_DEBUG + convar + VJ.DEBUG_Print — Phase 3 debug system
+        // PX: lua:3876 — VJ_DEBUG + convar + VJ.DEBUG_Print — Source debug/convar system, no S&Box equivalent
 
         // ---- Block 4: Reset state + alert timeout timer (lua:3877-3879) ----
         // lua:3877 — eneData.Reset = true
@@ -1954,7 +1951,7 @@ public partial class HumanNPC
 
         // ---- Block D: Fire entity detection (lua:3936-3942) ----
         // lua:3936 — dmgType = dmginfo:GetDamageType()
-        // SKIP: lua:3936 — dmginfo:GetDamageType() — Source engine CTakeDamageInfo API
+        // PX: lua:3936 — dmginfo:GetDamageType() — Source engine CTakeDamageInfo API; S&Box uses dmginfo.Tags instead
         // lua:3937 — curTime = CurTime()
         float curTime = Time.Now;
         // lua:3938 — local isFireEnt = false
@@ -1993,13 +1990,13 @@ public partial class HumanNPC
         // lua:3953 — ::skip_immunity::
         skip_immunity:
         // lua:3954 — if (dmgInflictor && dmgInflictor:GetClass() == "prop_combine_ball") or (dmgAttacker && dmgAttacker:GetClass() == "prop_combine_ball") then
-        // SKIP: lua:3954 — prop_combine_ball class check — Phase 3 entity type system
+        // PX: lua:3954 — prop_combine_ball GetClass() check — HL2 entity detection, no S&Box equivalent; use Tags instead
         // lua:3955 — if selfData.Immune_Dissolve then return 0 end
         // SKIP: lua:3955 — Immune_Dissolve dissolve block — Phase 3 immunity
         // lua:3956-3959 — if curTime > selfData.NextCombineBallDmgT then dmginfo:SetDamage(math.random(400,500)) dmginfo:SetDamageType(DMG_DISSOLVE) selfData.NextCombineBallDmgT = curTime + 0.2
-        // SKIP: lua:3956-3959 — combine ball damage scaling — Phase 3 DamageInfo
+        // PX: lua:3956-3959 — combine ball damage scaling — Source engine entity-specific damage, no S&Box equivalent
         // lua:3960-3962 — else return 0 end
-        // SKIP: lua:3960-3962 — combine ball spam prevention → return 0 — Phase 3
+        // PX: lua:3960-3962 — combine ball spam prevention → return 0 — Source engine entity tracking, no S&Box equivalent
 
         // ---- Block H: DoBleed helper (lua:3966-3974) ----
         // lua:3966 — local function DoBleed()
@@ -2032,12 +2029,12 @@ public partial class HumanNPC
         // lua:3991 — self:SetHealth(self:Health() - dmginfo:GetDamage())
         CurrentHealth -= dmgInfo.Damage;
         // lua:3992 — VJ_DEBUG damage print
-        // SKIP: lua:3992 — VJ_DEBUG && vj_npc_debug_damage:GetInt()==1 → VJ.DEBUG_Print — Phase 3 debug
+        // PX: lua:3992 — VJ_DEBUG && vj_npc_debug_damage convar — Source debug/convar system, no S&Box equivalent
         // lua:3993-3995 — HealthRegenParams: if Enabled && ResetOnDmg then delay next regen
         if (HealthRegenEnabled && HealthRegenResetOnDmg)
             HealthRegenDelayT = curTime + HealthRegenDelay;
         // lua:3997-3998 — self:SetSaveValue("m_iDamageCount", ...) / self:SetSaveValue("m_flLastDamageTime", curTime)
-        // SKIP: lua:3997-3998 — SetSaveValue (Source engine save/restore) — Phase 3 persistence
+        // PX: lua:3997-3998 — SetSaveValue — Source engine save/restore system, no S&Box equivalent
         // lua:3999 — self:OnDamaged(dmginfo, hitgroup, "PostDamage")
         OnDamaged(dmgInfo, hitgroup, "PostDamage");
         // lua:4000 — DoBleed()
@@ -2064,7 +2061,7 @@ public partial class HumanNPC
 
         // ---- Block M: AI response (lua:4013-4151) ----
         // lua:4013 — if VJ_CVAR_AI_ENABLED && self:GetState() != VJ_STATE_FREEZE then
-        // SKIP: lua:4013 — VJ_CVAR_AI_ENABLED convar check — Phase 3 convar system (assume enabled)
+        // PX: lua:4013 — VJ_CVAR_AI_ENABLED convar check — Source convar system, no S&Box equivalent (assume enabled)
         if (GetState() != VJState.Freeze)
         {
             // lua:4014 — isPassive = selfData.Behavior == VJ_BEHAVIOR_PASSIVE or selfData.Behavior == VJ_BEHAVIOR_PASSIVE_NATURE
@@ -2112,7 +2109,7 @@ public partial class HumanNPC
                                 SetTarget(dmgAttacker);
                                 SCHEDULE_FACE("TASK_FACE_TARGET");
                             }
-                            // SKIP: lua:4036-4041 — CanChatMessage / PrintMessage — Phase 3 chat system
+                            // PX: lua:4036-4041 — CanChatMessage / PrintMessage — Source chat system, requires Creator Player, no S&Box equivalent
                         }
                     }
                     // lua:4044-4051 — DamageByPlayer sounds
@@ -2333,7 +2330,7 @@ public partial class HumanNPC
         if (IsFollowing) ResetFollowBehavior();
 
         // lua:4184-4185 — dmgInflictor/dmgAttacker
-        // SKIP: lua:4184 — dmginfo:GetInflictor() — use dmginfo.Weapon (S&Box equivalent)
+        // PX: lua:4184 — dmginfo:GetInflictor() — Source engine; S&Box DamageInfo.Weapon is the equivalent, already in use
         // lua:4186 — myPos = self:GetPos()
         Vector3 myPos = WorldPosition;
 
@@ -2380,7 +2377,7 @@ public partial class HumanNPC
                                 allyBase.AddEntityRelationship(dmgAttacker, (int)VJBase.Disposition.Hate, 2);
                                 allyBase.PlaySoundSystem("BecomeEnemyToPlayer");
                                 // SKIP: lua:4225 — ResetFollowBehavior — Phase 3 follow system
-                                // SKIP: lua:4232 — CanChatMessage — Phase 3 chat system
+                                // PX: lua:4232 — CanChatMessage — Source chat system, requires Creator Player, no S&Box equivalent
                             }
                             // lua:4235 — ally.Alerted = true
                             allyBase.Alerted = VJAlertState.Enemy;
@@ -2495,7 +2492,7 @@ public partial class HumanNPC
     public override void FinishDeath(DamageInfo dmginfo, int hitgroup)
     {
         // lua:4301 — VJ_DEBUG + GetConVar debug print
-        // SKIP: lua:4301 — VJ_DEBUG / GetConVar — Phase 3 debug system
+        // PX: lua:4301 — VJ_DEBUG / GetConVar — Source debug/convar system, no S&Box equivalent
 
         // lua:4302 — self:SetSaveValue("m_lifeState", 2) — LIFE_DEAD
         SetSaveValue("m_lifeState", 2);
@@ -2787,7 +2784,7 @@ public partial class HumanNPC
                 bool isPlayer = ent.Components.Get<PlayerBase>() != null;
                 if (isPlayer)
                 {
-                    // SKIP: ent.VJ_IsControllingNPC — Source player field, no S&Box equivalent
+                    // PX: ent.VJ_IsControllingNPC — Source player field, no S&Box equivalent
                     if (!Alive(ent) || VJInit.vj_npc_ignoreplayers) continue;
                 }
                 else if (entBase?.VJ_IsBeingControlled == true) continue;
@@ -2817,7 +2814,7 @@ public partial class HumanNPC
                         && entBase?.MovementType != VJMoveType.Stationary
                         && (!HasEntityFlag(ent, "VJ_ID_Boss") /* || ent.IsVJBaseSNPC_Tank — Phase 3 */))
                     {
-                        // SKIP: lua:3010-3019 — IsNextBot / SetGroundEntity(NULL) / loco:Approach/Jump/SetVelocity — S&Box Rigidbody.Velocity accomplishes same knockback without Source NextBot
+                        // PX: lua:3010-3019 — IsNextBot/SetGroundEntity(NULL)/loco:Approach/Jump/SetVelocity — Source NextBot locomotion; S&Box Rigidbody.Velocity accomplishes same knockback
                         var vel = MeleeAttackKnockbackVelocity(ent); // lua:3014
                         var rb = ent.Components.Get<Rigidbody>();
                         if (rb != null)
