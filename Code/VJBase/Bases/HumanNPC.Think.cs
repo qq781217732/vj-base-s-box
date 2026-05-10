@@ -367,18 +367,148 @@ public partial class HumanNPC
         }
     }
 
-    // ── Rebel model set ──
+    // ── Rebel model set (init.lua:1069-1183) ──
     private void SetAnimTranslations_Rebel(string holdType)
     {
-        // Similar structure, will be populated with Rebel-specific mappings
-        // For now, fall through to base which leaves table empty
+        Activity? Seq(string name) => VJAnimationMapper.SequenceToActivity(GameObject, name);
+        // lua:1070 — isFemale detection via ACT_IDLE_ANGRY_PISTOL existence
+        bool isFemale = VJAnimationMapper.AnimExists(GameObject, Activity.IdleAngryPistol);
+
+        if (!Weapon_AimTurnDiff.HasValue) Weapon_AimTurnDiff_Def = 0.78187280893326f;
+
+        AnimationTranslations[Activity.RangeAttack2] = Seq("shoot_ar2_alt") ?? Activity.RangeAttackAr2;
+        AnimationTranslations[Activity.CoverLow] = new Activity[] { Activity.CoverLowRpg, Activity.CoverLow };
+        AnimationTranslations[Activity.RunCrouch] = Activity.WalkCrouch;
+
+        if (holdType == "ar2")
+        {
+            AnimationTranslations[Activity.RangeAttack1] = Activity.RangeAttackAr2;
+            AnimationTranslations[Activity.GestureRangeAttack1] = Activity.GestureRangeAttackAr2;
+            AnimationTranslations[Activity.RangeAttack1Low] = Activity.RangeAttackAr2Low;
+            AnimationTranslations[Activity.Reload] = Seq("reload_ar2") ?? Activity.ReloadSmg1;
+            AnimationTranslations[Activity.ReloadLow] = Activity.ReloadSmg1Low;
+            // lua:1085 — PICK of 3 idle variants at init time
+            var idlePicks = new[] { Seq("idle_relaxed_ar2_1"), Seq("idle_alert_ar2_1"), Seq("idle_angry_ar2") }.Where(a => a.HasValue).Select(a => a.Value).ToArray();
+            AnimationTranslations[Activity.Idle] = idlePicks.Length > 0 ? VJUtility.PICK(idlePicks) : Activity.IdleSmg1;
+            AnimationTranslations[Activity.IdleAngry] = Seq("idle_ar2_aim") ?? Activity.IdleAngrySmg1;
+            var walkPicks = new[] { Seq("walk_ar2_relaxed_all"), Seq("walkalerthold_ar2_all1"), Seq("walkholdall1_ar2") }.Where(a => a.HasValue).Select(a => a.Value).ToArray();
+            AnimationTranslations[Activity.Walk] = walkPicks.Length > 0 ? VJUtility.PICK(walkPicks) : Activity.WalkRifle;
+            AnimationTranslations[Activity.WalkAgitated] = Seq("walkalerthold_ar2_all1") ?? Activity.WalkRifle;
+            var walkAimPicks = new[] { Seq("walkaimall1_ar2"), Seq("walkalertaim_ar2_all1") }.Where(a => a.HasValue).Select(a => a.Value).ToArray();
+            AnimationTranslations[Activity.WalkAim] = walkAimPicks.Length > 0 ? VJUtility.PICK(walkAimPicks) : Activity.WalkAimRifle;
+            AnimationTranslations[Activity.WalkCrouch] = Activity.WalkCrouchRpg;
+            AnimationTranslations[Activity.WalkCrouchAim] = Activity.WalkCrouchAimRifle;
+            var runPicks = new[] { Seq("run_alert_holding_ar2_all"), Seq("run_ar2_relaxed_all"), Seq("run_holding_ar2_all") }.Where(a => a.HasValue).Select(a => a.Value).ToArray();
+            AnimationTranslations[Activity.Run] = runPicks.Length > 0 ? VJUtility.PICK(runPicks) : Activity.RunRifle;
+            AnimationTranslations[Activity.RunAgitated] = runPicks.Length > 0 ? VJUtility.PICK(runPicks) : Activity.RunRifle;
+            AnimationTranslations[Activity.RunAim] = (Seq("run_alert_aiming_ar2_all") ?? Activity.RunAimRifle);
+            AnimationTranslations[Activity.RunCrouch] = Activity.RunCrouchRpg;
+            AnimationTranslations[Activity.RunCrouchAim] = Activity.RunCrouchAimRifle;
+        }
+        else if (holdType == "smg")
+        {
+            AnimationTranslations[Activity.RangeAttack1] = Activity.RangeAttackSmg1;
+            AnimationTranslations[Activity.GestureRangeAttack1] = Activity.GestureRangeAttackSmg1;
+            AnimationTranslations[Activity.RangeAttack1Low] = Activity.RangeAttackSmg1Low;
+            AnimationTranslations[Activity.Reload] = Activity.ReloadSmg1;
+            AnimationTranslations[Activity.ReloadLow] = Activity.ReloadSmg1Low;
+            var idlePicks = new[] { Activity.IdleSmg1Relaxed, Activity.IdleSmg1Stimulated, Activity.IdleSmg1, Seq("idle_smg1_relaxed") ?? Activity.IdleSmg1 };
+            AnimationTranslations[Activity.Idle] = VJUtility.PICK(idlePicks);
+            AnimationTranslations[Activity.IdleAngry] = Activity.IdleAngrySmg1;
+            AnimationTranslations[Activity.Walk] = VJUtility.PICK(new[] { Activity.WalkRifleRelaxed, Activity.WalkRifleStimulated });
+            AnimationTranslations[Activity.WalkAgitated] = Activity.WalkRifle;
+            AnimationTranslations[Activity.WalkAim] = VJUtility.PICK(new[] { Activity.WalkAimRifle, Activity.WalkAimRifleStimulated });
+            AnimationTranslations[Activity.WalkCrouch] = Activity.WalkCrouchRifle;
+            AnimationTranslations[Activity.WalkCrouchAim] = Activity.WalkCrouchAimRifle;
+            AnimationTranslations[Activity.Run] = VJUtility.PICK(new[] { Activity.RunRifle, Activity.RunRifleStimulated, Activity.RunRifleRelaxed });
+            AnimationTranslations[Activity.RunAgitated] = VJUtility.PICK(new[] { Activity.RunRifle, Activity.RunRifleStimulated });
+            AnimationTranslations[Activity.RunAim] = VJUtility.PICK(new[] { Activity.RunAimRifle, Activity.RunAimRifleStimulated });
+            AnimationTranslations[Activity.RunCrouch] = Activity.RunCrouchRifle;
+            AnimationTranslations[Activity.RunCrouchAim] = Activity.RunCrouchAimRifle;
+        }
+        else if (holdType == "crossbow" || holdType == "shotgun")
+        {
+            AnimationTranslations[Activity.RangeAttack1] = Activity.RangeAttackShotgun;
+            AnimationTranslations[Activity.GestureRangeAttack1] = Activity.GestureRangeAttackShotgun;
+            AnimationTranslations[Activity.RangeAttack1Low] = Activity.RangeAttackSmg1Low;
+            AnimationTranslations[Activity.Reload] = Activity.ReloadShotgun;
+            AnimationTranslations[Activity.ReloadLow] = Activity.ReloadSmg1Low;
+            AnimationTranslations[Activity.Idle] = VJUtility.PICK(new[] { Activity.IdleShotgunRelaxed, Activity.IdleShotgunStimulated });
+            AnimationTranslations[Activity.IdleAngry] = Seq("idle_ar2_aim") ?? Activity.IdleAngrySmg1;
+            var walkPicks = new[] { Seq("walk_ar2_relaxed_all"), Seq("walkalerthold_ar2_all1"), Seq("walkholdall1_ar2") }.Where(a => a.HasValue).Select(a => a.Value).ToArray();
+            AnimationTranslations[Activity.Walk] = walkPicks.Length > 0 ? VJUtility.PICK(walkPicks) : Activity.WalkRifle;
+            AnimationTranslations[Activity.WalkAgitated] = Seq("walkalerthold_ar2_all1") ?? Activity.WalkRifle;
+            var walkAimPicks = new[] { Seq("walkaimall1_ar2"), Seq("walkalertaim_ar2_all1") }.Where(a => a.HasValue).Select(a => a.Value).ToArray();
+            AnimationTranslations[Activity.WalkAim] = walkAimPicks.Length > 0 ? VJUtility.PICK(walkAimPicks) : Activity.WalkAimRifle;
+            AnimationTranslations[Activity.WalkCrouch] = Activity.WalkCrouchRpg;
+            AnimationTranslations[Activity.WalkCrouchAim] = Activity.WalkCrouchAimRifle;
+            var runPicks = new[] { Seq("run_alert_holding_ar2_all"), Seq("run_ar2_relaxed_all"), Seq("run_holding_ar2_all") }.Where(a => a.HasValue).Select(a => a.Value).ToArray();
+            AnimationTranslations[Activity.Run] = runPicks.Length > 0 ? VJUtility.PICK(runPicks) : Activity.RunRifle;
+            AnimationTranslations[Activity.RunAgitated] = runPicks.Length > 0 ? VJUtility.PICK(runPicks) : Activity.RunRifle;
+            AnimationTranslations[Activity.RunAim] = Seq("run_alert_aiming_ar2_all") ?? Activity.RunAimRifle;
+            AnimationTranslations[Activity.RunCrouch] = Activity.RunCrouchRpg;
+            AnimationTranslations[Activity.RunCrouchAim] = Activity.RunCrouchAimRifle;
+        }
+        else if (holdType == "rpg")
+        {
+            AnimationTranslations[Activity.RangeAttack1] = Activity.RangeAttackRpg;
+            AnimationTranslations[Activity.GestureRangeAttack1] = Activity.GestureRangeAttackRpg;
+            AnimationTranslations[Activity.RangeAttack1Low] = Activity.RangeAttackSmg1Low;
+            AnimationTranslations[Activity.Reload] = Activity.ReloadSmg1;
+            AnimationTranslations[Activity.ReloadLow] = Activity.ReloadSmg1Low;
+            AnimationTranslations[Activity.Idle] = VJUtility.PICK(new[] { Activity.IdleRpg, Activity.IdleRpgRelaxed });
+            AnimationTranslations[Activity.IdleAngry] = Activity.IdleAngryRpg;
+            AnimationTranslations[Activity.Walk] = VJUtility.PICK(new[] { Activity.WalkRpg, Activity.WalkRpgRelaxed });
+            AnimationTranslations[Activity.WalkAgitated] = Activity.WalkRpg;
+            var walkAimPicks = new[] { Seq("walkaimall1_ar2"), Seq("walkalertaim_ar2_all1") }.Where(a => a.HasValue).Select(a => a.Value).ToArray();
+            AnimationTranslations[Activity.WalkAim] = walkAimPicks.Length > 0 ? VJUtility.PICK(walkAimPicks) : Activity.WalkAimRifle;
+            AnimationTranslations[Activity.WalkCrouch] = Activity.WalkCrouchRpg;
+            AnimationTranslations[Activity.WalkCrouchAim] = Activity.WalkCrouchAimRifle;
+            AnimationTranslations[Activity.Run] = VJUtility.PICK(new[] { Activity.RunRpg, Activity.RunRpgRelaxed });
+            AnimationTranslations[Activity.RunAgitated] = Activity.RunRpg;
+            AnimationTranslations[Activity.RunAim] = Seq("run_alert_aiming_ar2_all") ?? Activity.RunAimRifle;
+            AnimationTranslations[Activity.RunCrouch] = Activity.RunCrouchRpg;
+            AnimationTranslations[Activity.RunCrouchAim] = Activity.RunCrouchAimRifle;
+        }
+        else if (holdType == "pistol" || holdType == "revolver")
+        {
+            AnimationTranslations[Activity.RangeAttack1] = Activity.RangeAttackPistol;
+            AnimationTranslations[Activity.GestureRangeAttack1] = Activity.GestureRangeAttackPistol;
+            AnimationTranslations[Activity.RangeAttack1Low] = Activity.RangeAttackPistolLow;
+            AnimationTranslations[Activity.CoverLow] = new Activity[] { Activity.CoverLow };
+            AnimationTranslations[Activity.Reload] = Activity.ReloadPistol;
+            AnimationTranslations[Activity.ReloadLow] = isFemale ? Activity.ReloadSmg1Low : Activity.ReloadPistolLow;
+            AnimationTranslations[Activity.Idle] = isFemale ? Activity.IdlePistol : Activity.Idle;
+            AnimationTranslations[Activity.IdleAngry] = isFemale ? Activity.IdleAngryPistol : (Seq("idle_ar2_aim") ?? Activity.IdleAngrySmg1);
+            AnimationTranslations[Activity.WalkAim] = isFemale ? Activity.WalkAimPistol
+                : VJUtility.PICK(new[] { Seq("walkaimall1_ar2") ?? Activity.WalkAimRifle, Seq("walkalertaim_ar2_all1") ?? Activity.WalkAimRifle });
+            AnimationTranslations[Activity.WalkCrouchAim] = Activity.WalkCrouchAimRifle;
+            AnimationTranslations[Activity.RunAim] = isFemale ? Activity.RunAimPistol : (Seq("run_alert_aiming_ar2_all") ?? Activity.RunAimRifle);
+            AnimationTranslations[Activity.RunCrouchAim] = Activity.RunCrouchAimRifle;
+        }
+        else if (holdType == "melee" || holdType == "melee2" || holdType == "knife")
+        {
+            AnimationTranslations[Activity.RangeAttack1] = Activity.MeleeAttackSwing;
+            AnimationTranslations[Activity.GestureRangeAttack1] = Activity.Invalid;
+            AnimationTranslations[Activity.Idle] = new Activity[] { Activity.Idle, Activity.Idle, Activity.Idle, Activity.Idle, Seq("plazathreat1") ?? Activity.Idle };
+            AnimationTranslations[Activity.IdleAngry] = Activity.IdleAngryMelee;
+        }
     }
 
-    // ── Player model set ──
+    // ── Player model set (HL2MP — init.lua) ──
     private void SetAnimTranslations_Player(string holdType)
     {
-        // HL2MP player model mappings
-        // For now, fall through to base which leaves table empty
+        // HL2MP models use ACT_HL2MP_* constants. Map base activities to HL2MP variants.
+        // These are universal across all HL2MP hold types.
+
+        AnimationTranslations[Activity.Idle] = Activity.Hl2mpIdle;
+        AnimationTranslations[Activity.IdleAngry] = Activity.Hl2mpIdleAngry;
+        AnimationTranslations[Activity.Cower] = Activity.Hl2mpIdleCower;
+        AnimationTranslations[Activity.Run] = Activity.Hl2mpRun;
+        AnimationTranslations[Activity.RunAgitated] = Activity.Hl2mpRun;
+        AnimationTranslations[Activity.RunProtected] = Activity.Hl2mpRunProtected;
+        AnimationTranslations[Activity.Walk] = Activity.Hl2mpWalk;
+        AnimationTranslations[Activity.WalkCrouch] = Activity.Hl2mpWalkCrouch;
     }
 
     // Shared helper: SMG/AR2/RPG common translations (used by Combine + Metrocop)
