@@ -132,7 +132,7 @@ public partial class HumanNPC : CreatureNPC
     public GameObject ReloadingWeapon { get; set; }
 
     // ═══ Animation Config (ported from init.lua:130,303) ═══
-    public bool HasPoseParameterLooking { get; set; } = true;
+    // HasPoseParameterLooking — moved to BaseNPC.Animation.cs
     public bool Weapon_CanCrouchAttack { get; set; } = true;
     public int Weapon_CrouchAttackChance { get; set; } = 2;
 

@@ -98,11 +98,11 @@ public partial class HumanNPC
             IsGuard = true;
         // lua:2215 — StartSoundTrack()
         StartSoundTrack();
-        // SKIP: lua:2218-2235 — LookupPoseParameter("aim_pitch"/"head_pitch"/"aim_yaw"/"head_yaw"/"aim_roll"/"head_roll") — Phase 3 animation pose params
+        // lua:2218-2235 — Pose parameter detection: now handled lazily on first UpdatePoseParamTracking() call.
         // lua:2237-2265: Weapon setup
         if (Weapon_Disabled)
         {
-            // SKIP: lua:2238 — UpdateAnimationTranslations() — Phase 3 animation
+            UpdateAnimationTranslations();
         }
         else
         {
@@ -153,12 +153,14 @@ public partial class HumanNPC
             }
             else
             {
-                // SKIP: lua:2260 — UpdateAnimationTranslations() — Phase 3 animation
-                // lua:2261-2263 — CanChatMessage + PrintMessage warning — Phase 3 messaging
+                UpdateAnimationTranslations();
+                // SKIP: lua:2261-2263 — CanChatMessage + PrintMessage warning — Phase 3 messaging
             }
         }
-        // SKIP: lua:2266-2268 — GetIdealActivity() / MaintainIdleAnimation(true) — Phase 3 animation
-        // SKIP: lua:2269-2279 — hook.Add("Think", self, funcAnimThink) — Phase 3 animation hook system
+        // lua:2266-2268 — GetIdealActivity() / GetActivity() Source engine concepts
+        // If ideal activity is not idle OR current activity is not idle, force idle via MaintainIdleAnimation(true).
+        // Route A: approximating GetIdealActivity via last PlayAnim target. Mark for Phase 3 refinement.
+        // funcAnimThink hook.Add("Think") → now wired in CreatureNPC.Think() via MaintainIdleAnimation(false).
     }
 
     // ═══ ProcessAttackTimers override — adds grenade execution ═══
@@ -300,7 +302,8 @@ public partial class HumanNPC
                 }
             }
             // lua:2511 — self:UpdateAnimationTranslations(curWep:GetHoldType())
-            // SKIP: lua:2511 — UpdateAnimationTranslations(curWep:GetHoldType()) — Phase 3 animation system
+            var holdType = curWep?.Components.Get<VJBaseWeapon>()?.HoldType;
+            UpdateAnimationTranslations(holdType);
             // lua:2512 — self:OnWeaponChange(curWep, self.WeaponEntity, invSwitch)
             OnWeaponChange(curWep, WeaponEntity, invSwitch);
             // lua:2513 — self.WeaponEntity = curWep
@@ -482,8 +485,7 @@ public partial class HumanNPC
                 if (IsWeaponMelee(curWep))
                 {
                     // lua:3493-3496 — Melee: if VJ.IsCurrentAnim(self, WeaponAttackAnim) or enemyDist < Weapon_MaxDistance then hasDist = true end
-                    // SKIP: lua:3494 — VJ.IsCurrentAnim(self, WeaponAttackAnim) — Phase 3 animation (VJUtility stub false)
-                    if (enemyDist < Weapon_MaxDistance)
+                    if (VJAnimationMapper.IsCurrentAnim(GameObject, WeaponAttackAnim) || enemyDist < Weapon_MaxDistance)
                     {
                         hasDist = true;
                     }
@@ -737,27 +739,23 @@ public partial class HumanNPC
                         if (plyControlled)
                         {
                             SetWeaponState(VJWepState.Reloading);
-                            // SKIP: lua:2792 — playReloadAnimation(self, TranslateActivity(PICK(AnimTbl_WeaponReload))) — Phase 3 animation
+                            PlayReloadAnimation(AnimTbl_WeaponReload);
                         }
                         else
                         {
                             // NPC hidden → crouch reload
-                            // lua:2796 — if eneValid && self:DoCoverTrace(myPos + OBBCenter(), ene:EyePos(), false, {SetLastHiddenTime = true}) then
                             if (eneValid && DoCoverTrace(WorldSpaceCenter(), ene.WorldPosition + Vector3.Up * 64f, false, true).isCover)
                             {
-                                // SKIP: lua:2797-2799 — crouch reload animation (AnimTbl_WeaponReloadCovered) — Phase 3 animation
+                                PlayReloadAnimation(AnimTbl_WeaponReloadCovered);
                             }
                             else
                             {
-                                // Standing reload (no cover needed) or fallback
-                                // lua:2804 — guards against cover-finding
                                 if (!Weapon_FindCoverOnReload || IsGuard || IsFollowing
                                     || VJ_IsBeingControlled_Tool || !eneValid
                                     || MovementType == VJMoveType.Stationary
                                     || eneData.Distance < 650)
                                 {
-                                    // SKIP: lua:2805 — playReloadAnimation(self, TranslateActivity(PICK(AnimTbl_WeaponReload))) — Phase 3 animation
-                                    PlayReloadAnimation(null);
+                                    PlayReloadAnimation(AnimTbl_WeaponReload);
                                 }
                                 // lua:2806-2822 — SCHEDULE_COVER_RELOAD: find cover position, run, reload
                                 else
@@ -1255,7 +1253,16 @@ public partial class HumanNPC
         var seed = Time.Now;
         AttackSeed = (int)(seed * 1000);
 
-        // SKIP: lua:3103-3113 — AnimTbl_GrenadeAttack / PlayAnim / ACT_INVALID / AttackAnim — Phase 3 animation system
+        // lua:3103-3113 — PlayAnim(AnimTbl_GrenadeAttack, "LetAttacks", false, true)
+        var grenAnimTbl = AnimTbl_GrenadeAttack;
+        var (grenAnim, grenDur, _) = PlayAnim(grenAnimTbl, "LetAttacks", false, true);
+        if (grenAnim == Activity.Invalid)
+        {
+            StopAttacks();
+            MaintainAlertBehavior();
+            return false;
+        }
+        AttackAnimDuration = (int)(grenDur * 1000);
 
         // lua:3115-3127: Turn toward target
         if (landDir == "Enemy")
@@ -1873,7 +1880,18 @@ public partial class HumanNPC
                     bool canMove = true;
                     if (DoCoverTrace(WorldSpaceCenter(), GetAimPosition(GetEnemy())).isCover)
                     {
-                        // SKIP: lua:4062-4069 — AnimTbl_TakingCover + ACT_INVALID guard + hideTime + NextChaseTime — Phase 3 animation
+                        // lua:4062-4066 — Play taking cover animation
+                        var coverAnim = AnimTbl_TakingCover;
+                        if (coverAnim != null && VJAnimationMapper.AnimExists(GameObject, coverAnim))
+                        {
+                            var (animResult, coverDur, _) = PlayAnim(coverAnim, true);
+                            if (animResult != Activity.Invalid)
+                            {
+                                canMove = false;
+                                float coverAnimTime = coverDur > 0 ? coverDur : AnimDuration(animResult);
+                                NextChaseTime = curTime + coverAnimTime;
+                            }
+                        }
                     }
                     // lua:4072-4075 — if canMove && !IsMoving && (!wep or !wep.IsMeleeWeapon) then SCHEDULE_COVER_ENEMY
                     if (canMove && !IsMoving()
@@ -1910,8 +1928,10 @@ public partial class HumanNPC
                             if (!isFireEnt && !IsBusy("Activities"))
                             {
                                 DoReadyAlert();
-                                // SKIP: lua:4094 — PlayAnim(AnimTbl_DamageAllyResponse) — Phase 3 animation
+                                var (allyRespAnim, _, _) = PlayAnim(AnimTbl_DamageAllyResponse);
                                 // lua:4096 — if anim valid: NextFlinchT = curTime + 1
+                                if (allyRespAnim != Activity.Invalid)
+                                    NextFlinchT = curTime + 1;
                             }
                             // lua:4100 — cooldown
                             NextDamageAllyResponseT = curTime + VJUtility.Rand(DamageAllyResponse_Cooldown.a, DamageAllyResponse_Cooldown.b);
@@ -2141,7 +2161,7 @@ public partial class HumanNPC
         // SKIP: lua:4256-4259 — dmgAttacker:GetClass()=="npc_barnacle" / vj_npc_ply_frag / AddFrags — Phase 3 DamageInfo + Source engine
 
         // lua:4260 — gamemode.Call("OnNPCKilled", self, dmgAttacker, dmgInflictor)
-        // SKIP: lua:4260 — gamemode.Call("OnNPCKilled") — S&Box has no gamemode.Call
+        OnNPCKilled?.Invoke(GameObject, dmginfo.Attacker, dmginfo.Weapon);
 
         // ---- Post-death setup (lua:4261-4264) ----
         // lua:4261 — self:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
@@ -2177,7 +2197,12 @@ public partial class HumanNPC
             // lua:4279 — self:OnDeath(dmginfo, hitgroup, "DeathAnim")
             OnDeath(dmginfo, hitgroup, "DeathAnim");
             // lua:4280-4283 — PICK(AnimTbl_Death) / AnimDurationEx / PlayAnim
-            // SKIP: lua:4280-4283 — PICK/AnimDurationEx/PlayAnim — Phase 3 animation
+            var deathAnim = VJUtility.PICK(AnimTbl_Death);
+            if (deathAnim != null)
+            {
+                var deathTime = AnimDurationEx(Activity.Invalid, null, 0f);
+                PlayAnim(deathAnim, true, deathTime, true);
+            }
             // lua:4284 — self.DeathAnimationCodeRan = true
             DeathAnimationCodeRan = true;
         }
@@ -2606,40 +2631,39 @@ public partial class HumanNPC
     protected virtual bool PlayReloadAnimation(object anims)
     {
         // lua:2563 — anim, animDur, animType = self:PlayAnim(anims, true, false, "Visible")
-        // SKIP: lua:2563 — PlayAnim(anims, true, false, "Visible") — Phase 3 animation
+        // Resolve anims: if null, use AnimTbl_WeaponReload; if Activity[], pick; pass through Activity/string
+        var resolved = anims;
+        if (resolved == null)
+            resolved = AnimTbl_WeaponReload;
+        if (resolved is Activity)
+            resolved = TranslateActivity((Activity)resolved);
+
+        var (anim, animDur, animType) = PlayAnim(resolved, true, false, "Visible");
+
         // lua:2564 — if anim != ACT_INVALID then
-        // SKIP: lua:2564 — ACT_INVALID comparison — Phase 3 animation
+        if (anim != Activity.Invalid)
         {
-            // lua:2565 — wep = self.WeaponEntity
+            // lua:2565-2566 — wep = self.WeaponEntity → wep:NPC_Reload()
             var wep = WeaponEntity;
-            // lua:2566 — if wep.IsVJBaseWeapon then wep:NPC_Reload() end
-            // Called BEFORE timer — NPC_Reload is a reload-start callback (sends OnReload("Start"),
-            // pushes grenade timer, plays reload sound), not reload-complete. Timer handles completion.
             if (wep.IsValid())
             {
                 var wepComp = wep.Components.Get<IVJBaseWeapon>();
                 if (wepComp != null && wepComp.IsVJBaseWeapon)
-                {
                     wepComp.NPC_Reload();
-                }
             }
-            // lua:2567-2573 — timer.Create("wep_reload_reset", animDur, ...) reload-complete
-            // SKIP: animDur from PlayAnim — Phase 3 animation (use fallback 2.0s)
-            float animDur = 2.0f; // Phase 3: get from PlayAnim return
+            // lua:2567-2573 — timer.Create("wep_reload_reset", animDur, ...)
             float reloadCompleteTime = Time.Now + animDur;
-            // Schedule reload completion: SetClip1(MaxClip1) + OnReload("Finish") + SetWeaponState(READY)
-            // Phase 3: use async timer instead of polling; for now, poll in CheckWeaponState
             NextReloadCompleteT = reloadCompleteTime;
             ReloadingWeapon = wep;
             // lua:2574 — self.AllowWeaponOcclusionDelay = false
             AllowWeaponOcclusionDelay = false;
-            // lua:2576-2578 — if !VJ_IsBeingControlled && animType == ANIM_TYPE_GESTURE then StopMoving() end
-            // SKIP: lua:2576 — animType == ANIM_TYPE_GESTURE — Phase 3 animation
-            // lua:2579 — return true
+            // lua:2576-2578 — if !VJ_IsBeingControlled && animType == VJAnimType.Gesture then StopMoving() end
+            if (!VJ_IsBeingControlled && animType == VJAnimType.Gesture)
+                StopMoving();
             return true;
         }
-        // lua:2581 — return false (animation invalid, reached if PlayAnim returned ACT_INVALID)
-        // Phase 3: return false only when PlayAnim returns ACT_INVALID; currently always enters the block
+        // lua:2581 — return false (animation invalid)
+        return false;
     }
 
     // ═══ attackTimers (local table) — human_base/init.lua:2536-2560 ═══

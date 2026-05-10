@@ -87,6 +87,11 @@ public partial class CreatureNPC
             if (wepThink != null)
                 wepThink.NPC_Think();
         }
+
+        // ═══ Animation Think hook — replaces Lua hook.Add("Think", funcAnimThink) ═══
+        // Called every frame to maintain idle animation cycling.
+        // Phase 3: gate on VJ_CVAR_AI_ENABLED convar (assume enabled for now)
+        MaintainIdleAnimation(false);
     }
 
     protected virtual void OnThink() { }
@@ -147,7 +152,8 @@ public partial class CreatureNPC
             }
         }
 
-        // SKIP: schedules.lua:208 — self:MaintainActivity() call at end of RunAI. Phase 3.
+        // lua:208 — self:MaintainActivity(); Phase 3 animation (activity/pose update, stub wired)
+        MaintainActivity();
 
         MaintainTurnTarget();
     }
@@ -331,12 +337,12 @@ public partial class CreatureNPC
                 if (ent == GameObject) continue;
                 var entBase1 = ent.Components.Get<BaseNPC>();
                 if (entBase1 != null && entBase1.VJ_NPC_Class.Any(c => VJ_NPC_Class.Contains(c))) continue;
-                // SKIP: lua:2463 — ent.IsVJBaseBullseye && ent.VJ_IsBeingControlled — Phase 3 bullseye system
+                // SKIP: lua:2463 — IsVJBaseBullseye flag — Phase 3 bullseye system
                 // lua:2464 — skip VJ_IsControllingNPC, skip player when VJ_IsControllingNPC / dead / ignoreplayers
                 bool isPlayer = ent.Components.Get<PlayerBase>() != null;
                 if (isPlayer)
                 {
-                    // SKIP: ent.VJ_IsControllingNPC — Source player field, no S&Box equivalent
+                    // SKIP: ent.VJ_IsControllingNPC — PX: Source player field, no S&Box equivalent
                     if (!Alive(ent) || VJInit.vj_npc_ignoreplayers) continue;
                 }
                 else if (entBase1?.VJ_IsBeingControlled == true) continue;
@@ -533,12 +539,12 @@ public partial class CreatureNPC
                 if (ent == GameObject) continue;
                 var entBase2 = ent.Components.Get<BaseNPC>();
                 if (entBase2 != null && entBase2.VJ_NPC_Class.Any(c => VJ_NPC_Class.Contains(c))) continue;
-                // SKIP: lua:2679 — ent.IsVJBaseBullseye && ent.VJ_IsBeingControlled — Phase 3 bullseye
+                // SKIP: lua:2679 — IsVJBaseBullseye flag — Phase 3 bullseye system
                 // lua:2680 — skip VJ_IsControllingNPC, skip player when VJ_IsControllingNPC / dead / ignoreplayers
                 bool isPlayer = ent.Components.Get<PlayerBase>() != null;
                 if (isPlayer)
                 {
-                    // SKIP: ent.VJ_IsControllingNPC — Source player field, no S&Box equivalent
+                    // SKIP: ent.VJ_IsControllingNPC — PX: Source player field, no S&Box equivalent
                     if (!Alive(ent) || VJInit.vj_npc_ignoreplayers) continue;
                 }
                 else if (entBase2?.VJ_IsBeingControlled == true) continue;
@@ -712,7 +718,7 @@ public partial class CreatureNPC
         // SKIP: lua:3269-3272 — dmgAttacker:GetClass()=="npc_barnacle" / AddFrags — Phase 3 DamageInfo + Source engine score
 
         // lua:3273 — gamemode.Call("OnNPCKilled", self, dmgAttacker, dmgInflictor)
-        // SKIP: lua:3273 — gamemode.Call("OnNPCKilled") — S&Box has no gamemode.Call; use Scene event
+        OnNPCKilled?.Invoke(GameObject, dmginfo.Attacker, dmginfo.Weapon);
 
         // ---- Post-death setup (lua:3274-3277) ----
         // lua:3274 — self:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
@@ -748,9 +754,13 @@ public partial class CreatureNPC
             RemoveAllGestures();
             // lua:3292 — self:OnDeath(dmginfo, hitgroup, "DeathAnim")
             OnDeath(dmginfo, hitgroup, "DeathAnim");
-            // lua:3293 — chosenAnim = PICK(self.AnimTbl_Death)
-            // SKIP: lua:3293-3295 — PICK(AnimTbl_Death) / AnimDurationEx / PlayAnim — Phase 3 animation
-            // lua:3296 — deathTime = deathTime + animTime
+            // lua:3293-3295 — PICK(AnimTbl_Death) / AnimDurationEx / PlayAnim
+            var deathAnimPick = VJUtility.PICK(AnimTbl_Death);
+            if (deathAnimPick != null)
+            {
+                var deathDur = AnimDurationEx(Activity.Invalid, null, 0f);
+                PlayAnim(deathAnimPick, true, deathDur, true);
+            }
             // lua:3297 — self.DeathAnimationCodeRan = true
             DeathAnimationCodeRan = true;
         }

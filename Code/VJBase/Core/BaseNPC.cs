@@ -369,6 +369,8 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public bool IsDefaultNPC { get; set; }
     public Func<GameObject, GameObject, float, bool> CanBeEngaged { get; set; }
     public Action<GameObject> OnAlert { get; set; }
+    /// <summary>Static event fired when any VJ NPC is killed. S&Box equivalent of gamemode.Call("OnNPCKilled", self, attacker, inflictor). Subscribe to react to NPC deaths globally.</summary>
+    public static Action<GameObject, GameObject, GameObject> OnNPCKilled;
 
     // ═══ Attack Config ═══
     public bool MeleeAttackAnimationFaceEnemy { get; set; }
@@ -445,12 +447,9 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     // ═══ Busy checks ═══
     public virtual bool IsBusy(string checkType = null) => false; // Phase 3
 
-    // ═══ Animation (stubs — Phase 3) ═══
-    public virtual void PlayAnim(string animation, bool lockAnim = false, float lockTime = 0,
-        bool faceEnemy = false, float delay = 0, object extraOptions = null, Action<object> customFunc = null) { }
-    public virtual void MaintainIdleAnimation(bool force) { }
-    public virtual void MaintainIdleBehavior(int? idleType = null) { }
-    public virtual void PlaySequence(string animation) { }
+    // ═══ Animation — see BaseNPC.Animation.cs for full implementations ═══
+    public virtual void MaintainIdleBehavior(int? idleType = null) { } // Phase 3
+    public virtual void PlaySequence(string animation) { } // Phase 3
 
     // ═══ Phase 3 stubs — called by SelectSchedule ═══
     /// <summary>CanFireWeapon — human init.lua:3476. Returns false (conservative) until Phase 3.</summary>
@@ -568,11 +567,11 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     /// <summary>CurrentMeleeAttackPlayerSpeedSound handle stored for fade-out on restore</summary>
     public SoundHandle CurrentMeleeAttackPlayerSpeedSound { get; set; }
 
-    /// <summary>TranslateActivity — human init.lua:2417. Pass-through until Phase 3 animation.</summary>
-    public virtual string TranslateActivity(string animName) => animName;
+    // TranslateActivity — see BaseNPC.Animation.cs for full implementation (signature: Activity → Activity)
+    // UpdatePoseParamTracking — see BaseNPC.Animation.cs for full implementation
 
-    /// <summary>UpdatePoseParamTracking — human init.lua:3426. Phase 3 animation.</summary>
-    public virtual void UpdatePoseParamTracking(bool reset) { }
+    /// <summary>MaintainActivity — schedules.lua:208. Updates animation activity and pose parameters every frame. Phase 3: S&Box Animgraph-driven.</summary>
+    public virtual void MaintainActivity() { }
 
     /// <summary>PlayIdleSound — core.lua:2836-2942. Combat idle + regular idle sound with timer.</summary>
     public virtual bool PlayIdleSound(string customSD = null, string sdType = null, bool combatIdle = false)

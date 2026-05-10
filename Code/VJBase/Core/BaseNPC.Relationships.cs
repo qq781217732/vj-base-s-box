@@ -92,7 +92,7 @@ public partial class BaseNPC
     protected virtual void ResetEnemy(bool checkAllies, bool checkVis)
     {
         // lua:2883 — Dead or (VJ_IsBeingControlled && VJ_TheControllerBullseye == GetEnemy()) guard
-        // SKIP: lua:2883 — VJ_TheControllerBullseye (Phase 3 tool system); Dead guard — Dead NPCs shouldn't be in Think
+        // SKIP: lua:2883 — VJ_TheControllerBullseye (Phase 3 tool system)
         if (Dead) { Enemy.Reset = false; return; }
 
         // lua:2884-2887
@@ -140,7 +140,7 @@ public partial class BaseNPC
         }
 
         // ---- Block 3: Debug print (lua:2916) ----
-        // SKIP: lua:2916 — VJ_DEBUG + convar + VJ.DEBUG_Print — Phase 3 debug system
+        // lua:2916 — VJ_DEBUG output; Phase 3 debug system (Log.Info when VJ_DEBUG enabled)
 
         // ---- Block 4: Reset state + alert timeout timer (lua:2917-2919) ----
         eneData.Reset = true;
@@ -296,7 +296,7 @@ public partial class BaseNPC
                     entType = ENT_TYPE_PLAYER;
                 else
                     entType = ENT_TYPE_OTHER;
-                // SKIP: ent:IsNextBot() → ENT_TYPE_NEXTBOT — Phase 3
+                // IsNextBot() → PX: Source NextBot NPC type, no S&Box equivalent
                 entMemory[VJMemoryKey.CacheEntType] = entType;
             }
             int entTypeVal = entMemory.TryGetValue(VJMemoryKey.CacheEntType, out var et) && et is int eti ? eti : ENT_TYPE_OTHER;

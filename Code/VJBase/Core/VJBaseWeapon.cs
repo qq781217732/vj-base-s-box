@@ -537,7 +537,9 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
                 if (!ent.IsValid() || ent == owner) continue;
 
                 // lua:713 — Skip bullseye-controlled / player-controlling-NPC
-                // SKIP: lua:713 — IsVJBaseBullseye + VJ_IsBeingControlled / VJ_IsControllingNPC — Phase 3
+                var entNpc = ent.Components.Get<BaseNPC>();
+                if (entNpc?.VJ_IsBeingControlled == true) continue;     // lua:713 — VJ_IsBeingControlled skip
+                // SKIP: lua:713 — IsVJBaseBullseye — Phase 3 bullseye flag (no S&Box equivalent yet)
 
                 bool isPlayer = ent.Components.Get<PlayerBase>() != null;
                 bool isENTNPC = ent.Components.Get<BaseNPC>() != null;

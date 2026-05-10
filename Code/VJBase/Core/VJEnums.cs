@@ -108,10 +108,6 @@ public enum VJWepState { Ready = 0, Holstered = 1, Reloading = 2 }
 public enum VJWepAttackState { None = 0, Aim = 1, AimMove = 2, AimOcclusion = 3, Fire = 10, FireStand = 11 }
 public enum VJWepInventory { None = 0, Primary = 1, Secondary = 2, Melee = 3, AntiArmor = 4 }
 
-// ═══ Animation ═══
-public enum VJAnimType { None = 0, Activity = 1, Sequence = 2, Gesture = 3 }
-public enum VJAnimSet { None = 0, Combine = 1, Metrocop = 2, Rebel = 3, Player = 4, Custom = 10 }
-
 // ═══ Blood ═══
 public enum VJBloodColor { None = 0, Red, Yellow, Green, Orange, Blue, Purple, White, Oil }
 
