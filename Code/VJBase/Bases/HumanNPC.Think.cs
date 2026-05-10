@@ -134,8 +134,8 @@ public partial class HumanNPC
                     if (aaWep.IsValid())
                     {
                         WeaponInventory.AntiArmor = aaWep;
-                        DoChangeWeapon(wep.Name, invSwitch: true);   // lua:2250 — SelectWeapon(wep) switch back
-                        wep.Components.Get<IVJBaseWeapon>()?.Equip(GameObject); // lua:2251 — wep:Equip(self)
+                        // lua:2250-2251 — SelectWeapon(wep) + wep:Equip(self); DoChangeWeapon(invSwitch) calls Equip internally
+                        DoChangeWeapon(wep.Name, invSwitch: true);
                     }
                 }
 
@@ -147,8 +147,7 @@ public partial class HumanNPC
                     if (meleeWep.IsValid())
                     {
                         WeaponInventory.Melee = meleeWep;
-                        DoChangeWeapon(wep.Name, invSwitch: true);   // lua:2256 — SelectWeapon(wep) switch back
-                        wep.Components.Get<IVJBaseWeapon>()?.Equip(GameObject); // lua:2257 — wep:Equip(self)
+                        DoChangeWeapon(wep.Name, invSwitch: true);
                     }
                 }
             }
