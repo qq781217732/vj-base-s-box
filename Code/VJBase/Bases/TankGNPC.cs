@@ -11,6 +11,11 @@ public partial class TankGNPC : TankNPC
 {
     public bool IsVJBaseSNPC_TankGun { get; set; } = true;
 
+    public TankGNPC()
+    {
+        IsVJBaseSNPC_TankChassis = false;
+    }
+
     // ═══ Shell System ═══
     public bool IsPreparingShell { get; set; }
     public float ShellPrepareTime { get; set; } = 1.5f;

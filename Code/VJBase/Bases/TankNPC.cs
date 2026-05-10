@@ -13,14 +13,17 @@ public partial class TankNPC : CreatureNPC
     {
         // Defaults from base_tank.lua
         VJ_ID_Boss = true;
+        VJ_ID_Vehicle = true;
         SightAngle = 360;
         SightDistance = 10000;
         TurningSpeed = 0;
+        HullType = SourceHull.Large;
         HasMeleeAttack = false;
         Bleeds = false;
         Immune_Dissolve = true;
         Immune_Toxic = true;
         Immune_Bullet = true;
+        DeathCorpseCollisionType = SourceCollisionGroup.None;
         HasPainSounds = false;
         DisableWandering = true;
         CanReceiveOrders = false;
@@ -31,21 +34,20 @@ public partial class TankNPC : CreatureNPC
     }
 
     // ═══ Additional Fields ═══
-    public bool VJ_ID_Boss { get; set; }
     public float TurningSpeed { get; set; }
     public int HullType { get; set; }
     public bool DamageAllyResponse { get; set; }
     public bool CombatDamageResponse { get; set; }
-    public bool YieldToAlliedPlayers { get; set; }
 
     // ═══ SCHEDULE_FACE override — tanks don't turn like normal NPCs ═══
-    public void SCHEDULE_FACE(string faceType, Action<AISchedule> customFunc) { /* no-op */ }
+    public override void SCHEDULE_FACE(string faceTask = null, Action<AISchedule> customFunc = null) { /* no-op */ }
 
     // ═══ MaintainAlertBehavior override — tanks don't chase (base_tank.lua:33) ═══
     public override void MaintainAlertBehavior(bool alwaysChase) { /* no-op: tanks don't chase */ }
 
     // ═══ Identity ═══
     public bool IsVJBaseSNPC_Tank { get; set; } = true;
+    public bool IsVJBaseSNPC_TankChassis { get; set; } = true;
 
     // ═══ Tank-Specific Fields ═══
     public float RunOverDistance { get; set; } = 80;
@@ -58,6 +60,9 @@ public partial class TankNPC : CreatureNPC
     public virtual Vector3 Tank_GunnerSpawnPosition() => WorldPosition + WorldRotation.Forward * 50;
 
     // ═══ OnTouch — detect enemies to run over ═══
+    public virtual void PhysicsCollide(object data, object physobj) { }
+    public virtual void PhysicsUpdate(object physobj) { }
+
     public virtual void OnTouch(GameObject other)
     {
         if (Dead) return;

@@ -16,6 +16,7 @@ public class VJEntityFlags : Component
     public bool VJ_ID_Attackable { get; set; }
     public bool VJ_ID_Destructible { get; set; }
     public bool VJ_ID_Boss { get; set; }
+    public bool VJ_ID_Vehicle { get; set; }
 
     // ═══ State flags (VJ_ST_*) ═══
     public bool VJ_ST_Grabbed { get; set; }

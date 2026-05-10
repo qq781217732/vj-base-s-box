@@ -20,4 +20,14 @@ public partial class CreatureNPC : BaseNPC
 		SoundTbl_Impact = new() { "VJ.Impact.Flesh_Alien" };
 		DeathAllyResponse = true; // creature default (human overrides in constructor)
 	}
+
+	public virtual void SetAutomaticFrameAdvance(bool val)
+	{
+		AutomaticFrameAdvance = val;
+	}
+
+	public virtual bool? MatFootStepQCEvent(object data)
+	{
+		return false;
+	}
 }

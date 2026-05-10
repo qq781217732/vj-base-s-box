@@ -24,6 +24,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public bool VJ_ID_Attackable { get; set; } = true;
     public bool VJ_ID_Destructible { get; set; }
     public bool VJ_ID_Boss { get; set; }
+    public bool VJ_ID_Vehicle { get; set; }
     // ═══ VJ_ST_* State Flags ═══
     public bool VJ_ST_Grabbed { get; set; }
     public bool VJ_ST_Eating { get; set; }
@@ -696,6 +697,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
             "VJ_ID_Attackable" => (npc?.VJ_ID_Attackable ?? false) || (ext?.VJ_ID_Attackable ?? false),
             "VJ_ID_Destructible" => (npc?.VJ_ID_Destructible ?? false) || (ext?.VJ_ID_Destructible ?? false),
             "VJ_ID_Boss" => (npc?.VJ_ID_Boss ?? false) || (ext?.VJ_ID_Boss ?? false),
+            "VJ_ID_Vehicle" => (npc?.VJ_ID_Vehicle ?? false) || (ext?.VJ_ID_Vehicle ?? false),
             "VJ_ST_Grabbed" => (npc?.VJ_ST_Grabbed ?? false) || (ext?.VJ_ST_Grabbed ?? false),
             "VJ_ST_Eating" => (npc?.VJ_ST_Eating ?? false) || (ext?.VJ_ST_Eating ?? false),
             _ => false,

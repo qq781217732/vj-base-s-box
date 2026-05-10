@@ -70,6 +70,20 @@ public enum NavType { Ground, Fly, None, Jump, Climb }
 // ═══ Movement Type ═══
 public enum VJMoveType { Ground = 1, Aerial = 2, Aquatic = 3, Stationary = 4, Physics = 5 }
 
+// ═══ Source Engine hull constants (HULL_*) used as translated config values ═══
+public static class SourceHull
+{
+    public const int Human = 0;
+    public const int Tiny = 3;
+    public const int Large = 7;
+}
+
+// ═══ Source collision group constants used as translated config values ═══
+public static class SourceCollisionGroup
+{
+    public const int None = 0;
+}
+
 // ═══ Behavior Type ═══
 public enum VJBehavior { Aggressive = 1, Neutral = 2, Passive = 3, PassiveNature = 4 }
 
