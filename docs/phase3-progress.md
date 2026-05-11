@@ -4,8 +4,8 @@
 > **前序文档**：[translation-guide.md](translation-guide.md) — 翻译架构、Phase 1/3 定义、文件映射
 > **PX 排除清单**：[px-permanent-exclusions.md](px-permanent-exclusions.md)
 
-**最后更新**：2026-05-11
-**当前状态**：P0 ✅ | P1 ✅ | P2 Animation ✅ | 剩余 19 SKIP + 45 PX | ~98%
+**最后更新**：2026-05-12
+**当前状态**：P0 ✅ | P1 ✅ | P2 Animation ✅ | 剩余 18 SKIP + 45 PX | ~98%
 
 ---
 
@@ -28,7 +28,7 @@
 | 子系统 | 文件 | 关键内容 |
 |--------|------|---------|
 | **Schedule** | BaseNPC.Schedule.cs | 32 方法，双轨已消除 |
-| **AA Movement** | BaseNPC.AA.cs | 5 方法（4 完成 + 1 Phase 3 stub） |
+| **AA Movement** | BaseNPC.AA.cs | 5 方法（5 完成） — AA_MoveAnimation 已落地 |
 | **Sound** | BaseNPC.Sound.cs | PlaySoundSystem 35 分支 + SoundLevel/Duration 真实映射 + SoundEventRegistry |
 | **Relationships** | BaseNPC.Relationships.cs | MaintainRelationships 9/9 块 + 敌人选择 + 调查系统 |
 | **Damage** | 全局 | DamageInfo 落地 + 免疫链 8 类型 + 8 Is*Damage helper |
@@ -58,12 +58,12 @@
 
 ## 剩余任务
 
-### Phase 3 可执行（~16 SKIP，~8 小时）
+### Phase 3 可执行（~15 SKIP，~7 小时）
 
 | # | 系统 | SKIP | 文件 | 估算 |
 |---|------|------|------|------|
 | 1 | **Follow 跟随** | 3 | CreatureNPC.Think.cs + HumanNPC.Think.cs ×2 | 2h |
-| 2 | **AA_MoveAnimation** | 1 | CreatureNPC.Think.cs | 1h |
+| 2 | **AA_MoveAnimation** | ✅ | BaseNPC.AA.cs（2026-05-12 核实：已完整实现，非 stub） | — |
 | 3 | **OBB + MoveType** | 2 | HumanNPC.Think.cs（OBB 偏移 + SetMoveType restore） | 1h |
 | 4 | **Idle dialogue** | 1 | BaseNPC.cs（FindInSphere + timer + OnIdleDialogue） | 0.5h |
 | 5 | **Fire 系统** | 1 | HumanNPC.Think.cs（!isFireEnt guard） | 1h |
@@ -123,7 +123,7 @@
 ## 下一步建议（按优先级）
 
 1. **Follow 跟随系统** — 功能性，NavMeshAgent 跟随，2h
-2. **AA_MoveAnimation** — 飞行/水生移动动画，1h
+2. ~~**AA_MoveAnimation**~~ — ✅ 已完成（base_aa.lua:373-391 → BaseNPC.AA.cs:454-505）
 3. **OBB + MoveType + RemoveEffects + Idle** — 残余 SKIP 批量清扫，2h
 4. **Fire + Eating + Immune_Dissolve** — 边缘系统守卫，2h
 5. **MuzzleFlash + ShellEject** — 视觉效果，ParticleSystem，3h
