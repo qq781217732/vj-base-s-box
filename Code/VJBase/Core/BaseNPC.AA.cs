@@ -445,13 +445,40 @@ public partial class BaseNPC
 	// ═══════════════════════════════════════════════
 	// AA_MoveAnimation — base_aa.lua:373-391
 	// ═══════════════════════════════════════════════
+	/// <summary>
+	/// Per-frame movement animation update for Aerial/Aquatic NPCs.
+	/// Picks animation from Calm or Alerted table based on AA_CurrentMoveAnimType,
+	/// selects Aerial or Aquatic table based on MovementType, plays via PlayAnim.
+	/// </summary>
 	public virtual void AA_MoveAnimation()
 	{
-		// Phase 3: full animation system integration
-		// base_aa.lua:373-391 — picks activity/sequence animations from
-		// Aerial_AnimTbl_Calm / Aerial_AnimTbl_Alerted / Aquatic_AnimTbl_*,
-		// handles bad ACT_* re-override behavior, plays via PlayAnim.
-		// Requires: SkinnedModelRenderer, TranslateActivity, PlayAnim, ACT_* constants.
+		// lua:379 — guard: time check OR sequence/activity mismatch AND not busy
+		var curTime = (float)Time.Now;
+		var dp = Components.Get<SkinnedModelRenderer>()?.AnimationGraph?.GetDirectPlayback();
+		var curSeq = dp?.Name ?? "";
+		bool seqMismatch = curSeq != (AA_CurrentMoveAnim as string);
+
+		if ((curTime > AA_NextMoveAnimTime || seqMismatch) && !IsBusy("Activities"))
+		{
+			// lua:381-385 — pick animation table based on Calm/Alerted × Aerial/Aquatic
+			List<string> chosenAnim = null;
+			if (AA_CurrentMoveAnimType == "Calm")
+				chosenAnim = MovementType == VJMoveType.Aquatic ? Aquatic_AnimTbl_Calm : Aerial_AnimTbl_Calm;
+			else if (AA_CurrentMoveAnimType == "Alert")
+				chosenAnim = MovementType == VJMoveType.Aquatic ? Aquatic_AnimTbl_Alerted : Aerial_AnimTbl_Alerted;
+
+			// lua:386 — PICK(chosenAnim)
+			var anim = VJUtility.PICK(chosenAnim);
+
+			// lua:387 — PlayAnim(chosenAnim, false, 0, false, 0, {AlwaysUseSequence = badACTs[chosenAnim]})
+			var (_, animDur, _) = PlayAnim(anim);
+
+			// lua:388 — AA_CurrentMoveAnim = curActivity == DO_NOT_DISTURB ? GetSequence() : GetIdealSequence()
+			AA_CurrentMoveAnim = dp?.Name; // approximate: current sequence post-PlayAnim
+
+			// lua:389 — AA_NextMoveAnimTime = CurTime() + animDur
+			AA_NextMoveAnimTime = curTime + animDur;
+		}
 	}
 
 }

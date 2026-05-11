@@ -71,10 +71,94 @@ public partial class CreatureNPC
         if (doHeavyProcesses)
             TickSenses();
 
-        // SKIP: AA velocity tracking / position checking / acceleration + AA_MoveAnimation — Phase 3 (base_aa.lua:1906-1942)
-        if (isAA) { }
+        // lua:1906-1942 — AA per-frame velocity tracking + acceleration + animation
+        if (isAA)
+        {
+            var rb = Components.Get<Rigidbody>();
+            var myVelLen = rb?.Velocity.Length ?? 0f;
+            if (myVelLen > 0.1f)
+            {
+                // lua:1909-1930 — progress tracking & acceleration lerp toward target
+                if (AA_CurrentMovePos.HasValue)
+                {
+                    var dist = AA_CurrentMovePos.Value.Distance(WorldPosition);
+                    if (AA_CurrentMoveDist < 0 || AA_CurrentMoveDist >= dist)
+                    {
+                        AA_CurrentMoveDist = dist;
+                        var moveSpeed = AA_CurrentMoveMaxSpeed;
+                        // lua:1918-1919 — acceleration lerp
+                        if (AA_MoveAccelerate > 0 && rb != null)
+                        {
+                            moveSpeed = MathX.Lerp(myVelLen, moveSpeed, Time.Delta * AA_MoveAccelerate);
+                            var velDir = AA_CurrentMovePosDir?.Normal ?? rb.Velocity.Normal;
+                            rb.Velocity = velDir * moveSpeed;
+                        }
+                    }
+                    else
+                    {
+                        // lua:1928-1929 — stuck, not making progress
+                        AA_StopMoving();
+                    }
+                }
 
-        // Follow behavior (Phase 3)
+                // lua:1932-1934 — aquatic not fully submerged → wander down
+                if (moveType == VJMoveType.Aquatic && WaterLevel() <= 2)
+                    AA_IdleWander();
+
+                // lua:1936-1938 — update movement animation
+                // lua:1936 — AA_CurrentMoveAnim != -1 (false=none→animate, -1=skip, string seq name→animate)
+                if (!(AA_CurrentMoveAnim is int i && i == -1))
+                    AA_MoveAnimation();
+            }
+            else
+            {
+                // lua:1941 — not moving, reset move time
+                AA_CurrentMoveTime = 0;
+            }
+        }
+
+        // lua:1948-1999 — Follow system update
+        if (IsFollowing && NavTypeVal != (int)NavType.Jump && NavTypeVal != (int)NavType.Climb)
+        {
+            var followEnt = Follow.Target;
+            if (followEnt.IsValid())
+            {
+                var followLiving = HasEntityFlag(followEnt, "VJ_ID_Living");
+                if (!followLiving || (followLiving && (Disposition(followEnt) == (int)VJBase.Disposition.Like
+                    || (followEnt.Components.Get<BaseNPC>()?.VJ_NPC_Class.Any(c => VJ_NPC_Class.Contains(c)) ?? false))
+                    && Alive(followEnt)))
+                {
+                    if (curTime > Follow.NextUpdateT)
+                    {
+                        var dist = WorldPosition.Distance(followEnt.WorldPosition);
+                        SetTarget(followEnt);
+                        Follow.StopAct = false;
+                        if (dist > Follow.MinDist)
+                        {
+                            bool isFar = dist > (Follow.MinDist * 4);
+                            if (isFar) Follow.StopAct = true;
+                            Follow.Moving = true;
+                            if (isAA)
+                                AA_MoveTo(followEnt, true, dist < Follow.MinDist * 1.5f ? "Calm" : "Alert",
+                                    new AAMoveOptions { FaceDestTarget = true });
+                            else
+                                SCHEDULE_GOTO_TARGET("TASK_RUN_PATH");
+                        }
+                        else if (Follow.Moving)
+                        {
+                            Follow.Moving = false;
+                            TaskComplete();
+                            StopMoving(false);
+                            SelectSchedule();
+                        }
+                    }
+                }
+                else
+                {
+                    ResetFollowBehavior();
+                }
+            }
+        }
 
         RunAI();
 
@@ -454,8 +538,8 @@ public partial class CreatureNPC
                     // lua:2544-2553: Player-specific effects
                     if (isPlayer)
                     {
-                        // PX: lua:2545 — ent:ViewPunch(Angle(...)) — no native S&Box camera shake API, not in scope
-                        // SKIP: lua:2547-2548 — ent:SetDSP(MeleeAttackDSP) — Phase 3 audio (deferred, revisit when audio effect system matures)
+                        // PX: lua:2545 — ent:ViewPunch(Angle(...)) — no native S&Box camera shake API
+                        VJEntitySpawner.PlayDSPEffect(ent, MeleeAttackDSP, MeleeAttackDSPLimit); // lua:2547 — ent:SetDSP
                         if (MeleeAttackPlayerSpeed)
                             DoMeleeAttackPlayerSpeed(ent, MeleeAttackPlayerSpeedWalk, MeleeAttackPlayerSpeedRun, MeleeAttackPlayerSpeedTime);
                     }
@@ -670,8 +754,9 @@ public partial class CreatureNPC
                             allyBase.SetRelationshipMemory(dmgAttacker, "override_disposition", (int)VJBase.Disposition.Hate);
                             allyBase.AddEntityRelationship(dmgAttacker, (int)VJBase.Disposition.Hate, 2);
                             allyBase.PlaySoundSystem("BecomeEnemyToPlayer");
-                            // SKIP: lua:3236 — ResetFollowBehavior — Phase 3 follow system
-                            // PX: lua:3240 — CanChatMessage — Source chat system, requires Creator Player, no S&Box equivalent
+                            // lua:3236-3239 — if ally.IsFollowing then ally:ResetFollowBehavior() end
+                            if (allyBase.IsFollowing) allyBase.ResetFollowBehavior();
+                            // PX: lua:3240 — CanChatMessage — Source chat system, no S&Box equivalent
                         }
                         // lua:3245 — ally.Alerted = true
                         allyBase.Alerted = VJAlertState.Enemy;
@@ -919,7 +1004,7 @@ public partial class CreatureNPC
         }
 
         // ---- Dissolve (lua:3416-3418) ----
-        // lua:3416-3418 — DMG_DISSOLVE type or prop_combine_ball inflictor → corpse:Dissolve(0, 1)
+        // lua:3416-3418 — DMG_DISSOLVE type or prop_combine_ball inflictor → corpse:Dissolve(0, 1) → VJEntitySpawner.DissolveEntity
         if (dmginfo.Tags.Has(VJDamageTags.Dissolve) || (dmginfo.Weapon.IsValid() && dmginfo.Weapon.Tags.Has("prop_combine_ball")))
         {
             VJEntitySpawner.DissolveEntity(corpse, 2f, 1f);
@@ -961,7 +1046,7 @@ public partial class CreatureNPC
         // lua:3461 — if corpse:IsFlagSet(FL_DISSOLVING) then
         if (FL_DISSOLVING && DeathCorpse_ChildEnts != null)
         {
-            // lua:3462-3464 — for _, child in ipairs(corpse.ChildEnts) do child:Dissolve(0, 1) end
+            // lua:3462-3464 — child entities dissolve (S&Box: VJEntitySpawner.DissolveEntity)
             foreach (var child in DeathCorpse_ChildEnts)
                 VJEntitySpawner.DissolveEntity(child, 2f, 1f);
         }

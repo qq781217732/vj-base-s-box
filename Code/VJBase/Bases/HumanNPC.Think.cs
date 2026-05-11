@@ -1176,8 +1176,7 @@ public partial class HumanNPC
                 // lua:3607 — approximate eye position (Phase 3: EyePosition() via skeletal head bone)
                 var enePos_Eye = ene.WorldPosition + Vector3.Up * 64f;
                 var myPos = WorldPosition;                                  // lua:3608
-                // SKIP: lua:3609 — myPosCentered = myPos + OBBCenter() — Phase 3 OBB/GetBonePosition
-                var myPosCentered = myPos;
+                var myPosCentered = myPos + OBBCenter();                  // lua:3609 — OBBCenter via Model.RenderBounds
 
                 // ═══ C2a: Retreat from too-close enemy (lua:3611-3620) ═══
                 // lua:3612: if eneData.Distance <= Weapon_RetreatDistance && !wep.IsMeleeWeapon
@@ -1817,8 +1816,8 @@ public partial class HumanNPC
             if (flags != null) flags.VJ_ST_Grabbed = false;
             // lua:3261 — customEnt:SetParent(NULL)
             customEnt.Parent = null;
-            // SKIP: lua:3262 — SetMoveType(VJ_ST_GrabOrgMoveType) restore — Phase 3 move type tracking
-            // SKIP: lua:3263 — RemoveEffects(EF_FOLLOWBONE) — Phase 3 effects system
+            // PX: lua:3262 — SetMoveType(VJ_ST_GrabOrgMoveType) — Source move type tracking; Parent=null above handles detachment
+            // PX: lua:3263 — RemoveEffects(EF_FOLLOWBONE) — Source bone follower effect; Parent=null above handles detachment
             grenade = customEnt;
         }
         else
@@ -2149,14 +2148,9 @@ public partial class HumanNPC
         // ---- Block G: skip_immunity label + combine ball (lua:3953-3964) ----
         // lua:3953 — ::skip_immunity::
         skip_immunity:
-        // lua:3954 — if (dmgInflictor && dmgInflictor:GetClass() == "prop_combine_ball") or (dmgAttacker && dmgAttacker:GetClass() == "prop_combine_ball") then
-        // PX: lua:3954 — prop_combine_ball GetClass() check — HL2 entity detection, no S&Box equivalent; use Tags instead
-        // lua:3955 — if selfData.Immune_Dissolve then return 0 end
-        // SKIP: lua:3955 — Immune_Dissolve dissolve block — Phase 3 immunity
-        // lua:3956-3959 — if curTime > selfData.NextCombineBallDmgT then dmginfo:SetDamage(math.random(400,500)) dmginfo:SetDamageType(DMG_DISSOLVE) selfData.NextCombineBallDmgT = curTime + 0.2
-        // PX: lua:3956-3959 — combine ball damage scaling — Source engine entity-specific damage, no S&Box equivalent
-        // lua:3960-3962 — else return 0 end
-        // PX: lua:3960-3962 — combine ball spam prevention → return 0 — Source engine entity tracking, no S&Box equivalent
+        // lua:3954 — if prop_combine_ball inflictor/attacker → handled via Tags check; Immune_Dissolve already blocks above (Block F)
+        // PX: lua:3954 — prop_combine_ball GetClass() — HL2 entity detection, use Tags instead
+        // PX: lua:3955-3962 — combine ball damage scaling + spam prevention — Source engine entity-specific, no S&Box equivalent
 
         // ---- Block H: DoBleed helper (lua:3966-3974) ----
         // lua:3966 — local function DoBleed()
@@ -2231,10 +2225,9 @@ public partial class HumanNPC
             if (CurrentHealth > 0)
             {
                 // ---- M1: Flinch (lua:4016-4017) ----
-                // lua:4016 — if !isFireEnt then
-                // SKIP: lua:4016 — !isFireEnt guard — Phase 3 fire system
+                // lua:4016 — if !isFireEnt then (don't flinch from fire damage)
                 // lua:4017 — self:Flinch(dmginfo, hitgroup)
-                Flinch(dmgInfo, hitgroup);
+                if (!isFireEnt) Flinch(dmgInfo, hitgroup);
 
                 // ---- M2: Player attacker → BecomeEnemyToPlayer (lua:4020-4052) ----
                 // lua:4021 — if dmgAttacker && dmgAttacker:IsPlayer() then (no VJ_CVAR_IGNOREPLAYERS guard — NPC attacked by player always reacts)
@@ -2253,7 +2246,7 @@ public partial class HumanNPC
                             // lua:4027 — self:OnBecomeEnemyToPlayer(dmginfo, hitgroup)
                             OnBecomeEnemyToPlayer(dmgInfo, hitgroup);
                             // lua:4028 — if self.IsFollowing && self.FollowData.Target == dmgAttacker then self:ResetFollowBehavior() end
-                            // SKIP: lua:4028 — IsFollowing / FollowData / ResetFollowBehavior — Phase 3 follow system
+                            if (IsFollowing && Follow.Target == dmgAttacker) ResetFollowBehavior();
                             // lua:4029 — self:SetRelationshipMemory(dmgAttacker, VJ.MEM_OVERRIDE_DISPOSITION, D_HT)
                             SetRelationshipMemory(dmgAttacker, "override_disposition", (int)VJBase.Disposition.Hate);
                             // lua:4030 — self:AddEntityRelationship(dmgAttacker, D_HT, 2)
@@ -2435,7 +2428,7 @@ public partial class HumanNPC
 
         // ---- Block N: Stop eating (lua:4154-4158) ----
         // lua:4155-4157 — if selfData.CanEat && selfData.VJ_ST_Eating then selfData.EatingData.NextCheck = curTime + 15; self:ResetEatingBehavior("Injured") end
-        // SKIP: lua:4155-4157 — CanEat && VJ_ST_Eating → ResetEatingBehavior("Injured") — Phase 3 eating system
+        if (CanEat && VJ_ST_Eating) ResetEatingBehavior("Injured");
 
         // ---- Block O: Death (lua:4160-4171) ----
         // lua:4160 — if self:Health() <= 0 && !selfData.Dead then
@@ -2536,8 +2529,9 @@ public partial class HumanNPC
                                 allyBase.SetRelationshipMemory(dmgAttacker, "override_disposition", (int)VJBase.Disposition.Hate);
                                 allyBase.AddEntityRelationship(dmgAttacker, (int)VJBase.Disposition.Hate, 2);
                                 allyBase.PlaySoundSystem("BecomeEnemyToPlayer");
-                                // SKIP: lua:4225 — ResetFollowBehavior — Phase 3 follow system
-                                // PX: lua:4232 — CanChatMessage — Source chat system, requires Creator Player, no S&Box equivalent
+                                // lua:4225 — if ally.IsFollowing then ally:ResetFollowBehavior() end
+                                if (allyBase.IsFollowing) allyBase.ResetFollowBehavior();
+                                // PX: lua:4232 — CanChatMessage — Source chat system, no S&Box equivalent
                             }
                             // lua:4235 — ally.Alerted = true
                             allyBase.Alerted = VJAlertState.Enemy;
@@ -2795,7 +2789,7 @@ public partial class HumanNPC
         }
 
         // ---- Dissolve (lua:4416-4418) ----
-        // lua:4416-4418 — DMG_DISSOLVE type or prop_combine_ball inflictor → corpse:Dissolve(0, 1)
+        // lua:4416-4418 — DMG_DISSOLVE type or prop_combine_ball inflictor → corpse:Dissolve(0, 1) → VJEntitySpawner.DissolveEntity
         if (dmginfo.Tags.Has(VJDamageTags.Dissolve) || (dmginfo.Weapon.IsValid() && dmginfo.Weapon.Tags.Has("prop_combine_ball")))
         {
             VJEntitySpawner.DissolveEntity(corpse, 2f, 1f);
@@ -2845,9 +2839,9 @@ public partial class HumanNPC
         // lua:4462 — if corpse:IsFlagSet(FL_DISSOLVING) then
         if (FL_DISSOLVING)
         {
-            // lua:4463-4465 — if IsValid(WeaponEntity) then WeaponEntity:Dissolve(0, 1)
+            // lua:4463-4465 — WeaponEntity dissolve (S&Box: VJEntitySpawner.DissolveEntity)
             if (WeaponEntity.IsValid()) VJEntitySpawner.DissolveEntity(WeaponEntity, 2f, 1f);
-            // lua:4466-4470 — for child in ChildEnts → child:Dissolve
+            // lua:4466-4470 — child entities dissolve
             foreach (var child in DeathCorpse_ChildEnts)
                 VJEntitySpawner.DissolveEntity(child, 2f, 1f);
         }

@@ -1634,7 +1634,18 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public virtual void RemoveTimers() { }
     public virtual void CreateDeathLoot(DamageInfo dmginfo, int hitgroup) { }
     public virtual void ResetMedicBehavior() { }
-    public virtual void ResetFollowBehavior() { }
+    /// <summary>ResetFollowBehavior — core.lua:1727-1742. Clears follow state; chat message is PX (ChatMessage→Source only).</summary>
+    public virtual void ResetFollowBehavior()
+    {
+        // lua:1730-1736 — ChatMessage to player (PX: Source chat system)
+        // lua:1737-1742 — clear follow state
+        IsFollowing = false;
+        Follow.Target = null;
+        Follow.MinDist = 0;
+        Follow.Moving = false;
+        Follow.StopAct = false;
+        Follow.NextUpdateT = 0;
+    }
     public virtual void RemoveAllGestures() { }
     public virtual void SpawnBloodPool(DamageInfo dmginfo, int hitgroup, GameObject corpse) { }
     public virtual string GetCorpseFadeType(GameObject corpse) => "kill";
@@ -1741,6 +1752,13 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
 
     /// <summary>Eye position for sensing (traces, FOV checks)</summary>
     public virtual Vector3 EyePosition() => GameObject.WorldPosition + Vector3.Up * 64f;
+
+    /// <summary>Model bounding box center offset (Source: OBBCenter). Used for centered position calculations.</summary>
+    public virtual Vector3 OBBCenter()
+    {
+        var renderer = Components.Get<SkinnedModelRenderer>();
+        return renderer?.Model?.RenderBounds.Center ?? Vector3.Zero;
+    }
 
     /// <summary>Hearing sensitivity multiplier — higher = hears farther</summary>
     public virtual float HearingSensitivity() => 1f;
