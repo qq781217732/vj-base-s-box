@@ -115,7 +115,7 @@ public enum VJBloodColor { None = 0, Red, Yellow, Green, Orange, Blue, Purple, W
 public enum VJDifficulty { Neanderthal = -5, Puny = -4, Trivial = -3, Easy = -2, Beginner = -1, Normal = 0, Difficult = 1, Hard = 2, Expert = 3, Insane = 4, Impossible = 5, Lunatic = 6, Nightmare = 7, HellOnEarth = 8, TotalAnnihilation = 9, Extinction = 10 }
 
 // ═══ Projectile ═══
-public enum VJProjType { Linear = 0, Gravity = 1, Prop = 2 }
+public enum VJProjType { Linear = 0, Gravity = 1, Prop = 2, Seeker = 3 }
 public enum VJProjCollision { None = 0, Remove = 1, Persist = 2 }
 
 // ═══ Kill Icon ═══

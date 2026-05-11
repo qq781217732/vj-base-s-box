@@ -31,6 +31,7 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
     [Property] public float NPC_CustomSpread { get; set; } = 1f;
     [Property] public string NPC_BulletSpawnAttachment { get; set; } = "";
     [Property] public bool NPC_StandingOnly { get; set; }
+    [Property] public PrefabScene MuzzleFlashParticle { get; set; }
     [Property] public float NPC_FiringDistanceScale { get; set; } = 1f;
     [Property] public float NPC_FiringDistanceMax { get; set; } = 100000f;
     [Property] public float NPC_FiringCone { get; set; } = 0.9f;
@@ -369,7 +370,16 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
         light.Color = new Color(1f, 0.59f, 0.24f);
         // lua:859 — timer.Simple(0.02) → remove light
         _ = Task.Delay(20).ContinueWith(_ => { if (flashGo.IsValid()) flashGo.Destroy(); });
-        // lua:822-840 — muzzle particles + shell eject (Phase 3 attachment system)
+
+        // lua:822-840 — muzzle particles
+        if (MuzzleFlashParticle != null)
+        {
+            var particleGo = MuzzleFlashParticle.Clone();
+            particleGo.WorldPosition = muzzlePos;
+            particleGo.WorldRotation = owner.WorldRotation;
+            // Auto-cleanup after typical particle lifetime
+            _ = Task.Delay(500).ContinueWith(_ => { if (particleGo.IsValid()) particleGo.Destroy(); });
+        }
     }
 
     // ═══ Execute primary fire (weapon_vj_base/shared.lua:593-650) ═══
