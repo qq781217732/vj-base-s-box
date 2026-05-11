@@ -33,6 +33,7 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
     [Property] public bool NPC_StandingOnly { get; set; }
     [Property] public PrefabScene MuzzleFlashParticle { get; set; }
     [Property] public bool PrimaryEffects_MuzzleFlash { get; set; } = true;
+    [Property] public bool PrimaryEffects_SpawnDynamicLight { get; set; } = true;
     [Property] public float PrimaryEffects_DynamicLightBrightness { get; set; } = 4f;
     [Property] public float PrimaryEffects_DynamicLightDistance { get; set; } = 120f;
     [Property] public Color PrimaryEffects_DynamicLightColor { get; set; } = new Color(1f, 0.59f, 0.24f);
@@ -373,23 +374,26 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
         // lua:856-859 — muzzle position via GetBulletPos (attachment-aware)
         var muzzlePos = GetBulletPos(owner);
 
-        // Dynamic light (lua:852-868)
-        // lua:852 — PrimaryEffects_SpawnDynamicLight + vj_wep_muzzleflash_light gate
-        var flashGo = new GameObject(true, "VJ_MuzzleFlash");
-        flashGo.WorldPosition = muzzlePos;
-        var light = flashGo.Components.Create<PointLight>();
-        light.Brightness = PrimaryEffects_DynamicLightBrightness;
-        light.Range = PrimaryEffects_DynamicLightDistance;
-        light.Color = PrimaryEffects_DynamicLightColor;
-        // lua:867 — Fire("Kill", nil, 0.07) → 70ms lifetime
-        _ = Task.Delay(70).ContinueWith(_ => { if (flashGo.IsValid()) flashGo.Destroy(); });
+        // Dynamic light (lua:852-868) — PrimaryEffects_SpawnDynamicLight gate
+        if (PrimaryEffects_SpawnDynamicLight)
+        {
+            var flashGo = new GameObject(true, "VJ_MuzzleFlash");
+            flashGo.WorldPosition = muzzlePos;
+            var light = flashGo.Components.Create<PointLight>();
+            light.Brightness = PrimaryEffects_DynamicLightBrightness;
+            light.Range = PrimaryEffects_DynamicLightDistance;
+            light.Color = PrimaryEffects_DynamicLightColor;
+            // lua:867 — Fire("Kill", nil, 0.07) → 70ms lifetime
+            _ = Task.Delay(70).ContinueWith(_ => { if (flashGo.IsValid()) flashGo.Destroy(); });
+        }
 
-        // Muzzle particles (lua:822-848)
+        // Muzzle particles (lua:822-848) — ParticleEffectAttach → parent to weapon so particles follow
         if (MuzzleFlashParticle != null)
         {
             var particleGo = MuzzleFlashParticle.Clone();
             particleGo.WorldPosition = muzzlePos;
             particleGo.WorldRotation = owner.WorldRotation;
+            particleGo.Parent = owner; // lua: PATTACH_POINT_FOLLOW → follows weapon
             _ = Task.Delay(500).ContinueWith(_ => { if (particleGo.IsValid()) particleGo.Destroy(); });
         }
     }

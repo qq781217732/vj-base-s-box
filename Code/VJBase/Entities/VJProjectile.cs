@@ -105,7 +105,7 @@ public partial class VJProjectile : Component
         float bestDist = SeekRange;
         var myForward = GameObject.WorldRotation.Forward;
 
-        foreach (var go in Scene.GetAllObjects())
+        foreach (var go in Scene.FindInPhysics(new Sphere(myPos, SeekRange)))
         {
             if (!go.IsValid() || go == owner) continue;
             if (!BaseNPC.HasEntityFlag(go, "VJ_ID_Living")) continue;
@@ -177,7 +177,7 @@ public partial class VJProjectile : Component
                 {
                     Damage = DirectDamage,
                     Attacker = SeekerOwner ?? GameObject,
-                    Weapon = other,
+                    Weapon = GameObject, // lua: SetInflictor(self) — inflictor is the projectile
                     Position = other.WorldPosition
                 };
                 dmgInfo.Tags.Add(VJDamageTags.Dissolve);
@@ -219,7 +219,7 @@ public partial class VJProjectile : Component
         // Radius damage
         if (DoesRadiusDamage && RadiusDamage > 0)
         {
-            foreach (var go in Scene.GetAllObjects())
+            foreach (var go in Scene.FindInPhysics(new Sphere(pos, RadiusDamageRadius)))
             {
                 if (!go.IsValid() || go == SeekerOwner) continue;
                 var dist = go.WorldPosition.Distance(pos);
@@ -234,7 +234,7 @@ public partial class VJProjectile : Component
         // Radius force
         if (RadiusDamageForce > 0)
         {
-            foreach (var go in Scene.GetAllObjects())
+            foreach (var go in Scene.FindInPhysics(new Sphere(pos, RadiusDamageRadius)))
             {
                 if (!go.IsValid() || (SeekerOwner != null && go == SeekerOwner)) continue;
                 var dist = go.WorldPosition.Distance(pos);
