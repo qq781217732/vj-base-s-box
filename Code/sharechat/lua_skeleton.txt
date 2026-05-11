@@ -20,11 +20,9 @@ INCLUDE vj_base/resources/particles.lua
 INCLUDE vj_base/resources/sounds.lua
 INCLUDE vj_base/extensions/corpse.lua
 INCLUDE vj_base/extensions/music.lua
-INCLUDE includes/modules/vj_ai_nodegraph.lua
 INCLUDE includes/modules/vj_ai_schedule.lua
 INCLUDE includes/modules/vj_ai_task.lua
 VAR spawnCategory = "VJ Base"
-VAR VJ_Nodegraph = vj_ai_nodegraph.New()
 VAR memeType = net.ReadUInt(1)
 VAR sd = CreateSound(game.GetWorld(), memeType == 1 and "vj_base/player/areyouthristy.wav" or "vj_base/player
 VAR colorDarkCyan = Color(30, 200, 255)
