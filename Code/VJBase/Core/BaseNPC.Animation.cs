@@ -516,30 +516,50 @@ public partial class BaseNPC
         // No explicit cycle management needed in Route A.
     }
 
-    // ═══ Ground Move Animation — velocity → animation selection ═══
-    // Source engine auto-binds SetIdealActivity(ACT_WALK/RUN) to movement speed in C++.
-    // S&Box Route A has no engine-level binding; this method bridges NavMeshAgent.Velocity → sequence selection.
+    // ═══ Ground Move Animation — S&Box-style velocity → animation bridge ═══
+    // Source engine auto-bound SetIdealActivity(ACT_WALK/RUN) in C++.
+    // S&Box Animgraph models read move_speed/move_x/move_y params and auto-blend.
+    // Route A HL2 models have no Animgraph — we map velocity to sequence selection here.
 
     private VJMoveAnimState _lastMoveAnim = VJMoveAnimState.Idle;
 
     private enum VJMoveAnimState { Idle, Walk, Run }
 
     /// <summary>
-    /// Read NavMeshAgent velocity and play the matching ground movement animation.
-    /// Called each frame from Think loop for ground NPCs (MovementType == Ground).
-    /// Only triggers a new PlayAnim when speed crosses a threshold to avoid per-frame restarts.
+    /// Per-frame ground movement animation update. Mirrors S&Box AnimationLayer.SetMove() pattern:
+    /// reads NavMeshAgent velocity each frame, writes Animgraph-compatible params for future models,
+    /// and for Route A models picks idle/walk/run sequence based on speed relative to Agent.MaxSpeed.
+    /// Called from Think loop for ground NPCs only (aerial/aquatic use AA_MoveAnimation).
     /// </summary>
     public virtual void UpdateGroundMoveAnimation()
     {
         var agent = GameObject.Components.Get<NavMeshAgent>();
         if (agent == null || !agent.IsValid()) return;
 
-        float speed = agent.Velocity.WithZ(0).Length;
+        var velocity = agent.Velocity;
+        float speed = velocity.WithZ(0).Length;
+        float maxSpeed = agent.MaxSpeed > 0 ? agent.MaxSpeed : 200f;
 
+        // ── Animgraph-compatible move params (harmless for Route A, enables future Animgraph models) ──
+        var renderer = GameObject.Components.Get<SkinnedModelRenderer>();
+        if (renderer != null)
+        {
+            var reference = agent.WorldRotation;
+            float forward = reference.Forward.Dot(velocity);
+            float sideward = reference.Right.Dot(velocity);
+
+            renderer.Set("move_speed", speed);
+            renderer.Set("move_groundspeed", speed);
+            renderer.Set("move_x", forward);
+            renderer.Set("move_y", sideward);
+            renderer.Set("move_z", velocity.z);
+        }
+
+        // ── Route A sequence selection: thresholds derived from Agent.MaxSpeed (self-calibrating) ──
         VJMoveAnimState target;
-        if (speed < 20f)
+        if (speed < maxSpeed * 0.05f)
             target = VJMoveAnimState.Idle;
-        else if (speed < 180f)
+        else if (speed < maxSpeed * 0.55f)
             target = VJMoveAnimState.Walk;
         else
             target = VJMoveAnimState.Run;
@@ -562,7 +582,6 @@ public partial class BaseNPC
         var dp = VJAnimationMapper.GetDirectPlayback(GameObject);
         if (dp == null) return;
 
-        // Don't interrupt attack/death/flinch animations
         if (IsBusy("Activities")) return;
 
         dp.Play(seqName);
