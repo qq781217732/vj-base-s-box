@@ -233,6 +233,12 @@ public partial class CreatureNPC
         // Called every frame to maintain idle animation cycling.
         // Phase 3: gate on VJ_CVAR_AI_ENABLED convar (assume enabled for now)
         MaintainIdleAnimation(false);
+
+        // Ground NPC move animation: bridges NavMeshAgent.Velocity → animation selection.
+        // Source engine handled this via SetIdealActivity + SelectWeightedSequence in C++.
+        // Aerial/Aquatic NPCs use AA_MoveAnimation (called from the Think loop above).
+        if (MovementType == VJMoveType.Ground)
+            UpdateGroundMoveAnimation();
     }
 
     protected virtual void OnThink() { }
@@ -247,8 +253,9 @@ public partial class CreatureNPC
         // Engine schedule running → skip VJ logic
         if (bDoingEngineSchedule) return;
 
-        // Auto-movement: apply walk frames when stationary with movement sequence
-        // Phase 3: GetSequenceMoveDist, AutoMovement integration
+        // Auto-movement: Source engine used GetSequenceMoveDist + AutoMovement to advance NPC
+        // position based on walk/run sequence frame data. S&Box NavMeshAgent handles movement;
+        // animation selection is driven by UpdateGroundMoveAnimation() in the Think loop.
 
         var curSchedule = CurrentSchedule;
         if (curSchedule != null)

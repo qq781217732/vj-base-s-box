@@ -516,6 +516,58 @@ public partial class BaseNPC
         // No explicit cycle management needed in Route A.
     }
 
+    // ═══ Ground Move Animation — velocity → animation selection ═══
+    // Source engine auto-binds SetIdealActivity(ACT_WALK/RUN) to movement speed in C++.
+    // S&Box Route A has no engine-level binding; this method bridges NavMeshAgent.Velocity → sequence selection.
+
+    private VJMoveAnimState _lastMoveAnim = VJMoveAnimState.Idle;
+
+    private enum VJMoveAnimState { Idle, Walk, Run }
+
+    /// <summary>
+    /// Read NavMeshAgent velocity and play the matching ground movement animation.
+    /// Called each frame from Think loop for ground NPCs (MovementType == Ground).
+    /// Only triggers a new PlayAnim when speed crosses a threshold to avoid per-frame restarts.
+    /// </summary>
+    public virtual void UpdateGroundMoveAnimation()
+    {
+        var agent = GameObject.Components.Get<NavMeshAgent>();
+        if (agent == null || !agent.IsValid()) return;
+
+        float speed = agent.Velocity.WithZ(0).Length;
+
+        VJMoveAnimState target;
+        if (speed < 20f)
+            target = VJMoveAnimState.Idle;
+        else if (speed < 180f)
+            target = VJMoveAnimState.Walk;
+        else
+            target = VJMoveAnimState.Run;
+
+        if (target == _lastMoveAnim) return;
+        _lastMoveAnim = target;
+
+        if (target == VJMoveAnimState.Idle)
+        {
+            MaintainIdleAnimation(false);
+            return;
+        }
+
+        var act = target == VJMoveAnimState.Walk ? Activity.Walk : Activity.Run;
+        if (!VJAnimationMapper.AnimExists(GameObject, act)) return;
+
+        var seqName = VJAnimationMapper.MapActivity(GameObject, act);
+        if (seqName == null) return;
+
+        var dp = VJAnimationMapper.GetDirectPlayback(GameObject);
+        if (dp == null) return;
+
+        // Don't interrupt attack/death/flinch animations
+        if (IsBusy("Activities")) return;
+
+        dp.Play(seqName);
+    }
+
     // ═══ UpdateAnimationTranslations ═══
     // Lua: core.lua:485-500 — detect model set by probing known sequences.
 
