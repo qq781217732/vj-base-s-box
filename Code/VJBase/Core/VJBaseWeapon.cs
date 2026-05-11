@@ -393,7 +393,7 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
             var particleGo = MuzzleFlashParticle.Clone();
             particleGo.WorldPosition = muzzlePos;
             particleGo.WorldRotation = owner.WorldRotation;
-            particleGo.Parent = owner; // lua: PATTACH_POINT_FOLLOW → follows weapon
+            particleGo.Parent = GameObject; // lua: PATTACH_POINT_FOLLOW → follows weapon (self = SWEP, not owner)
             _ = Task.Delay(500).ContinueWith(_ => { if (particleGo.IsValid()) particleGo.Destroy(); });
         }
     }
