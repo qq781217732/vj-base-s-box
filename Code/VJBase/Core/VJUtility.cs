@@ -11,15 +11,12 @@ namespace VJBase;
 /// </summary>
 public static class VJUtility
 {
-    /// <summary>VJ.PICK — random element from list, or return the value if not a list</summary>
+    /// <summary>VJ.PICK — random element from list</summary>
     public static T PICK<T>(IList<T> values)
     {
         if (values == null || values.Count == 0) return default;
         return values[Game.Random.Next(values.Count)];
     }
-
-    /// <summary>VJ.PICK overload for single value (just returns it)</summary>
-    public static T PICK<T>(T value) where T : class => value;
 
     /// <summary>VJ.SET — creates a min/max pair (like {a, b} in Lua)</summary>
     public static (float a, float b) SET(float a, float b) => (a, b);
@@ -254,6 +251,9 @@ public static class VJUtility
         string algorithmType, Vector3 startPos, Vector3 targetPos, float strength,
         float gravityOverride = 800f)
     {
+        var npc = self?.Components.Get<BaseNPC>();
+        bool debug = npc != null && npc.VJ_DEBUG;
+
         // lua:619-624 — prediction re-run: Phase 3 (needs GetAimPosition integration)
         // if predict is set, recalculate using GetAimPosition
 
@@ -270,12 +270,20 @@ public static class VJUtility
             float verticalAdjustment = MathF.Abs(startPos.z - targetPos.z)
                 + Math.Clamp(strength, -dist, dist);
             if (dist > strength * 9.5f && dist > 2000f)
+            {
+                // lua:532 — debug: target too far for given arc
+                if (debug) VJDebug.Print(self, "CalculateTrajectory", "warn", "Target is too far for the given arc strength, applying adjustment to avoid failure!");
                 verticalAdjustment += dist * 0.1f;
+            }
 
             midPoint.z += verticalAdjustment;
 
+            // lua:551-553 — not enough trajectory space
             if (midPoint.z < startPos.z || midPoint.z < targetPos.z)
+            {
+                if (debug) VJDebug.Print(self, "CalculateTrajectory", "warn", "Not enough space, applying fail case velocity!");
                 midPoint = targetPos;
+            }
 
             float distance1 = midPoint.z - startPos.z;
             float distance2 = midPoint.z - targetPos.z;
@@ -283,12 +291,17 @@ public static class VJUtility
             float time1 = MathF.Sqrt(MathF.Max(0.001f, distance1) / (0.5f * gravity));
             float time2 = MathF.Sqrt(MathF.Max(0.001f, distance2) / (0.5f * gravity));
 
+            // lua:568-569 — debug: trajectory time too short
+            if (debug && time1 < 0.1f)
+                VJDebug.Print(self, "CalculateTrajectory", "error", "Probably failed because the trajectory time is below 0.1!");
+
             var result = (targetPos - startPos) / (time1 + time2);
             result.z = gravity * time1;
             return result;
         }
 
-        // lua:613-615 — invalid algorithm type, log error
+        // lua:613-615 — invalid algorithm type (always prints, no VJ_DEBUG guard)
+        Log.Error($"[VJ] CalculateTrajectory | Called without a valid algorithm type!");
         return default;
     }
 }

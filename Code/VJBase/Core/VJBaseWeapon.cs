@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Sandbox;
+using SWB.Player;
 
 namespace VJBase;
 
@@ -148,7 +149,7 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
         // lua:996 — Play reload sound
         if (NPC_HasReloadSound && !string.IsNullOrEmpty(NPC_ReloadSound))
         {
-            var handle = Sound.Play(NPC_ReloadSound, owner.WorldPosition);
+            var handle = Sound.Play(NPC_ReloadSound, owner.WorldPosition, 0f);
             handle.Distance = BaseNPC.DbToDistance((int)NPC_ReloadSoundLevel);
         }
     }
@@ -189,10 +190,11 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
             {
                 NPC_SecondaryFire();
                 // lua:615-617 — secondary fire sound
-                var fireSd = VJUtility.PICK(NPC_SecondaryFireSound);
-                if (fireSd != null)
+                // PICK removed: Lua NPC_SecondaryFireSound = "Can be string or table" — C# only supports string
+                var fireSd = NPC_SecondaryFireSound;
+                if (!string.IsNullOrEmpty(fireSd))
                 {
-                    var handle = Sound.Play(fireSd, owner.WorldPosition);
+                    var handle = Sound.Play(fireSd, owner.WorldPosition, 0f);
                     handle.Distance = BaseNPC.DbToDistance((int)NPC_SecondaryFireSoundLevel);
                 }
                 NPC_SecondaryFireNextT = Time.Now + Game.Random.Float(NPC_SecondaryFireNextA, NPC_SecondaryFireNextB);
@@ -218,7 +220,7 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
             NPC_ExtraFireSoundTime_T = 0;
             if (!string.IsNullOrEmpty(NPC_ExtraFireSound))
             {
-                var handle = Sound.Play(NPC_ExtraFireSound, owner.WorldPosition);
+                var handle = Sound.Play(NPC_ExtraFireSound, owner.WorldPosition, 0f);
                 handle.Distance = BaseNPC.DbToDistance((int)NPC_ExtraFireSoundLevel);
                 handle.Pitch = Game.Random.Float(NPC_ExtraFireSoundPitchA, NPC_ExtraFireSoundPitchB);
             }
@@ -359,7 +361,7 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
     }
 
     /// <summary>OnPrimaryAttack_BulletCallback — shared.lua:753-755. Fired when bullet trace hits.</summary>
-    public Action<GameObject, TraceResult, DamageInfo> OnPrimaryAttack_BulletCallback { get; set; }
+    public Action<GameObject, SceneTraceResult, DamageInfo> OnPrimaryAttack_BulletCallback { get; set; }
 
     /// <summary>PrimaryAttackEffects — shared.lua:812-885. Muzzle flash particles + dynamic light.</summary>
     public virtual void PrimaryAttackEffects(GameObject owner)
@@ -380,9 +382,10 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
             var flashGo = new GameObject(true, "VJ_MuzzleFlash");
             flashGo.WorldPosition = muzzlePos;
             var light = flashGo.Components.Create<PointLight>();
-            light.Brightness = PrimaryEffects_DynamicLightBrightness;
-            light.Range = PrimaryEffects_DynamicLightDistance;
-            light.Color = PrimaryEffects_DynamicLightColor;
+            // PX: PointLight has no Brightness property; LightColor alpha/magnitude determines intensity
+            // light.Brightness = PrimaryEffects_DynamicLightBrightness;
+            light.Radius = PrimaryEffects_DynamicLightDistance;
+            light.LightColor = PrimaryEffects_DynamicLightColor;
             // lua:867 — Fire("Kill", nil, 0.07) → 70ms lifetime
             _ = Task.Delay(70).ContinueWith(_ => { if (flashGo.IsValid()) flashGo.Destroy(); });
         }
@@ -515,7 +518,7 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
             var drySd = VJUtility.PICK(DryFireSound);
             if (drySd != null)
             {
-                var handle = Sound.Play(drySd, owner.WorldPosition);
+                var handle = Sound.Play(drySd, owner.WorldPosition, 0f);
                 handle.Distance = BaseNPC.DbToDistance((int)DryFireSoundLevel);
                 handle.Pitch = Game.Random.Float(DryFireSoundPitchA, DryFireSoundPitchB);
             }
@@ -536,7 +539,7 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
         var fireSd = VJUtility.PICK(Primary_Sound);
         if (fireSd != null)
         {
-            var handle = Sound.Play(fireSd, owner.WorldPosition);
+            var handle = Sound.Play(fireSd, owner.WorldPosition, 0f);
             handle.Distance = BaseNPC.DbToDistance((int)Primary_SoundLevel);
             handle.Volume = Primary_SoundVolume;
             handle.Pitch = Game.Random.Float(Primary_SoundPitchA, Primary_SoundPitchB);
@@ -547,7 +550,7 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
             var distantSd = VJUtility.PICK(Primary_DistantSound);
             if (distantSd != null)
             {
-                var farHandle = Sound.Play(distantSd, owner.WorldPosition);
+                var farHandle = Sound.Play(distantSd, owner.WorldPosition, 0f);
                 farHandle.Distance = BaseNPC.DbToDistance((int)Primary_DistantSoundLevel);
                 farHandle.Volume = Primary_DistantSoundVolume;
                 farHandle.Pitch = Game.Random.Float(Primary_DistantSoundPitchA, Primary_DistantSoundPitchB);
@@ -631,7 +634,7 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
                 var hitSd = VJUtility.PICK(MeleeWeaponSound_Hit);
                 if (hitSd != null)
                 {
-                    var handle = Sound.Play(hitSd, owner.WorldPosition);
+                    var handle = Sound.Play(hitSd, owner.WorldPosition, 0f);
                     handle.Distance = BaseNPC.DbToDistance(70); // lua:733 — EmitSound(sd, 70, ...)
                 }
             }
@@ -642,7 +645,7 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
                 var missSd = VJUtility.PICK(MeleeWeaponSound_Miss);
                 if (missSd != null)
                 {
-                    var handle = Sound.Play(missSd, owner.WorldPosition);
+                    var handle = Sound.Play(missSd, owner.WorldPosition, 0f);
                     handle.Distance = BaseNPC.DbToDistance(70); // lua:739 — EmitSound(sd, 70, ...)
                 }
             }
@@ -670,8 +673,13 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
                 }
 
                 // lua:749-786 — Build bullet table + FireBullets → C# Trace + DamageInfo
-                var bulDmg = new DamageInfo(npc.ScaleByDifficulty(Primary_Damage), owner, GameObject);
-                bulDmg.Force = dir * Primary_Force;                    // lua:749,752 — bullet.Force + bullet.Inflictor (Weapon)
+                var bulDmg = new SWB.Shared.DamageInfo
+                {
+                    Damage = npc.ScaleByDifficulty(Primary_Damage),
+                    Attacker = owner,
+                    Weapon = GameObject,
+                    Force = dir * Primary_Force,            // lua:749,752 — bullet.Force + bullet.Inflictor (Weapon)
+                };
                 bulDmg.Tags.Add("bullet");
 
                 // lua:786 — owner:FireBullets(bullet) → C# Trace

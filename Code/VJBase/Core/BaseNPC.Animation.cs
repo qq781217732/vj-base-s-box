@@ -131,12 +131,6 @@ public partial class BaseNPC
             if (!EqualityComparer<Activity>.Default.Equals(translation, actBefore))
             {
                 animation = translation;
-                if (translation is string transStr)
-                {
-                    isString = true;
-                    isRecheck = true;
-                    goto recheck;
-                }
             }
         }
 
@@ -341,7 +335,7 @@ public partial class BaseNPC
         {
             var parts = new System.Text.StringBuilder();
             int pos = 0;
-            int nextGes, nextSeq;
+            int nextGes, nextSeq = -1;
             while ((nextGes = input.IndexOf("vjges_", pos, StringComparison.OrdinalIgnoreCase)) >= 0
                 || (nextSeq = input.IndexOf("vjseq_", pos, StringComparison.OrdinalIgnoreCase)) >= 0)
             {
@@ -425,6 +419,16 @@ public partial class BaseNPC
             return single;
 
         return act;
+    }
+
+    /// <summary>
+    /// TranslateActivity(string) — convenience overload. Parses "ACT_XXX" name to Activity, then translates.
+    /// </summary>
+    public Activity TranslateActivity(string actName)
+    {
+        if (string.IsNullOrEmpty(actName)) return Activity.Invalid;
+        if (actName.StartsWith("ACT_")) actName = actName[4..];
+        return Enum.TryParse<Activity>(actName, out var act) ? TranslateActivity(act) : Activity.Invalid;
     }
 
     /// <summary>

@@ -336,7 +336,7 @@ public partial class BaseNPC
         sdFile = OnPlaySound(sdFile);
         if (string.IsNullOrEmpty(sdFile)) return null;
 
-        var handle = Sound.Play(sdFile, GameObject.WorldPosition);
+        var handle = Sound.Play(sdFile, GameObject.WorldPosition, 0f);
         if (handle is { IsValid: true })
         {
             handle.Pitch = sdPitch;

@@ -455,7 +455,7 @@ public partial class BaseNPC
 	{
 		// lua:377-378 — get current sequence + activity
 		var curTime = (float)Time.Now;
-		var dp = Components.Get<SkinnedModelRenderer>()?.AnimationGraph?.GetDirectPlayback();
+		var dp = Components.Get<SkinnedModelRenderer>()?.SceneModel?.DirectPlayback;
 		var curSeq = dp?.Name ?? "";
 
 		// lua:379 — guard: (time gate OR seq mismatch OR activity/sequence mismatch) AND not busy

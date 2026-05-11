@@ -16,7 +16,6 @@ public partial class BaseNPC
     private const int ENT_TYPE_PLAYER = 2;
     private const int ENT_TYPE_NEXTBOT = 3;
     private const int ENT_TYPE_OTHER = 4;
-    private const int FL_NOTARGET = 1 << 16; // Source engine: entity ignored by AI targeting
 
     // ═══════════════════════════════════════════════
     // Perception helpers — Source engine equivalent
@@ -140,7 +139,8 @@ public partial class BaseNPC
         }
 
         // ---- Block 3: Debug print (lua:2916) ----
-        // lua:2916 — VJ_DEBUG output; Phase 3 debug system (Log.Info when VJ_DEBUG enabled)
+        if (VJDebug.IsEnabled(this, VJDebugFlags.ResetEnemy))
+            VJDebug.Print(GameObject, "ResetEnemy", null, ene);
 
         // ---- Block 4: Reset state + alert timeout timer (lua:2917-2919) ----
         eneData.Reset = true;

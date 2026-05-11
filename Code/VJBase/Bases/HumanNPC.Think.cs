@@ -25,7 +25,7 @@ public partial class HumanNPC
         // lua:2139-2144: if !self:GetModel() then model = PICK(self.Model); self:SetModel(model) end
         if (VJEntitySpawner.GetModelPath(GameObject) == null)
         {
-            var modelPath = VJUtility.PICK(Model);
+            var modelPath = VJUtility.PICK<string>(ModelList);
             if (!string.IsNullOrEmpty(modelPath))
             {
                 var renderer = Components.GetOrCreate<ModelRenderer>();
@@ -179,7 +179,7 @@ public partial class HumanNPC
         // ── ACT_RUN / ACT_WALK + alert: aim-move or agitated ──
         else if ((act == Activity.Run || act == Activity.Walk) && Alerted != VJAlertState.None)
         {
-            var eneData = EnemyData;
+            var eneData = Enemy;
             if (Weapon_CanMoveFire && eneData.Target.IsValid()
                 && (eneData.Visible || (eneData.VisibleTime + 5f) > Time.Now)
                 && CurrentSchedule != null && CurrentSchedule.CanShootWhenMoving
@@ -600,7 +600,7 @@ public partial class HumanNPC
                 var wepSwitchSd = VJUtility.PICK(_sdWepSwitch);
                 if (wepSwitchSd != null)
                 {
-                    var handle = Sound.Play(wepSwitchSd, WorldPosition);
+                    var handle = Sound.Play(wepSwitchSd, WorldPosition, 0f);
                     handle.Distance = BaseNPC.DbToDistance(70); // lua:2485 — VJ.EmitSound(sdWepSwitch, 70)
                 }
                 // lua:2486 — curWep = wep
@@ -693,7 +693,7 @@ public partial class HumanNPC
     }
 
     // ═══ SCHEDULE_ALERT_CHASE — human_base/init.lua:2340 ═══
-    public virtual void SCHEDULE_ALERT_CHASE(bool doLOSChase)
+    public override void SCHEDULE_ALERT_CHASE(bool doLOSChase)
     {
         // init.lua:2341: self:ClearCondition(COND_ENEMY_UNREACHABLE)
         ClearCondition(Condition.EnemyUnreachable);
@@ -1394,7 +1394,7 @@ public partial class HumanNPC
                                             SetMovementActivity(moveToCoverAnim.ToString());
                                         SCHEDULE_GOTO_POSITION("TASK_RUN_PATH", s =>
                                         {
-                                            s.TurnData = new TurnData { FaceEnemy = true };
+                                            s.TurnData = new TurnData { Type = VJFaceStatus.Enemy };
                                         });
                                         // lua:3730 — NextMoveOnGunCoveredT = curTime + 2
                                         NextMoveOnGunCoveredT = curTime + 2f;
@@ -1639,7 +1639,7 @@ public partial class HumanNPC
         if (grenAnim == Activity.Invalid)
         {
             StopAttacks();
-            MaintainAlertBehavior();
+            MaintainAlertBehavior(false);
             return false;
         }
         AttackAnimDuration = (int)(grenDur * 1000);
@@ -1678,7 +1678,7 @@ public partial class HumanNPC
             // Phase 3: store original Rigidbody.Enabled / NavMeshAgent.Enabled state for restore
 
             // lua:3138 — customPos = self:OnGrenadeAttack("SpawnPos", customEnt, landDir)
-            var customPos = OnGrenadeAttack("SpawnPos", customEnt, landDir) as Vector3?;
+            var customPos = OnGrenadeAttack("SpawnPos", customEnt, landDir as string) as Vector3?;
             if (!customPos.HasValue)
             {
                 // lua:3140-3152 — attachment > bone > fallback hierarchy
@@ -1737,7 +1737,7 @@ public partial class HumanNPC
             GrenadeExecTime = Time.Now + releaseTime / rate;
         }
         // lua:3184: OnGrenadeAttack("PostInit")
-        OnGrenadeAttack("PostInit", customEnt, landDir);
+        OnGrenadeAttack("PostInit", customEnt, landDir as string);
         return true;
     }
 
@@ -1752,7 +1752,7 @@ public partial class HumanNPC
 
         // lua:3215-3234: Determine spawn position and angle
         // Priority: 1.Custom callback → 2.Attachment → 3.Bone → 4.Fallback(GetShootPos)
-        var spawnPos = OnGrenadeAttack("SpawnPos", customEnt, landDir) as Vector3?;  // lua:3215
+        var spawnPos = OnGrenadeAttack("SpawnPos", customEnt, landDir as string) as Vector3?;  // lua:3215
         Angles spawnAng = Angles.Zero;
         if (!spawnPos.HasValue)
         {
@@ -1826,11 +1826,7 @@ public partial class HumanNPC
             // lua:3268 — if !customEnt then SetModel (skip model override for custom entity classes)
             string grenadeClass;
             string grenadeModel = null;
-            if (customEnt is string customClass)
-            {
-                grenadeClass = customClass;
-            }
-            else
+            // lua:3268 — if customEnt (string class name): Lua allows string or entity; C# param is GameObject, always use list
             {
                 grenadeClass = VJUtility.PICK(GrenadeAttackEntity);
                 grenadeModel = VJUtility.PICK(GrenadeAttackModel);  // lua:3269-3271
@@ -1864,13 +1860,13 @@ public partial class HumanNPC
             SetupGrenadeFuse(grenade, fuseTime);
 
             // lua:3305-3307: OnGrenadeAttackExecute("PreSpawn") + Spawn + Activate
-            OnGrenadeAttackExecute("PreSpawn", grenade, customEnt, landDir, landingPos);
+            OnGrenadeAttackExecute("PreSpawn", grenade, customEnt, landDir as Vector3?, landingPos);
             // grenade:Spawn() / grenade:Activate() — S&Box GameObjects are live on creation, no spawn/activate needed
         }
 
         // lua:3311-3322: Throw velocity
         {
-            var postSpawnResult = OnGrenadeAttackExecute("PostSpawn", grenade, customEnt, landDir, landingPos);  // lua:3312
+            var postSpawnResult = OnGrenadeAttackExecute("PostSpawn", grenade, customEnt, landDir as Vector3?, landingPos);  // lua:3312
             if (postSpawnResult is true)
             {
                 // Callback handled velocity — skip default throw
@@ -1963,8 +1959,8 @@ public partial class HumanNPC
         }
 
         // ---- Block 3: Debug print (lua:3876) ----
-        // lua:3876 — if selfData.VJ_DEBUG && GetConVar("vj_npc_debug_resetenemy"):GetInt() == 1 then VJ.DEBUG_Print(self, "ResetEnemy", tostring(ene)) end
-        // PX: lua:3876 — VJ_DEBUG + convar + VJ.DEBUG_Print — Source debug/convar system, no S&Box equivalent
+        if (VJDebug.IsEnabled(this, VJDebugFlags.ResetEnemy))
+            VJDebug.Print(GameObject, "ResetEnemy", null, ene);
 
         // ---- Block 4: Reset state + alert timeout timer (lua:3877-3879) ----
         // lua:3877 — eneData.Reset = true
@@ -2073,13 +2069,12 @@ public partial class HumanNPC
     {
         // ---- Block A: Entry guards (lua:3918-3923) ----
         // lua:3919-3920 — dmgAttacker = dmginfo:GetAttacker() / IsValid guard
-        var dmgAttacker = dmgInfo.Attacker;
         // lua:3923 — Don't take bullet damage from friendly NPCs
-        if (dmgAttacker.IsValid()
+        if (dmgInfo.Attacker.IsValid()
             && IsBulletDamage(dmgInfo)
-            && dmgAttacker.Components.Get<BaseNPC>() is { } attackerBase
+            && dmgInfo.Attacker.Components.Get<BaseNPC>() is { } attackerBase
             && attackerBase.Disposition(GameObject) != (int)VJBase.Disposition.Hate
-            && (VJ_NPC_Class.Any(c => attackerBase.VJ_NPC_Class.Contains(c)) || Disposition(dmgAttacker) == (int)VJBase.Disposition.Like))
+            && (VJ_NPC_Class.Any(c => attackerBase.VJ_NPC_Class.Contains(c)) || Disposition(dmgInfo.Attacker) == (int)VJBase.Disposition.Like))
             return 0;
 
         // ---- Block B: Inflictor + ragdoll guard (lua:3925-3929) ----
@@ -2119,16 +2114,16 @@ public partial class HumanNPC
         if (IsOnFire())
         {
             // lua:3940 — isFireEnt = entityflame class check → S&Box: tag check
-            var dmgInflictor = dmgInfo.Weapon;
-            isFireEnt = dmgInflictor.IsValid() && dmgInflictor.Tags.Has("entityflame")
-                && dmgAttacker.IsValid() && dmgAttacker.Tags.Has("entityflame");
+            var fireInflictor = dmgInfo.Weapon;
+            isFireEnt = fireInflictor.IsValid() && fireInflictor.Tags.Has("entityflame")
+                && dmgInfo.Attacker.IsValid() && dmgInfo.Attacker.Tags.Has("entityflame");
             // lua:3941 — if self:WaterLevel() > 1 then self:Extinguish() end
             if (WaterLevel() > 1) Extinguish();
         }
 
         // ---- Block E: Boss bypass (lua:3944-3947) ----
-        // lua:3945-3946 — if dmgAttacker && ForceDamageFromBosses && dmgAttacker.VJ_ID_Boss then goto skip_immunity
-        if (ForceDamageFromBosses && dmgAttacker.IsValid() && BaseNPC.HasEntityFlag(dmgAttacker, "VJ_ID_Boss"))
+        // lua:3945-3946 — if dmgInfo.Attacker && ForceDamageFromBosses && dmgInfo.Attacker.VJ_ID_Boss then goto skip_immunity
+        if (ForceDamageFromBosses && dmgInfo.Attacker.IsValid() && BaseNPC.HasEntityFlag(dmgInfo.Attacker, "VJ_ID_Boss"))
             goto skip_immunity;
 
         // ---- Block F: Immunity chain (lua:3949-3951) ----
@@ -2183,10 +2178,11 @@ public partial class HumanNPC
         // lua:3991 — self:SetHealth(self:Health() - dmginfo:GetDamage())
         CurrentHealth -= dmgInfo.Damage;
         // lua:3992 — VJ_DEBUG damage print
-        // PX: lua:3992 — VJ_DEBUG && vj_npc_debug_damage convar — Source debug/convar system, no S&Box equivalent
+        if (VJDebug.IsEnabled(this, VJDebugFlags.Damage))
+            VJDebug.Print(GameObject, "OnTakeDamage", null, "Amount =", dmgInfo.Damage, "| Attacker =", dmgInfo.Attacker, "| Inflictor =", dmgInfo.Weapon);
         // lua:3993-3995 — HealthRegenParams: if Enabled && ResetOnDmg then delay next regen
         if (HealthRegenEnabled && HealthRegenResetOnDmg)
-            HealthRegenDelayT = curTime + HealthRegenDelay;
+            HealthRegenDelayT = curTime + VJUtility.Rand(HealthRegenDelay.a, HealthRegenDelay.b);
         // lua:3997-3998 — self:SetSaveValue("m_iDamageCount", ...) / self:SetSaveValue("m_flLastDamageTime", curTime)
         // PX: lua:3997-3998 — SetSaveValue — Source engine save/restore system, no S&Box equivalent
         // lua:3999 — self:OnDamaged(dmginfo, hitgroup, "PostDamage")
@@ -2195,12 +2191,12 @@ public partial class HumanNPC
         DoBleed();
 
         // ---- Block K: I/O events (lua:4002-4008) ----
-        // lua:4003-4007 — if dmgAttacker then self:TriggerOutput("OnDamaged", dmgAttacker);
-        //     self:MarkTookDamageFromEnemy(dmgAttacker) else self:TriggerOutput("OnDamaged", self) end
-        if (dmgAttacker.IsValid())
+        // lua:4003-4007 — if dmgInfo.Attacker then self:TriggerOutput("OnDamaged", dmgInfo.Attacker);
+        //     self:MarkTookDamageFromEnemy(dmgInfo.Attacker) else self:TriggerOutput("OnDamaged", self) end
+        if (dmgInfo.Attacker.IsValid())
         {
-            TriggerOutput("OnDamaged", dmgAttacker);
-            MarkTookDamageFromEnemy(dmgAttacker);
+            TriggerOutput("OnDamaged", dmgInfo.Attacker);
+            MarkTookDamageFromEnemy(dmgInfo.Attacker);
         }
         else
         {
@@ -2230,36 +2226,36 @@ public partial class HumanNPC
                 if (!isFireEnt) Flinch(dmgInfo, hitgroup);
 
                 // ---- M2: Player attacker → BecomeEnemyToPlayer (lua:4020-4052) ----
-                // lua:4021 — if dmgAttacker && dmgAttacker:IsPlayer() then (no VJ_CVAR_IGNOREPLAYERS guard — NPC attacked by player always reacts)
-                bool isPlayerAttacker = dmgAttacker.IsValid() && dmgAttacker.Components.Get<PlayerBase>() != null;
+                // lua:4021 — if dmgInfo.Attacker && dmgInfo.Attacker:IsPlayer() then (no VJ_CVAR_IGNOREPLAYERS guard — NPC attacked by player always reacts)
+                bool isPlayerAttacker = dmgInfo.Attacker.IsValid() && dmgInfo.Attacker.Components.Get<PlayerBase>() != null;
                 if (isPlayerAttacker)
                 {
-                    // lua:4023 — if self.BecomeEnemyToPlayer && self:CheckRelationship(dmgAttacker) == D_LI then
-                    if (BecomeEnemyToPlayer > 0 && CheckRelationship(dmgAttacker) == (int)VJBase.Disposition.Like)
+                    // lua:4023 — if self.BecomeEnemyToPlayer && self:CheckRelationship(dmgInfo.Attacker) == D_LI then
+                    if (BecomeEnemyToPlayer > 0 && CheckRelationship(dmgInfo.Attacker) == (int)VJBase.Disposition.Like)
                     {
-                        // lua:4024 — self:SetRelationshipMemory(dmgAttacker, VJ.MEM_HOSTILITY_LEVEL, 1)
-                        SetRelationshipMemory(dmgAttacker, "hostility", 1f);
-                        var hostility = GetRelationshipMemory(dmgAttacker, "hostility");
-                        // lua:4025-4026 — if relationMemory[VJ.MEM_HOSTILITY_LEVEL] > self.BecomeEnemyToPlayer && self:Disposition(dmgAttacker) != D_HT then
-                        if (hostility > BecomeEnemyToPlayer && Disposition(dmgAttacker) != (int)VJBase.Disposition.Hate)
+                        // lua:4024 — self:SetRelationshipMemory(dmgInfo.Attacker, VJ.MEM_HOSTILITY_LEVEL, 1)
+                        SetRelationshipMemory(dmgInfo.Attacker, "hostility", 1f);
+                        var hostility = GetRelationshipMemory(dmgInfo.Attacker, "hostility");
+                        // lua:4025-4026 — if relationMemory[VJ.MEM_HOSTILITY_LEVEL] > self.BecomeEnemyToPlayer && self:Disposition(dmgInfo.Attacker) != D_HT then
+                        if (hostility > BecomeEnemyToPlayer && Disposition(dmgInfo.Attacker) != (int)VJBase.Disposition.Hate)
                         {
                             // lua:4027 — self:OnBecomeEnemyToPlayer(dmginfo, hitgroup)
                             OnBecomeEnemyToPlayer(dmgInfo, hitgroup);
-                            // lua:4028 — if self.IsFollowing && self.FollowData.Target == dmgAttacker then self:ResetFollowBehavior() end
-                            if (IsFollowing && Follow.Target == dmgAttacker) ResetFollowBehavior();
-                            // lua:4029 — self:SetRelationshipMemory(dmgAttacker, VJ.MEM_OVERRIDE_DISPOSITION, D_HT)
-                            SetRelationshipMemory(dmgAttacker, "override_disposition", (int)VJBase.Disposition.Hate);
-                            // lua:4030 — self:AddEntityRelationship(dmgAttacker, D_HT, 2)
-                            AddEntityRelationship(dmgAttacker, (int)VJBase.Disposition.Hate, 2);
+                            // lua:4028 — if self.IsFollowing && self.FollowData.Target == dmgInfo.Attacker then self:ResetFollowBehavior() end
+                            if (IsFollowing && Follow.Target == dmgInfo.Attacker) ResetFollowBehavior();
+                            // lua:4029 — self:SetRelationshipMemory(dmgInfo.Attacker, VJ.MEM_OVERRIDE_DISPOSITION, D_HT)
+                            SetRelationshipMemory(dmgInfo.Attacker, "override_disposition", (int)VJBase.Disposition.Hate);
+                            // lua:4030 — self:AddEntityRelationship(dmgInfo.Attacker, D_HT, 2)
+                            AddEntityRelationship(dmgInfo.Attacker, (int)VJBase.Disposition.Hate, 2);
                             // lua:4031 — self.TakingCoverT = curTime + 2
                             TakingCoverT = curTime + 2f;
                             // lua:4032 — self:PlaySoundSystem("BecomeEnemyToPlayer")
                             PlaySoundSystem("BecomeEnemyToPlayer");
-                            // lua:4033 — if !IsValid(funcGetEnemy(self)) then self:StopMoving() self:SetTarget(dmgAttacker) self:SCHEDULE_FACE("TASK_FACE_TARGET") end
+                            // lua:4033 — if !IsValid(funcGetEnemy(self)) then self:StopMoving() self:SetTarget(dmgInfo.Attacker) self:SCHEDULE_FACE("TASK_FACE_TARGET") end
                             if (!GetEnemy().IsValid())
                             {
                                 StopMoving();
-                                SetTarget(dmgAttacker);
+                                SetTarget(dmgInfo.Attacker);
                                 SCHEDULE_FACE("TASK_FACE_TARGET");
                             }
                             // PX: lua:4036-4041 — CanChatMessage / PrintMessage — Source chat system, requires Creator Player, no S&Box equivalent
@@ -2268,10 +2264,10 @@ public partial class HumanNPC
                     // lua:4044-4051 — DamageByPlayer sounds
                     // NOTE: Lua checks NextDamageByPlayerSoundT but never sets it (variable stays 0 → always true).
                     //       This is a Lua oversight — translating 1:1 without adding cooldown.
-                    if (HasDamageByPlayerSounds && curTime > NextDamageByPlayerSoundT && Visible(dmgAttacker))
+                    if (HasDamageByPlayerSounds && curTime > NextDamageByPlayerSoundT && Visible(dmgInfo.Attacker))
                     {
                         var dispLvl = DamageByPlayerDispositionLevel;
-                        var disp = Disposition(dmgAttacker);
+                        var disp = Disposition(dmgInfo.Attacker);
                         if (dispLvl == 0 || (dispLvl == 1 && disp == (int)VJBase.Disposition.Like) || (dispLvl == 2 && disp != (int)VJBase.Disposition.Hate))
                         {
                             PlaySoundSystem("DamageByPlayer");
@@ -2296,10 +2292,10 @@ public partial class HumanNPC
                     if (DoCoverTrace(WorldSpaceCenter(), GetAimPosition(GetEnemy())).isCover)
                     {
                         // lua:4062-4066 — Play taking cover animation
-                        var coverAnim = AnimTbl_TakingCover;
-                        if (coverAnim != null && VJAnimationMapper.AnimExists(GameObject, coverAnim))
+                        var coverAnimPick = VJUtility.PICK(AnimTbl_TakingCover);
+                        if (coverAnimPick != null && VJAnimationMapper.AnimExists(GameObject, coverAnimPick))
                         {
-                            var (animResult, coverDur, _) = PlayAnim(coverAnim, true);
+                            var (animResult, coverDur, _) = PlayAnim(coverAnimPick, true);
                             if (animResult != Activity.Invalid)
                             {
                                 canMove = false;
@@ -2314,7 +2310,7 @@ public partial class HumanNPC
                     {
                         SCHEDULE_COVER_ENEMY("TASK_RUN_PATH", schedule =>
                         {
-                            schedule.EngineTask.FaceEnemy = true;
+                            schedule.EngTask(EngineTask.FaceEnemy, 0);
                         });
                         NextCombatDamageResponseT = curTime + VJUtility.Rand(CombatDamageResponse_Cooldown.a, CombatDamageResponse_Cooldown.b);
                     }
@@ -2359,20 +2355,20 @@ public partial class HumanNPC
                         bool canMove = true;
 
                         // lua:4107-4122 — Attempt to find who damaged me
-                        if (dmgAttacker.IsValid() && HasEntityFlag(dmgAttacker, "VJ_ID_Living")
+                        if (dmgInfo.Attacker.IsValid() && HasEntityFlag(dmgInfo.Attacker, "VJ_ID_Living")
                             && (dmgResponse is true or "OnlySearch"))
                         {
                             var sightDist = SightDistance;
                             sightDist = MathF.Min(MathF.Max(sightDist / 2, sightDist <= 1000 ? sightDist : 1000), sightDist);
-                            if (WorldPosition.Distance(dmgAttacker.WorldPosition) <= sightDist && Visible(dmgAttacker))
+                            if (WorldPosition.Distance(dmgInfo.Attacker.WorldPosition) <= sightDist && Visible(dmgInfo.Attacker))
                             {
-                                var dispLvl = Disposition(dmgAttacker);
+                                var dispLvl = Disposition(dmgInfo.Attacker);
                                 if (dispLvl == (int)VJBase.Disposition.Hate || dispLvl == (int)VJBase.Disposition.Neutral)
                                 {
                                     OnSetEnemyFromDamage(dmgInfo, hitgroup);
                                     NextCallForHelpT = curTime + 1;
-                                    ForceSetEnemy(dmgAttacker, true);
-                                    MaintainAlertBehavior();
+                                    ForceSetEnemy(dmgInfo.Attacker, true);
+                                    MaintainAlertBehavior(false);
                                     canMove = false;
                                 }
                             }
@@ -2486,7 +2482,7 @@ public partial class HumanNPC
         // lua:4183 — if self.IsFollowing then self:ResetFollowBehavior() end
         if (IsFollowing) ResetFollowBehavior();
 
-        // lua:4184-4185 — dmgInflictor/dmgAttacker
+        // lua:4184-4185 — dmgInflictor/dmginfo.Attacker
         // PX: lua:4184 — dmginfo:GetInflictor() — Source engine; S&Box DamageInfo.Weapon is the equivalent, already in use
         // lua:4186 — myPos = self:GetPos()
         Vector3 myPos = WorldPosition;
@@ -2499,10 +2495,10 @@ public partial class HumanNPC
             var allies = Allies_Check(responseDist);
             if (allies != null)
             {
-                // lua:4192 — doBecomeEnemyToPlayer = (self.BecomeEnemyToPlayer && dmgAttacker:IsPlayer() && !VJ_CVAR_IGNOREPLAYERS)
+                // lua:4192 — doBecomeEnemyToPlayer = (self.BecomeEnemyToPlayer && dmginfo.Attacker:IsPlayer() && !VJ_CVAR_IGNOREPLAYERS)
                 var doBecomeEnemyToPlayer = BecomeEnemyToPlayer > 0
-                    && dmgAttacker.IsValid()
-                    && dmgAttacker.Components.Get<PlayerBase>() != null
+                    && dmginfo.Attacker.IsValid()
+                    && dmginfo.Attacker.Components.Get<PlayerBase>() != null
                     && !VJInit.vj_npc_ignoreplayers;
                 var responseType = DeathAllyResponse;
                 foreach (var ally in allies)
@@ -2520,18 +2516,18 @@ public partial class HumanNPC
                     allyBase.SetTurnTarget("Enemy");
                     // lua:4220-4235 — BecomeEnemyToPlayer chain
                     if (doBecomeEnemyToPlayer && allyBase.BecomeEnemyToPlayer > 0
-                        && allyBase.CheckRelationship(dmgAttacker) == (int)VJBase.Disposition.Like)
+                        && allyBase.CheckRelationship(dmginfo.Attacker) == (int)VJBase.Disposition.Like)
                     {
-                        allyBase.SetRelationshipMemory(dmgAttacker, "hostility", 1f);
-                        var hostility = allyBase.GetRelationshipMemory(dmgAttacker, "hostility");
+                        allyBase.SetRelationshipMemory(dmginfo.Attacker, "hostility", 1f);
+                        var hostility = allyBase.GetRelationshipMemory(dmginfo.Attacker, "hostility");
                         if (hostility > allyBase.BecomeEnemyToPlayer)
                         {
-                            // lua:4223 — if ally:Disposition(dmgAttacker) != D_HT then
-                            if (allyBase.Disposition(dmgAttacker) != (int)VJBase.Disposition.Hate)
+                            // lua:4223 — if ally:Disposition(dmginfo.Attacker) != D_HT then
+                            if (allyBase.Disposition(dmginfo.Attacker) != (int)VJBase.Disposition.Hate)
                             {
                                 allyBase.OnBecomeEnemyToPlayer(dmginfo, hitgroup);
-                                allyBase.SetRelationshipMemory(dmgAttacker, "override_disposition", (int)VJBase.Disposition.Hate);
-                                allyBase.AddEntityRelationship(dmgAttacker, (int)VJBase.Disposition.Hate, 2);
+                                allyBase.SetRelationshipMemory(dmginfo.Attacker, "override_disposition", (int)VJBase.Disposition.Hate);
+                                allyBase.AddEntityRelationship(dmginfo.Attacker, (int)VJBase.Disposition.Hate, 2);
                                 allyBase.PlaySoundSystem("BecomeEnemyToPlayer");
                                 // lua:4225 — if ally.IsFollowing then ally:ResetFollowBehavior() end
                                 if (allyBase.IsFollowing) allyBase.ResetFollowBehavior();
@@ -2577,10 +2573,10 @@ public partial class HumanNPC
         // NOTE: human_base does NOT reset HasRangeAttack/HasLeapAttack (human attacks use weapons, not creature attacks)
 
         // ---- Attacker check (lua:4256-4259) ----
-        // lua:4256 — if IsValid(dmgAttacker) then
+        // lua:4256 — if IsValid(dmginfo.Attacker) then
         // PX: lua:4256-4259 — npc_barnacle GetClass() (HL2 entity) / vj_npc_ply_frag convar / AddFrags (Source score system)
 
-        // lua:4260 — gamemode.Call("OnNPCKilled", self, dmgAttacker, dmgInflictor)
+        // lua:4260 — gamemode.Call("OnNPCKilled", self, dmginfo.Attacker, dmgInflictor)
         OnNPCKilled?.Invoke(GameObject, dmginfo.Attacker, dmginfo.Weapon);
 
         // ---- Post-death setup (lua:4261-4264) ----
@@ -2593,7 +2589,7 @@ public partial class HumanNPC
         // lua:4264 — //AA_StopMoving() commented out
 
         // ---- I/O events (lua:4266-4272) ----
-        // lua:4267-4270 — if dmgAttacker:IsValid() then TriggerOutput("OnDeath", dmgAttacker) else TriggerOutput("OnDeath", self)
+        // lua:4267-4270 — if dmginfo.Attacker:IsValid() then TriggerOutput("OnDeath", dmginfo.Attacker) else TriggerOutput("OnDeath", self)
         var deathAttacker = dmginfo.Attacker;
         if (deathAttacker.IsValid())
             TriggerOutput("OnDeath", deathAttacker);
@@ -2620,8 +2616,8 @@ public partial class HumanNPC
             var deathAnim = VJUtility.PICK(AnimTbl_Death);
             if (deathAnim != null)
             {
-                var deathTime = AnimDurationEx(deathAnim, null, 0f);
-                PlayAnim(deathAnim, true, deathTime, true);
+                var animTime = VJUtility.AnimDurationEx(GameObject, deathAnim, null, 0f);
+                PlayAnim(deathAnim, true, animTime, true);
             }
             // lua:4284 — self.DeathAnimationCodeRan = true
             DeathAnimationCodeRan = true;
@@ -2649,8 +2645,9 @@ public partial class HumanNPC
     /// </summary>
     public override void FinishDeath(DamageInfo dmginfo, int hitgroup)
     {
-        // lua:4301 — VJ_DEBUG + GetConVar debug print
-        // PX: lua:4301 — VJ_DEBUG / GetConVar — Source debug/convar system, no S&Box equivalent
+        // lua:4301 — VJ_DEBUG damage print
+        if (VJDebug.IsEnabled(this, VJDebugFlags.Damage))
+            VJDebug.Print(GameObject, "FinishDeath", null, "Attacker =", dmginfo.Attacker, "| Inflictor =", dmginfo.Weapon);
 
         // lua:4302 — self:SetSaveValue("m_lifeState", 2) — LIFE_DEAD
         SetSaveValue("m_lifeState", 2);
@@ -2891,7 +2888,7 @@ public partial class HumanNPC
             else
             {
                 // lua:4502-4505 — dmgForce = (SavedDmgInfo.force / 40) + moveVelocity
-                var dmgForce = (dmginfo?.Force ?? 0) / 40f;
+                var dmgForce = ((dmginfo as SWB.Shared.DamageInfo)?.Force ?? 0) / 40f;
                 // Phase 3: DeathAnimationCodeRan → use GroundSpeedVelocity
                 rb.MassOverride = 1f;
                 rb.ApplyForce(dmgForce * WorldRotation.Forward);
@@ -2968,7 +2965,7 @@ public partial class HumanNPC
                     // lua:3009-3021 — Knockback (skip doors, trains, stationary, Boss non-Tank)
                     if (HasMeleeAttackKnockBack
                         // lua:3009 — GetMoveType()!=MOVETYPE_PUSH → S&Box: skip kinematic Rigidbody (doors/elevators)
-                        && (ent.Components.Get<Rigidbody>() is not { IsKinematic: true })
+                        && (ent.Components.Get<Rigidbody>() is { MotionEnabled: true })
                         && entBase?.MovementType != VJMoveType.Stationary
                         && (!HasEntityFlag(ent, "VJ_ID_Boss") /* || ent.IsVJBaseSNPC_Tank — Phase 3 */))
                     {
@@ -3040,7 +3037,7 @@ public partial class HumanNPC
         if (wepComp == null) return;
         var soundName = wepComp.NPC_BeforeFireSound;
         if (string.IsNullOrEmpty(soundName)) return;
-        Sound.Play(soundName, WorldPosition);
+        Sound.Play(soundName, WorldPosition, 0f);
     }
 
     // ═══ playReloadAnimation (local func) — human_base/init.lua:2562-2582 ═══

@@ -24,6 +24,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public bool VJ_ID_Attackable { get; set; } = true;
     public bool VJ_ID_Destructible { get; set; }
     public bool VJ_ID_Boss { get; set; }
+    public float BecomeEnemyToPlayer { get; set; } // hostility threshold to turn on player attacker; 0 = disabled
     public bool VJ_ID_Vehicle { get; set; }
     // ═══ VJ_ST_* State Flags ═══
     public bool VJ_ST_Grabbed { get; set; }
@@ -37,6 +38,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public float NPCClass { get; set; }
     public float MaxYawSpeed { get; set; }
     public bool VJ_DEBUG { get; set; }
+    public VJDebugFlags DebugFlags { get; set; } = VJDebugFlags.None;
     public bool VJ_IsBeingControlled { get; set; }
     public bool VJ_IsBeingControlled_Tool { get; set; }
     public int SelectedDifficulty { get; set; } = 1;
@@ -64,6 +66,8 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public bool IsAbleToRangeAttack { get; set; } = true;
     public bool IsAbleToLeapAttack { get; set; } = true;
     public bool MeleeAttack_IsPropAttack { get; set; }
+
+    public int StartHealth { get; set; } = 100;
 
     // ═══ Attack Timer Config — creature init.lua:265-326 ═══
     // "NextAnyAttackTime_*" — <=0 = auto calculate | >0 = fixed time (seconds)
@@ -574,7 +578,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
             var sdFile = VJUtility.PICK(SoundTbl_MeleeAttackPlayerSpeed);
             if (!string.IsNullOrEmpty(sdFile))
             {
-                var handle = Sound.Play(sdFile, player.WorldPosition);
+                var handle = Sound.Play(sdFile, player.WorldPosition, 0f);
                 handle.Parent = player;
                 handle.Pitch = GetSoundPitch(MeleeAttackPlayerSpeedPitch);
                 // SoundLevel not mapped to S&Box attenuation yet (Phase 3)
@@ -610,9 +614,6 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     // TranslateActivity — see BaseNPC.Animation.cs for full implementation (signature: Activity → Activity)
     // UpdatePoseParamTracking — see BaseNPC.Animation.cs for full implementation
 
-    /// <summary>MaintainActivity — schedules.lua:208. Updates animation activity and pose parameters every frame. Phase 3: S&Box Animgraph-driven.</summary>
-    public virtual void MaintainActivity() { }
-
     /// <summary>PlayIdleSound — core.lua:2836-2942. Combat idle + regular idle sound with timer.</summary>
     public virtual bool PlayIdleSound(string customSD = null, string sdType = null, bool combatIdle = false)
     {
@@ -622,8 +623,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
         if (IdleSoundBlockTime >= curTime || NextIdleSoundT >= curTime) return false;
 
         bool setTimer = true;
-        if (customSD != null)
-            customSD = VJUtility.PICK(customSD);
+        // lua:2846 — if customSD: PICK(customSD); in C# customSD is already a single string, no-op
 
         // combatIdle guard: if no combat idle sounds and not reg-while-alert, skip
         if (combatIdle && VJUtility.PICK(SoundTbl_CombatIdle) == null && !IdleSoundsRegWhileAlert)
@@ -667,7 +667,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
 
         if (DisableFootStepSoundTimer)
         {
-            var pickedSD = customSD != null ? VJUtility.PICK(customSD) : VJUtility.PICK(SoundTbl_FootStep);
+            var pickedSD = customSD ?? VJUtility.PICK(SoundTbl_FootStep);
             if (pickedSD != null)
             {
                 EmitSound(pickedSD, FootstepSoundLevel, GetSoundPitch(FootstepSoundPitch));
@@ -679,7 +679,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
         float curTime = Time.Now;
         if (IsMoving() && curTime > NextFootstepSoundT && GetMoveDelay() <= 0)
         {
-            var pickedSD = customSD != null ? VJUtility.PICK(customSD) : VJUtility.PICK(SoundTbl_FootStep);
+            var pickedSD = customSD ?? VJUtility.PICK(SoundTbl_FootStep);
             if (pickedSD != null)
             {
                 EmitSound(pickedSD, FootstepSoundLevel, GetSoundPitch(FootstepSoundPitch));
@@ -806,6 +806,10 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public virtual void StopAttacks(bool checkTimers = false)
     {
         if (Dead) return;
+
+        // lua:2733 — VJ_DEBUG attack print
+        if (VJDebug.IsEnabled(this, VJDebugFlags.Attack))
+            VJDebug.Print(GameObject, "StopAttacks", null, "Attack type =", AttackType);
 
         // lua:2735 — if checking timers and AttackState < Executed, re-trigger timers with skipStopAttacks
         if (checkTimers && AttackState < VJAttackState.Executed)
@@ -1246,6 +1250,10 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     /// <summary>OnTakeDamage — base implementation. Handles death with dissolve re-application for CreatureNPC.</summary>
     public virtual int OnTakeDamage( DamageInfo dmgInfo, int hitgroup )
     {
+        // lua:3025 — VJ_DEBUG damage print
+        if (VJDebug.IsEnabled(this, VJDebugFlags.Damage))
+            VJDebug.Print(GameObject, "OnTakeDamage", null, "Amount =", dmgInfo.Damage, "| Attacker =", dmgInfo.Attacker, "| Inflictor =", dmgInfo.Weapon);
+
         CurrentHealth -= dmgInfo.Damage;
 
         // lua: creature init.lua:3171-3181 — death + dissolve re-application
@@ -1578,7 +1586,16 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     }
 
     public virtual void MarkTookDamageFromEnemy(GameObject attacker) { }
+    public virtual void BeginDeath(DamageInfo dmginfo, int hitgroup) { }
+    public virtual void OnBecomeEnemyToPlayer(DamageInfo dmginfo, int hitgroup) { }
     public virtual void SetSaveValue(string key, object value) { }
+
+    /// <summary>Get aim position at enemy (simple fallback — override in weapon for prediction).</summary>
+    public virtual Vector3 GetAimPosition(GameObject ene)
+    {
+        if (ene.IsValid()) return ene.WorldPosition;
+        return WorldPosition + WorldRotation.Forward * 200f;
+    }
 
     /// <summary>Relationship memory dictionary — per-entity key-value store. core.lua SetRelationshipMemory/GetRelationshipMemory</summary>
     private Dictionary<GameObject, Dictionary<string, object>> _relationshipMemory = new();

@@ -45,7 +45,7 @@ public static class VJEntitySpawner
         go.WorldPosition = pos;
         go.WorldRotation = ang;
 
-        var renderer = go.Components.Create<ModelRenderer>();
+        var renderer = go.Components.Create<SkinnedModelRenderer>();
         if (!string.IsNullOrEmpty(modelPath))
         {
             renderer.Model = Model.Load(modelPath);

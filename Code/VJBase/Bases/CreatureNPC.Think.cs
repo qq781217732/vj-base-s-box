@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Sandbox;
+using SWB.Player;
 
 namespace VJBase;
 
@@ -44,6 +45,19 @@ public partial class CreatureNPC
         }
 
         OnThink();
+        // lua:1896-1899 — VJ_DEBUG per-frame: enemy/cover state
+        if (VJ_DEBUG)
+        {
+            if ((DebugFlags & VJDebugFlags.Enemy) != 0)
+                VJDebug.Print(GameObject, null, null, "Enemy ->", GetEnemy()?.Name ?? "NULL", "| Alerted?", Alerted);
+            if ((DebugFlags & VJDebugFlags.TakingCover) != 0)
+            {
+                if (curTime > TakingCoverT)
+                    VJDebug.Print(GameObject, null, null, "NOT taking cover");
+                else
+                    VJDebug.Print(GameObject, null, null, "Taking cover (" + (TakingCoverT - curTime) + ")");
+            }
+        }
         OnThinkActive();
 
         // Process attack timers — check reset/re-enable/bleed polling fields
@@ -97,7 +111,7 @@ public partial class CreatureNPC
                             moveSpeed = MathX.Lerp(myVelLen, moveSpeed, Time.Delta * AA_MoveAccelerate);
                         }
                         // lua:1921-1925 — velocity + time
-                        var velDir = (AA_CurrentMovePosDir ?? Vector3.Zero).Value;
+                        var velDir = AA_CurrentMovePosDir ?? Vector3.Zero;
                         var vlen = velDir.Length;
                         if (vlen > 0.001f) velDir /= vlen;
                         var velPos = velDir * moveSpeed;
@@ -188,8 +202,8 @@ public partial class CreatureNPC
                         {
                             if (!busy)
                             {
-                                TaskComplete();
-                                StopMoving(false);
+                                OnTaskComplete();
+                                StopMoving();
                                 SelectSchedule();
                             }
                             Follow.Moving = false;
@@ -334,7 +348,7 @@ public partial class CreatureNPC
     }
 
     // ═══ MaintainAlertBehavior — creature_base/init.lua:1760-1797 ═══
-    public virtual void MaintainAlertBehavior(bool alwaysChase)
+    public override void MaintainAlertBehavior(bool alwaysChase)
     {
         var ene = GetEnemy();
         if (!ene.IsValid()) return;
@@ -539,7 +553,7 @@ public partial class CreatureNPC
                         // lua:2499 — Knockback guards: MOVETYPE_PUSH→kinematic, Stationary, Boss non-Tank
                         var entBase = ent.Components.Get<BaseNPC>();
                         if (HasMeleeAttackKnockBack
-                            && (ent.Components.Get<Rigidbody>() is not { IsKinematic: true })  // MOVETYPE_PUSH
+                            && (ent.Components.Get<Rigidbody>() is { MotionEnabled: true })  // MOVETYPE_PUSH
                             && entBase?.MovementType != VJMoveType.Stationary
                             && (!HasEntityFlag(ent, "VJ_ID_Boss") /* || IsVJBaseSNPC_Tank — Phase 3 */))
                         {
@@ -732,7 +746,7 @@ public partial class CreatureNPC
     }
 
     // ═══ BeginDeath — creature_base/init.lua:3188-3311 ═══
-    public virtual void BeginDeath(DamageInfo dmginfo, int hitgroup)
+    public override void BeginDeath(DamageInfo dmginfo, int hitgroup)
     {
         // lua:3189 — self.Dead = true
         Dead = true;
@@ -886,7 +900,7 @@ public partial class CreatureNPC
             var deathAnimPick = VJUtility.PICK(AnimTbl_Death);
             if (deathAnimPick != null)
             {
-                var deathDur = AnimDurationEx(deathAnimPick, null, 0f);
+                var deathDur = VJUtility.AnimDurationEx(GameObject, deathAnimPick, null, 0f);
                 PlayAnim(deathAnimPick, true, deathDur, true);
             }
             // lua:3297 — self.DeathAnimationCodeRan = true
@@ -912,8 +926,9 @@ public partial class CreatureNPC
     // ═══ FinishDeath — creature_base/init.lua:3313-3325 ═══
     public virtual void FinishDeath(DamageInfo dmginfo, int hitgroup)
     {
-        // lua:3314 — VJ_DEBUG + GetConVar debug print
-        // PX: lua:3314 — VJ_DEBUG / GetConVar — Source debug/convar system, no S&Box equivalent
+        // lua:3314 — VJ_DEBUG damage print
+        if (VJDebug.IsEnabled(this, VJDebugFlags.Damage))
+            VJDebug.Print(GameObject, "FinishDeath", null, "Attacker =", dmginfo.Attacker, "| Inflictor =", dmginfo.Weapon);
 
         // lua:3315 — self:SetSaveValue("m_lifeState", 2) — LIFE_DEAD
         SetSaveValue("m_lifeState", 2);

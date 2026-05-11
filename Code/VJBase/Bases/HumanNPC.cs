@@ -76,8 +76,8 @@ public partial class HumanNPC : CreatureNPC
     }
 
     // ═══ Spawn Config — human_base/init.lua:14-323 ═══
-    public List<string> Model { get; set; }
-    public int StartHealth { get; set; } = 50;
+    public List<string> ModelList { get; set; }
+
 
     // ═══ Weapon Inventory Slots ═══
     public class WeaponSlots
@@ -141,7 +141,7 @@ public partial class HumanNPC : CreatureNPC
     public int Weapon_CrouchAttackChance { get; set; } = 2;
 
     // ═══ Damage Response Config (ported from init.lua:4020-4135) ═══
-    public int BecomeEnemyToPlayer { get; set; }
+    public new int BecomeEnemyToPlayer { get; set; }
     public int DamageByPlayerDispositionLevel { get; set; } = 1;
     public object DamageResponse { get; set; } = true; // true / "OnlySearch" / "OnlyMove"
     public bool CombatDamageResponse { get; set; } = true;
@@ -171,7 +171,7 @@ public partial class HumanNPC : CreatureNPC
     public bool IdleAlwaysWander { get; set; }
 
     // ═══ Animation Config — human_base/init.lua ═══
-    public Dictionary<int, object> AnimationTranslations { get; set; } = new();
+    public new Dictionary<Activity, object> AnimationTranslations { get; set; } = new();
 
     // ═══ Weapon Helpers (Phase 1) ═══
     /// <summary>GetActiveWeapon — overrides BaseNPC to return WeaponEntity.</summary>
@@ -241,7 +241,7 @@ public partial class HumanNPC : CreatureNPC
     public virtual void OnDamaged(DamageInfo dmginfo, int hitgroup, string status) { }
     public virtual void OnBleed(DamageInfo dmginfo, int hitgroup) { }
     public virtual void OnSetEnemyFromDamage(DamageInfo dmginfo, int hitgroup) { }
-    public virtual void OnBecomeEnemyToPlayer(DamageInfo dmginfo, int hitgroup) { }
+    public override void OnBecomeEnemyToPlayer(DamageInfo dmginfo, int hitgroup) { }
     public virtual void ResetEatingBehavior(string reason) { }
 
     // ═══ Death Weapon Drop (human_base init.lua:4484-4513) ═══

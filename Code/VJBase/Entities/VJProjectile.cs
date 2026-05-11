@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Sandbox;
+using SWB.Player;
 
 namespace VJBase;
 
@@ -79,7 +80,7 @@ public partial class VJProjectile : Component
         if (HasIdleSounds && curTime >= _nextIdleSoundT && SoundTbl_Idle?.Count > 0)
         {
             var picked = VJUtility.PICK(SoundTbl_Idle);
-            if (picked != null) Sound.Play(picked, GameObject.WorldPosition);
+            if (picked != null) Sound.Play(picked, GameObject.WorldPosition, 0f);
             _nextIdleSoundT = curTime + NextSoundTime_Idle;
         }
 
@@ -98,7 +99,8 @@ public partial class VJProjectile : Component
 
         var myPos = GameObject.WorldPosition;
         var owner = SeekerOwner;
-        var ownerIsVJ = owner?.Components.Get<BaseNPC>() is { } ownerNpc;
+        var ownerNpc = owner?.Components.Get<BaseNPC>();
+        var ownerIsVJ = ownerNpc != null;
 
         // Find closest valid target within SeekRange (any entity with VJ_ID_Living flag)
         GameObject bestTarget = null;
@@ -188,8 +190,8 @@ public partial class VJProjectile : Component
 
             if (HasOnCollideSounds && SoundTbl_OnCollide?.Count > 0)
             {
-                var picked = VJUtility.PICK(SoundTbl_OnCollide);
-                if (picked != null) Sound.Play(picked, other.WorldPosition);
+                var picked = VJUtility.PICK<string>(SoundTbl_OnCollide);
+                if (picked != null) Sound.Play(picked, other.WorldPosition, 0f);
             }
         }
 
@@ -253,7 +255,7 @@ public partial class VJProjectile : Component
         if (HasOnRemoveSounds && SoundTbl_OnRemove?.Count > 0)
         {
             var picked = VJUtility.PICK(SoundTbl_OnRemove);
-            if (picked != null) Sound.Play(picked, pos);
+            if (picked != null) Sound.Play(picked, pos, 0f);
         }
 
         if (GameObject.IsValid())

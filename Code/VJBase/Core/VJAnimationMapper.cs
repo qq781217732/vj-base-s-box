@@ -132,7 +132,7 @@ public static class VJAnimationMapper
     /// <summary>Get the animgraph DirectPlayback node for this object, or null.</summary>
     public static AnimGraphDirectPlayback GetDirectPlayback(GameObject obj)
     {
-        return obj?.Components.Get<SkinnedModelRenderer>()?.AnimationGraph?.GetDirectPlayback();
+        return obj?.Components.Get<SkinnedModelRenderer>()?.SceneModel?.DirectPlayback;
     }
 
     /// <summary>Check if a given activity matches the currently playing sequence.</summary>

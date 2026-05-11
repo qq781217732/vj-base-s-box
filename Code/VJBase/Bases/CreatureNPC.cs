@@ -9,7 +9,7 @@ namespace VJBase;
 public partial class CreatureNPC : BaseNPC
 {
 	// ═══ Entity Identity ═══
-	public bool IsVJBaseSNPC { get; set; } = true;
+	public new bool IsVJBaseSNPC { get; set; } = true;
 	public bool IsVJBaseSNPC_Creature { get; set; } = true;
 	public bool AutomaticFrameAdvance { get; set; }
 
