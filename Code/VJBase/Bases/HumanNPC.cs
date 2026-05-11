@@ -160,7 +160,7 @@ public partial class HumanNPC : CreatureNPC
 
     // ═══ Misc Damage Fields (ported from OnTakeDamage) ═══
     public bool CanEat { get; set; }
-    public object EatingData { get; set; }
+    public EatingData EatingData { get; set; } = new();
     public bool CanChatMessage { get; set; }
 
     public bool CanDetectDangers { get; set; } = true;
@@ -247,4 +247,13 @@ public partial class HumanNPC : CreatureNPC
     // ═══ Death Weapon Drop (human_base init.lua:4484-4513) ═══
     public virtual void OnDeathWeaponDrop(DamageInfo dmginfo, int hitgroup, GameObject wep) { }
     public virtual void DropWeapon(GameObject wep, object unused, Vector3 velocity) { }
+}
+
+/// <summary>
+/// Eating system state — tracks when the next eating check should fire.
+/// Lua: EatingData table on human NPC
+/// </summary>
+public class EatingData
+{
+    public float NextCheck { get; set; }
 }

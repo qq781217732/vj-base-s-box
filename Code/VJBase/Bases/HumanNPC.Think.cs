@@ -2428,7 +2428,11 @@ public partial class HumanNPC
 
         // ---- Block N: Stop eating (lua:4154-4158) ----
         // lua:4155-4157 — if selfData.CanEat && selfData.VJ_ST_Eating then selfData.EatingData.NextCheck = curTime + 15; self:ResetEatingBehavior("Injured") end
-        if (CanEat && VJ_ST_Eating) ResetEatingBehavior("Injured");
+        if (CanEat && VJ_ST_Eating)
+        {
+            EatingData.NextCheck = curTime + 15;
+            ResetEatingBehavior("Injured");
+        }
 
         // ---- Block O: Death (lua:4160-4171) ----
         // lua:4160 — if self:Health() <= 0 && !selfData.Dead then

@@ -32,6 +32,7 @@ public partial class BaseNPC
 	public float AA_GroundLimit { get; set; } = 500;
 	public int AA_MinWanderDist { get; set; } = 500;
 	public float AA_MoveAccelerate { get; set; }
+	public float AA_MoveDecelerate { get; set; } = 5; // lua: creature shared.lua:67 — slows down approaching destination
 	public List<string> Aerial_AnimTbl_Calm { get; set; } = new() { "ACT_FLY" };
 	public List<string> Aerial_AnimTbl_Alerted { get; set; } = new() { "ACT_FLY" };
 	public List<string> Aquatic_AnimTbl_Calm { get; set; } = new() { "ACT_SWIM" };
@@ -431,7 +432,7 @@ public partial class BaseNPC
 		if (!ene.IsValid()) return false;
 
 		// base_aa.lua:364: AA_MoveTo(ene, playAnim != false, moveType or "Alert", ...)
-		// playAnim != false converts nil→true in Lua; C# default =true covers nil case.
+		// playAnim != false converts nil->true in Lua; C# default =true covers nil case.
 		// For all explicit bool args (true/false), behavior is identical.
 		var opts = new Dictionary<string, object>
 		{
@@ -452,15 +453,28 @@ public partial class BaseNPC
 	/// </summary>
 	public virtual void AA_MoveAnimation()
 	{
-		// lua:379 — guard: time check OR sequence/activity mismatch AND not busy
+		// lua:377-378 — get current sequence + activity
 		var curTime = (float)Time.Now;
 		var dp = Components.Get<SkinnedModelRenderer>()?.AnimationGraph?.GetDirectPlayback();
 		var curSeq = dp?.Name ?? "";
+
+		// lua:379 — guard: (time gate OR seq mismatch OR activity/sequence mismatch) AND not busy
 		bool seqMismatch = curSeq != (AA_CurrentMoveAnim as string);
 
-		if ((curTime > AA_NextMoveAnimTime || seqMismatch) && !IsBusy("Activities"))
+		// Third condition from lua:379 — curACT != DO_NOT_DISTURB && GetSequenceActivity(curSeq) != TranslateActivity(curACT)
+		// In S&Box: if curSeq maps to a non-idle activity, and translating that activity produces a different target, trigger new anim.
+		bool activityMismatch = false;
+		if (!string.IsNullOrEmpty(curSeq))
 		{
-			// lua:381-385 — pick animation table based on Calm/Alerted × Aerial/Aquatic
+			var seqAct = VJAnimationMapper.SequenceToActivity(GameObject, curSeq);
+			activityMismatch = seqAct != null
+				&& seqAct != Activity.DoNotDisturb
+				&& TranslateActivity(seqAct.Value) != seqAct.Value;
+		}
+
+		if ((curTime > AA_NextMoveAnimTime || seqMismatch || activityMismatch) && !IsBusy("Activities"))
+		{
+			// lua:381-385 — pick animation table based on Calm/Alerted x Aerial/Aquatic
 			List<string> chosenAnim = null;
 			if (AA_CurrentMoveAnimType == "Calm")
 				chosenAnim = MovementType == VJMoveType.Aquatic ? Aquatic_AnimTbl_Calm : Aerial_AnimTbl_Calm;
@@ -470,11 +484,20 @@ public partial class BaseNPC
 			// lua:386 — PICK(chosenAnim)
 			var anim = VJUtility.PICK(chosenAnim);
 
-			// lua:387 — PlayAnim(chosenAnim, false, 0, false, 0, {AlwaysUseSequence = badACTs[chosenAnim]})
-			var (_, animDur, _) = PlayAnim(anim);
+			// lua:387 — PlayAnim(chosenAnim, false, 0, false, 0, {AlwaysUseSequence = badACTs[chosenAnim] or false})
+			// badACTs from base_aa.lua:371 = {[ACT_WALK]=true, [ACT_WALK_AIM]=true, [ACT_RUN]=true, [ACT_RUN_AIM]=true}
+			bool alwaysUseSeq = anim == "ACT_WALK" || anim == "ACT_WALK_AIM"
+				|| anim == "ACT_RUN" || anim == "ACT_RUN_AIM";
+			var extraOpts = new PlayAnimOptions { AlwaysUseSequence = alwaysUseSeq };
+			var (playedAct, animDur, animType) = PlayAnim(anim, extraOptions: extraOpts);
 
 			// lua:388 — AA_CurrentMoveAnim = curActivity == DO_NOT_DISTURB ? GetSequence() : GetIdealSequence()
-			AA_CurrentMoveAnim = dp?.Name; // approximate: current sequence post-PlayAnim
+			// If played as a raw sequence: store the sequence name.
+			// If played as an activity: look up the ideal sequence for that activity.
+			if (animType == VJAnimType.Sequence && !string.IsNullOrEmpty(anim))
+				AA_CurrentMoveAnim = anim;
+			else
+				AA_CurrentMoveAnim = VJAnimationMapper.MapActivity(GameObject, playedAct);
 
 			// lua:389 — AA_NextMoveAnimTime = CurTime() + animDur
 			AA_NextMoveAnimTime = curTime + animDur;

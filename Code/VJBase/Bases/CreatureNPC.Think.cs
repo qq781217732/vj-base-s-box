@@ -86,13 +86,26 @@ public partial class CreatureNPC
                     {
                         AA_CurrentMoveDist = dist;
                         var moveSpeed = AA_CurrentMoveMaxSpeed;
+                        // lua:1916-1917 — decelerate approaching target
+                        if (AA_MoveDecelerate > 1 && dist < moveSpeed)
+                        {
+                            moveSpeed = Math.Clamp(moveSpeed / AA_MoveDecelerate, dist, moveSpeed);
+                        }
                         // lua:1918-1919 — acceleration lerp
-                        if (AA_MoveAccelerate > 0 && rb != null)
+                        else if (AA_MoveAccelerate > 0 && rb != null)
                         {
                             moveSpeed = MathX.Lerp(myVelLen, moveSpeed, Time.Delta * AA_MoveAccelerate);
-                            var velDir = AA_CurrentMovePosDir?.Normal ?? rb.Velocity.Normal;
-                            rb.Velocity = velDir * moveSpeed;
                         }
+                        // lua:1921-1925 — velocity + time
+                        var velDir = (AA_CurrentMovePosDir ?? Vector3.Zero).Value;
+                        var vlen = velDir.Length;
+                        if (vlen > 0.001f) velDir /= vlen;
+                        var velPos = velDir * moveSpeed;
+                        var velTimeCur = curTime + dist / velPos.Length;
+                        if (!float.IsNaN(velTimeCur))
+                            AA_CurrentMoveTime = velTimeCur;
+                        // lua:1926 — SetLocalVelocity
+                        if (rb != null) rb.Velocity = velPos;
                     }
                     else
                     {
@@ -128,28 +141,58 @@ public partial class CreatureNPC
                     || (followEnt.Components.Get<BaseNPC>()?.VJ_NPC_Class.Any(c => VJ_NPC_Class.Contains(c)) ?? false))
                     && Alive(followEnt)))
                 {
-                    if (curTime > Follow.NextUpdateT)
+                    // lua:1954 — time gate + VJ_ST_Healing guard
+                    if (curTime > Follow.NextUpdateT && !VJ_ST_Healing)
                     {
                         var dist = WorldPosition.Distance(followEnt.WorldPosition);
+                        var busy = IsBusy("Activities");
                         SetTarget(followEnt);
                         Follow.StopAct = false;
+                        // lua:1959 — entity is far away, move towards it
                         if (dist > Follow.MinDist)
                         {
                             bool isFar = dist > (Follow.MinDist * 4);
-                            if (isFar) Follow.StopAct = true;
-                            Follow.Moving = true;
-                            if (isAA)
-                                AA_MoveTo(followEnt, true, dist < Follow.MinDist * 1.5f ? "Calm" : "Alert",
-                                    new AAMoveOptions { FaceDestTarget = true });
-                            else
-                                SCHEDULE_GOTO_TARGET("TASK_RUN_PATH");
+                            // lua:1961-1962 — IF (busy but far) OR (not busy) THEN move
+                            if ((busy && isFar) || !busy)
+                            {
+                                Follow.Moving = true;
+                                // lua:1965-1967 — if far: stop all activities (attacks, etc.) and just go
+                                if (isFar)
+                                    Follow.StopAct = true;
+                                if (isAA)
+                                {
+                                    var aaOpts = new Dictionary<string, object>
+                                    {
+                                        ["FaceDestTarget"] = true
+                                    };
+                                    AA_MoveTo(followEnt, true, dist < Follow.MinDist * 1.5f ? "Calm" : "Alert", aaOpts);
+                                }
+                                // lua:1970-1983 — ground Nav: full schedule with engine tasks
+                                else if (!IsMoving() || GetCurGoalType() != 1)
+                                {
+                                    var schedule = new AISchedule();
+                                    schedule.Init("SCHEDULE_FOLLOW");
+                                    schedule.EngTask("TASK_GET_PATH_TO_TARGET", 0);
+                                    schedule.EngTask("TASK_MOVE_TO_TARGET_RANGE", Follow.MinDist * 0.8f);
+                                    schedule.EngTask("TASK_WAIT_FOR_MOVEMENT", 0);
+                                    schedule.EngTask("TASK_FACE_TARGET", 1);
+                                    schedule.CanShootWhenMoving = true;
+                                    if (GetActiveWeapon().IsValid())
+                                        schedule.TurnData = new TurnData { Type = VJFaceStatus.EnemyVisible };
+                                    StartSchedule(schedule);
+                                }
+                            }
                         }
+                        // lua:1995-2001 — entity is close, stop moving if not busy
                         else if (Follow.Moving)
                         {
+                            if (!busy)
+                            {
+                                TaskComplete();
+                                StopMoving(false);
+                                SelectSchedule();
+                            }
                             Follow.Moving = false;
-                            TaskComplete();
-                            StopMoving(false);
-                            SelectSchedule();
                         }
                     }
                 }

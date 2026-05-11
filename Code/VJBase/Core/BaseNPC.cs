@@ -28,6 +28,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     // ═══ VJ_ST_* State Flags ═══
     public bool VJ_ST_Grabbed { get; set; }
     public bool VJ_ST_Eating { get; set; }
+    public bool VJ_ST_Healing { get; set; }
     // ═══ FL_* / EFL_* Source Engine Flags ═══
     public bool FL_NOTARGET { get; set; }
     public bool FL_DISSOLVING { get; set; }
@@ -920,6 +921,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
             "VJ_ID_Vehicle" => (npc?.VJ_ID_Vehicle ?? false) || (ext?.VJ_ID_Vehicle ?? false),
             "VJ_ST_Grabbed" => (npc?.VJ_ST_Grabbed ?? false) || (ext?.VJ_ST_Grabbed ?? false),
             "VJ_ST_Eating" => (npc?.VJ_ST_Eating ?? false) || (ext?.VJ_ST_Eating ?? false),
+            "VJ_ST_Healing" => (npc?.VJ_ST_Healing ?? false) || (ext?.VJ_ST_Healing ?? false),
             "FL_NOTARGET" => (npc?.FL_NOTARGET ?? false) || (ext?.FL_NOTARGET ?? false),
             "FL_DISSOLVING" => (npc?.FL_DISSOLVING ?? false) || (ext?.FL_DISSOLVING ?? false),
             "FL_OBJECT" => (npc?.FL_OBJECT ?? false) || (ext?.FL_OBJECT ?? false),
@@ -1696,6 +1698,13 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
         if (agent != null) return agent.IsNavigating;
         var rb = GameObject.Components.Get<Rigidbody>();
         return rb != null && rb.Velocity.Length > 10f;
+    }
+
+    /// <summary>Source: self:GetCurGoalType(). Returns 1 if navigating a path goal, 0 otherwise.</summary>
+    public int GetCurGoalType()
+    {
+        var agent = GameObject.Components.Get<NavMeshAgent>();
+        return agent != null && agent.IsNavigating ? 1 : 0;
     }
 
     public void StopMoving()
