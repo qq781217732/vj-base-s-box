@@ -539,7 +539,7 @@ public partial class CreatureNPC
                     if (isPlayer)
                     {
                         // PX: lua:2545 — ent:ViewPunch(Angle(...)) — no native S&Box camera shake API
-                        VJEntitySpawner.PlayDSPEffect(ent, MeleeAttackDSP, MeleeAttackDSPLimit); // lua:2547 — ent:SetDSP
+                        // PX: lua:2547-2548 — ent:SetDSP(MeleeAttackDSP) — Source engine DSP, no S&Box equivalent
                         if (MeleeAttackPlayerSpeed)
                             DoMeleeAttackPlayerSpeed(ent, MeleeAttackPlayerSpeedWalk, MeleeAttackPlayerSpeedRun, MeleeAttackPlayerSpeedTime);
                     }

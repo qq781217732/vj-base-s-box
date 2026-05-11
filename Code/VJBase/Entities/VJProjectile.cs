@@ -83,11 +83,8 @@ public partial class VJProjectile : Component
             _nextIdleSoundT = curTime + NextSoundTime_Idle;
         }
 
-        // Seeker continuous homing (adjust velocity toward target each frame)
-        if (ProjectileType == VJProjType.Seeker)
-        {
-            SeekTarget();
-        }
+        // Note: Seeker only re-acquires on bounce (OnCollide→Persist), not every frame.
+        // Continuous homing missiles would use a different type.
     }
 
     /// <summary>
@@ -103,16 +100,18 @@ public partial class VJProjectile : Component
         var owner = SeekerOwner;
         var ownerIsVJ = owner?.Components.Get<BaseNPC>() is { } ownerNpc;
 
-        // Find closest valid target within SeekRange
+        // Find closest valid target within SeekRange (any entity with VJ_ID_Living flag)
         GameObject bestTarget = null;
         float bestDist = SeekRange;
         var myForward = GameObject.WorldRotation.Forward;
 
-        foreach (var ent in Scene.GetAllComponents<BaseNPC>())
+        foreach (var go in Scene.GetAllObjects())
         {
-            var go = ent.GameObject;
             if (!go.IsValid() || go == owner) continue;
-            if (!ent.VJ_ID_Living || ent.Dead) continue;
+            if (!BaseNPC.HasEntityFlag(go, "VJ_ID_Living")) continue;
+
+            var npc = go.Components.Get<BaseNPC>();
+            if (npc != null && npc.Dead) continue;
 
             // Relationship check for VJ owners
             if (ownerIsVJ && ownerNpc.CheckRelationship(go) == 2 /* D_HT */) continue;
@@ -121,7 +120,8 @@ public partial class VJProjectile : Component
             if (dist < 20f || dist >= bestDist) continue;
 
             // FOV check: is target within our forward cone?
-            var toTarget = ((go.WorldPosition + ent.OBBCenter()) - myPos).Normal;
+            var obbCenter = npc?.OBBCenter() ?? Vector3.Zero;
+            var toTarget = ((go.WorldPosition + obbCenter) - myPos).Normal;
             if (myForward.Dot(toTarget) < SeekDotMin) continue;
 
             bestDist = dist;
@@ -130,12 +130,13 @@ public partial class VJProjectile : Component
 
         if (bestTarget != null)
         {
-            var targetCenter = bestTarget.WorldPosition
-                + (bestTarget.Components.Get<BaseNPC>()?.OBBCenter() ?? Vector3.Zero);
+            var targetNpc = bestTarget.Components.Get<BaseNPC>();
+            var targetCenter = bestTarget.WorldPosition + (targetNpc?.OBBCenter() ?? Vector3.Zero);
             var toTarget = (targetCenter - myPos).Normal;
-            var currentSpeed = rb.Velocity.Length;
-
-            rb.Velocity = toTarget * Math.Max(currentSpeed, rb.Velocity.Length) * SeekBounceVelocityFactor;
+            // Lua: max(GetNormalized():Length(), max(OurOldVelocity:Length(), data.Speed))
+            // → preserve or boost speed on redirect, minimum floor of 1
+            var currentSpeed = Math.Max(rb.Velocity.Length, 1f);
+            rb.Velocity = toTarget * currentSpeed * SeekBounceVelocityFactor;
             GameObject.WorldRotation = Rotation.LookAt(toTarget);
             return true;
         }
@@ -151,10 +152,24 @@ public partial class VJProjectile : Component
     {
         if (_destroyed) return;
 
-        bool hitEntity = other?.Components.Get<ModelRenderer>() != null || other?.Components.Get<PlayerBase>() != null;
+        bool isCharacter = other?.Components.Get<BaseNPC>() != null
+            || other?.Components.Get<PlayerBase>() != null;
 
-        if (hitEntity)
+        if (isCharacter)
         {
+            // Lua: skip if same class or liked
+            var hitNpc = other?.Components.Get<BaseNPC>();
+            var ownerNpc = SeekerOwner?.Components.Get<BaseNPC>();
+            if (hitNpc != null && ownerNpc != null)
+            {
+                var ownerClass = ownerNpc.VJ_NPC_Class;
+                var hitClass = hitNpc.VJ_NPC_Class;
+                if (ownerClass.Count > 0 && hitClass.Count > 0 && ownerClass.Any(c => hitClass.Contains(c)))
+                    return; // Same class → no damage (Lua: GetClass() != owner:GetClass())
+                if (ownerNpc.CheckRelationship(other) == 2 /* D_LI */)
+                    return; // Liked → no damage (Lua: Disposition != D_LI)
+            }
+
             // Direct damage
             if (DirectDamage > 0)
             {
@@ -181,11 +196,11 @@ public partial class VJProjectile : Component
         // Decide persistence
         if (CollisionBehavior == VJProjCollision.Remove)
         {
-            DestroyProjectile(other, hitEntity ? other.WorldPosition : (Vector3?)null);
+            DestroyProjectile(other, isCharacter ? other.WorldPosition : (Vector3?)null);
         }
-        else if (CollisionBehavior == VJProjCollision.Persist && !hitEntity)
+        else if (CollisionBehavior == VJProjCollision.Persist && !isCharacter)
         {
-            // Bounce: seeker redirects after bouncing off world surfaces
+            // Bounce: seeker redirects after bouncing off world surfaces (Lua: OnBounce)
             if (ProjectileType == VJProjType.Seeker)
                 SeekTarget();
         }
@@ -204,9 +219,8 @@ public partial class VJProjectile : Component
         // Radius damage
         if (DoesRadiusDamage && RadiusDamage > 0)
         {
-            foreach (var ent in Scene.GetAllComponents<BaseNPC>())
+            foreach (var go in Scene.GetAllObjects())
             {
-                var go = ent.GameObject;
                 if (!go.IsValid() || go == SeekerOwner) continue;
                 var dist = go.WorldPosition.Distance(pos);
                 if (dist > RadiusDamageRadius) continue;
@@ -220,16 +234,16 @@ public partial class VJProjectile : Component
         // Radius force
         if (RadiusDamageForce > 0)
         {
-            foreach (var ent in Scene.GetAllComponents<BaseNPC>())
+            foreach (var go in Scene.GetAllObjects())
             {
-                var go = ent.GameObject;
                 if (!go.IsValid() || (SeekerOwner != null && go == SeekerOwner)) continue;
                 var dist = go.WorldPosition.Distance(pos);
                 if (dist > RadiusDamageRadius || dist < 1f) continue;
                 var rb = go.Components.Get<Rigidbody>();
                 if (rb != null)
                 {
-                    var dir = (go.WorldPosition + (ent.OBBCenter()) - pos).Normal;
+                    var obb = go.Components.Get<BaseNPC>()?.OBBCenter() ?? Vector3.Zero;
+                    var dir = (go.WorldPosition + obb - pos).Normal;
                     rb.ApplyForce(dir * RadiusDamageForce * 100f);
                 }
             }

@@ -116,29 +116,6 @@ public static class VJEntitySpawner
         if (ent.IsValid()) ent.Destroy();
     }
 
-    // ── DSP cooldown tracker (per-entity) ──
-    private static readonly Dictionary<GameObject, float> _dspCooldowns = new();
-
-    /// <summary>
-    /// Apply a melee DSP audio effect to the target (Source: ent:SetDSP(effectId)).
-    /// S&Box has no built-in DSP API — plays a tinnitus ring sound with cooldown.
-    /// dspLimit: minimum seconds between DSP applications (default 60).
-    /// </summary>
-    public static void PlayDSPEffect(GameObject ent, int dspEffect = 32, float dspLimit = 60f)
-    {
-        if (ent == null || !ent.IsValid()) return;
-
-        var curTime = (float)Time.Now;
-        if (_dspCooldowns.TryGetValue(ent, out var lastTime) && curTime - lastTime < dspLimit)
-            return;
-        _dspCooldowns[ent] = curTime;
-
-        // Play a high-pitched ring — closest s&box equivalent to Source DSP
-        var handle = Sound.Play("vj_base.melee_dsp", ent.WorldPosition);
-        handle.Volume = 0.6f;
-        handle.Pitch = 2f;
-    }
-
     /// <summary>
     /// Ignite an entity using S&Box Prop component.
     /// Source: ent:Ignite(duration, 0). S&Box Prop.Ignite() takes no params.

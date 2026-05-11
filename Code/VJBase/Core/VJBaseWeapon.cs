@@ -32,6 +32,10 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
     [Property] public string NPC_BulletSpawnAttachment { get; set; } = "";
     [Property] public bool NPC_StandingOnly { get; set; }
     [Property] public PrefabScene MuzzleFlashParticle { get; set; }
+    [Property] public bool PrimaryEffects_MuzzleFlash { get; set; } = true;
+    [Property] public float PrimaryEffects_DynamicLightBrightness { get; set; } = 4f;
+    [Property] public float PrimaryEffects_DynamicLightDistance { get; set; } = 120f;
+    [Property] public Color PrimaryEffects_DynamicLightColor { get; set; } = new Color(1f, 0.59f, 0.24f);
     [Property] public float NPC_FiringDistanceScale { get; set; } = 1f;
     [Property] public float NPC_FiringDistanceMax { get; set; } = 100000f;
     [Property] public float NPC_FiringCone { get; set; } = 0.9f;
@@ -356,28 +360,36 @@ public partial class VJBaseWeapon : Component, IVJBaseWeapon
     /// <summary>OnPrimaryAttack_BulletCallback — shared.lua:753-755. Fired when bullet trace hits.</summary>
     public Action<GameObject, TraceResult, DamageInfo> OnPrimaryAttack_BulletCallback { get; set; }
 
-    /// <summary>PrimaryAttackEffects — shared.lua:812. Muzzle flash dynamic light + basic flash effect.</summary>
+    /// <summary>PrimaryAttackEffects — shared.lua:812-885. Muzzle flash particles + dynamic light.</summary>
     public virtual void PrimaryAttackEffects(GameObject owner)
     {
         if (!owner.IsValid()) return;
-        // lua:852 — dynamic light at muzzle
-        var muzzlePos = owner.WorldPosition + owner.WorldRotation.Forward * 40f + owner.WorldRotation.Up * 55f;
+        // lua:814 — IsMeleeWeapon guard
+        if (IsMeleeWeapon) return;
+        // lua:818 — convar gate: vj_wep_muzzleflash
+        if (!PrimaryEffects_MuzzleFlash) return;
+
+        // lua:819 — owner:MuzzleFlash() → Source engine screen flash, no S&Box equivalent (PX)
+        // lua:856-859 — muzzle position via GetBulletPos (attachment-aware)
+        var muzzlePos = GetBulletPos(owner);
+
+        // Dynamic light (lua:852-868)
+        // lua:852 — PrimaryEffects_SpawnDynamicLight + vj_wep_muzzleflash_light gate
         var flashGo = new GameObject(true, "VJ_MuzzleFlash");
         flashGo.WorldPosition = muzzlePos;
         var light = flashGo.Components.Create<PointLight>();
-        light.Brightness = 4f;
-        light.Range = 120f;
-        light.Color = new Color(1f, 0.59f, 0.24f);
-        // lua:859 — timer.Simple(0.02) → remove light
-        _ = Task.Delay(20).ContinueWith(_ => { if (flashGo.IsValid()) flashGo.Destroy(); });
+        light.Brightness = PrimaryEffects_DynamicLightBrightness;
+        light.Range = PrimaryEffects_DynamicLightDistance;
+        light.Color = PrimaryEffects_DynamicLightColor;
+        // lua:867 — Fire("Kill", nil, 0.07) → 70ms lifetime
+        _ = Task.Delay(70).ContinueWith(_ => { if (flashGo.IsValid()) flashGo.Destroy(); });
 
-        // lua:822-840 — muzzle particles
+        // Muzzle particles (lua:822-848)
         if (MuzzleFlashParticle != null)
         {
             var particleGo = MuzzleFlashParticle.Clone();
             particleGo.WorldPosition = muzzlePos;
             particleGo.WorldRotation = owner.WorldRotation;
-            // Auto-cleanup after typical particle lifetime
             _ = Task.Delay(500).ContinueWith(_ => { if (particleGo.IsValid()) particleGo.Destroy(); });
         }
     }
