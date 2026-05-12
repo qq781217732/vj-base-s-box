@@ -1,0 +1,455 @@
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:source1imported:version{3cec427c-1b0e-4d48-a90a-0436f33a6041} -->
+{
+	rootNode = 
+	{
+		_class = "RootNode"
+		note = ""
+		children = 
+		[
+			{
+				_class = "RenderMeshList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "Body"
+						filename = "models/vj_zombies/draggy/charple04_reference.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+				]
+
+			},
+			{
+				_class = "LODGroupList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "LODGroup"
+						note = ""
+						children = []
+						name = ""
+						switch_threshold = 0.0
+						meshes = ["charple04_reference.smd"]
+					},
+					{
+						_class = "LODGroup"
+						note = ""
+						children = []
+						name = ""
+						switch_threshold = 10
+						meshes = ["charple04_reference_lod1.smd"]
+					},
+					{
+						_class = "LODGroup"
+						note = ""
+						children = []
+						name = ""
+						switch_threshold = 18
+						meshes = ["charple04_reference_lod2.smd"]
+					},
+					{
+						_class = "LODGroup"
+						note = ""
+						children = []
+						name = ""
+						switch_threshold = 35
+						meshes = ["charple04_reference_lod3.smd"]
+					},
+					{
+						_class = "LODGroup"
+						note = ""
+						children = []
+						name = ""
+						switch_threshold = 55
+						meshes = ["charple04_reference_lod4.smd"]
+					},
+				]
+
+			},
+			{
+				_class = "MaterialGroupList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "DefaultMaterialGroup"
+						note = ""
+						children = []
+						name = ""
+						remaps = 
+						[
+							{
+								from = "Charple4_sheet"
+								to = "materials/models/charple/charple4_sheet"
+							},
+						]
+
+						use_global_default = false
+						global_default_material = ""
+					},
+					{
+						_class = "MaterialGroup"
+						note = ""
+						children = []
+						name = "skinfamilies_1"
+						remaps = 
+						[
+							{
+								from = "materials/models/charple/charple4_sheet"
+								to = "materials/models/charple/charple4_sheet2"
+							},
+						]
+
+					},
+					{
+						_class = "MaterialGroup"
+						note = ""
+						children = []
+						name = "skinfamilies_2"
+						remaps = 
+						[
+							{
+								from = "materials/models/charple/charple4_sheet"
+								to = "materials/models/charple/charple4_sheet3"
+							},
+						]
+
+					},
+					{
+						_class = "MaterialGroup"
+						note = ""
+						children = []
+						name = "skinfamilies_3"
+						remaps = 
+						[
+							{
+								from = "materials/models/charple/charple4_sheet"
+								to = "materials/models/charple/charple4_sheet4"
+							},
+						]
+
+					},
+				]
+
+			},
+			{
+				_class = "AttachmentList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "Attachment"
+						note = ""
+						children = []
+						name = "eyes"
+						parent_bone = "Charple4_Head"
+						relative_origin = [3.0, 4.0, 0.0]
+						relative_angles = [0, 0, 0]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						note = ""
+						children = []
+						name = "mouth"
+						parent_bone = "Charple4_Head"
+						relative_origin = [1.0, 5.0, 0.0]
+						relative_angles = [0, 0, 0]
+						weight = 1.0
+						ignore_rotation = false
+					},
+				]
+
+			},
+			{
+				_class = "ModelDataList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "Bounds Hull"
+						note = ""
+						children = []
+						name = "bbox"
+						mins = [-21.488, -16.551, 17.281]
+						maxs = [18.837, 15.825, 69.696]
+					},
+				]
+
+			},
+			{
+				_class = "AnimationList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "ragdoll"
+						activity_name = "ACT_DIERAGDOLL"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/draggy/draggy_anims/ragdoll.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "idle2"
+						activity_name = "ACT_IDLE"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/draggy/draggy_anims/idle2.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "walk"
+						activity_name = "ACT_WALK"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/draggy/draggy_anims/walk.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "45"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "melee"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "1"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "attack1"
+						activity_name = "ACT_MELEE_ATTACK1"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/draggy/draggy_anims/attack1.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "15"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+				]
+
+				default_root_bone_name = ""
+			},
+			{
+				_class = "PhysicsShapeList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "PhysicsHullFile"
+						note = ""
+						children = []
+						name = ""
+						parent_bone = ""
+						surface_prop = "flesh"
+						collision_tags = "solid"
+						recenter_on_parent_bone = false
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						filename = "models/vj_zombies/draggy/draggy_physics.smd"
+						import_scale = 1.0
+						faceMergeAngle = 10.0
+						maxHullVertices = 0
+						import_mode = "SingleHull"
+						optimization_algorithm = "QEM"
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+				]
+
+			},
+			{
+				_class = "Skeleton"
+				note = ""
+				children = 
+				[
+					{
+						_class = "Bone"
+						note = ""
+						children = 
+						[
+							{
+								_class = "Bone"
+								note = ""
+								children = 
+								[
+									{
+										_class = "Bone"
+										note = ""
+										children = 
+										[
+											{
+												_class = "Bone"
+												note = ""
+												children = []
+												name = "Charple4_Humerus_R"
+												origin = [6.47958, 0.277505, -4.762589]
+												angles = [85.536467, -131.363485, 59.256672]
+												do_not_discard = true
+											},
+											{
+												_class = "Bone"
+												note = ""
+												children = []
+												name = "Charple4_Humerus_L"
+												origin = [6.479584, 0.277504, 4.762589]
+												angles = [-85.536467, -131.363485, -59.256672]
+												do_not_discard = true
+											},
+											{
+												_class = "Bone"
+												note = ""
+												children = []
+												name = "Charple4_Head"
+												origin = [10.804882, -0.033414, 0.0]
+												angles = [0.0, -0.952657, 0.0]
+												do_not_discard = true
+											},
+										]
+
+										name = "Charple4_Spine"
+										origin = [4.946404, 0.0, 0.0]
+										angles = [0.0, 7.480996, 0.0]
+										do_not_discard = true
+									},
+								]
+
+								name = "Charple4_Lumbar"
+								origin = [5.695656, -2e-06, 0.0]
+								angles = [0.0, 19.304556, 0.0]
+								do_not_discard = true
+							},
+							{
+								_class = "Bone"
+								note = ""
+								children = 
+								[
+									{
+										_class = "Bone"
+										note = ""
+										children = []
+										name = "Charple4_Tibia_R"
+										origin = [18.59152, 1e-06, 1e-06]
+										angles = [-1e-06, 10.39546, 0.0]
+										do_not_discard = true
+									},
+								]
+
+								name = "Charple4_Femur_R"
+								origin = [-3.534504, -0.652041, -2.454911]
+								angles = [7.244193, -168.588822, 0.0]
+								do_not_discard = true
+							},
+							{
+								_class = "Bone"
+								note = ""
+								children = []
+								name = "Charple4_Femur_L"
+								origin = [-3.534508, -0.652041, 2.454911]
+								angles = [-7.24419, -168.588781, 0.0]
+								do_not_discard = true
+							},
+						]
+
+						name = "Charple4_Pelvis"
+						origin = [0.0, 1.99717, 41.908962]
+						angles = [-74.196031, 89.999982, 89.999982]
+						do_not_discard = true
+					},
+				]
+
+			},
+		]
+
+		model_archetype = ""
+		primary_associated_entity = ""
+		anim_graph_name = ""
+		base_model_name = ""
+	}
+}

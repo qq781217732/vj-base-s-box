@@ -1,0 +1,972 @@
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:source1imported:version{3cec427c-1b0e-4d48-a90a-0436f33a6041} -->
+{
+	rootNode = 
+	{
+		_class = "RootNode"
+		note = ""
+		children = 
+		[
+			{
+				_class = "MaterialGroupList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "DefaultMaterialGroup"
+						note = ""
+						children = []
+						name = ""
+						remaps = []
+						use_global_default = false
+						global_default_material = ""
+					},
+				]
+
+			},
+			{
+				_class = "AttachmentList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "Attachment"
+						note = ""
+						children = []
+						name = "anim_attachment_RH"
+						parent_bone = "ValveBiped_Bip01_R_Hand"
+						relative_origin = [0.0, 0.0, 0.0]
+						relative_angles = [0, 0, 0]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						note = ""
+						children = []
+						name = "weapon_bone"
+						parent_bone = "ValveBiped_weapon_bone"
+						relative_origin = [0.0, 0.0, 0.0]
+						relative_angles = [0, 0, 0]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						note = ""
+						children = []
+						name = "weapon_bone_left"
+						parent_bone = "ValveBiped_weapon_bone_left"
+						relative_origin = [0.0, 0.0, 0.0]
+						relative_angles = [0, 0, 0]
+						weight = 1.0
+						ignore_rotation = false
+					},
+				]
+
+			},
+			{
+				_class = "ModelDataList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "Bounds Hull"
+						note = ""
+						children = []
+						name = "bbox"
+						mins = [-13.0, -13.0, 0.0]
+						maxs = [13.0, 13.0, 72.0]
+					},
+				]
+
+			},
+			{
+				_class = "AnimationList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "24"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "24"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "NPC_Citizen"
+								children = []
+								name = ""
+								event_class = "6006"
+								event_frame = "24"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "NPC_Citizen"
+								children = []
+								name = ""
+								event_class = "6007"
+								event_frame = "24"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "jump"
+						activity_name = "ACT_JUMP"
+						activity_weight = "-1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/jump.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "idle"
+						activity_name = "ACT_IDLE"
+						activity_weight = "-1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/idle.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "melee"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "8"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "attack1"
+						activity_name = "ACT_MELEE_ATTACK1"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = true
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/panic_anims/a_attack"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "melee"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "8"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "attack2"
+						activity_name = "ACT_MELEE_ATTACK1"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = true
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/panic_anims/b_attack"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "melee"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "8"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "attack3"
+						activity_name = "ACT_MELEE_ATTACK1"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = true
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/panic_anims/c_attack"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "melee_push"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "8"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "push"
+						activity_name = "ACT_MELEE_ATTACK2"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = true
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/panic_anims/a_push"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "Aim_9_directions_melee"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = true
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/panic_anims/a_aim_9_directions_straight_up"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "11"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "21"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "31"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "41"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "NPC_Citizen"
+								children = []
+								name = ""
+								event_class = "6006"
+								event_frame = "11"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "NPC_Citizen"
+								children = []
+								name = ""
+								event_class = "6007"
+								event_frame = "12"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "NPC_Citizen"
+								children = []
+								name = ""
+								event_class = "6006"
+								event_frame = "31"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "NPC_Citizen"
+								children = []
+								name = ""
+								event_class = "6007"
+								event_frame = "41"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "walk"
+						activity_name = "ACT_WALK"
+						activity_weight = "-1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/walk.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "11"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "21"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "31"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "41"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "NPC_Citizen"
+								children = []
+								name = ""
+								event_class = "6006"
+								event_frame = "11"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "NPC_Citizen"
+								children = []
+								name = ""
+								event_class = "6007"
+								event_frame = "12"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "NPC_Citizen"
+								children = []
+								name = ""
+								event_class = "6006"
+								event_frame = "31"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "NPC_Citizen"
+								children = []
+								name = ""
+								event_class = "6007"
+								event_frame = "41"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "run"
+						activity_name = "ACT_RUN"
+						activity_weight = "-1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/run.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "37"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "11"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "21"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "31"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "41"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "NPC_Citizen"
+								children = []
+								name = ""
+								event_class = "6006"
+								event_frame = "11"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "NPC_Citizen"
+								children = []
+								name = ""
+								event_class = "6007"
+								event_frame = "12"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "NPC_Citizen"
+								children = []
+								name = ""
+								event_class = "6006"
+								event_frame = "31"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "NPC_Citizen"
+								children = []
+								name = ""
+								event_class = "6007"
+								event_frame = "41"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "run_beserk"
+						activity_name = "ACT_SPRINT"
+						activity_weight = "-1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/run_beserk.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "45"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+				]
+
+				default_root_bone_name = ""
+			},
+			{
+				_class = "Skeleton"
+				note = ""
+				children = 
+				[
+					{
+						_class = "Bone"
+						note = ""
+						children = 
+						[
+							{
+								_class = "Bone"
+								note = ""
+								children = 
+								[
+									{
+										_class = "Bone"
+										note = ""
+										children = 
+										[
+											{
+												_class = "Bone"
+												note = ""
+												children = []
+												name = "ValveBiped_Bip01_L_Foot"
+												origin = [0.0, 0.0, 0.0]
+												angles = [0.0, 0.0, 0.0]
+												do_not_discard = true
+											},
+										]
+
+										name = "ValveBiped_Bip01_L_Calf"
+										origin = [0.0, 0.0, 0.0]
+										angles = [0.0, 0.0, 0.0]
+										do_not_discard = true
+									},
+								]
+
+								name = "ValveBiped_Bip01_L_Thigh"
+								origin = [0.0, 0.0, 0.0]
+								angles = [0.0, 0.0, 0.0]
+								do_not_discard = true
+							},
+							{
+								_class = "Bone"
+								note = ""
+								children = 
+								[
+									{
+										_class = "Bone"
+										note = ""
+										children = 
+										[
+											{
+												_class = "Bone"
+												note = ""
+												children = []
+												name = "ValveBiped_Bip01_R_Foot"
+												origin = [0.0, 0.0, 0.0]
+												angles = [0.0, 0.0, 0.0]
+												do_not_discard = true
+											},
+										]
+
+										name = "ValveBiped_Bip01_R_Calf"
+										origin = [0.0, 0.0, 0.0]
+										angles = [0.0, 0.0, 0.0]
+										do_not_discard = true
+									},
+								]
+
+								name = "ValveBiped_Bip01_R_Thigh"
+								origin = [0.0, 0.0, 0.0]
+								angles = [0.0, 0.0, 0.0]
+								do_not_discard = true
+							},
+							{
+								_class = "Bone"
+								note = ""
+								children = 
+								[
+									{
+										_class = "Bone"
+										note = ""
+										children = 
+										[
+											{
+												_class = "Bone"
+												note = ""
+												children = 
+												[
+													{
+														_class = "Bone"
+														note = ""
+														children = 
+														[
+															{
+																_class = "Bone"
+																note = ""
+																children = 
+																[
+																	{
+																		_class = "Bone"
+																		note = ""
+																		children = 
+																		[
+																			{
+																				_class = "Bone"
+																				note = ""
+																				children = 
+																				[
+																					{
+																						_class = "Bone"
+																						note = ""
+																						children = 
+																						[
+																							{
+																								_class = "Bone"
+																								note = ""
+																								children = []
+																								name = "ValveBiped_weapon_bone_left"
+																								origin = [0.0, 0.0, 0.0]
+																								angles = [0.0, 0.0, 0.0]
+																								do_not_discard = true
+																							},
+																						]
+
+																						name = "ValveBiped_Bip01_L_Hand"
+																						origin = [0.0, 0.0, 0.0]
+																						angles = [0.0, 0.0, 0.0]
+																						do_not_discard = true
+																					},
+																				]
+
+																				name = "ValveBiped_Bip01_L_Forearm"
+																				origin = [0.0, 0.0, 0.0]
+																				angles = [0.0, 0.0, 0.0]
+																				do_not_discard = true
+																			},
+																		]
+
+																		name = "ValveBiped_Bip01_L_UpperArm"
+																		origin = [0.0, 0.0, 0.0]
+																		angles = [0.0, 0.0, 0.0]
+																		do_not_discard = true
+																	},
+																]
+
+																name = "ValveBiped_Bip01_L_Clavicle"
+																origin = [0.0, 0.0, 0.0]
+																angles = [0.0, 0.0, 0.0]
+																do_not_discard = true
+															},
+															{
+																_class = "Bone"
+																note = ""
+																children = 
+																[
+																	{
+																		_class = "Bone"
+																		note = ""
+																		children = 
+																		[
+																			{
+																				_class = "Bone"
+																				note = ""
+																				children = 
+																				[
+																					{
+																						_class = "Bone"
+																						note = ""
+																						children = 
+																						[
+																							{
+																								_class = "Bone"
+																								note = ""
+																								children = []
+																								name = "ValveBiped_weapon_bone"
+																								origin = [0.0, 0.0, 0.0]
+																								angles = [0.0, 0.0, 0.0]
+																								do_not_discard = true
+																							},
+																						]
+
+																						name = "ValveBiped_Bip01_R_Hand"
+																						origin = [0.0, 0.0, 0.0]
+																						angles = [0.0, 0.0, 0.0]
+																						do_not_discard = true
+																					},
+																				]
+
+																				name = "ValveBiped_Bip01_R_Forearm"
+																				origin = [0.0, 0.0, 0.0]
+																				angles = [0.0, 0.0, 0.0]
+																				do_not_discard = true
+																			},
+																		]
+
+																		name = "ValveBiped_Bip01_R_UpperArm"
+																		origin = [0.0, 0.0, 0.0]
+																		angles = [0.0, 0.0, 0.0]
+																		do_not_discard = true
+																	},
+																]
+
+																name = "ValveBiped_Bip01_R_Clavicle"
+																origin = [0.0, 0.0, 0.0]
+																angles = [0.0, 0.0, 0.0]
+																do_not_discard = true
+															},
+														]
+
+														name = "ValveBiped_Bip01_Spine4"
+														origin = [0.0, 0.0, 0.0]
+														angles = [0.0, 0.0, 0.0]
+														do_not_discard = true
+													},
+												]
+
+												name = "ValveBiped_Bip01_Spine2"
+												origin = [0.0, 0.0, 0.0]
+												angles = [0.0, 0.0, 0.0]
+												do_not_discard = true
+											},
+										]
+
+										name = "ValveBiped_Bip01_Spine1"
+										origin = [0.0, 0.0, 0.0]
+										angles = [0.0, 0.0, 0.0]
+										do_not_discard = true
+									},
+								]
+
+								name = "ValveBiped_Bip01_Spine"
+								origin = [0.0, 0.0, 0.0]
+								angles = [0.0, 0.0, 0.0]
+								do_not_discard = true
+							},
+						]
+
+						name = "ValveBiped_Bip01_Pelvis"
+						origin = [0.0, 0.0, 0.0]
+						angles = [0.0, -89.999982, 0.0]
+						do_not_discard = true
+					},
+					{
+						_class = "Bone"
+						note = ""
+						children = []
+						name = "Dummy001"
+						origin = [0.0, 0.0, 0.0]
+						angles = [0.0, 0.0, 0.0]
+						do_not_discard = true
+					},
+				]
+
+			},
+		]
+
+		model_archetype = ""
+		primary_associated_entity = ""
+		anim_graph_name = ""
+		base_model_name = ""
+	}
+}

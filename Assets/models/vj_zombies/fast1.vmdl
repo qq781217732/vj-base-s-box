@@ -1,0 +1,436 @@
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:source1imported:version{3cec427c-1b0e-4d48-a90a-0436f33a6041} -->
+{
+	rootNode = 
+	{
+		_class = "RootNode"
+		note = ""
+		children = 
+		[
+			{
+				_class = "RenderMeshList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "studio"
+						filename = "models/vj_zombies/fast1/krovoso_ref_fast.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+				]
+
+			},
+			{
+				_class = "MaterialGroupList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "DefaultMaterialGroup"
+						note = ""
+						children = []
+						name = ""
+						remaps = 
+						[
+							{
+								from = "act_krovosos_new1"
+								to = "materials/models/czombies/act_krovosos_new1"
+							},
+						]
+
+						use_global_default = false
+						global_default_material = ""
+					},
+				]
+
+			},
+			{
+				_class = "AttachmentList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "Attachment"
+						note = ""
+						children = []
+						name = "chest"
+						parent_bone = "ValveBiped_Bip01_Spine4"
+						relative_origin = [-4.0, 0.0, 3.0]
+						relative_angles = [0, 0, 0]
+						weight = 1.0
+						ignore_rotation = false
+					},
+				]
+
+			},
+			{
+				_class = "ModelDataList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "Bounds Hull"
+						note = ""
+						children = []
+						name = "bbox"
+						mins = [-13.4, -26.07, -2.0]
+						maxs = [21.273, 26.866, 74.203]
+					},
+				]
+
+			},
+			{
+				_class = "AnimationList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "ragdoll"
+						activity_name = "ACT_DIERAGDOLL"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast1/fast1_anims/ragdoll.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+				]
+
+				default_root_bone_name = ""
+			},
+			{
+				_class = "PhysicsShapeList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "PhysicsHullFile"
+						note = ""
+						children = []
+						name = ""
+						parent_bone = ""
+						surface_prop = "flesh"
+						collision_tags = "solid"
+						recenter_on_parent_bone = false
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						filename = "models/vj_zombies/fast1/fast1_physics.smd"
+						import_scale = 1.0
+						faceMergeAngle = 10.0
+						maxHullVertices = 0
+						import_mode = "SingleHull"
+						optimization_algorithm = "QEM"
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+				]
+
+			},
+			{
+				_class = "Skeleton"
+				note = ""
+				children = 
+				[
+					{
+						_class = "Bone"
+						note = ""
+						children = 
+						[
+							{
+								_class = "Bone"
+								note = ""
+								children = 
+								[
+									{
+										_class = "Bone"
+										note = ""
+										children = 
+										[
+											{
+												_class = "Bone"
+												note = ""
+												children = 
+												[
+													{
+														_class = "Bone"
+														note = ""
+														children = 
+														[
+															{
+																_class = "Bone"
+																note = ""
+																children = []
+																name = "ValveBiped_Bip01_L_Toe0"
+																origin = [6.879451, 2e-06, 0.0]
+																angles = [-0.16908, -33.48211, -0.418202]
+																do_not_discard = true
+															},
+														]
+
+														name = "ValveBiped_Bip01_L_Foot"
+														origin = [17.699581, -1e-06, 0.0]
+														angles = [1.263142, -62.103133, -7.021999]
+														do_not_discard = true
+													},
+												]
+
+												name = "ValveBiped_Bip01_L_Calf"
+												origin = [17.591021, 0.0, -3e-06]
+												angles = [-1e-06, 8.817994, 0.0]
+												do_not_discard = true
+											},
+										]
+
+										name = "ValveBiped_Bip01_L_Thigh"
+										origin = [3.890447, 0.0, 0.0]
+										angles = [-3.134709, -83.19307, -89.999982]
+										do_not_discard = true
+									},
+									{
+										_class = "Bone"
+										note = ""
+										children = 
+										[
+											{
+												_class = "Bone"
+												note = ""
+												children = 
+												[
+													{
+														_class = "Bone"
+														note = ""
+														children = 
+														[
+															{
+																_class = "Bone"
+																note = ""
+																children = []
+																name = "ValveBiped_Bip01_R_Toe0"
+																origin = [6.879453, 1e-06, 2e-06]
+																angles = [-0.168966, -33.482106, -4.660095]
+																do_not_discard = true
+															},
+														]
+
+														name = "ValveBiped_Bip01_R_Foot"
+														origin = [17.699583, 0.0, 1e-06]
+														angles = [-1.263143, -62.103126, 7.634778]
+														do_not_discard = true
+													},
+												]
+
+												name = "ValveBiped_Bip01_R_Calf"
+												origin = [17.591024, 0.0, 2e-06]
+												angles = [0.0, 8.817993, 0.0]
+												do_not_discard = true
+											},
+										]
+
+										name = "ValveBiped_Bip01_R_Thigh"
+										origin = [-3.890449, 0.0, 0.0]
+										angles = [-3.134651, -96.806955, -90.000037]
+										do_not_discard = true
+									},
+								]
+
+								name = "ValveBiped_Bip01_Pelvis"
+								origin = [0.0, 0.0, 0.0]
+								angles = [0.0, 0.0, 0.0]
+								do_not_discard = true
+							},
+							{
+								_class = "Bone"
+								note = ""
+								children = 
+								[
+									{
+										_class = "Bone"
+										note = ""
+										children = 
+										[
+											{
+												_class = "Bone"
+												note = ""
+												children = 
+												[
+													{
+														_class = "Bone"
+														note = ""
+														children = 
+														[
+															{
+																_class = "Bone"
+																note = ""
+																children = []
+																name = "ValveBiped_Bip01_Head1"
+																origin = [4.149971, -1.375572, 0.0]
+																angles = [0.0, -30.564721, 179.999964]
+																do_not_discard = true
+															},
+															{
+																_class = "Bone"
+																note = ""
+																children = 
+																[
+																	{
+																		_class = "Bone"
+																		note = ""
+																		children = 
+																		[
+																			{
+																				_class = "Bone"
+																				note = ""
+																				children = 
+																				[
+																					{
+																						_class = "Bone"
+																						note = ""
+																						children = []
+																						name = "ValveBiped_Bip01_L_Hand"
+																						origin = [11.575971, 1e-05, -3.1e-05]
+																						angles = [-0.152223, 2.188071, 66.004325]
+																						do_not_discard = true
+																					},
+																				]
+
+																				name = "ValveBiped_Bip01_L_Forearm"
+																				origin = [12.693001, 0.0, 8e-06]
+																				angles = [1e-05, -43.708491, -1.2e-05]
+																				do_not_discard = true
+																			},
+																		]
+
+																		name = "ValveBiped_Bip01_L_UpperArm"
+																		origin = [6.028144, 0.0, 0.0]
+																		angles = [-3.23343, -33.943008, -89.993623]
+																		do_not_discard = true
+																	},
+																]
+
+																name = "ValveBiped_Bip01_L_Clavicle"
+																origin = [1.663036, 1.210509, 2.595495]
+																angles = [-73.711593, 169.261363, 90.864342]
+																do_not_discard = true
+															},
+															{
+																_class = "Bone"
+																note = ""
+																children = 
+																[
+																	{
+																		_class = "Bone"
+																		note = ""
+																		children = 
+																		[
+																			{
+																				_class = "Bone"
+																				note = ""
+																				children = 
+																				[
+																					{
+																						_class = "Bone"
+																						note = ""
+																						children = []
+																						name = "ValveBiped_Bip01_R_Hand"
+																						origin = [11.599607, 0.0, -4e-06]
+																						angles = [-6.102456, 1.638433, -66.743338]
+																						do_not_discard = true
+																					},
+																				]
+
+																				name = "ValveBiped_Bip01_R_Forearm"
+																				origin = [12.692997, -2e-06, -4e-06]
+																				angles = [2e-06, -46.506639, -3e-06]
+																				do_not_discard = true
+																			},
+																		]
+
+																		name = "ValveBiped_Bip01_R_UpperArm"
+																		origin = [6.028141, 4e-06, 0.0]
+																		angles = [3.847067, -33.255044, 93.511751]
+																		do_not_discard = true
+																	},
+																]
+
+																name = "ValveBiped_Bip01_R_Clavicle"
+																origin = [1.663048, 1.210516, -2.595442]
+																angles = [73.455024, 168.779616, -95.441819]
+																do_not_discard = true
+															},
+														]
+
+														name = "ValveBiped_Bip01_Spine4"
+														origin = [9.183987, 0.0, 0.0]
+														angles = [0.0, 9.938355, 0.0]
+														do_not_discard = true
+													},
+												]
+
+												name = "ValveBiped_Bip01_Spine2"
+												origin = [3.612873, -4e-06, 0.0]
+												angles = [0.0, 9.000308, 0.0]
+												do_not_discard = true
+											},
+										]
+
+										name = "ValveBiped_Bip01_Spine1"
+										origin = [4.126617, 0.0, 0.0]
+										angles = [0.0, -6.300128, 0.0]
+										do_not_discard = true
+									},
+								]
+
+								name = "ValveBiped_Bip01_Spine"
+								origin = [0.0, 3.345131, -2.981899]
+								angles = [3.030546, 89.999982, 89.999982]
+								do_not_discard = true
+							},
+						]
+
+						name = "ValveBiped_Bip01"
+						origin = [0.02067, 1.518869, 38.353989]
+						angles = [0.0, -2.499987, 89.999982]
+						do_not_discard = true
+					},
+				]
+
+			},
+		]
+
+		model_archetype = ""
+		primary_associated_entity = ""
+		anim_graph_name = ""
+		base_model_name = "models/vj_zombies/fast_main.vmdl"
+	}
+}

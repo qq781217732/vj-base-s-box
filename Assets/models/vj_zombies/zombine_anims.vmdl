@@ -1,0 +1,4822 @@
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:source1imported:version{3cec427c-1b0e-4d48-a90a-0436f33a6041} -->
+{
+	rootNode = 
+	{
+		_class = "RootNode"
+		note = ""
+		children = 
+		[
+			{
+				_class = "MaterialGroupList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "DefaultMaterialGroup"
+						note = ""
+						children = []
+						name = ""
+						remaps = []
+						use_global_default = false
+						global_default_material = ""
+					},
+				]
+
+			},
+			{
+				_class = "ModelDataList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "Bounds Hull"
+						note = ""
+						children = []
+						name = "bbox"
+						mins = [-17.62, -23.464, -2.754]
+						maxs = [19.969, 15.289, 58.962]
+					},
+				]
+
+			},
+			{
+				_class = "WeightListList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "WeightList"
+						note = ""
+						children = []
+						name = "weights_flinch_grenade_backinDelta"
+						default_weight = 0.0
+						weights = 
+						[
+							{
+								bone = "ValveBiped_Bip01_Pelvis"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Thigh"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Calf"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Foot"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Toe0"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Thigh"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Calf"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Foot"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Toe0"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Cod_Bone"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_Spine"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_Spine1"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_Spine2"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_Spine4"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Clavicle"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_UpperArm"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Forearm"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Hand"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger0"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger01"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger02"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger3"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger31"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger32"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger2"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger21"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger22"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger1"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger11"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger12"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Clavicle"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_UpperArm"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Forearm"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Hand"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger0"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger01"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger02"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger3"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger31"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger32"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger2"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger21"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger22"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger1"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger11"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger12"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_Body_Bone"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_Head_Bone"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_FangL_Bone1"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_FangL_Bone2"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_FangR_Bone1"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_FangR_Bone2"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_HoleControlL"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_HoleControlR"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_Rear_Bone"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_ThighL_Bone"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_CalfL_Bone"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_ThighR_Bone"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_CalfR_Bone"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_UpperArmL_Bone"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_ForeArmL_Bone"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_UpperArmR_Bone"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_ForeArmR_Bone"
+								weight = "1"
+							},
+						]
+
+						master_morph_weight = -1.0
+						morph_weights = []
+					},
+					{
+						_class = "WeightList"
+						note = ""
+						children = []
+						name = "weights_flinch_grenade_back"
+						default_weight = 0.0
+						weights = 
+						[
+							{
+								bone = "ValveBiped_Bip01_Pelvis"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Thigh"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Calf"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Foot"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Toe0"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Thigh"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Calf"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Foot"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Toe0"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Cod_Bone"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_Spine"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_Spine1"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_Spine2"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_Spine4"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Clavicle"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_UpperArm"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Forearm"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Hand"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger0"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger01"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger02"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger3"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger31"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger32"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger2"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger21"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger22"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger1"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger11"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger12"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Clavicle"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_UpperArm"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Forearm"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Hand"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger0"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger01"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger02"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger3"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger31"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger32"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger2"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger21"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger22"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger1"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger11"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger12"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_HC_Body_Bone"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_HC_Head_Bone"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_HC_FangL_Bone1"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_HC_FangL_Bone2"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_HC_FangR_Bone1"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_HC_FangR_Bone2"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_HC_HoleControlL"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_HC_HoleControlR"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_HC_Rear_Bone"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_HC_ThighL_Bone"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_HC_CalfL_Bone"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_HC_ThighR_Bone"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_HC_CalfR_Bone"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_HC_UpperArmL_Bone"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_HC_ForeArmL_Bone"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_HC_UpperArmR_Bone"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_HC_ForeArmR_Bone"
+								weight = "0"
+							},
+						]
+
+						master_morph_weight = -1.0
+						morph_weights = []
+					},
+					{
+						_class = "WeightList"
+						note = ""
+						children = []
+						name = "weights_layer_upperBodyGrenade"
+						default_weight = 0.0
+						weights = 
+						[
+							{
+								bone = "ValveBiped_Bip01_Pelvis"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Thigh"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Calf"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Foot"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Toe0"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Thigh"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Calf"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Foot"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Toe0"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Cod_Bone"
+								weight = "0"
+							},
+							{
+								bone = "ValveBiped_Bip01_Spine"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_Spine1"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_Spine2"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_Spine4"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Clavicle"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_UpperArm"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Forearm"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Hand"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger0"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger01"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger02"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger3"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger31"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger32"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger2"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger21"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger22"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger1"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger11"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_L_Finger12"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Clavicle"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_UpperArm"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Forearm"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Hand"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger0"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger01"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger02"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger3"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger31"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger32"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger2"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger21"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger22"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger1"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger11"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_Bip01_R_Finger12"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_Body_Bone"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_Head_Bone"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_FangL_Bone1"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_FangL_Bone2"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_FangR_Bone1"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_FangR_Bone2"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_HoleControlL"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_HoleControlR"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_Rear_Bone"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_ThighL_Bone"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_CalfL_Bone"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_ThighR_Bone"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_CalfR_Bone"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_UpperArmL_Bone"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_ForeArmL_Bone"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_UpperArmR_Bone"
+								weight = "1"
+							},
+							{
+								bone = "ValveBiped_HC_ForeArmR_Bone"
+								weight = "1"
+							},
+						]
+
+						master_morph_weight = -1.0
+						morph_weights = []
+					},
+				]
+
+			},
+			{
+				_class = "AnimationList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "Idle01"
+						activity_name = "ACT_IDLE"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/idle01.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "grenade"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "14"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "pullGrenade"
+						activity_name = "ACT_SLAM_DETONATOR_DRAW"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/pullgrenade.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "Idle_Grenade"
+						activity_name = "ACT_HANDGRENADE_THROW1"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/idle_grenade.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch_grenade_backinDelta"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = true
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch_grenade_backindelta.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch_grenade_backinFrame"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch_grenade_backinframe.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch_grenade_backCoreDelta"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = true
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch_grenade_backcoredelta.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch_grenade_backOutFrame"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch_grenade_backoutframe.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch_grenade_backoutDelta"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = true
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch_grenade_backoutdelta.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch_grenade_back"
+						activity_name = "ACT_ZOMBINE_GRENADE_FLINCH_BACK"
+						activity_weight = "1"
+						weight_list_name = "weights_flinch_grenade_back"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch_grenade_back.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch_grenade_frontinDelta"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = true
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch_grenade_frontindelta.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch_grenade_frontinFrame"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch_grenade_frontinframe.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch_grenade_frontCoreDelta"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = true
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch_grenade_frontcoredelta.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch_grenade_frontOutFrame"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch_grenade_frontoutframe.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch_grenade_frontoutDelta"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = true
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch_grenade_frontoutdelta.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch_grenade_front"
+						activity_name = "ACT_ZOMBINE_GRENADE_FLINCH_FRONT"
+						activity_weight = "1"
+						weight_list_name = "weights_flinch_grenade_back"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch_grenade_front.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch_grenade_eastinDelta"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = true
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch_grenade_eastindelta.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch_grenade_eastinFrame"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch_grenade_eastinframe.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch_grenade_eastCoreDelta"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = true
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch_grenade_eastcoredelta.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch_grenade_eastOutFrame"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch_grenade_eastoutframe.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch_grenade_eastoutDelta"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = true
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch_grenade_eastoutdelta.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch_grenade_east"
+						activity_name = "ACT_ZOMBINE_GRENADE_FLINCH_EAST"
+						activity_weight = "1"
+						weight_list_name = "weights_flinch_grenade_back"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch_grenade_east.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch_grenade_westinDelta"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = true
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch_grenade_westindelta.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch_grenade_westinFrame"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch_grenade_westinframe.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch_grenade_westCoreDelta"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = true
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch_grenade_westcoredelta.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch_grenade_westOutFrame"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch_grenade_westoutframe.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch_grenade_westoutDelta"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = true
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch_grenade_westoutdelta.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch_grenade_west"
+						activity_name = "ACT_ZOMBINE_GRENADE_FLINCH_WEST"
+						activity_weight = "1"
+						weight_list_name = "weights_flinch_grenade_back"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch_grenade_west.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "layer_upperBodyGrenade"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_layer_upperBodyGrenade"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/layer_upperbodygrenade.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "sound_attack_scream"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "5"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "melee"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "9"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = ""
+								children = []
+								name = ""
+								event_class = "AE_NPC_ATTACK_BROADCAST"
+								event_frame = "3"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "FastAttack"
+						activity_name = "ACT_MELEE_ATTACK2"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/fastattack.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "layer_walk_upperBodyGrenade"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_layer_upperBodyGrenade"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/layer_walk_upperbodygrenade.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "14"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "28"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "walk_All"
+						activity_name = "ACT_WALK"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/a_walks"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "14"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "28"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "walk_All_Grenade"
+						activity_name = "ACT_HANDGRENADE_THROW2"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/a_walks"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "layer_Run_upperBodyGrenade"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_layer_upperBodyGrenade"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/layer_run_upperbodygrenade.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "15"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "7"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "Run_All"
+						activity_name = "ACT_RUN"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/a_walks"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "15"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "7"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "Run_All_grenade"
+						activity_name = "ACT_HANDGRENADE_THROW3"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/a_walks"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "Zombine_Intro_Pose"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/zombine_intro_pose.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "FireWalk"
+						activity_name = "ACT_WALK_ON_FIRE"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/firewalk.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "sound_attack_scream"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "5"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "melee"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "25"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = ""
+								children = []
+								name = ""
+								event_class = "AE_NPC_ATTACK_BROADCAST"
+								event_frame = "10"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "attackA"
+						activity_name = "ACT_MELEE_ATTACK1"
+						activity_weight = "2"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/attacka.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "sound_attack_scream"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "5"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "melee"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "25"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = ""
+								children = []
+								name = ""
+								event_class = "AE_NPC_ATTACK_BROADCAST"
+								event_frame = "10"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "attackB"
+						activity_name = "ACT_MELEE_ATTACK1"
+						activity_weight = "2"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/attackb.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "sound_attack_scream"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "5"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "melee"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "25"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = ""
+								children = []
+								name = ""
+								event_class = "AE_NPC_ATTACK_BROADCAST"
+								event_frame = "10"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "attackC"
+						activity_name = "ACT_MELEE_ATTACK1"
+						activity_weight = "2"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/attackc.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "sound_attack_scream"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "5"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "melee"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "25"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = ""
+								children = []
+								name = ""
+								event_class = "AE_NPC_ATTACK_BROADCAST"
+								event_frame = "10"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "attackD"
+						activity_name = "ACT_MELEE_ATTACK1"
+						activity_weight = "2"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/attackd.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "sound_attack_scream"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "5"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "melee_heavy"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "25"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "attackE"
+						activity_name = "ACT_MELEE_ATTACK1"
+						activity_weight = "2"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/attacke.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "sound_attack_scream"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "5"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "melee_heavy"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "25"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "attackF"
+						activity_name = "ACT_MELEE_ATTACK1"
+						activity_weight = "2"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/attackf.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = ""
+								children = []
+								name = ""
+								event_class = "AE_ZOMBIE_STARTSWAT"
+								event_frame = "1"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = ""
+								children = []
+								name = ""
+								event_class = "AE_ZOMBIE_SWATITEM"
+								event_frame = "9"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "swatleftmid"
+						activity_name = "ACT_ZOM_SWATLEFTMID"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/swatleftmid.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = ""
+								children = []
+								name = ""
+								event_class = "AE_ZOMBIE_STARTSWAT"
+								event_frame = "1"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = ""
+								children = []
+								name = ""
+								event_class = "AE_ZOMBIE_SWATITEM"
+								event_frame = "9"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "swatrightmid"
+						activity_name = "ACT_ZOM_SWATRIGHTMID"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/swatrightmid.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = ""
+								children = []
+								name = ""
+								event_class = "AE_ZOMBIE_STARTSWAT"
+								event_frame = "1"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = ""
+								children = []
+								name = ""
+								event_class = "AE_ZOMBIE_SWATITEM"
+								event_frame = "15"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "swatleftlow"
+						activity_name = "ACT_ZOM_SWATLEFTLOW"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/swatleftlow.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = ""
+								children = []
+								name = ""
+								event_class = "AE_ZOMBIE_STARTSWAT"
+								event_frame = "1"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = ""
+								children = []
+								name = ""
+								event_class = "AE_ZOMBIE_SWATITEM"
+								event_frame = "18"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "swatrightlow"
+						activity_name = "ACT_ZOM_SWATRIGHTLOW"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/swatrightlow.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "releasecrab"
+						activity_name = "ACT_ZOM_RELEASECRAB"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/releasecrab.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "physflinch1"
+						activity_name = "ACT_FLINCH_PHYSICS"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/physflinch1.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "physflinch2"
+						activity_name = "ACT_FLINCH_PHYSICS"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/physflinch2.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "physflinch3"
+						activity_name = "ACT_FLINCH_PHYSICS"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/physflinch3.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "bodydrop_heavy"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "10"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "bodydrop_heavy"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "27"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "bodydrop_heavy"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "37"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "get_up"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "75"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "smashfall64"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/smashfall64.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "slump_a"
+						activity_name = "ACT_IDLE_ANGRY"
+						activity_weight = "-1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/slump_a.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "sound_alert"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "1"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "15"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "50"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "get_up"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "80"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "slumprise_a"
+						activity_name = "ACT_SPECIAL_ATTACK1"
+						activity_weight = "5"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/slumprise_a.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "sound_alert"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "1"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "15"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "50"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "get_up"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "80"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "sound_attack_scream"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "16"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "melee"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "36"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "slumprise_a_attack"
+						activity_name = "ACT_SPECIAL_ATTACK1"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/slumprise_a_attack.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "sound_alert"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "1"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "16"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "22"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "get_up"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "24"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "slumprise_a2"
+						activity_name = "ACT_SPECIAL_ATTACK1"
+						activity_weight = "3"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/slumprise_a2.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "slump_b"
+						activity_name = "ACT_IDLE_STIMULATED"
+						activity_weight = "-1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/slump_b.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "sound_alert"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "1"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "13"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "27"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "get_up"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "57"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "slumprise_b"
+						activity_name = "ACT_SPECIAL_ATTACK2"
+						activity_weight = "-1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/slumprise_b.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "Breakthrough"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/breakthrough.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "canal5await"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/canal5await.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "canal5aattack"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/canal5aattack.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch1inDelta"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = true
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch1indelta.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch1inFrame"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch1inframe.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch1CoreDelta"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = true
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch1coredelta.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch1OutFrame"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch1outframe.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch1outDelta"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = true
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch1outdelta.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch1"
+						activity_name = "ACT_GESTURE_FLINCH_HEAD"
+						activity_weight = "1"
+						weight_list_name = "weights_flinch_grenade_back"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch1.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch2inDelta"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = true
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch2indelta.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch2inFrame"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch2inframe.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch2CoreDelta"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = true
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch2coredelta.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch2OutFrame"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch2outframe.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch2outDelta"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = true
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch2outdelta.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch2"
+						activity_name = "ACT_GESTURE_FLINCH_HEAD"
+						activity_weight = "1"
+						weight_list_name = "weights_flinch_grenade_back"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch2.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch3inDelta"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = true
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch3indelta.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch3inFrame"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch3inframe.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch3CoreDelta"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = true
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch3coredelta.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch3OutFrame"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch3outframe.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch3outDelta"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = "weights_flinch_grenade_backinDelta"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = true
+						worldSpace = false
+						hidden = true
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch3outdelta.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch3"
+						activity_name = "ACT_GESTURE_FLINCH_HEAD"
+						activity_weight = "1"
+						weight_list_name = "weights_flinch_grenade_back"
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch3.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch_head"
+						activity_name = "ACT_FLINCH_HEAD"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch_head.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch_leftArm"
+						activity_name = "ACT_FLINCH_LEFTARM"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch_leftarm.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch_rightArm"
+						activity_name = "ACT_FLINCH_RIGHTARM"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch_rightarm.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch_leftLeg"
+						activity_name = "ACT_FLINCH_LEFTLEG"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch_leftleg.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "flinch_rightLeg"
+						activity_name = "ACT_FLINCH_RIGHTLEG"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/flinch_rightleg.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "alyx_zombie_fight1"
+						activity_name = "ACT_DI_ALYX_ZOMBIE_MELEE"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/alyx_zombie_fight1.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "sound_alert"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "4"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "Zombie.Pain"
+								children = []
+								name = ""
+								event_class = "AE_CL_PLAYSOUND"
+								event_frame = "22"
+								event_keys = 
+								{
+									name = "Zombie.Pain"
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "ValveBiped.Bip01_R_hand 1000"
+								children = []
+								name = ""
+								event_class = "AE_ZOMBIE_POPHEADCRAB"
+								event_frame = "76"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = ""
+								children = []
+								name = ""
+								event_class = "AE_NPC_RAGDOLL"
+								event_frame = "81"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "alyx_zombie_fight2"
+						activity_name = "ACT_DI_ALYX_ZOMBIE_MELEE"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/alyx_zombie_fight2.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "ValveBiped.Bip01_R_Foot 1500"
+								children = []
+								name = ""
+								event_class = "AE_ZOMBIE_POPHEADCRAB"
+								event_frame = "24"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "alyx_zombie_kick1"
+						activity_name = "ACT_DI_ALYX_ZOMBIE_MELEE"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/alyx_zombie_kick1.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "alyx_zombie_grab"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/alyx_zombie_grab.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "alyx_zombie_grab_PI"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/alyx_zombie_grab_pi.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "ME 100"
+								children = []
+								name = ""
+								event_class = "AE_NPC_HURT_INTERACTION_PARTNER"
+								event_frame = "20"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "alyx_zombie_grab_exit"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/alyx_zombie_grab_exit.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "ME 100"
+								children = []
+								name = ""
+								event_class = "AE_NPC_HURT_INTERACTION_PARTNER"
+								event_frame = "43"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "alyx_zombie_elbow_45L"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/alyx_zombie_elbow_45l.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "Tantrum"
+						activity_name = "ACT_ZOMBIE_TANTRUM"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/tantrum.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "wallpound"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "14"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "wallpound"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "35"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "WallPound"
+						activity_name = "ACT_ZOMBIE_WALLPOUND"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/wallpound.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "ValveBiped.Bip01_R_Foot 2500"
+								children = []
+								name = ""
+								event_class = "AE_ZOMBIE_POPHEADCRAB"
+								event_frame = "76"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "NPC_FastZombie.Pain"
+								children = []
+								name = ""
+								event_class = "AE_CL_PLAYSOUND"
+								event_frame = "20"
+								event_keys = 
+								{
+									name = "NPC_FastZombie.Pain"
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "Flesh.ImpactHard"
+								children = []
+								name = ""
+								event_class = "AE_CL_PLAYSOUND"
+								event_frame = "51"
+								event_keys = 
+								{
+									name = "Flesh.ImpactHard"
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "GrenadeSpit.Hit"
+								children = []
+								name = ""
+								event_class = "AE_CL_PLAYSOUND"
+								event_frame = "78"
+								event_keys = 
+								{
+									name = "GrenadeSpit.Hit"
+								}
+							},
+						]
+
+						name = "vort_zombie_attack02"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/vort_zombie_attack02.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = ""
+								children = []
+								name = ""
+								event_class = "AE_ZOMBIE_ALERTSOUND"
+								event_frame = "4"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "Zombie.AttackMiss"
+								children = []
+								name = ""
+								event_class = "AE_CL_PLAYSOUND"
+								event_frame = "12"
+								event_keys = 
+								{
+									name = "Zombie.AttackMiss"
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "Zombie.AttackMiss"
+								children = []
+								name = ""
+								event_class = "AE_CL_PLAYSOUND"
+								event_frame = "16"
+								event_keys = 
+								{
+									name = "Zombie.AttackMiss"
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "Zombine.Charge"
+								children = []
+								name = ""
+								event_class = "AE_CL_PLAYSOUND"
+								event_frame = "19"
+								event_keys = 
+								{
+									name = "Zombine.Charge"
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "Zombine.ScuffRight"
+								children = []
+								name = ""
+								event_class = "AE_CL_PLAYSOUND"
+								event_frame = "26"
+								event_keys = 
+								{
+									name = "Zombine.ScuffRight"
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "Zombine.Pain"
+								children = []
+								name = ""
+								event_class = "AE_CL_PLAYSOUND"
+								event_frame = "37"
+								event_keys = 
+								{
+									name = "Zombine.Pain"
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "Flesh_Bloody.ImpactHard"
+								children = []
+								name = ""
+								event_class = "AE_CL_PLAYSOUND"
+								event_frame = "60"
+								event_keys = 
+								{
+									name = "Flesh_Bloody.ImpactHard"
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "ValveBiped.cleaver_attachment 1800"
+								children = []
+								name = ""
+								event_class = "AE_ZOMBIE_POPHEADCRAB"
+								event_frame = "62"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "ME 200"
+								children = []
+								name = ""
+								event_class = "AE_NPC_HURT_INTERACTION_PARTNER"
+								event_frame = "73"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "vort_zombie_attack"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/zombine_anims/zombine_anims_anims/vort_zombie_attack.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+				]
+
+				default_root_bone_name = ""
+			},
+			{
+				_class = "Skeleton"
+				note = ""
+				children = 
+				[
+					{
+						_class = "Bone"
+						note = ""
+						children = 
+						[
+							{
+								_class = "Bone"
+								note = ""
+								children = 
+								[
+									{
+										_class = "Bone"
+										note = ""
+										children = 
+										[
+											{
+												_class = "Bone"
+												note = ""
+												children = 
+												[
+													{
+														_class = "Bone"
+														note = ""
+														children = []
+														name = "ValveBiped_Bip01_L_Toe0"
+														origin = [6.879457, 1e-06, 0.0]
+														angles = [2.831042, -33.495514, -3.653923]
+														do_not_discard = true
+													},
+												]
+
+												name = "ValveBiped_Bip01_L_Foot"
+												origin = [17.699581, 0.0, 0.0]
+												angles = [-2.794963, -66.211908, -0.906668]
+												do_not_discard = true
+											},
+										]
+
+										name = "ValveBiped_Bip01_L_Calf"
+										origin = [17.59317, 0.0, 0.0]
+										angles = [0.0, 16.008153, 0.0]
+										do_not_discard = true
+									},
+								]
+
+								name = "ValveBiped_Bip01_L_Thigh"
+								origin = [3.890453, 0.0, -4e-06]
+								angles = [-6.298009, -90.530886, -89.999982]
+								do_not_discard = true
+							},
+							{
+								_class = "Bone"
+								note = ""
+								children = 
+								[
+									{
+										_class = "Bone"
+										note = ""
+										children = 
+										[
+											{
+												_class = "Bone"
+												note = ""
+												children = 
+												[
+													{
+														_class = "Bone"
+														note = ""
+														children = []
+														name = "ValveBiped_Bip01_R_Toe0"
+														origin = [6.879459, -1e-06, 0.0]
+														angles = [-3.168914, -33.468733, -1.473705]
+														do_not_discard = true
+													},
+												]
+
+												name = "ValveBiped_Bip01_R_Foot"
+												origin = [17.699577, 0.0, 0.0]
+												angles = [2.330621, -66.226587, 2.220957]
+												do_not_discard = true
+											},
+										]
+
+										name = "ValveBiped_Bip01_R_Calf"
+										origin = [17.593157, 0.0, 0.0]
+										angles = [0.0, 16.011995, 0.0]
+										do_not_discard = true
+									},
+								]
+
+								name = "ValveBiped_Bip01_R_Thigh"
+								origin = [-3.890452, 0.0, 7e-06]
+								angles = [-6.255897, -90.309895, -89.999982]
+								do_not_discard = true
+							},
+							{
+								_class = "Bone"
+								note = ""
+								children = []
+								name = "ValveBiped_Cod_Bone"
+								origin = [0.003197, 1.916843, 7.635199]
+								angles = [0.0, 0.0, 0.0]
+								do_not_discard = true
+							},
+							{
+								_class = "Bone"
+								note = ""
+								children = 
+								[
+									{
+										_class = "Bone"
+										note = ""
+										children = 
+										[
+											{
+												_class = "Bone"
+												note = ""
+												children = 
+												[
+													{
+														_class = "Bone"
+														note = ""
+														children = 
+														[
+															{
+																_class = "Bone"
+																note = ""
+																children = 
+																[
+																	{
+																		_class = "Bone"
+																		note = ""
+																		children = 
+																		[
+																			{
+																				_class = "Bone"
+																				note = ""
+																				children = 
+																				[
+																					{
+																						_class = "Bone"
+																						note = ""
+																						children = 
+																						[
+																							{
+																								_class = "Bone"
+																								note = ""
+																								children = 
+																								[
+																									{
+																										_class = "Bone"
+																										note = ""
+																										children = 
+																										[
+																											{
+																												_class = "Bone"
+																												note = ""
+																												children = []
+																												name = "ValveBiped_Bip01_L_Finger02"
+																												origin = [1.180882, 0.0, 0.0]
+																												angles = [1e-05, -29.700012, -1e-05]
+																												do_not_discard = true
+																											},
+																										]
+
+																										name = "ValveBiped_Bip01_L_Finger01"
+																										origin = [2.070885, -4e-06, -4e-06]
+																										angles = [1.4e-05, -50.40001, -1e-06]
+																										do_not_discard = true
+																									},
+																								]
+
+																								name = "ValveBiped_Bip01_L_Finger0"
+																								origin = [1.782818, 1.657451, 0.069283]
+																								angles = [-48.21646, 72.036776, -69.320628]
+																								do_not_discard = true
+																							},
+																							{
+																								_class = "Bone"
+																								note = ""
+																								children = 
+																								[
+																									{
+																										_class = "Bone"
+																										note = ""
+																										children = 
+																										[
+																											{
+																												_class = "Bone"
+																												note = ""
+																												children = []
+																												name = "ValveBiped_Bip01_L_Finger32"
+																												origin = [1.731651, 0.0, 0.0]
+																												angles = [4.52614, -26.09301, -4e-06]
+																												do_not_discard = true
+																											},
+																										]
+
+																										name = "ValveBiped_Bip01_L_Finger31"
+																										origin = [1.980927, -4e-06, 0.0]
+																										angles = [-0.100784, -39.849953, -0.079475]
+																										do_not_discard = true
+																									},
+																								]
+
+																								name = "ValveBiped_Bip01_L_Finger3"
+																								origin = [4.942484, -0.87483, 0.248177]
+																								angles = [-17.957532, -6.592456, -88.934684]
+																								do_not_discard = true
+																							},
+																							{
+																								_class = "Bone"
+																								note = ""
+																								children = 
+																								[
+																									{
+																										_class = "Bone"
+																										note = ""
+																										children = 
+																										[
+																											{
+																												_class = "Bone"
+																												note = ""
+																												children = []
+																												name = "ValveBiped_Bip01_L_Finger22"
+																												origin = [2.243126, 0.0, 0.0]
+																												angles = [-3e-06, -38.474975, -4e-06]
+																												do_not_discard = true
+																											},
+																										]
+
+																										name = "ValveBiped_Bip01_L_Finger21"
+																										origin = [2.156433, 0.0, 0.0]
+																										angles = [1e-06, -58.950017, -3e-06]
+																										do_not_discard = true
+																									},
+																								]
+
+																								name = "ValveBiped_Bip01_L_Finger2"
+																								origin = [5.040239, 0.509705, 0.13031]
+																								angles = [-9.293718, 3.242993, -91.830807]
+																								do_not_discard = true
+																							},
+																							{
+																								_class = "Bone"
+																								note = ""
+																								children = 
+																								[
+																									{
+																										_class = "Bone"
+																										note = ""
+																										children = 
+																										[
+																											{
+																												_class = "Bone"
+																												note = ""
+																												children = []
+																												name = "ValveBiped_Bip01_L_Finger12"
+																												origin = [2.441578, 2e-06, -1e-06]
+																												angles = [-4e-06, -48.149992, -8e-06]
+																												do_not_discard = true
+																											},
+																										]
+
+																										name = "ValveBiped_Bip01_L_Finger11"
+																										origin = [2.069261, 0.0, 0.0]
+																										angles = [4e-06, -48.150003, -8e-06]
+																										do_not_discard = true
+																									},
+																								]
+
+																								name = "ValveBiped_Bip01_L_Finger1"
+																								origin = [5.046516, 1.425083, 0.048111]
+																								angles = [-13.478381, 13.535091, -102.595718]
+																								do_not_discard = true
+																							},
+																						]
+
+																						name = "ValveBiped_Bip01_L_Hand"
+																						origin = [12.075584, 0.0, 0.0]
+																						angles = [-7.742144, 1.798748, -178.061242]
+																						do_not_discard = true
+																					},
+																				]
+
+																				name = "ValveBiped_Bip01_L_Forearm"
+																				origin = [11.692562, 1e-06, -4e-06]
+																				angles = [1e-05, 4e-06, 1e-06]
+																				do_not_discard = true
+																			},
+																		]
+
+																		name = "ValveBiped_Bip01_L_UpperArm"
+																		origin = [6.028143, 4e-06, -4e-06]
+																		angles = [-12.912923, -32.801782, -101.833749]
+																		do_not_discard = true
+																	},
+																]
+
+																name = "ValveBiped_Bip01_L_Clavicle"
+																origin = [1.673225, 1.247211, 2.595464]
+																angles = [-73.711907, 168.587715, 91.510847]
+																do_not_discard = true
+															},
+															{
+																_class = "Bone"
+																note = ""
+																children = 
+																[
+																	{
+																		_class = "Bone"
+																		note = ""
+																		children = 
+																		[
+																			{
+																				_class = "Bone"
+																				note = ""
+																				children = 
+																				[
+																					{
+																						_class = "Bone"
+																						note = ""
+																						children = 
+																						[
+																							{
+																								_class = "Bone"
+																								note = ""
+																								children = 
+																								[
+																									{
+																										_class = "Bone"
+																										note = ""
+																										children = 
+																										[
+																											{
+																												_class = "Bone"
+																												note = ""
+																												children = []
+																												name = "ValveBiped_Bip01_R_Finger02"
+																												origin = [1.180885, 0.0, 2e-06]
+																												angles = [-2.2e-05, -29.700022, 2e-05]
+																												do_not_discard = true
+																											},
+																										]
+
+																										name = "ValveBiped_Bip01_R_Finger01"
+																										origin = [2.070873, 0.0, -2e-06]
+																										angles = [-3.1e-05, -50.40001, 8e-06]
+																										do_not_discard = true
+																									},
+																								]
+
+																								name = "ValveBiped_Bip01_R_Finger0"
+																								origin = [1.819733, -0.264271, -1.112211]
+																								angles = [39.081055, -74.649152, -87.270126]
+																								do_not_discard = true
+																							},
+																							{
+																								_class = "Bone"
+																								note = ""
+																								children = 
+																								[
+																									{
+																										_class = "Bone"
+																										note = ""
+																										children = 
+																										[
+																											{
+																												_class = "Bone"
+																												note = ""
+																												children = []
+																												name = "ValveBiped_Bip01_R_Finger32"
+																												origin = [1.731651, 0.0, 0.0]
+																												angles = [-4.526141, -26.093005, 1e-06]
+																												do_not_discard = true
+																											},
+																										]
+
+																										name = "ValveBiped_Bip01_R_Finger31"
+																										origin = [1.980934, 0.0, -1e-06]
+																										angles = [0.100782, -39.84996, 0.079467]
+																										do_not_discard = true
+																									},
+																								]
+
+																								name = "ValveBiped_Bip01_R_Finger3"
+																								origin = [4.958588, -0.225746, 1.352891]
+																								angles = [-7.206952, -18.07077, 1.00548]
+																								do_not_discard = true
+																							},
+																							{
+																								_class = "Bone"
+																								note = ""
+																								children = 
+																								[
+																									{
+																										_class = "Bone"
+																										note = ""
+																										children = 
+																										[
+																											{
+																												_class = "Bone"
+																												note = ""
+																												children = []
+																												name = "ValveBiped_Bip01_R_Finger22"
+																												origin = [2.243122, 3e-06, 0.0]
+																												angles = [-4e-06, -38.474958, 1e-06]
+																												do_not_discard = true
+																											},
+																										]
+
+																										name = "ValveBiped_Bip01_R_Finger21"
+																										origin = [2.156433, 0.0, 0.0]
+																										angles = [-4e-06, -58.950004, -1e-06]
+																										do_not_discard = true
+																									},
+																								]
+
+																								name = "ValveBiped_Bip01_R_Finger2"
+																								origin = [5.056065, -0.114651, -0.09717]
+																								angles = [2.26983, -9.311739, -2.856771]
+																								do_not_discard = true
+																							},
+																							{
+																								_class = "Bone"
+																								note = ""
+																								children = 
+																								[
+																									{
+																										_class = "Bone"
+																										note = ""
+																										children = 
+																										[
+																											{
+																												_class = "Bone"
+																												note = ""
+																												children = []
+																												name = "ValveBiped_Bip01_R_Finger12"
+																												origin = [2.441574, 2e-06, 0.0]
+																												angles = [-9e-06, -48.149985, 1e-05]
+																												do_not_discard = true
+																											},
+																										]
+
+																										name = "ValveBiped_Bip01_R_Finger11"
+																										origin = [2.069266, 0.0, 1e-06]
+																										angles = [-1.2e-05, -48.149982, 0.0]
+																										do_not_discard = true
+																									},
+																								]
+
+																								name = "ValveBiped_Bip01_R_Finger1"
+																								origin = [5.062344, -0.036644, -1.012916]
+																								angles = [13.092598, -13.908178, 3.272962]
+																								do_not_discard = true
+																							},
+																						]
+
+																						name = "ValveBiped_Bip01_R_Hand"
+																						origin = [12.07559, 0.0, 1.1e-05]
+																						angles = [2.648412, 2.781881, -87.398179]
+																						do_not_discard = true
+																					},
+																				]
+
+																				name = "ValveBiped_Bip01_R_Forearm"
+																				origin = [11.692566, 0.0, 1.1e-05]
+																				angles = [-2.9e-05, 1e-06, 6e-06]
+																				do_not_discard = true
+																			},
+																		]
+
+																		name = "ValveBiped_Bip01_R_UpperArm"
+																		origin = [6.028142, 0.0, 0.0]
+																		angles = [15.946166, -31.150765, 105.625228]
+																		do_not_discard = true
+																	},
+																]
+
+																name = "ValveBiped_Bip01_R_Clavicle"
+																origin = [1.673229, 1.247223, -2.595471]
+																angles = [73.711914, 168.587141, -95.626931]
+																do_not_discard = true
+															},
+															{
+																_class = "Bone"
+																note = ""
+																children = 
+																[
+																	{
+																		_class = "Bone"
+																		note = ""
+																		children = 
+																		[
+																			{
+																				_class = "Bone"
+																				note = ""
+																				children = 
+																				[
+																					{
+																						_class = "Bone"
+																						note = ""
+																						children = []
+																						name = "ValveBiped_HC_FangL_Bone2"
+																						origin = [3.698879, 2e-06, 0.0]
+																						angles = [1.2e-05, -38.081925, -1e-06]
+																						do_not_discard = true
+																					},
+																				]
+
+																				name = "ValveBiped_HC_FangL_Bone1"
+																				origin = [1.884797, 0.225918, -3.244101]
+																				angles = [-7.359746, -99.621499, -49.057735]
+																				do_not_discard = true
+																			},
+																			{
+																				_class = "Bone"
+																				note = ""
+																				children = 
+																				[
+																					{
+																						_class = "Bone"
+																						note = ""
+																						children = []
+																						name = "ValveBiped_HC_FangR_Bone2"
+																						origin = [3.698872, 0.0, 0.0]
+																						angles = [4e-06, 38.081921, -1.7e-05]
+																						do_not_discard = true
+																					},
+																				]
+
+																				name = "ValveBiped_HC_FangR_Bone1"
+																				origin = [1.88467, 0.22591, 3.247673]
+																				angles = [7.360111, -99.621198, -130.939945]
+																				do_not_discard = true
+																			},
+																		]
+
+																		name = "ValveBiped_HC_Head_Bone"
+																		origin = [3.7386, -2.965115, -0.136395]
+																		angles = [-4.500008, -4.500015, 12.374989]
+																		do_not_discard = true
+																	},
+																	{
+																		_class = "Bone"
+																		note = ""
+																		children = []
+																		name = "ValveBiped_HC_HoleControlL"
+																		origin = [-1.923262, -4.27964, -3.138432]
+																		angles = [-4e-06, -1e-05, 1.5e-05]
+																		do_not_discard = true
+																	},
+																	{
+																		_class = "Bone"
+																		note = ""
+																		children = []
+																		name = "ValveBiped_HC_HoleControlR"
+																		origin = [-0.320878, -5.869141, 3.247988]
+																		angles = [-4e-06, -1e-05, 1.5e-05]
+																		do_not_discard = true
+																	},
+																	{
+																		_class = "Bone"
+																		note = ""
+																		children = 
+																		[
+																			{
+																				_class = "Bone"
+																				note = ""
+																				children = 
+																				[
+																					{
+																						_class = "Bone"
+																						note = ""
+																						children = []
+																						name = "ValveBiped_HC_CalfL_Bone"
+																						origin = [6.098812, 0.0, 2e-06]
+																						angles = [-2.4e-05, -1.2e-05, -1e-06]
+																						do_not_discard = true
+																					},
+																				]
+
+																				name = "ValveBiped_HC_ThighL_Bone"
+																				origin = [-0.450934, -0.675697, -6.164909]
+																				angles = [-30.718445, -70.093409, -172.984649]
+																				do_not_discard = true
+																			},
+																			{
+																				_class = "Bone"
+																				note = ""
+																				children = 
+																				[
+																					{
+																						_class = "Bone"
+																						note = ""
+																						children = []
+																						name = "ValveBiped_HC_CalfR_Bone"
+																						origin = [6.098816, -3e-06, 0.0]
+																						angles = [1.4e-05, -130.088657, -1.7e-05]
+																						do_not_discard = true
+																					},
+																				]
+
+																				name = "ValveBiped_HC_ThighR_Bone"
+																				origin = [-0.450914, -0.675701, 6.164912]
+																				angles = [-7.079969, -90.538645, 174.066278]
+																				do_not_discard = true
+																			},
+																		]
+
+																		name = "ValveBiped_HC_Rear_Bone"
+																		origin = [-7.842797, -1.67841, -0.934004]
+																		angles = [-9e-06, 20.249976, 29.250029]
+																		do_not_discard = true
+																	},
+																	{
+																		_class = "Bone"
+																		note = ""
+																		children = 
+																		[
+																			{
+																				_class = "Bone"
+																				note = ""
+																				children = []
+																				name = "ValveBiped_HC_ForeArmL_Bone"
+																				origin = [8.255686, 0.0, 2e-06]
+																				angles = [2.7e-05, -121.038779, 4e-06]
+																				do_not_discard = true
+																			},
+																		]
+
+																		name = "ValveBiped_HC_UpperArmL_Bone"
+																		origin = [2.630718, -3.15509, -5.01671]
+																		angles = [17.056879, -28.79617, 1.880352]
+																		do_not_discard = true
+																	},
+																	{
+																		_class = "Bone"
+																		note = ""
+																		children = 
+																		[
+																			{
+																				_class = "Bone"
+																				note = ""
+																				children = []
+																				name = "ValveBiped_HC_ForeArmR_Bone"
+																				origin = [8.25568, 4e-06, 5e-06]
+																				angles = [2.6e-05, 110.674582, -2.1e-05]
+																				do_not_discard = true
+																			},
+																		]
+
+																		name = "ValveBiped_HC_UpperArmR_Bone"
+																		origin = [2.630419, -3.155079, 5.01687]
+																		angles = [-4.143269, -63.369628, -131.616994]
+																		do_not_discard = true
+																	},
+																]
+
+																name = "ValveBiped_HC_Body_Bone"
+																origin = [7.856865, 0.35714, 2.41031]
+																angles = [-9.085843, 72.317298, 154.900057]
+																do_not_discard = true
+															},
+														]
+
+														name = "ValveBiped_Bip01_Spine4"
+														origin = [9.183792, 0.0, 0.0]
+														angles = [0.0, 20.151326, 0.0]
+														do_not_discard = true
+													},
+												]
+
+												name = "ValveBiped_Bip01_Spine2"
+												origin = [3.613476, 0.0, 0.0]
+												angles = [0.0, 7.43745, 0.0]
+												do_not_discard = true
+											},
+										]
+
+										name = "ValveBiped_Bip01_Spine1"
+										origin = [4.126717, 0.0, 0.0]
+										angles = [0.0, 5.074513, 0.0]
+										do_not_discard = true
+									},
+								]
+
+								name = "ValveBiped_Bip01_Spine"
+								origin = [2e-06, 3.345119, -2.981992]
+								angles = [4.944283, 89.999982, 89.999982]
+								do_not_discard = true
+							},
+						]
+
+						name = "ValveBiped_Bip01_Pelvis"
+						origin = [-5e-06, 1.516003, 38.353996]
+						angles = [0.0, 0.0, 89.999982]
+						do_not_discard = true
+					},
+				]
+
+			},
+		]
+
+		model_archetype = ""
+		primary_associated_entity = ""
+		anim_graph_name = ""
+		base_model_name = ""
+	}
+}

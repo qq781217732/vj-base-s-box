@@ -1,0 +1,2619 @@
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:source1imported:version{3cec427c-1b0e-4d48-a90a-0436f33a6041} -->
+{
+	rootNode = 
+	{
+		_class = "RootNode"
+		note = ""
+		children = 
+		[
+			{
+				_class = "RenderMeshList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "studio"
+						filename = "models/vj_zombies/fast_main/zombie_fast_fast_zombiefast_reference.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "zombie_fast_fast_Headcrab_reference"
+						filename = "models/vj_zombies/fast_main/zombie_fast_fast_headcrab_reference.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+				]
+
+			},
+			{
+				_class = "BodyGroupList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "BodyGroup"
+						note = ""
+						children = 
+						[
+							{
+								_class = "BodyGroupChoice"
+								note = ""
+								children = []
+								name = "blank"
+								meshes = []
+							},
+							{
+								_class = "BodyGroupChoice"
+								note = ""
+								children = []
+								name = ""
+								meshes = ["zombie_fast_fast_Headcrab_reference"]
+							},
+						]
+
+						name = "headcrab1"
+						hidden_in_tools = false
+					},
+				]
+
+			},
+			{
+				_class = "LODGroupList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "LODGroup"
+						note = ""
+						children = []
+						name = ""
+						switch_threshold = 0.0
+						meshes = ["zombie_fast_fast_Zombiefast_reference.smd", "zombie_fast_fast_Headcrab_reference.smd"]
+					},
+					{
+						_class = "LODGroup"
+						note = ""
+						children = []
+						name = ""
+						switch_threshold = 8
+						meshes = ["zombie_fast_fast_Zombiefast_reference_lod1.smd", "zombie_fast_fast_Headcrab_reference_lod1.smd"]
+					},
+					{
+						_class = "LODGroup"
+						note = ""
+						children = []
+						name = ""
+						switch_threshold = 20
+						meshes = ["zombie_fast_fast_Zombiefast_reference_lod2.smd", "zombie_fast_fast_Headcrab_reference_lod2.smd"]
+					},
+					{
+						_class = "LODGroup"
+						note = ""
+						children = []
+						name = ""
+						switch_threshold = 40
+						meshes = ["zombie_fast_fast_Zombiefast_reference_lod3.smd", "zombie_fast_fast_Headcrab_reference_lod3.smd"]
+					},
+					{
+						_class = "LODGroup"
+						note = ""
+						children = []
+						name = ""
+						switch_threshold = 80
+						meshes = ["zombie_fast_fast_Zombiefast_reference_lod4.smd", "zombie_fast_fast_Headcrab_reference_lod4.smd"]
+					},
+				]
+
+			},
+			{
+				_class = "MaterialGroupList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "DefaultMaterialGroup"
+						note = ""
+						children = []
+						name = ""
+						remaps = 
+						[
+							{
+								from = "fast_zombie_sheet"
+								to = "materials/models/zombie_fast/fast_zombie_sheet"
+							},
+							{
+								from = "allinonebacup2"
+								to = "materials/models/zombie_fast/allinonebacup2"
+							},
+						]
+
+						use_global_default = false
+						global_default_material = ""
+					},
+				]
+
+			},
+			{
+				_class = "AttachmentList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "Attachment"
+						note = ""
+						children = []
+						name = "headcrab"
+						parent_bone = "ValveBiped_HC_BodyCube"
+						relative_origin = [0.0, -1.5, 0.0]
+						relative_angles = [0, 0, 0]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						note = ""
+						children = []
+						name = "head"
+						parent_bone = "ValveBiped_HC_BodyCube"
+						relative_origin = [0.0, 0.0, 0.0]
+						relative_angles = [0, 0, 0]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						note = ""
+						children = []
+						name = "chest"
+						parent_bone = "ValveBiped_Bip01_Spine4"
+						relative_origin = [-4.0, 0.0, 3.0]
+						relative_angles = [0, 0, 0]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						note = ""
+						children = []
+						name = "Blood_Left"
+						parent_bone = "ValveBiped_Bip01_L_Finger2"
+						relative_origin = [0.0, 0.0, 0.0]
+						relative_angles = [0, 0, 0]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						note = ""
+						children = []
+						name = "Blood_Right"
+						parent_bone = "ValveBiped_Bip01_R_Finger2"
+						relative_origin = [0.0, 0.0, 0.0]
+						relative_angles = [0, 0, 0]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						note = ""
+						children = []
+						name = "Cable1a"
+						parent_bone = "ValveBiped_Bip01_L_Forearm"
+						relative_origin = [0.0, 0.0, 0.0]
+						relative_angles = [0, 0, 0]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						note = ""
+						children = []
+						name = "Cable1b"
+						parent_bone = "ValveBiped_Bip01_L_Hand"
+						relative_origin = [0.0, 0.0, 0.0]
+						relative_angles = [0, 0, 0]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						note = ""
+						children = []
+						name = "Cable2a"
+						parent_bone = "ValveBiped_Bip01_R_Forearm"
+						relative_origin = [0.0, 0.0, 0.0]
+						relative_angles = [0, 0, 0]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						note = ""
+						children = []
+						name = "Cable2b"
+						parent_bone = "ValveBiped_Bip01_R_Hand"
+						relative_origin = [0.0, 0.0, 0.0]
+						relative_angles = [0, 0, 0]
+						weight = 1.0
+						ignore_rotation = false
+					},
+				]
+
+			},
+			{
+				_class = "ModelDataList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "Bounds Hull"
+						note = ""
+						children = []
+						name = "bbox"
+						mins = [-13.0, -13.0, 0.0]
+						maxs = [13.0, 13.0, 72.0]
+					},
+				]
+
+			},
+			{
+				_class = "AnimationList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "idle"
+						activity_name = "ACT_IDLE"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/idle.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "idle_angry"
+						activity_name = "ACT_IDLE_ANGRY"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/idle_angry.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "idle_onfire"
+						activity_name = "ACT_IDLE_ON_FIRE"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/idle_onfire.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "5"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "9"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "Run"
+						activity_name = "ACT_RUN"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/run.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "leap"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "8"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "Leap"
+						activity_name = "ACT_RANGE_ATTACK1"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/leap.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "LeapStrike"
+						activity_name = "ACT_GLIDE"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/leapstrike.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "26"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "LandRight"
+						activity_name = "ACT_FASTZOMBIE_LAND_RIGHT"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/landright.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "LandLeft"
+						activity_name = "ACT_FASTZOMBIE_LAND_LEFT"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/landleft.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "melee"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "3"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "melee"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "7"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "Melee"
+						activity_name = "ACT_MELEE_ATTACK1"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/melee.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "climbmount"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/climbmount.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "step_climb"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "5"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step_climb"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "12"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "climbloop"
+						activity_name = "ACT_CLIMB_UP"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/climbloop.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "climbdismount"
+						activity_name = "ACT_CLIMB_DISMOUNT"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/climbdismount.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "JumpNavMove"
+						activity_name = "ACT_JUMP"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/jumpnavmove.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "leap_start"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/leap_start.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "leap_loop"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/leap_loop.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "leap_land"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/leap_land.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "BR2_Roar"
+						activity_name = "ACT_FASTZOMBIE_FRENZY"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/br2_roar.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "melee"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "18"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "BR2_Attack"
+						activity_name = "ACT_FASTZOMBIE_BIG_SLASH"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/br2_attack.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "7"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "16"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "walk_all"
+						activity_name = "ACT_WALK"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/a_walks"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "vehicle_lean_all"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = true
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/vehicle_idle_lean_left"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "vehicle_lean_vertical"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = true
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/vehicle_idle_lean_up"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "vehicle_idle"
+						activity_name = "ACT_PASSENGER_IDLE"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_idle.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "vehicle_idle_right"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_idle_right.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "vehicle_idle_left"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_idle_left.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "buggy_jumpdown_preidle"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/buggy_jumpdown_preidle.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "buggy_preidle"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/buggy_preidle.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "buggy_preidle_leap"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/buggy_preidle_leap.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "buggy_postidle_leap"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/buggy_postidle_leap.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "150000"
+								children = []
+								name = ""
+								event_class = "AE_PASSENGER_PHYSICS_PUSH"
+								event_frame = "8"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "buggy_enter1"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/buggy_enter1.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "300000"
+								children = []
+								name = ""
+								event_class = "AE_PASSENGER_PHYSICS_PUSH"
+								event_frame = "6"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "buggy_enter_right"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/buggy_enter_right.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "400000"
+								children = []
+								name = ""
+								event_class = "AE_PASSENGER_PHYSICS_PUSH"
+								event_frame = "6"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "buggy_enter_left"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/buggy_enter_left.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "NPC_FastZombie.CarScream"
+								children = []
+								name = ""
+								event_class = "1008"
+								event_frame = "45"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "300000"
+								children = []
+								name = ""
+								event_class = "AE_PASSENGER_PHYSICS_PUSH"
+								event_frame = "8"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "buggy_enter_front_left"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/buggy_enter_front_left.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "300000"
+								children = []
+								name = ""
+								event_class = "AE_PASSENGER_PHYSICS_PUSH"
+								event_frame = "8"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "buggy_enter_front_right"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/buggy_enter_front_right.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "400000"
+								children = []
+								name = ""
+								event_class = "AE_PASSENGER_PHYSICS_PUSH"
+								event_frame = "6"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "buggy_enter_back_left"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/buggy_enter_back_left.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "300000"
+								children = []
+								name = ""
+								event_class = "AE_PASSENGER_PHYSICS_PUSH"
+								event_frame = "6"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "buggy_enter_back_right"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/buggy_enter_back_right.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "buggy_dismount"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/buggy_dismount.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "vehicle_bump"
+						activity_name = "ACT_PASSENGER_FLINCH"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_bump.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = ""
+								children = []
+								name = ""
+								event_class = "AE_ZOMBIE_ATTACK_LEFT"
+								event_frame = "8"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "vehicle_melee1"
+						activity_name = "ACT_PASSENGER_MELEE_ATTACK1"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_melee1.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = ""
+								children = []
+								name = ""
+								event_class = "AE_ZOMBIE_ATTACK_LEFT"
+								event_frame = "8"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "vehicle_melee2"
+						activity_name = "ACT_PASSENGER_MELEE_ATTACK1"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_melee2.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "vehicle_pass_melee1"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_pass_melee1.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "vehicle_driver_melee1"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_driver_melee1.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "NPC_FastZombie.CarScream"
+								children = []
+								name = ""
+								event_class = "1008"
+								event_frame = "6"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "vehicle_roar"
+						activity_name = "ACT_PASSENGER_THREATEN"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_roar.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = ""
+								children = []
+								name = ""
+								event_class = "AE_FASTZOMBIE_VEHICLE_LEAP"
+								event_frame = "8"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "vehicle_leap"
+						activity_name = "ACT_PASSENGER_RANGE_ATTACK1"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_leap.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "vehicle_leap_loop"
+						activity_name = "ACT_PASSENGER_ZOMBIE_LEAP_LOOP"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_leap_loop.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "ragdoll"
+						activity_name = "ACT_DIERAGDOLL"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/ragdoll.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "NPC_FastZombie.CarEnter1"
+								children = []
+								name = ""
+								event_class = "1008"
+								event_frame = "4"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "NPC_FastZombie.CarEnter2"
+								children = []
+								name = ""
+								event_class = "1008"
+								event_frame = "21"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "NPC_FastZombie.CarEnter3"
+								children = []
+								name = ""
+								event_class = "1008"
+								event_frame = "30"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "NPC_FastZombie.CarEnter4"
+								children = []
+								name = ""
+								event_class = "1008"
+								event_frame = "45"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "NPC_FastZombie.CarScream"
+								children = []
+								name = ""
+								event_class = "AE_SV_PLAYSOUND"
+								event_frame = "60"
+								event_keys = 
+								{
+									name = "NPC_FastZombie.CarScream"
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "300000"
+								children = []
+								name = ""
+								event_class = "AE_PASSENGER_PHYSICS_PUSH"
+								event_frame = "8"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = ""
+								children = []
+								name = ""
+								event_class = "AE_FASTZOMBIE_VEHICLE_SS_DIE"
+								event_frame = "95"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "buggy_fast_dynamic01"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/buggy_fast_dynamic01.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "slump_a"
+						activity_name = "ACT_RANGE_ATTACK2"
+						activity_weight = "-1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/slump_a.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "sound_alert"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "1"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "get_up"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "16"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "slumprise_a"
+						activity_name = "ACT_SPECIAL_ATTACK1"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/slumprise_a.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "slump_b"
+						activity_name = "ACT_IDLE_STIMULATED"
+						activity_weight = "-1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/slump_b.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "sound_alert"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "1"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "sound_attack_scream"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "5"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "get_up"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "10"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "slumprise_b"
+						activity_name = "ACT_SPECIAL_ATTACK2"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/slumprise_b.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "sound_alert"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "1"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "sound_attack_scream"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "20"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "get_up"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "10"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "slumprise_c"
+						activity_name = "ACT_IDLE_STEALTH"
+						activity_weight = "-1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/slumprise_c.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+				]
+
+				default_root_bone_name = ""
+			},
+			{
+				_class = "PhysicsShapeList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "PhysicsHullFile"
+						note = ""
+						children = []
+						name = ""
+						parent_bone = ""
+						surface_prop = "flesh"
+						collision_tags = "solid"
+						recenter_on_parent_bone = false
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						filename = "models/vj_zombies/fast_main/fast_main_physics.smd"
+						import_scale = 1.0
+						faceMergeAngle = 10.0
+						maxHullVertices = 0
+						import_mode = "SingleHull"
+						optimization_algorithm = "QEM"
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+				]
+
+			},
+			{
+				_class = "Skeleton"
+				note = ""
+				children = 
+				[
+					{
+						_class = "Bone"
+						note = ""
+						children = 
+						[
+							{
+								_class = "Bone"
+								note = ""
+								children = 
+								[
+									{
+										_class = "Bone"
+										note = ""
+										children = 
+										[
+											{
+												_class = "Bone"
+												note = ""
+												children = 
+												[
+													{
+														_class = "Bone"
+														note = ""
+														children = []
+														name = "ValveBiped_Bip01_L_Foot"
+														origin = [17.699585, 0.0, 0.0]
+														angles = [1.263166, -62.10314, -7.021982]
+														do_not_discard = true
+													},
+												]
+
+												name = "ValveBiped_Bip01_L_Calf"
+												origin = [17.591, 0.0, -1e-06]
+												angles = [2e-06, 8.817994, 0.0]
+												do_not_discard = true
+											},
+										]
+
+										name = "ValveBiped_Bip01_L_Thigh"
+										origin = [3.890447, 0.0, 0.0]
+										angles = [-3.134709, -83.193056, -90.000003]
+										do_not_discard = true
+									},
+									{
+										_class = "Bone"
+										note = ""
+										children = 
+										[
+											{
+												_class = "Bone"
+												note = ""
+												children = 
+												[
+													{
+														_class = "Bone"
+														note = ""
+														children = []
+														name = "ValveBiped_Bip01_R_Foot"
+														origin = [17.699581, 0.0, 2e-06]
+														angles = [-1.263143, -62.103133, 7.634777]
+														do_not_discard = true
+													},
+												]
+
+												name = "ValveBiped_Bip01_R_Calf"
+												origin = [17.591005, 0.0, 0.0]
+												angles = [0.0, 8.817993, 0.0]
+												do_not_discard = true
+											},
+										]
+
+										name = "ValveBiped_Bip01_R_Thigh"
+										origin = [-3.890447, 0.0, 0.0]
+										angles = [-3.134709, -96.806969, -90.000023]
+										do_not_discard = true
+									},
+								]
+
+								name = "ValveBiped_Bip01_Pelvis"
+								origin = [0.0, 0.0, 0.0]
+								angles = [0.0, 0.0, 0.0]
+								do_not_discard = true
+							},
+							{
+								_class = "Bone"
+								note = ""
+								children = 
+								[
+									{
+										_class = "Bone"
+										note = ""
+										children = 
+										[
+											{
+												_class = "Bone"
+												note = ""
+												children = 
+												[
+													{
+														_class = "Bone"
+														note = ""
+														children = 
+														[
+															{
+																_class = "Bone"
+																note = ""
+																children = []
+																name = "ValveBiped_Bip01_Neck1"
+																origin = [3.138092, 0.0, 0.0]
+																angles = [0.0, -53.66133, 179.999964]
+																do_not_discard = true
+															},
+															{
+																_class = "Bone"
+																note = ""
+																children = []
+																name = "ValveBiped_Bip01_Head1"
+																origin = [4.149979, -1.375576, 0.0]
+																angles = [1.4e-05, -30.564717, 179.999964]
+																do_not_discard = true
+															},
+															{
+																_class = "Bone"
+																note = ""
+																children = 
+																[
+																	{
+																		_class = "Bone"
+																		note = ""
+																		children = 
+																		[
+																			{
+																				_class = "Bone"
+																				note = ""
+																				children = 
+																				[
+																					{
+																						_class = "Bone"
+																						note = ""
+																						children = 
+																						[
+																							{
+																								_class = "Bone"
+																								note = ""
+																								children = 
+																								[
+																									{
+																										_class = "Bone"
+																										note = ""
+																										children = 
+																										[
+																											{
+																												_class = "Bone"
+																												note = ""
+																												children = []
+																												name = "ValveBiped_Bip01_L_Finger32"
+																												origin = [3.326, -4e-06, 0.0]
+																												angles = [-0.42342, 0.564384, 0.509086]
+																												do_not_discard = true
+																											},
+																										]
+
+																										name = "ValveBiped_Bip01_L_Finger31"
+																										origin = [5.158504, 0.0, 0.0]
+																										angles = [-0.325442, 0.504048, -4.026864]
+																										do_not_discard = true
+																									},
+																								]
+
+																								name = "ValveBiped_Bip01_L_Finger3"
+																								origin = [5.562234, -0.288269, -0.510578]
+																								angles = [11.370639, -0.288842, -175.421033]
+																								do_not_discard = true
+																							},
+																							{
+																								_class = "Bone"
+																								note = ""
+																								children = 
+																								[
+																									{
+																										_class = "Bone"
+																										note = ""
+																										children = 
+																										[
+																											{
+																												_class = "Bone"
+																												note = ""
+																												children = []
+																												name = "ValveBiped_Bip01_L_Finger12"
+																												origin = [3.079117, 0.0, 0.0]
+																												angles = [-0.392479, 0.453791, 0.399831]
+																												do_not_discard = true
+																											},
+																										]
+
+																										name = "ValveBiped_Bip01_L_Finger11"
+																										origin = [5.293, 0.0, -4e-06]
+																										angles = [-0.3581, 0.481408, -4.215535]
+																										do_not_discard = true
+																									},
+																								]
+
+																								name = "ValveBiped_Bip01_L_Finger1"
+																								origin = [5.591166, -0.279018, 1.848877]
+																								angles = [-6.139754, 0.268022, -175.484608]
+																								do_not_discard = true
+																							},
+																							{
+																								_class = "Bone"
+																								note = ""
+																								children = 
+																								[
+																									{
+																										_class = "Bone"
+																										note = ""
+																										children = 
+																										[
+																											{
+																												_class = "Bone"
+																												note = ""
+																												children = []
+																												name = "ValveBiped_Bip01_L_Finger22"
+																												origin = [3.325017, 4e-06, 0.0]
+																												angles = [-0.380231, 0.46411, 0.535048]
+																												do_not_discard = true
+																											},
+																										]
+
+																										name = "ValveBiped_Bip01_L_Finger21"
+																										origin = [5.6525, -4e-06, 2e-06]
+																										angles = [-0.347915, 0.488858, -3.88151]
+																										do_not_discard = true
+																									},
+																								]
+
+																								name = "ValveBiped_Bip01_L_Finger2"
+																								origin = [5.73974, -0.095432, 0.607273]
+																								angles = [1.464944, -1.052536, -175.509634]
+																								do_not_discard = true
+																							},
+																						]
+
+																						name = "ValveBiped_Bip01_L_Hand"
+																						origin = [11.575974, -4e-06, -3.1e-05]
+																						angles = [-0.152225, 2.188071, 66.004325]
+																						do_not_discard = true
+																					},
+																				]
+
+																				name = "ValveBiped_Bip01_L_Forearm"
+																				origin = [12.693008, 0.0, 0.0]
+																				angles = [5e-06, -43.708491, -9e-06]
+																				do_not_discard = true
+																			},
+																		]
+
+																		name = "ValveBiped_Bip01_L_UpperArm"
+																		origin = [6.028142, 4e-06, 0.0]
+																		angles = [-3.23343, -33.943008, -89.993623]
+																		do_not_discard = true
+																	},
+																]
+
+																name = "ValveBiped_Bip01_L_Clavicle"
+																origin = [1.663036, 1.21051, 2.595493]
+																angles = [-73.711845, 169.261336, 90.864274]
+																do_not_discard = true
+															},
+															{
+																_class = "Bone"
+																note = ""
+																children = 
+																[
+																	{
+																		_class = "Bone"
+																		note = ""
+																		children = 
+																		[
+																			{
+																				_class = "Bone"
+																				note = ""
+																				children = 
+																				[
+																					{
+																						_class = "Bone"
+																						note = ""
+																						children = 
+																						[
+																							{
+																								_class = "Bone"
+																								note = ""
+																								children = 
+																								[
+																									{
+																										_class = "Bone"
+																										note = ""
+																										children = 
+																										[
+																											{
+																												_class = "Bone"
+																												note = ""
+																												children = []
+																												name = "ValveBiped_Bip01_R_Finger32"
+																												origin = [3.326001, 4e-06, 0.0]
+																												angles = [-4.9e-05, 1.7e-05, -9e-06]
+																												do_not_discard = true
+																											},
+																										]
+
+																										name = "ValveBiped_Bip01_R_Finger31"
+																										origin = [5.074006, 0.0, 0.0]
+																										angles = [1.1e-05, 1.4e-05, -9e-06]
+																										do_not_discard = true
+																									},
+																								]
+
+																								name = "ValveBiped_Bip01_R_Finger3"
+																								origin = [5.928188, 0.37891, 0.637283]
+																								angles = [-10.707787, 6.136648, 168.772608]
+																								do_not_discard = true
+																							},
+																							{
+																								_class = "Bone"
+																								note = ""
+																								children = 
+																								[
+																									{
+																										_class = "Bone"
+																										note = ""
+																										children = 
+																										[
+																											{
+																												_class = "Bone"
+																												note = ""
+																												children = []
+																												name = "ValveBiped_Bip01_R_Finger22"
+																												origin = [3.325018, 0.0, -4e-06]
+																												angles = [8e-06, -0.566295, -5e-06]
+																												do_not_discard = true
+																											},
+																										]
+
+																										name = "ValveBiped_Bip01_R_Finger21"
+																										origin = [5.511005, 0.0, 0.0]
+																										angles = [6e-06, 0.710715, -6e-06]
+																										do_not_discard = true
+																									},
+																								]
+
+																								name = "ValveBiped_Bip01_R_Finger2"
+																								origin = [6.18965, 0.568798, -0.554356]
+																								angles = [-0.783931, 4.738863, 168.977514]
+																								do_not_discard = true
+																							},
+																							{
+																								_class = "Bone"
+																								note = ""
+																								children = 
+																								[
+																									{
+																										_class = "Bone"
+																										note = ""
+																										children = 
+																										[
+																											{
+																												_class = "Bone"
+																												note = ""
+																												children = []
+																												name = "ValveBiped_Bip01_R_Finger12"
+																												origin = [3.151, 0.0, -2e-06]
+																												angles = [-1e-06, -0.573798, -7e-06]
+																												do_not_discard = true
+																											},
+																										]
+
+																										name = "ValveBiped_Bip01_R_Finger11"
+																										origin = [5.248507, 0.0, -2e-06]
+																										angles = [3e-06, 0.678289, -5e-06]
+																										do_not_discard = true
+																									},
+																								]
+
+																								name = "ValveBiped_Bip01_R_Finger1"
+																								origin = [5.900461, 0.299198, -1.780357]
+																								angles = [7.365082, 5.871197, 168.939183]
+																								do_not_discard = true
+																							},
+																						]
+
+																						name = "ValveBiped_Bip01_R_Hand"
+																						origin = [11.599607, 4e-06, 8e-06]
+																						angles = [-6.102471, 1.638433, -66.743324]
+																						do_not_discard = true
+																					},
+																				]
+
+																				name = "ValveBiped_Bip01_R_Forearm"
+																				origin = [12.693005, 0.0, 4e-06]
+																				angles = [-1.5e-05, -46.506639, 1.9e-05]
+																				do_not_discard = true
+																			},
+																		]
+
+																		name = "ValveBiped_Bip01_R_UpperArm"
+																		origin = [6.028137, 8e-06, 0.0]
+																		angles = [3.847067, -33.255071, 93.511751]
+																		do_not_discard = true
+																	},
+																]
+
+																name = "ValveBiped_Bip01_R_Clavicle"
+																origin = [1.663048, 1.210516, -2.595442]
+																angles = [73.455003, 168.779602, -95.441805]
+																do_not_discard = true
+															},
+															{
+																_class = "Bone"
+																note = ""
+																children = 
+																[
+																	{
+																		_class = "Bone"
+																		note = ""
+																		children = 
+																		[
+																			{
+																				_class = "Bone"
+																				note = ""
+																				children = 
+																				[
+																					{
+																						_class = "Bone"
+																						note = ""
+																						children = []
+																						name = "ValveBiped_HC_BoneLF1"
+																						origin = [13.106236, 4e-06, -3e-06]
+																						angles = [-2e-05, 116.133679, 5e-06]
+																						do_not_discard = true
+																					},
+																				]
+
+																				name = "ValveBiped_HC_BoneLF"
+																				origin = [-3.92942, 0.0, 0.0]
+																				angles = [34.419307, -144.015809, 26.145389]
+																				do_not_discard = true
+																			},
+																			{
+																				_class = "Bone"
+																				note = ""
+																				children = 
+																				[
+																					{
+																						_class = "Bone"
+																						note = ""
+																						children = []
+																						name = "ValveBiped_HC_BoneRF1"
+																						origin = [13.106233, 4e-06, -4e-06]
+																						angles = [-1.9e-05, -118.266296, -5e-06]
+																						do_not_discard = true
+																					},
+																				]
+
+																				name = "ValveBiped_HC_BoneRF"
+																				origin = [3.929418, 0.0, 0.0]
+																				angles = [30.834425, -33.423049, -23.567308]
+																				do_not_discard = true
+																			},
+																		]
+
+																		name = "ValveBiped_HC_HeadCube"
+																		origin = [0.051795, -3.221541, -2.149796]
+																		angles = [-0.227178, -179.024162, 89.999982]
+																		do_not_discard = true
+																	},
+																	{
+																		_class = "Bone"
+																		note = ""
+																		children = 
+																		[
+																			{
+																				_class = "Bone"
+																				note = ""
+																				children = 
+																				[
+																					{
+																						_class = "Bone"
+																						note = ""
+																						children = []
+																						name = "ValveBiped_HC_BoneLB2"
+																						origin = [10.292011, 0.0, -1e-06]
+																						angles = [-5e-06, -24.396712, -2e-05]
+																						do_not_discard = true
+																					},
+																				]
+
+																				name = "ValveBiped_HC_BoneLB1"
+																				origin = [10.074757, -8e-06, -4e-06]
+																				angles = [6e-06, -93.416436, -2.2e-05]
+																				do_not_discard = true
+																			},
+																		]
+
+																		name = "ValveBiped_HC_BoneLB"
+																		origin = [3.007646, 4.344523, 0.542816]
+																		angles = [-15.51381, 40.457263, 75.722387]
+																		do_not_discard = true
+																	},
+																	{
+																		_class = "Bone"
+																		note = ""
+																		children = 
+																		[
+																			{
+																				_class = "Bone"
+																				note = ""
+																				children = 
+																				[
+																					{
+																						_class = "Bone"
+																						note = ""
+																						children = []
+																						name = "ValveBiped_HC_BoneRB2"
+																						origin = [10.292, -2e-06, 2e-06]
+																						angles = [0.0, -23.266273, 1.5e-05]
+																						do_not_discard = true
+																					},
+																				]
+
+																				name = "ValveBiped_HC_BoneRB1"
+																				origin = [10.074759, 8e-06, 8e-06]
+																				angles = [-7e-06, -91.912742, 1e-05]
+																				do_not_discard = true
+																			},
+																		]
+
+																		name = "ValveBiped_HC_BoneRB"
+																		origin = [-2.753414, 4.323164, 0.558395]
+																		angles = [-12.847951, 130.549176, 110.68284]
+																		do_not_discard = true
+																	},
+																]
+
+																name = "ValveBiped_HC_BodyCube"
+																origin = [7.600437, -0.90844, 0.636362]
+																angles = [-89.999982, 170.392033, 0.0]
+																do_not_discard = true
+															},
+														]
+
+														name = "ValveBiped_Bip01_Spine4"
+														origin = [9.183983, 0.0, 0.0]
+														angles = [0.0, 9.938357, 0.0]
+														do_not_discard = true
+													},
+												]
+
+												name = "ValveBiped_Bip01_Spine2"
+												origin = [3.612873, 0.0, 0.0]
+												angles = [0.0, 9.000305, 0.0]
+												do_not_discard = true
+											},
+										]
+
+										name = "ValveBiped_Bip01_Spine1"
+										origin = [4.126621, 0.0, 0.0]
+										angles = [0.0, -6.300129, 0.0]
+										do_not_discard = true
+									},
+								]
+
+								name = "ValveBiped_Bip01_Spine"
+								origin = [0.0, 3.345131, -2.981898]
+								angles = [3.030546, 89.999982, 89.999982]
+								do_not_discard = true
+							},
+						]
+
+						name = "ValveBiped_Bip01"
+						origin = [0.0, 1.516078, 38.353989]
+						angles = [0.0, 0.0, 89.999982]
+						do_not_discard = true
+					},
+				]
+
+			},
+		]
+
+		model_archetype = ""
+		primary_associated_entity = ""
+		anim_graph_name = ""
+		base_model_name = ""
+	}
+}

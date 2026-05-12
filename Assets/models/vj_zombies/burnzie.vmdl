@@ -1,0 +1,1290 @@
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:source1imported:version{3cec427c-1b0e-4d48-a90a-0436f33a6041} -->
+{
+	rootNode = 
+	{
+		_class = "RootNode"
+		note = ""
+		children = 
+		[
+			{
+				_class = "RenderMeshList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "Body"
+						filename = "models/vj_zombies/burnzie/bz_reference.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+				]
+
+			},
+			{
+				_class = "LODGroupList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "LODGroup"
+						note = ""
+						children = []
+						name = ""
+						switch_threshold = 0.0
+						meshes = ["bz_reference.smd"]
+					},
+					{
+						_class = "LODGroup"
+						note = ""
+						children = []
+						name = ""
+						switch_threshold = 10
+						meshes = ["bz_reference_lod1.smd"]
+					},
+					{
+						_class = "LODGroup"
+						note = ""
+						children = []
+						name = ""
+						switch_threshold = 18
+						meshes = ["bz_reference_lod2.smd"]
+					},
+					{
+						_class = "LODGroup"
+						note = ""
+						children = []
+						name = ""
+						switch_threshold = 35
+						meshes = ["bz_reference_lod3.smd"]
+					},
+					{
+						_class = "LODGroup"
+						note = ""
+						children = []
+						name = ""
+						switch_threshold = 55
+						meshes = ["bz_reference_lod4.smd"]
+					},
+				]
+
+			},
+			{
+				_class = "MaterialGroupList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "DefaultMaterialGroup"
+						note = ""
+						children = []
+						name = ""
+						remaps = 
+						[
+							{
+								from = "Charple1_sheet"
+								to = "materials/models/charple/charple1_sheet"
+							},
+						]
+
+						use_global_default = false
+						global_default_material = ""
+					},
+				]
+
+			},
+			{
+				_class = "AttachmentList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "Attachment"
+						note = ""
+						children = []
+						name = "eyes"
+						parent_bone = "Bip01 Head"
+						relative_origin = [4.0, 4.0, 0.0]
+						relative_angles = [0, 0, 0]
+						weight = 1.0
+						ignore_rotation = false
+					},
+				]
+
+			},
+			{
+				_class = "ModelDataList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "Bounds Hull"
+						note = ""
+						children = []
+						name = "bbox"
+						mins = [-33.037, -6.855, -4.553]
+						maxs = [32.767, 8.0, 70.31]
+					},
+				]
+
+			},
+			{
+				_class = "AnimationList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "ragdoll"
+						activity_name = "ACT_DIERAGDOLL"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/burnzie/burnzie_anims/ragdoll.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "idle1"
+						activity_name = "ACT_IDLE"
+						activity_weight = "3"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/burnzie/burnzie_anims/idle1.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "15"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "idle2"
+						activity_name = "ACT_IDLE"
+						activity_weight = "3"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/burnzie/burnzie_anims/idle2.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "15"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "idle3"
+						activity_name = "ACT_IDLE"
+						activity_weight = "6"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/burnzie/burnzie_anims/idle3.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "15"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "7"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "15"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "21"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "29"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "walk"
+						activity_name = "ACT_WALK"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/burnzie/burnzie_anims/walk.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "7"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "14"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "20"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "29"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "walk2"
+						activity_name = "ACT_WALK"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/burnzie/burnzie_anims/walk2.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "3"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "5"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "step"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "9"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "Walk_OnFire"
+						activity_name = "ACT_WALK_ON_FIRE"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/burnzie/burnzie_anims/walk_onfire.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "24"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "Idle_OnFire"
+						activity_name = "ACT_IDLE_ON_FIRE"
+						activity_weight = "1"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/burnzie/burnzie_anims/idle_onfire.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "16"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "sound_attack"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "1"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "melee"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "16"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "attackleft"
+						activity_name = "ACT_MELEE_ATTACK1"
+						activity_weight = "2"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/burnzie/burnzie_anims/attackleft.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "25"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "sound_attack"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "1"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "melee"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "17"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "attackleft2"
+						activity_name = "ACT_MELEE_ATTACK1"
+						activity_weight = "2"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/burnzie/burnzie_anims/attackleft2.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "25"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "sound_attack"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "1"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "melee"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "13"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "attackright"
+						activity_name = "ACT_MELEE_ATTACK1"
+						activity_weight = "2"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/burnzie/burnzie_anims/attackright.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "25"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = 
+						[
+							{
+								_class = "AnimEvent"
+								note = "sound_attack"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "1"
+								event_keys = 
+								{
+								}
+							},
+							{
+								_class = "AnimEvent"
+								note = "melee"
+								children = []
+								name = ""
+								event_class = "1100"
+								event_frame = "14"
+								event_keys = 
+								{
+								}
+							},
+						]
+
+						name = "attackright2"
+						activity_name = "ACT_MELEE_ATTACK1"
+						activity_weight = "2"
+						weight_list_name = ""
+						fade_in_time = "0.2"
+						fade_out_time = "0.2"
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/burnzie/burnzie_anims/attackright2.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "25"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+				]
+
+				default_root_bone_name = ""
+			},
+			{
+				_class = "PhysicsShapeList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "PhysicsHullFile"
+						note = ""
+						children = []
+						name = ""
+						parent_bone = ""
+						surface_prop = "flesh"
+						collision_tags = "solid"
+						recenter_on_parent_bone = false
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						filename = "models/vj_zombies/burnzie/burnzie_physics.smd"
+						import_scale = 1.0
+						faceMergeAngle = 10.0
+						maxHullVertices = 0
+						import_mode = "SingleHull"
+						optimization_algorithm = "QEM"
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+				]
+
+			},
+			{
+				_class = "Skeleton"
+				note = ""
+				children = 
+				[
+					{
+						_class = "Bone"
+						note = ""
+						children = 
+						[
+							{
+								_class = "Bone"
+								note = ""
+								children = 
+								[
+									{
+										_class = "Bone"
+										note = ""
+										children = 
+										[
+											{
+												_class = "Bone"
+												note = ""
+												children = 
+												[
+													{
+														_class = "Bone"
+														note = ""
+														children = 
+														[
+															{
+																_class = "Bone"
+																note = ""
+																children = 
+																[
+																	{
+																		_class = "Bone"
+																		note = ""
+																		children = []
+																		name = "Bip01 Head"
+																		origin = [4.010231, 0.0, 0.0]
+																		angles = [-0.742324, -3.857267, -0.480769]
+																		do_not_discard = true
+																	},
+																	{
+																		_class = "Bone"
+																		note = ""
+																		children = 
+																		[
+																			{
+																				_class = "Bone"
+																				note = ""
+																				children = 
+																				[
+																					{
+																						_class = "Bone"
+																						note = ""
+																						children = 
+																						[
+																							{
+																								_class = "Bone"
+																								note = ""
+																								children = 
+																								[
+																									{
+																										_class = "Bone"
+																										note = ""
+																										children = 
+																										[
+																											{
+																												_class = "Bone"
+																												note = ""
+																												children = []
+																												name = "Bip01 L Finger01"
+																												origin = [1.049482, 2e-06, 4e-06]
+																												angles = [7e-06, 13.368994, 1.4e-05]
+																												do_not_discard = true
+																											},
+																										]
+
+																										name = "Bip01 L Finger0"
+																										origin = [2.444336, 0.326687, -1.924511]
+																										angles = [35.686393, 13.468759, 62.11096]
+																										do_not_discard = true
+																									},
+																									{
+																										_class = "Bone"
+																										note = ""
+																										children = 
+																										[
+																											{
+																												_class = "Bone"
+																												note = ""
+																												children = 
+																												[
+																													{
+																														_class = "Bone"
+																														note = ""
+																														children = []
+																														name = "Bip01 L Finger12"
+																														origin = [1.25938, 4e-06, 0.0]
+																														angles = [-1.4e-05, -5e-06, -1e-05]
+																														do_not_discard = true
+																													},
+																												]
+
+																												name = "Bip01 L Finger11"
+																												origin = [1.25938, 0.0, 4e-06]
+																												angles = [-1.5e-05, -5e-06, -1.1e-05]
+																												do_not_discard = true
+																											},
+																										]
+
+																										name = "Bip01 L Finger1"
+																										origin = [3.485641, -0.001001, -1.25938]
+																										angles = [-8.715275, -45.989033, -10.202384]
+																										do_not_discard = true
+																									},
+																									{
+																										_class = "Bone"
+																										note = ""
+																										children = 
+																										[
+																											{
+																												_class = "Bone"
+																												note = ""
+																												children = 
+																												[
+																													{
+																														_class = "Bone"
+																														note = ""
+																														children = []
+																														name = "Bip01 L Finger22"
+																														origin = [1.46928, 2e-06, 4e-06]
+																														angles = [-2.1e-05, -5e-06, -7e-06]
+																														do_not_discard = true
+																													},
+																												]
+
+																												name = "Bip01 L Finger21"
+																												origin = [1.46928, 2e-06, 0.0]
+																												angles = [-1.8e-05, -5e-06, -6e-06]
+																												do_not_discard = true
+																											},
+																										]
+
+																										name = "Bip01 L Finger2"
+																										origin = [3.485641, -0.000328, -0.419792]
+																										angles = [-8.714703, -44.934449, -5.575802]
+																										do_not_discard = true
+																									},
+																									{
+																										_class = "Bone"
+																										note = ""
+																										children = 
+																										[
+																											{
+																												_class = "Bone"
+																												note = ""
+																												children = 
+																												[
+																													{
+																														_class = "Bone"
+																														note = ""
+																														children = []
+																														name = "Bip01 L Finger32"
+																														origin = [1.259384, -2e-06, 0.0]
+																														angles = [-1.4e-05, -7e-06, -8e-06]
+																														do_not_discard = true
+																													},
+																												]
+
+																												name = "Bip01 L Finger31"
+																												origin = [1.25938, 0.0, 4e-06]
+																												angles = [-1.1e-05, -9e-06, -8e-06]
+																												do_not_discard = true
+																											},
+																										]
+
+																										name = "Bip01 L Finger3"
+																										origin = [3.485645, 0.000334, 0.419796]
+																										angles = [-15.887326, -40.485953, -5.732967]
+																										do_not_discard = true
+																									},
+																									{
+																										_class = "Bone"
+																										note = ""
+																										children = 
+																										[
+																											{
+																												_class = "Bone"
+																												note = ""
+																												children = 
+																												[
+																													{
+																														_class = "Bone"
+																														note = ""
+																														children = []
+																														name = "Bip01 L Finger42"
+																														origin = [1.049488, 0.0, 4e-06]
+																														angles = [-9e-06, -7e-06, -1.6e-05]
+																														do_not_discard = true
+																													},
+																												]
+
+																												name = "Bip01 L Finger41"
+																												origin = [1.049492, 0.0, 0.0]
+																												angles = [-9e-06, -6e-06, -1.5e-05]
+																												do_not_discard = true
+																											},
+																										]
+
+																										name = "Bip01 L Finger4"
+																										origin = [3.485645, 0.001003, 1.25938]
+																										angles = [-12.88806, 0.428797, -5.668288]
+																										do_not_discard = true
+																									},
+																								]
+
+																								name = "Bip01 L Hand"
+																								origin = [10.075051, 0.0, 0.0]
+																								angles = [-8.29202, 8.099618, -34.374197]
+																								do_not_discard = true
+																							},
+																						]
+
+																						name = "Bip01 L Forearm"
+																						origin = [10.075052, 0.0, 0.0]
+																						angles = [0.0, -19.319566, -3e-06]
+																						do_not_discard = true
+																					},
+																				]
+
+																				name = "Bip01 L UpperArm"
+																				origin = [5.228383, 0.0, 0.0]
+																				angles = [-3.314904, 0.243794, 8.351714]
+																				do_not_discard = true
+																			},
+																		]
+
+																		name = "Bip01 L Clavicle"
+																		origin = [-0.536713, 0.140761, 1.635261]
+																		angles = [-81.339671, -128.888934, -65.043714]
+																		do_not_discard = true
+																	},
+																	{
+																		_class = "Bone"
+																		note = ""
+																		children = 
+																		[
+																			{
+																				_class = "Bone"
+																				note = ""
+																				children = 
+																				[
+																					{
+																						_class = "Bone"
+																						note = ""
+																						children = 
+																						[
+																							{
+																								_class = "Bone"
+																								note = ""
+																								children = 
+																								[
+																									{
+																										_class = "Bone"
+																										note = ""
+																										children = 
+																										[
+																											{
+																												_class = "Bone"
+																												note = ""
+																												children = []
+																												name = "Bip01 R Finger01"
+																												origin = [1.049486, 4e-06, 0.0]
+																												angles = [-9e-06, 13.368995, 1e-05]
+																												do_not_discard = true
+																											},
+																										]
+
+																										name = "Bip01 R Finger0"
+																										origin = [2.444336, 0.326687, 1.924511]
+																										angles = [-35.686393, 13.468753, -62.111029]
+																										do_not_discard = true
+																									},
+																									{
+																										_class = "Bone"
+																										note = ""
+																										children = 
+																										[
+																											{
+																												_class = "Bone"
+																												note = ""
+																												children = 
+																												[
+																													{
+																														_class = "Bone"
+																														note = ""
+																														children = []
+																														name = "Bip01 R Finger12"
+																														origin = [1.25938, 2e-06, 0.0]
+																														angles = [4e-06, -9e-06, -4e-06]
+																														do_not_discard = true
+																													},
+																												]
+
+																												name = "Bip01 R Finger11"
+																												origin = [1.259377, -2e-06, -4e-06]
+																												angles = [2e-06, -5e-06, -3e-06]
+																												do_not_discard = true
+																											},
+																										]
+
+																										name = "Bip01 R Finger1"
+																										origin = [3.485638, -0.001003, 1.25938]
+																										angles = [8.715265, -45.989037, 10.202371]
+																										do_not_discard = true
+																									},
+																									{
+																										_class = "Bone"
+																										note = ""
+																										children = 
+																										[
+																											{
+																												_class = "Bone"
+																												note = ""
+																												children = 
+																												[
+																													{
+																														_class = "Bone"
+																														note = ""
+																														children = []
+																														name = "Bip01 R Finger22"
+																														origin = [1.469284, 0.0, 0.0]
+																														angles = [1e-06, -2e-05, -3e-06]
+																														do_not_discard = true
+																													},
+																												]
+
+																												name = "Bip01 R Finger21"
+																												origin = [1.46928, 2e-06, -4e-06]
+																												angles = [1e-06, -2.2e-05, -4e-06]
+																												do_not_discard = true
+																											},
+																										]
+
+																										name = "Bip01 R Finger2"
+																										origin = [3.485638, -0.000334, 0.419796]
+																										angles = [8.714691, -44.934462, 5.575793]
+																										do_not_discard = true
+																									},
+																									{
+																										_class = "Bone"
+																										note = ""
+																										children = 
+																										[
+																											{
+																												_class = "Bone"
+																												note = ""
+																												children = 
+																												[
+																													{
+																														_class = "Bone"
+																														note = ""
+																														children = []
+																														name = "Bip01 R Finger32"
+																														origin = [1.259384, 0.0, 4e-06]
+																														angles = [0.0, -1.2e-05, -3e-06]
+																														do_not_discard = true
+																													},
+																												]
+
+																												name = "Bip01 R Finger31"
+																												origin = [1.25938, 0.0, -4e-06]
+																												angles = [0.0, -1.4e-05, -2e-06]
+																												do_not_discard = true
+																											},
+																										]
+
+																										name = "Bip01 R Finger3"
+																										origin = [3.485641, 0.000334, -0.419792]
+																										angles = [15.887321, -40.485957, 5.732957]
+																										do_not_discard = true
+																									},
+																									{
+																										_class = "Bone"
+																										note = ""
+																										children = 
+																										[
+																											{
+																												_class = "Bone"
+																												note = ""
+																												children = 
+																												[
+																													{
+																														_class = "Bone"
+																														note = ""
+																														children = []
+																														name = "Bip01 R Finger42"
+																														origin = [1.049488, 0.0, 0.0]
+																														angles = [9e-06, -3e-06, 1e-06]
+																														do_not_discard = true
+																													},
+																												]
+
+																												name = "Bip01 R Finger41"
+																												origin = [1.049484, 0.0, -4e-06]
+																												angles = [9e-06, -3e-06, 1e-06]
+																												do_not_discard = true
+																											},
+																										]
+
+																										name = "Bip01 R Finger4"
+																										origin = [3.485638, 0.001003, -1.259384]
+																										angles = [12.888059, 0.428799, 5.668273]
+																										do_not_discard = true
+																									},
+																								]
+
+																								name = "Bip01 R Hand"
+																								origin = [10.075048, -2e-06, 8e-06]
+																								angles = [10.625794, 6.05353, 27.619892]
+																								do_not_discard = true
+																							},
+																						]
+
+																						name = "Bip01 R Forearm"
+																						origin = [10.075047, -2e-06, 0.0]
+																						angles = [0.0, -7.765813, 3e-06]
+																						do_not_discard = true
+																					},
+																				]
+
+																				name = "Bip01 R UpperArm"
+																				origin = [5.228383, -1e-06, -4e-06]
+																				angles = [2.732781, -6.846845, -28.322336]
+																				do_not_discard = true
+																			},
+																		]
+
+																		name = "Bip01 R Clavicle"
+																		origin = [-0.53672, 0.14077, -1.63526]
+																		angles = [81.597244, -94.627968, 98.956778]
+																		do_not_discard = true
+																	},
+																]
+
+																name = "Bip01 Neck"
+																origin = [5.821896, -0.003104, 0.0]
+																angles = [-5.7e-05, 13.634733, 0.0]
+																do_not_discard = true
+															},
+														]
+
+														name = "Bip01 Spine2"
+														origin = [5.821003, -0.004633, 3e-05]
+														angles = [-0.009454, -1.65493, -0.368011]
+														do_not_discard = true
+													},
+												]
+
+												name = "Bip01 Spine1"
+												origin = [5.821072, -0.004634, 1.5e-05]
+												angles = [-0.00338, -0.827465, -0.184034]
+												do_not_discard = true
+											},
+											{
+												_class = "Bone"
+												note = ""
+												children = 
+												[
+													{
+														_class = "Bone"
+														note = ""
+														children = 
+														[
+															{
+																_class = "Bone"
+																note = ""
+																children = 
+																[
+																	{
+																		_class = "Bone"
+																		note = ""
+																		children = []
+																		name = "Bip01 L Toe0"
+																		origin = [3.862103, 6.588043, 0.0]
+																		angles = [0.0, 89.999982, 0.0]
+																		do_not_discard = true
+																	},
+																]
+
+																name = "Bip01 L Foot"
+																origin = [16.791767, 1e-06, 0.0]
+																angles = [-0.702847, 4.462824, 0.021085]
+																do_not_discard = true
+															},
+														]
+
+														name = "Bip01 L Calf"
+														origin = [16.791765, 0.0, 0.0]
+														angles = [0.0, -11.946457, 0.0]
+														do_not_discard = true
+													},
+												]
+
+												name = "Bip01 L Thigh"
+												origin = [-3.838036, -0.457154, 3.343002]
+												angles = [-0.088214, -178.34169, 176.603448]
+												do_not_discard = true
+											},
+											{
+												_class = "Bone"
+												note = ""
+												children = 
+												[
+													{
+														_class = "Bone"
+														note = ""
+														children = 
+														[
+															{
+																_class = "Bone"
+																note = ""
+																children = 
+																[
+																	{
+																		_class = "Bone"
+																		note = ""
+																		children = []
+																		name = "Bip01 R Toe0"
+																		origin = [3.862103, 6.588047, 0.0]
+																		angles = [0.0, 89.999982, 0.0]
+																		do_not_discard = true
+																	},
+																]
+
+																name = "Bip01 R Foot"
+																origin = [16.791767, 0.0, 0.0]
+																angles = [-3.730128, 5.808934, 0.004814]
+																do_not_discard = true
+															},
+														]
+
+														name = "Bip01 R Calf"
+														origin = [16.791767, 0.0, 0.0]
+														angles = [0.0, -12.134558, 2e-06]
+														do_not_discard = true
+													},
+												]
+
+												name = "Bip01 R Thigh"
+												origin = [-3.847347, -0.306467, -3.372]
+												angles = [1.792769, -178.26291, -165.515455]
+												do_not_discard = true
+											},
+										]
+
+										name = "Bip01 Spine"
+										origin = [3.861622, -0.004609, 0.011265]
+										angles = [-0.079584, -5.746079, -1.285603]
+										do_not_discard = true
+									},
+								]
+
+								name = "Bip01 Pelvis"
+								origin = [0.0, 0.0, 4e-06]
+								angles = [-89.834521, -90.000556, 0.000859]
+								do_not_discard = true
+							},
+						]
+
+						name = "Bip01"
+						origin = [0.0, 0.0, 37.641029]
+						angles = [0.024179, -90.165047, 0.0]
+						do_not_discard = true
+					},
+				]
+
+			},
+		]
+
+		model_archetype = ""
+		primary_associated_entity = ""
+		anim_graph_name = ""
+		base_model_name = ""
+	}
+}
