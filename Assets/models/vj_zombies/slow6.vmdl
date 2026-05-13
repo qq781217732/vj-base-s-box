@@ -46,20 +46,20 @@
 						remaps = 
 						[
 							{
-								from = "erdim_cylmap32"
-								to = "materials/models/czombies/erdim_cylmap32"
+								from = "citizen_sheet9"
+								to = "materials/models/czombies/citizen_sheet9.vmat"
 							},
 							{
 								from = "custom_eye1"
-								to = "materials/models/czombies/custom_eye1"
+								to = "materials/models/czombies/custom_eye1.vmat"
 							},
 							{
-								from = "citizen_sheet9"
-								to = "materials/models/czombies/citizen_sheet9"
+								from = "erdim_cylmap32"
+								to = "materials/models/czombies/erdim_cylmap32.vmat"
 							},
 							{
 								from = "mouth"
-								to = "materials/models/czombies/mouth"
+								to = "materials/models/czombies/mouth.vmat"
 							},
 						]
 

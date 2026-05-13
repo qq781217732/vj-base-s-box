@@ -1,0 +1,11 @@
+"Layer0"
+{
+	"shader"		"shaders/complex.shader"
+	"TextureColor"		"materials/models/zombie_gal/skull2.tga"
+	"SystemAttributes"
+	{
+		"PhysicsSurfaceProperties"		"plaster"
+	}
+	"TextureNormal"		"materials/models/zombie_gal/skull_normal.tga"
+	"TextureRoughness"		"materials/default/default_rough_s1import.tga"
+}

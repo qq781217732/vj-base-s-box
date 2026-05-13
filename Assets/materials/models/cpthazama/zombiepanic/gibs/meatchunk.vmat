@@ -1,0 +1,10 @@
+"Layer0"
+{
+	"shader"		"shaders/simple.shader"
+	"TextureColor"		"materials/models/cpthazama/zombiepanic/gibs/meatchunk.tga"
+	"F_SPECULAR"		"1"
+	"g_flSpecularExponent"		"50.000000"
+	"g_flPhongBoost"		"3.000000"
+	"TextureNormal"		"materials/models/cpthazama/zombiepanic/gibs/meatchunk_normal.tga"
+	"TextureRoughness"		"materials/models/cpthazama/zombiepanic/gibs/meatchunk_normal_a-1_rough.tga"
+}

@@ -1,0 +1,6 @@
+"Layer0"
+{
+	"shader"		"shaders/complex.shader"
+	"TextureColor"		"materials/models/zombie_gal/2/inqui_mini_sheet.tga"
+	"TextureRoughness"		"materials/default/default_rough_s1import.tga"
+}

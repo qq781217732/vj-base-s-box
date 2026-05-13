@@ -13,6 +13,14 @@ public partial class CreatureNPC
 {
     // ═══ Additional Fields ═══
     public float NextProcessTime { get; set; } = 0.1f;
+
+    // ═══ OnUpdate: drives Think loop every frame ═══
+    protected override void OnUpdate()
+    {
+        if ( !Dead )
+            Think();
+    }
+
     // ═══ Think — main AI loop ═══
     public virtual void Think()
     {

@@ -95,7 +95,7 @@
 						[
 							{
 								from = "Charple4_sheet"
-								to = "materials/models/charple/charple4_sheet"
+								to = "materials/models/charple/charple4_sheet.vmat"
 							},
 						]
 
@@ -110,8 +110,8 @@
 						remaps = 
 						[
 							{
-								from = "materials/models/charple/charple4_sheet"
-								to = "materials/models/charple/charple4_sheet2"
+								from = "materials/models/charple/charple4_sheet.vmat"
+								to = "materials/models/charple/charple4_sheet2.vmat"
 							},
 						]
 
@@ -124,8 +124,8 @@
 						remaps = 
 						[
 							{
-								from = "materials/models/charple/charple4_sheet"
-								to = "materials/models/charple/charple4_sheet3"
+								from = "materials/models/charple/charple4_sheet.vmat"
+								to = "materials/models/charple/charple4_sheet3.vmat"
 							},
 						]
 
@@ -138,8 +138,8 @@
 						remaps = 
 						[
 							{
-								from = "materials/models/charple/charple4_sheet"
-								to = "materials/models/charple/charple4_sheet4"
+								from = "materials/models/charple/charple4_sheet.vmat"
+								to = "materials/models/charple/charple4_sheet4.vmat"
 							},
 						]
 

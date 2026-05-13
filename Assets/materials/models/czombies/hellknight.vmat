@@ -1,0 +1,7 @@
+"Layer0"
+{
+	"shader"		"shaders/complex.shader"
+	"TextureColor"		"materials/models/czombies/hellknight.tga"
+	"TextureNormal"		"materials/models/czombies/hellknight_normal.tga"
+	"TextureRoughness"		"materials/default/default_rough_s1import.tga"
+}

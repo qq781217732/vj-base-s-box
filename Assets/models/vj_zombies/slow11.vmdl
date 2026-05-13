@@ -46,20 +46,20 @@
 						remaps = 
 						[
 							{
-								from = "eric_facemap4"
-								to = "materials/models/czombies/eric_facemap4"
-							},
-							{
-								from = "red"
-								to = "materials/models/czombies/red"
-							},
-							{
 								from = "Custom_CSheet3"
-								to = "materials/models/czombies/custom_csheet3"
+								to = "materials/models/czombies/custom_csheet3.vmat"
+							},
+							{
+								from = "eric_facemap4"
+								to = "materials/models/czombies/eric_facemap4.vmat"
 							},
 							{
 								from = "mouth"
-								to = "materials/models/czombies/mouth"
+								to = "materials/models/czombies/mouth.vmat"
+							},
+							{
+								from = "red"
+								to = "materials/models/czombies/red.vmat"
 							},
 						]
 

@@ -1,0 +1,9 @@
+"Layer0"
+{
+	"shader"		"shaders/complex.shader"
+	"TextureColor"		"materials/models/cpthazama/zombiepanic/zombie1/zombie2_hairflat.tga"
+	"F_TRANSLUCENT"		"1"
+	"TextureTranslucency"		"materials/models/cpthazama/zombiepanic/zombie1/zombie2_hairflat_a_trans.tga"
+	"F_RENDER_BACKFACES"		"1"
+	"TextureRoughness"		"materials/default/default_rough_s1import.tga"
+}

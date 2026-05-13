@@ -46,20 +46,20 @@
 						remaps = 
 						[
 							{
-								from = "mouth"
-								to = "materials/models/czombies/mouth"
+								from = "Custom_CSheet3"
+								to = "materials/models/czombies/custom_csheet3.vmat"
 							},
 							{
 								from = "custom_eye2"
-								to = "materials/models/czombies/custom_eye2"
+								to = "materials/models/czombies/custom_eye2.vmat"
 							},
 							{
-								from = "Custom_CSheet3"
-								to = "materials/models/czombies/custom_csheet3"
+								from = "mouth"
+								to = "materials/models/czombies/mouth.vmat"
 							},
 							{
 								from = "scarf"
-								to = "materials/models/czombies/scarf"
+								to = "materials/models/czombies/scarf.vmat"
 							},
 						]
 

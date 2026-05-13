@@ -1,0 +1,9 @@
+"Layer0"
+{
+	"shader"		"shaders/simple.shader"
+	"TextureColor"		"materials/models/stalker/s_backdull.tga"
+	"F_SPECULAR_CUBE_MAP"		"2"
+	"TextureCubeMap"		"materials/default/default_cube.pfm"
+	"F_SPECULAR"		"1"
+	"TextureRoughness"		"materials/models/stalker/s_backmask_l-1_rough.tga"
+}

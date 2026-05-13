@@ -47,19 +47,19 @@
 						[
 							{
 								from = "citizen_sheet10"
-								to = "materials/models/czombies/citizen_sheet10"
-							},
-							{
-								from = "van_facemap"
-								to = "materials/models/czombies/van_facemap"
+								to = "materials/models/czombies/citizen_sheet10.vmat"
 							},
 							{
 								from = "custom_eye3"
-								to = "materials/models/czombies/custom_eye3"
+								to = "materials/models/czombies/custom_eye3.vmat"
 							},
 							{
 								from = "mouth"
-								to = "materials/models/czombies/mouth"
+								to = "materials/models/czombies/mouth.vmat"
+							},
+							{
+								from = "van_facemap"
+								to = "materials/models/czombies/van_facemap.vmat"
 							},
 						]
 

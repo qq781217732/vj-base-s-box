@@ -1,0 +1,10 @@
+"Layer0"
+{
+	"shader"		"shaders/complex.shader"
+	"TextureColor"		"materials/models/czombies/citizen_sheet40.tga"
+	"SystemAttributes"
+	{
+		"PhysicsSurfaceProperties"		"flesh"
+	}
+	"TextureRoughness"		"materials/default/default_rough_s1import.tga"
+}

@@ -149,20 +149,20 @@
 						remaps = 
 						[
 							{
-								from = "Cap_Body_Color2"
-								to = "materials/models/cpthazama/zombiepanic/cap_body_color2"
-							},
-							{
-								from = "fleshandbone"
-								to = "materials/models/cpthazama/zombiepanic/fleshandbone"
-							},
-							{
 								from = "Cap_Body_Color"
-								to = "materials/models/cpthazama/zombiepanic/cap_body_color"
+								to = "materials/models/cpthazama/zombiepanic/zombie2/cap_body_color.vmat"
+							},
+							{
+								from = "Cap_Body_Color2"
+								to = "materials/models/cpthazama/zombiepanic/zombie2/cap_body_color2.vmat"
 							},
 							{
 								from = "Cap_Cloth_ColorMap"
-								to = "materials/models/cpthazama/zombiepanic/cap_cloth_colormap"
+								to = "materials/models/cpthazama/zombiepanic/zombie2/cap_cloth_colormap.vmat"
+							},
+							{
+								from = "fleshandbone"
+								to = "materials/models/cpthazama/zombiepanic/fleshandbone.vmat"
 							},
 						]
 

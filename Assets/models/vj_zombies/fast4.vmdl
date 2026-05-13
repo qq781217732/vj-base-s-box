@@ -95,7 +95,7 @@
 						[
 							{
 								from = "corpse1"
-								to = "materials/models/zombie_fast/corpse1"
+								to = "materials/models/zombie_fast/corpse1.vmat"
 							},
 						]
 
@@ -110,8 +110,8 @@
 						remaps = 
 						[
 							{
-								from = "materials/models/zombie_fast/corpse1"
-								to = "materials/models/zombie_fast/corpse2"
+								from = "materials/models/zombie_fast/corpse1.vmat"
+								to = "materials/models/zombie_fast/corpse2.vmat"
 							},
 						]
 
@@ -124,8 +124,8 @@
 						remaps = 
 						[
 							{
-								from = "materials/models/zombie_fast/corpse1"
-								to = "materials/models/zombie_fast/corpse3"
+								from = "materials/models/zombie_fast/corpse1.vmat"
+								to = "materials/models/zombie_fast/corpse3.vmat"
 							},
 						]
 
@@ -138,8 +138,8 @@
 						remaps = 
 						[
 							{
-								from = "materials/models/zombie_fast/corpse1"
-								to = "materials/models/zombie_fast/corpse4"
+								from = "materials/models/zombie_fast/corpse1.vmat"
+								to = "materials/models/zombie_fast/corpse4.vmat"
 							},
 						]
 

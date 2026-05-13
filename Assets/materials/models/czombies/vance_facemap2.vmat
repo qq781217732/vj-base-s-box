@@ -1,0 +1,10 @@
+"Layer0"
+{
+	"shader"		"shaders/complex.shader"
+	"TextureColor"		"materials/models/czombies/vance_facemap2.tga"
+	"SystemAttributes"
+	{
+		"PhysicsSurfaceProperties"		"Flesh"
+	}
+	"TextureRoughness"		"materials/default/default_rough_s1import.tga"
+}

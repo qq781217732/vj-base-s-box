@@ -1,0 +1,16 @@
+"Layer0"
+{
+	"shader"		"shaders/complex.shader"
+	"F_UNLIT"		"1"
+	"TextureColor"		"materials/models/cpthazama/zombiepanic/zombie0/zombie1_eye_glow.tga"
+	"F_SPECULAR_CUBE_MAP"		"1"
+	"F_SPECULAR"		"1"
+	"SystemAttributes"
+	{
+		"PhysicsSurfaceProperties"		"flesh"
+	}
+	"g_vEnvironmentMapTint"		"[0.750000 0.250000 0.000000 1.000000]"
+	"F_SELF_ILLUM"		"1"
+	"TextureSelfIllumMask"		"[1.000000 1.000000 1.000000 1.000000]"
+	"TextureRoughness"		"materials/default/default_rough_s1import.tga"
+}

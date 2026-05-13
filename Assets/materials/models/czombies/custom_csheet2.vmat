@@ -1,0 +1,10 @@
+"Layer0"
+{
+	"shader"		"shaders/complex.shader"
+	"TextureColor"		"materials/models/czombies/custom_csheet2.tga"
+	"SystemAttributes"
+	{
+		"PhysicsSurfaceProperties"		"BloodyFlesh"
+	}
+	"TextureRoughness"		"materials/default/default_rough_s1import.tga"
+}

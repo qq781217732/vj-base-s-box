@@ -16,7 +16,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
 {
     // ═══ Core Data Fields ═══
     public bool IsVJBaseSNPC { get; set; } = true;
-    // ═══ VJ_ID_* Entity Flags ═══
+    // ═══ VJ_ID_* Entity Flags (enums.lua:326-340) ═══
     public bool VJ_ID_Danger { get; set; }
     public bool VJ_ID_Grenade { get; set; }
     public bool VJ_ID_Grabbable { get; set; }
@@ -24,12 +24,20 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public bool VJ_ID_Attackable { get; set; } = true;
     public bool VJ_ID_Destructible { get; set; }
     public bool VJ_ID_Boss { get; set; }
-    public float BecomeEnemyToPlayer { get; set; } // hostility threshold to turn on player attacker; 0 = disabled
     public bool VJ_ID_Vehicle { get; set; }
-    // ═══ VJ_ST_* State Flags ═══
+    public bool VJ_ID_Aircraft { get; set; }
+    public bool VJ_ID_Turret { get; set; }
+    public bool VJ_ID_Police { get; set; }
+    public bool VJ_ID_Civilian { get; set; }
+    public bool VJ_ID_Headcrab { get; set; }
+    public bool VJ_ID_Undead { get; set; }
+    public bool VJ_ID_Healable { get; set; } = true; // core.lua:93
+    public float BecomeEnemyToPlayer { get; set; } // hostility threshold to turn on player attacker; 0 = disabled
+    // ═══ VJ_ST_* State Flags (enums.lua:319-323) ═══
     public bool VJ_ST_Grabbed { get; set; }
     public bool VJ_ST_Eating { get; set; }
     public bool VJ_ST_Healing { get; set; }
+    public bool VJ_ST_BeingEaten { get; set; }
     // ═══ FL_* / EFL_* Source Engine Flags ═══
     public bool FL_NOTARGET { get; set; }
     public bool FL_DISSOLVING { get; set; }
@@ -59,6 +67,7 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public int AttackSeed { get; set; }
     public VJAttackType AttackType { get; set; } = VJAttackType.None;
     public VJAttackState AttackState { get; set; } = VJAttackState.None;
+    public Activity AttackAnim { get; set; } = Activity.Invalid; // core.lua:152
     public int AttackAnimDuration { get; set; }
     public float AttackAnimTime { get; set; }
     public float NextDoAnyAttackT { get; set; }
@@ -175,6 +184,9 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     public float NextAlertResetT { get; set; }
     public bool Flinching { get; set; }
     public float NextFlinchT { get; set; }
+    public bool CanFlinch { get; set; }
+    public int FlinchChance { get; set; } = 6;
+    public List<FlinchHitGroupEntry> FlinchHitGroupMap { get; set; } = new();
     // Timer polling replacements (Source timer.Create/timer.Simple → polling pattern)
     public float NextDeathFinishT { get; set; } // death delay → FinishDeath
     public DamageInfo PendingDeathDmgInfo { get; set; }
@@ -923,9 +935,17 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
             "VJ_ID_Destructible" => (npc?.VJ_ID_Destructible ?? false) || (ext?.VJ_ID_Destructible ?? false),
             "VJ_ID_Boss" => (npc?.VJ_ID_Boss ?? false) || (ext?.VJ_ID_Boss ?? false),
             "VJ_ID_Vehicle" => (npc?.VJ_ID_Vehicle ?? false) || (ext?.VJ_ID_Vehicle ?? false),
+            "VJ_ID_Aircraft" => (npc?.VJ_ID_Aircraft ?? false) || (ext?.VJ_ID_Aircraft ?? false),
+            "VJ_ID_Turret" => (npc?.VJ_ID_Turret ?? false) || (ext?.VJ_ID_Turret ?? false),
+            "VJ_ID_Police" => (npc?.VJ_ID_Police ?? false) || (ext?.VJ_ID_Police ?? false),
+            "VJ_ID_Civilian" => (npc?.VJ_ID_Civilian ?? false) || (ext?.VJ_ID_Civilian ?? false),
+            "VJ_ID_Headcrab" => (npc?.VJ_ID_Headcrab ?? false) || (ext?.VJ_ID_Headcrab ?? false),
+            "VJ_ID_Undead" => (npc?.VJ_ID_Undead ?? false) || (ext?.VJ_ID_Undead ?? false),
+            "VJ_ID_Healable" => (npc?.VJ_ID_Healable ?? false) || (ext?.VJ_ID_Healable ?? false),
             "VJ_ST_Grabbed" => (npc?.VJ_ST_Grabbed ?? false) || (ext?.VJ_ST_Grabbed ?? false),
             "VJ_ST_Eating" => (npc?.VJ_ST_Eating ?? false) || (ext?.VJ_ST_Eating ?? false),
             "VJ_ST_Healing" => (npc?.VJ_ST_Healing ?? false) || (ext?.VJ_ST_Healing ?? false),
+            "VJ_ST_BeingEaten" => (npc?.VJ_ST_BeingEaten ?? false) || (ext?.VJ_ST_BeingEaten ?? false),
             "FL_NOTARGET" => (npc?.FL_NOTARGET ?? false) || (ext?.FL_NOTARGET ?? false),
             "FL_DISSOLVING" => (npc?.FL_DISSOLVING ?? false) || (ext?.FL_DISSOLVING ?? false),
             "FL_OBJECT" => (npc?.FL_OBJECT ?? false) || (ext?.FL_OBJECT ?? false),
@@ -1647,6 +1667,10 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
 
     // ═══ Death Callbacks (Phase 3 stubs) ═══
     public virtual void OnDeath(DamageInfo dmginfo, int hitgroup, string status) { }
+    /// <summary>OnAnimEvent — called when the model fires an animation event. Lua: ENT:OnInput / GM:EntityFireAnimEvent.</summary>
+    public virtual void OnAnimEvent(string name, int intData, float floatData, Vector3 vectorData, string stringData) { }
+    /// <summary>OnStateChange — called when NPC state changes. Lua: ENT:OnStateChange(oldState, newState).</summary>
+    public virtual void OnStateChange(int oldState, int newState) { }
     public virtual void OnAllyKilled(GameObject ally) { }
     public virtual void OnCreateDeathCorpse(DamageInfo dmginfo, int hitgroup, GameObject corpse) { }
     public virtual void OnPlayerSight(GameObject ent) { }
@@ -1692,7 +1716,19 @@ public partial class BaseNPC : Component, INPCConditions, INPCSchedule, INPCAttr
     // ═══════════════════════════════════════════════
 
     public int GetNPCState() => (int)NPCState;
-    public void SetNPCState(int state) => NPCState = (NPCState)state;
+    public void SetNPCState(int state)
+    {
+        var oldState = (int)NPCState;
+        if (oldState != state)
+        {
+            NPCState = (NPCState)state;
+            OnStateChange(oldState, state);
+        }
+        else
+        {
+            NPCState = (NPCState)state;
+        }
+    }
     public int GetNavType() => NavTypeVal;
 
     public GameObject GetEnemy() => Enemy.Target;
@@ -2042,6 +2078,13 @@ public class GuardData
 {
     public object Position { get; set; }
     public object Direction { get; set; }
+}
+
+/// <summary>Flinch hitgroup → animation mapping. Lua: FlinchHitGroupMap table.</summary>
+public class FlinchHitGroupEntry
+{
+    public int HitGroup { get; set; }
+    public object Animation { get; set; }
 }
 
 /// <summary>Saved damage info snapshot — creature_base init.lua:3331-3341</summary>

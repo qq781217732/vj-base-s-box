@@ -46,20 +46,20 @@
 						remaps = 
 						[
 							{
-								from = "citizen_sheet10"
-								to = "materials/models/czombies/citizen_sheet10"
-							},
-							{
-								from = "mouth"
-								to = "materials/models/czombies/mouth"
-							},
-							{
 								from = "Custom_CSheet5_facemap"
-								to = "materials/models/czombies/custom_csheet5_facemap"
+								to = "materials/models/czombies/custom_csheet5_facemap.vmat"
+							},
+							{
+								from = "citizen_sheet10"
+								to = "materials/models/czombies/citizen_sheet10.vmat"
 							},
 							{
 								from = "custom_eye1"
-								to = "materials/models/czombies/custom_eye1"
+								to = "materials/models/czombies/custom_eye1.vmat"
+							},
+							{
+								from = "mouth"
+								to = "materials/models/czombies/mouth.vmat"
 							},
 						]
 

@@ -1,0 +1,10 @@
+"Layer0"
+{
+	"shader"		"shaders/complex.shader"
+	"F_UNLIT"		"1"
+	"TextureColor"		"materials/models/zombie_gal/2/glint.tga"
+	"F_ADDITIVE_BLEND"		"1"
+	"F_TRANSLUCENT"		"1"
+	"TextureTranslucency"		"[1.000000 1.000000 1.000000 1.000000]"
+	"TextureRoughness"		"materials/default/default_rough_s1import.tga"
+}

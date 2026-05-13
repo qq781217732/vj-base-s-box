@@ -244,20 +244,20 @@
 						remaps = 
 						[
 							{
-								from = "vanessa_zombie_hair"
-								to = "materials/models/cpthazama/zombiepanic/vanessa_zombie_hair"
-							},
-							{
-								from = "zombie_hair"
-								to = "materials/models/cpthazama/zombiepanic/zombie_hair"
-							},
-							{
 								from = "fleshandbone"
-								to = "materials/models/cpthazama/zombiepanic/fleshandbone"
+								to = "materials/models/cpthazama/zombiepanic/fleshandbone.vmat"
 							},
 							{
 								from = "vanessa_zombie_diff"
-								to = "materials/models/cpthazama/zombiepanic/vanessa_zombie_diff"
+								to = "materials/models/cpthazama/zombiepanic/vanessa/vanessa_zombie_diff.vmat"
+							},
+							{
+								from = "vanessa_zombie_hair"
+								to = "materials/models/cpthazama/zombiepanic/vanessa/vanessa_zombie_hair.vmat"
+							},
+							{
+								from = "zombie_hair"
+								to = "materials/models/cpthazama/zombiepanic/vanessa/zombie_hair.vmat"
 							},
 						]
 

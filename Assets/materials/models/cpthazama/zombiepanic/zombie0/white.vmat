@@ -1,0 +1,10 @@
+"Layer0"
+{
+	"shader"		"shaders/complex.shader"
+	"TextureColor"		"materials/models/cpthazama/zombiepanic/zombie0/white.tga"
+	"SystemAttributes"
+	{
+		"PhysicsSurfaceProperties"		"flesh"
+	}
+	"TextureRoughness"		"materials/default/default_rough_s1import.tga"
+}

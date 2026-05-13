@@ -154,11 +154,11 @@
 						[
 							{
 								from = "combinesoldiersheet_zombie"
-								to = "materials/models/zombie_classic/combinesoldiersheet_zombie"
+								to = "materials/models/zombie_classic/combinesoldiersheet_zombie.vmat"
 							},
 							{
 								from = "headcrabsheet"
-								to = "materials/models/zombie_classic/headcrabsheet"
+								to = "materials/models/zombie_classic/headcrabsheet.vmat"
 							},
 						]
 

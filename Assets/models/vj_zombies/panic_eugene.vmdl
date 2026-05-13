@@ -149,40 +149,40 @@
 						remaps = 
 						[
 							{
-								from = "zombie2_teeth"
-								to = "materials/models/cpthazama/zombiepanic/zombie2_teeth"
+								from = "fleshandbone"
+								to = "materials/models/cpthazama/zombiepanic/fleshandbone.vmat"
 							},
 							{
 								from = "zombie2_eye"
-								to = "materials/models/cpthazama/zombiepanic/zombie2_eye"
+								to = "materials/models/cpthazama/zombiepanic/zombie2_eye.vmat"
 							},
 							{
 								from = "zombie2_hairflat"
-								to = "materials/models/cpthazama/zombiepanic/zombie2_hairflat"
-							},
-							{
-								from = "zombie2_jacket"
-								to = "materials/models/cpthazama/zombiepanic/zombie2_jacket"
+								to = "materials/models/cpthazama/zombiepanic/zombie2_hairflat.vmat"
 							},
 							{
 								from = "zombie2_head"
-								to = "materials/models/cpthazama/zombiepanic/zombie2_head"
+								to = "materials/models/cpthazama/zombiepanic/zombie2_head.vmat"
+							},
+							{
+								from = "zombie2_jacket"
+								to = "materials/models/cpthazama/zombiepanic/zombie2_jacket.vmat"
 							},
 							{
 								from = "zombie2_pants"
-								to = "materials/models/cpthazama/zombiepanic/zombie2_pants"
-							},
-							{
-								from = "zp_sv1_shoe"
-								to = "materials/models/cpthazama/zombiepanic/zp_sv1_shoe"
-							},
-							{
-								from = "fleshandbone"
-								to = "materials/models/cpthazama/zombiepanic/fleshandbone"
+								to = "materials/models/cpthazama/zombiepanic/zombie2_pants.vmat"
 							},
 							{
 								from = "zombie2_shirt"
-								to = "materials/models/cpthazama/zombiepanic/zombie2_shirt"
+								to = "materials/models/cpthazama/zombiepanic/zombie2_shirt.vmat"
+							},
+							{
+								from = "zombie2_teeth"
+								to = "materials/models/cpthazama/zombiepanic/zombie2_teeth.vmat"
+							},
+							{
+								from = "zp_sv1_shoe"
+								to = "materials/models/cpthazama/zombiepanic/zp_sv1_shoe.vmat"
 							},
 						]
 

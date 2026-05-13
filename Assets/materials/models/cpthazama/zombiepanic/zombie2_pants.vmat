@@ -1,0 +1,9 @@
+"Layer0"
+{
+	"shader"		"shaders/simple.shader"
+	"TextureColor"		"materials/models/cpthazama/zombiepanic/zombie2_pants.tga"
+	"F_SPECULAR_CUBE_MAP"		"1"
+	"F_SPECULAR"		"1"
+	"TextureRoughness"		"materials/models/cpthazama/zombiepanic/zombie2_pants_nm_a-1_rough.tga"
+	"TextureNormal"		"materials/models/cpthazama/zombiepanic/zombie2_pants_nm.tga"
+}

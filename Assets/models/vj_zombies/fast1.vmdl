@@ -47,7 +47,7 @@
 						[
 							{
 								from = "act_krovosos_new1"
-								to = "materials/models/czombies/act_krovosos_new1"
+								to = "materials/models/czombies/act_krovosos_new1.vmat"
 							},
 						]
 

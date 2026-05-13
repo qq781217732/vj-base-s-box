@@ -46,20 +46,20 @@
 						remaps = 
 						[
 							{
-								from = "ted_facemap30"
-								to = "materials/models/czombies/ted_facemap30"
-							},
-							{
-								from = "mouth"
-								to = "materials/models/czombies/mouth"
-							},
-							{
 								from = "citizen_sheet20"
-								to = "materials/models/czombies/citizen_sheet20"
+								to = "materials/models/czombies/citizen_sheet20.vmat"
 							},
 							{
 								from = "custom_eye1"
-								to = "materials/models/czombies/custom_eye1"
+								to = "materials/models/czombies/custom_eye1.vmat"
+							},
+							{
+								from = "mouth"
+								to = "materials/models/czombies/mouth.vmat"
+							},
+							{
+								from = "ted_facemap30"
+								to = "materials/models/czombies/ted_facemap30.vmat"
 							},
 						]
 

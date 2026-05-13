@@ -1,0 +1,10 @@
+"Layer0"
+{
+	"shader"		"shaders/simple.shader"
+	"TextureColor"		"materials/models/charple/charple4_sheet2.tga"
+	"F_SPECULAR"		"1"
+	"g_flSpecularExponent"		"15.000000"
+	"g_flPhongBoost"		"3.200000"
+	"TextureNormal"		"materials/models/charple/charple4_normal2.tga"
+	"TextureRoughness"		"materials/models/charple/charple4_normal2_a-1_rough.tga"
+}

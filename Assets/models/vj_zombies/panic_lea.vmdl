@@ -263,16 +263,16 @@
 						remaps = 
 						[
 							{
-								from = "hair"
-								to = "materials/models/cpthazama/zombiepanic/hair"
+								from = "diffuse"
+								to = "materials/models/cpthazama/zombiepanic/zombie5/diffuse.vmat"
 							},
 							{
 								from = "fleshandbone"
-								to = "materials/models/cpthazama/zombiepanic/fleshandbone"
+								to = "materials/models/cpthazama/zombiepanic/fleshandbone.vmat"
 							},
 							{
-								from = "diffuse"
-								to = "materials/models/cpthazama/zombiepanic/diffuse"
+								from = "hair"
+								to = "materials/models/cpthazama/zombiepanic/zombie5/hair.vmat"
 							},
 						]
 

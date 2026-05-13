@@ -70,20 +70,20 @@
 						remaps = 
 						[
 							{
-								from = "skull"
-								to = "materials/models/zombie_gal/2/skull"
-							},
-							{
 								from = "grigori_head"
-								to = "materials/models/zombie_gal/2/grigori_head"
+								to = "materials/models/zombie_gal/2/grigori_head.vmat"
 							},
 							{
 								from = "inqui_mini_sheet"
-								to = "materials/models/zombie_gal/2/inqui_mini_sheet"
+								to = "materials/models/zombie_gal/2/inqui_mini_sheet.vmat"
+							},
+							{
+								from = "skull"
+								to = "materials/models/zombie_gal/2/skull.vmat"
 							},
 							{
 								from = "skull2"
-								to = "materials/models/zombie_gal/2/skull2"
+								to = "materials/models/zombie_gal/skull2.vmat"
 							},
 						]
 

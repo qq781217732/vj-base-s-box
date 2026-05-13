@@ -1,0 +1,6 @@
+"Layer0"
+{
+	"shader"		"shaders/complex.shader"
+	"TextureColor"		"materials/models/czombies/eric_facemap4.tga"
+	"TextureRoughness"		"materials/default/default_rough_s1import.tga"
+}

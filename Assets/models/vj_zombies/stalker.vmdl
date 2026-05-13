@@ -46,40 +46,40 @@
 						remaps = 
 						[
 							{
-								from = "S_head(cyl)dull"
-								to = "materials/models/stalker/s_head(cyl)dull"
-							},
-							{
-								from = "S_wires"
-								to = "materials/models/stalker/s_wires"
-							},
-							{
-								from = "S_lowerlegfrontdull"
-								to = "materials/models/stalker/s_lowerlegfrontdull"
-							},
-							{
-								from = "S_chest2dull"
-								to = "materials/models/stalker/s_chest2dull"
+								from = "S_armfrontdull"
+								to = "materials/models/stalker/s_armfrontdull.vmat"
 							},
 							{
 								from = "S_backdull"
-								to = "materials/models/stalker/s_backdull"
+								to = "materials/models/stalker/s_backdull.vmat"
 							},
 							{
-								from = "S_armfrontdull"
-								to = "materials/models/stalker/s_armfrontdull"
+								from = "S_chest2dull"
+								to = "materials/models/stalker/s_chest2dull.vmat"
 							},
 							{
-								from = "cutter"
-								to = "materials/models/stalker/cutter"
+								from = "S_head(cyl)dull"
+								to = "materials/models/stalker/s_head(cyl)dull.vmat"
 							},
 							{
 								from = "S_loindropper"
-								to = "materials/models/stalker/s_loindropper"
+								to = "materials/models/stalker/s_loindropper.vmat"
+							},
+							{
+								from = "S_lowerlegfrontdull"
+								to = "materials/models/stalker/s_lowerlegfrontdull.vmat"
 							},
 							{
 								from = "S_midsectiondull"
-								to = "materials/models/stalker/s_midsectiondull"
+								to = "materials/models/stalker/s_midsectiondull.vmat"
+							},
+							{
+								from = "S_wires"
+								to = "materials/models/stalker/s_wires.vmat"
+							},
+							{
+								from = "cutter"
+								to = "materials/models/stalker/cutter.vmat"
 							},
 						]
 

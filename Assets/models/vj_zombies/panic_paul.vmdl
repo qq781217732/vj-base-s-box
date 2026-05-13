@@ -149,20 +149,20 @@
 						remaps = 
 						[
 							{
-								from = "009_punkerzombie_pants_color"
-								to = "materials/models/cpthazama/zombiepanic/009_punkerzombie_pants_color"
-							},
-							{
-								from = "fleshandbone"
-								to = "materials/models/cpthazama/zombiepanic/fleshandbone"
+								from = "001_punkerzombie_head_color"
+								to = "materials/models/cpthazama/zombiepanic/zombie4/001_punkerzombie_head_color.vmat"
 							},
 							{
 								from = "005_punkerzombie_body_color"
-								to = "materials/models/cpthazama/zombiepanic/005_punkerzombie_body_color"
+								to = "materials/models/cpthazama/zombiepanic/zombie4/005_punkerzombie_body_color.vmat"
 							},
 							{
-								from = "001_punkerzombie_head_color"
-								to = "materials/models/cpthazama/zombiepanic/001_punkerzombie_head_color"
+								from = "009_punkerzombie_pants_color"
+								to = "materials/models/cpthazama/zombiepanic/zombie4/009_punkerzombie_pants_color.vmat"
+							},
+							{
+								from = "fleshandbone"
+								to = "materials/models/cpthazama/zombiepanic/fleshandbone.vmat"
 							},
 						]
 

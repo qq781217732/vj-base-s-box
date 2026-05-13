@@ -1,0 +1,11 @@
+"Layer0"
+{
+	"shader"		"shaders/complex.shader"
+	"TextureColor"		"materials/models/czombies/zombie_classic_sheet.tga"
+	"SystemAttributes"
+	{
+		"PhysicsSurfaceProperties"		"Flesh"
+	}
+	"TextureNormal"		"materials/models/czombies/zombie_classic_sheet_normal.tga"
+	"TextureRoughness"		"materials/default/default_rough_s1import.tga"
+}

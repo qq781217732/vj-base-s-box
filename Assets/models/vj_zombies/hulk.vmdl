@@ -95,7 +95,7 @@
 						[
 							{
 								from = "PoisonZombie_sheet"
-								to = "materials/models/zombie_poison/poisonzombie_sheet"
+								to = "materials/models/zombie_poison/poisonzombie_sheet.vmat"
 							},
 						]
 
@@ -110,8 +110,8 @@
 						remaps = 
 						[
 							{
-								from = "materials/models/zombie_poison/poisonzombie_sheet"
-								to = "materials/models/zombie_poison/poisonzombie_sheet2"
+								from = "materials/models/zombie_poison/poisonzombie_sheet.vmat"
+								to = "materials/models/zombie_poison/poisonzombie_sheet2.vmat"
 							},
 						]
 
@@ -124,8 +124,8 @@
 						remaps = 
 						[
 							{
-								from = "materials/models/zombie_poison/poisonzombie_sheet"
-								to = "materials/models/zombie_poison/poisonzombie_sheet3"
+								from = "materials/models/zombie_poison/poisonzombie_sheet.vmat"
+								to = "materials/models/zombie_poison/poisonzombie_sheet3.vmat"
 							},
 						]
 
@@ -138,8 +138,8 @@
 						remaps = 
 						[
 							{
-								from = "materials/models/zombie_poison/poisonzombie_sheet"
-								to = "materials/models/zombie_poison/poisonzombie_sheet4"
+								from = "materials/models/zombie_poison/poisonzombie_sheet.vmat"
+								to = "materials/models/zombie_poison/poisonzombie_sheet4.vmat"
 							},
 						]
 

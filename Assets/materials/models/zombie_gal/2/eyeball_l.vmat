@@ -1,0 +1,8 @@
+"Layer0"
+{
+	"shader"		"shaders/complex.shader"
+	"TextureColor"		"materials/models/zombie_gal/2/eyeball_l.tga"
+	"F_SELF_ILLUM"		"1"
+	"TextureSelfIllumMask"		"[1.000000 1.000000 1.000000 1.000000]"
+	"TextureRoughness"		"materials/default/default_rough_s1import.tga"
+}

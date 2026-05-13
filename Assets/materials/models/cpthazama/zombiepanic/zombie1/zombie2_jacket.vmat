@@ -1,0 +1,15 @@
+"Layer0"
+{
+	"shader"		"shaders/simple.shader"
+	"TextureColor"		"materials/models/cpthazama/zombiepanic/zombie1/zombie2_jacket.tga"
+	"SystemAttributes"
+	{
+		"PhysicsSurfaceProperties"		"flesh"
+	}
+	"F_RENDER_BACKFACES"		"1"
+	"F_SPECULAR"		"1"
+	"g_flSpecularExponent"		"28.000000"
+	"g_flPhongBoost"		"1.000000"
+	"TextureNormal"		"materials/models/cpthazama/zombiepanic/zombie1/zombie2_jacket_nm.tga"
+	"TextureRoughness"		"materials/models/cpthazama/zombiepanic/zombie1/zombie2_jacket_nm_a-1_rough.tga"
+}

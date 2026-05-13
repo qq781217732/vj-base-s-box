@@ -1,0 +1,14 @@
+"Layer0"
+{
+	"shader"		"shaders/complex.shader"
+	"TextureColor"		"materials/models/cpthazama/zombiepanic/fleshandbone.tga"
+	"F_SPECULAR"		"1"
+	"g_flSpecularExponent"		"60.000000"
+	"g_flPhongBoost"		"1.250000"
+	"F_ALPHA_TEST"		"1"
+	"TextureTranslucency"		"materials/models/cpthazama/zombiepanic/fleshandbone_a_trans.tga"
+	"g_flOpacityScale"		"1.000000"
+	"F_RENDER_BACKFACES"		"1"
+	"TextureNormal"		"materials/models/cpthazama/zombiepanic/fleshandbone_normal.tga"
+	"TextureRoughness"		"materials/models/cpthazama/zombiepanic/fleshandbone_normal_a-1_rough.tga"
+}

@@ -70,16 +70,16 @@
 						remaps = 
 						[
 							{
+								from = "eyeball_l"
+								to = "materials/models/zombie_gal/2/eyeball_l.vmat"
+							},
+							{
 								from = "grigori_head"
-								to = "materials/models/zombie_gal/2/grigori_head"
+								to = "materials/models/zombie_gal/2/grigori_head.vmat"
 							},
 							{
 								from = "monk_sheet"
-								to = "materials/models/zombie_gal/2/monk_sheet"
-							},
-							{
-								from = "eyeball_l"
-								to = "materials/models/zombie_gal/2/eyeball_l"
+								to = "materials/models/zombie_gal/2/monk_sheet.vmat"
 							},
 						]
 

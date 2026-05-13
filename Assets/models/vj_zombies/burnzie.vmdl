@@ -95,7 +95,7 @@
 						[
 							{
 								from = "Charple1_sheet"
-								to = "materials/models/charple/charple1_sheet"
+								to = "materials/models/charple/charple1_sheet.vmat"
 							},
 						]
 

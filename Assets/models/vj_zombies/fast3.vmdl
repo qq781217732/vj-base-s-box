@@ -47,7 +47,7 @@
 						[
 							{
 								from = "act_gasmask"
-								to = "materials/models/czombies/act_gasmask"
+								to = "materials/models/czombies/act_gasmask.vmat"
 							},
 						]
 

@@ -145,12 +145,12 @@
 						remaps = 
 						[
 							{
-								from = "fast_zombie_sheet"
-								to = "materials/models/zombie_fast/fast_zombie_sheet"
+								from = "allinonebacup2"
+								to = "materials/models/zombie_fast/allinonebacup2.vmat"
 							},
 							{
-								from = "allinonebacup2"
-								to = "materials/models/zombie_fast/allinonebacup2"
+								from = "fast_zombie_sheet"
+								to = "materials/models/zombie_fast/fast_zombie_sheet.vmat"
 							},
 						]
 
@@ -288,6 +288,486 @@
 				note = ""
 				children = 
 				[
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "vehicle_idle_lean_left_corrective_animation"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_idle_lean_left_corrective_animation.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "vehicle_idle_lean_center_corrective_animation"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_idle_lean_center_corrective_animation.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "vehicle_idle_lean_right_corrective_animation"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_idle_lean_right_corrective_animation.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "vehicle_idle_lean_up_corrective_animation"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_idle_lean_up_corrective_animation.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "vehicle_idle_lean_down_corrective_animation"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_idle_lean_down_corrective_animation.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "climblanding"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/climblanding.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "a_Walks"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/a_walks.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "a_WalksE"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/a_walkse.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "a_WalkE"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/a_walke.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "a_WalkNE"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/a_walkne.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "a_WalkN"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/a_walkn.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "a_WalkNW"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/a_walknw.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "a_WalkW"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/a_walkw.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "a_WalkSW"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/a_walksw.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "vehicle_idle_lean_neutral"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_idle_lean_neutral.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "vehicle_idle_lean_center"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_idle_lean_center.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "vehicle_idle_lean_right"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_idle_lean_right.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "vehicle_idle_lean_left"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_idle_lean_left.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "vehicle_idle_lean_up"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_idle_lean_up.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
+					{
+						_class = "AnimFile"
+						note = ""
+						children = []
+						name = "vehicle_idle_lean_down"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_idle_lean_down.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = "30"
+						take = 0
+						reverse = false
+						anim_hold_list = []
+					},
 					{
 						_class = "AnimFile"
 						note = ""
@@ -824,7 +1304,7 @@
 						anim_hold_list = []
 					},
 					{
-						_class = "AnimFile"
+						_class = "1DBlend"
 						note = ""
 						children = 
 						[
@@ -855,7 +1335,7 @@
 						name = "walk_all"
 						activity_name = "ACT_WALK"
 						activity_weight = "1"
-						weight_list_name = ""
+						weight_list_name = "move_yaw"
 						fade_in_time = "0.2"
 						fade_out_time = "0.2"
 						looping = false
@@ -864,22 +1344,56 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
-						source_filename = "models/vj_zombies/fast_main/a_walks"
-						start_frame = -1
-						end_frame = -1
-						framerate = -1.0
-						take = 0
-						reverse = false
-						anim_hold_list = []
+						poseParam = ""
+						blendList = 
+						[
+							{
+								name = "a_Walks"
+								weight = -180.0
+							},
+							{
+								name = "a_WalksE"
+								weight = -135.0
+							},
+							{
+								name = "a_WalkE"
+								weight = -90.0
+							},
+							{
+								name = "a_WalkNE"
+								weight = -45.0
+							},
+							{
+								name = "a_WalkN"
+								weight = 0.0
+							},
+							{
+								name = "a_WalkNW"
+								weight = 45.0
+							},
+							{
+								name = "a_WalkW"
+								weight = 90.0
+							},
+							{
+								name = "a_WalkSW"
+								weight = 135.0
+							},
+							{
+								name = "a_Walks"
+								weight = 180.0
+							},
+						]
+
 					},
 					{
-						_class = "AnimFile"
+						_class = "1DBlend"
 						note = ""
 						children = []
 						name = "vehicle_lean_all"
 						activity_name = ""
 						activity_weight = 1
-						weight_list_name = ""
+						weight_list_name = "lean_lateral"
 						fade_in_time = "0.2"
 						fade_out_time = "0.2"
 						looping = false
@@ -888,22 +1402,32 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
-						source_filename = "models/vj_zombies/fast_main/vehicle_idle_lean_left"
-						start_frame = -1
-						end_frame = -1
-						framerate = -1.0
-						take = 0
-						reverse = false
-						anim_hold_list = []
+						poseParam = ""
+						blendList = 
+						[
+							{
+								name = "vehicle_idle_lean_left"
+								weight = -1.0
+							},
+							{
+								name = "vehicle_idle_lean_center"
+								weight = 0.0
+							},
+							{
+								name = "vehicle_idle_lean_right"
+								weight = 1.0
+							},
+						]
+
 					},
 					{
-						_class = "AnimFile"
+						_class = "1DBlend"
 						note = ""
 						children = []
 						name = "vehicle_lean_vertical"
 						activity_name = ""
 						activity_weight = 1
-						weight_list_name = ""
+						weight_list_name = "lean_vertical"
 						fade_in_time = "0.2"
 						fade_out_time = "0.2"
 						looping = false
@@ -912,13 +1436,23 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
-						source_filename = "models/vj_zombies/fast_main/vehicle_idle_lean_up"
-						start_frame = -1
-						end_frame = -1
-						framerate = -1.0
-						take = 0
-						reverse = false
-						anim_hold_list = []
+						poseParam = ""
+						blendList = 
+						[
+							{
+								name = "vehicle_idle_lean_up"
+								weight = -1.0
+							},
+							{
+								name = "vehicle_idle_lean_center"
+								weight = 0.0
+							},
+							{
+								name = "vehicle_idle_lean_down"
+								weight = 1.0
+							},
+						]
+
 					},
 					{
 						_class = "AnimFile"

@@ -211,6 +211,11 @@ public enum Activity
     TurnRight  = 226, // ACT_TURN_RIGHT
     PoliceHarass1 = 227, // ACT_POLICE_HARASS1
 
+    // ── Fire State ──
+    IdleOnFire  = 435, // ACT_IDLE_ON_FIRE — standing idle while burning
+    WalkOnFire  = 436, // ACT_WALK_ON_FIRE — walking while burning
+    RunOnFire   = 437, // ACT_RUN_ON_FIRE — running while burning
+
     // ── HL2MP (Half-Life 2 Multiplayer player model animations) ──
     Hl2mpIdle                     = 300, // ACT_HL2MP_IDLE
     Hl2mpIdleAngry                = 301, // ACT_HL2MP_IDLE_ANGRY

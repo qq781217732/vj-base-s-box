@@ -47,7 +47,7 @@
 						[
 							{
 								from = "Fast05"
-								to = "materials/models/czombies/fast05"
+								to = "materials/models/czombies/fast05.vmat"
 							},
 						]
 

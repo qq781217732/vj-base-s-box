@@ -244,24 +244,24 @@
 						remaps = 
 						[
 							{
-								from = "skin_dif2"
-								to = "materials/models/cpthazama/zombiepanic/skin_dif2"
-							},
-							{
-								from = "fleshandbone"
-								to = "materials/models/cpthazama/zombiepanic/fleshandbone"
+								from = "acc_dif"
+								to = "materials/models/cpthazama/zombiepanic/zombie3/acc_dif.vmat"
 							},
 							{
 								from = "cloth_dif"
-								to = "materials/models/cpthazama/zombiepanic/cloth_dif"
+								to = "materials/models/cpthazama/zombiepanic/zombie3/cloth_dif.vmat"
 							},
 							{
-								from = "acc_dif"
-								to = "materials/models/cpthazama/zombiepanic/acc_dif"
+								from = "fleshandbone"
+								to = "materials/models/cpthazama/zombiepanic/fleshandbone.vmat"
 							},
 							{
 								from = "head_blin"
-								to = "materials/models/cpthazama/zombiepanic/head_blin"
+								to = "materials/models/cpthazama/zombiepanic/zombie3/head_blin.vmat"
+							},
+							{
+								from = "skin_dif2"
+								to = "materials/models/cpthazama/zombiepanic/zombie3/skin_dif2.vmat"
 							},
 						]
 

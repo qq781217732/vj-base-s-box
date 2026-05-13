@@ -57,10 +57,7 @@
 							{
 								_class = "BodyGroupChoice"
 								name = "blank"
-								meshes = 
-								[
-									"studio",
-								]
+								meshes = [  ]
 							},
 							{
 								_class = "BodyGroupChoice"
@@ -93,8 +90,8 @@
 						[
 							"zombie_classic_Zombie_reference.smd",
 							"zombie_classic_Headcrab_reference.smd",
-							"zombie_classic_Headcrab_reference",
 							"studio",
+							"zombie_classic_Headcrab_reference",
 						]
 					},
 					{
@@ -194,7 +191,7 @@
 						[
 							{
 								from = "zombie_classic_sheet.vmat"
-								to = "materials/models/zombie_classic/zombie_classic_sheet.vmat"
+								to = "materials/models/czombies/zombie_classic_sheet.vmat"
 							},
 							{
 								from = "headcrabsheet.vmat"
@@ -767,6 +764,535 @@
 				[
 					{
 						_class = "AnimFile"
+						name = "@flinch_headinDelta_corrective_animation"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "models/vj_zombies/slow_main/slow_main_anims/@flinch_headindelta_corrective_animation.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "@flinch_headCoreDelta_corrective_animation"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "models/vj_zombies/slow_main/slow_main_anims/@flinch_headcoredelta_corrective_animation.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "@flinch_headoutDelta_corrective_animation"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "models/vj_zombies/slow_main/slow_main_anims/@flinch_headoutdelta_corrective_animation.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "@flinch_chestinDelta_corrective_animation"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "models/vj_zombies/slow_main/slow_main_anims/@flinch_chestindelta_corrective_animation.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "@flinch_chestCoreDelta_corrective_animation"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "models/vj_zombies/slow_main/slow_main_anims/@flinch_chestcoredelta_corrective_animation.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "@flinch_chestoutDelta_corrective_animation"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "models/vj_zombies/slow_main/slow_main_anims/@flinch_chestoutdelta_corrective_animation.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "@flinch_leftArminDelta_corrective_animation"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "models/vj_zombies/slow_main/slow_main_anims/@flinch_leftarmindelta_corrective_animation.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "@flinch_leftArmCoreDelta_corrective_animation"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "models/vj_zombies/slow_main/slow_main_anims/@flinch_leftarmcoredelta_corrective_animation.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "@flinch_leftArmoutDelta_corrective_animation"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "models/vj_zombies/slow_main/slow_main_anims/@flinch_leftarmoutdelta_corrective_animation.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "@flinch_rightArminDelta_corrective_animation"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "models/vj_zombies/slow_main/slow_main_anims/@flinch_rightarmindelta_corrective_animation.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "@flinch_rightArmCoreDelta_corrective_animation"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "models/vj_zombies/slow_main/slow_main_anims/@flinch_rightarmcoredelta_corrective_animation.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "@flinch_rightArmoutDelta_corrective_animation"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "models/vj_zombies/slow_main/slow_main_anims/@flinch_rightarmoutdelta_corrective_animation.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						take = 0
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "a_walk1"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "models/vj_zombies/slow_main/slow_main_anims/a_walk1.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = 24.0
+						take = 0
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "a_walk2"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "models/vj_zombies/slow_main/slow_main_anims/a_walk2.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = 24.0
+						take = 0
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "a_walk3"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "models/vj_zombies/slow_main/slow_main_anims/a_walk3.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = 24.0
+						take = 0
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "a_Walk4"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "models/vj_zombies/slow_main/slow_main_anims/a_walk4.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = 24.0
+						take = 0
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "a_WalkS"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "models/vj_zombies/slow_main/slow_main_anims/a_walks.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = 24.0
+						take = 0
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "a_WalkSE"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "models/vj_zombies/slow_main/slow_main_anims/a_walkse.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = 24.0
+						take = 0
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "a_WalkE"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "models/vj_zombies/slow_main/slow_main_anims/a_walke.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = 24.0
+						take = 0
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "a_WalkNE"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "models/vj_zombies/slow_main/slow_main_anims/a_walkne.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = 24.0
+						take = 0
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "a_WalkNW"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "models/vj_zombies/slow_main/slow_main_anims/a_walknw.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = 24.0
+						take = 0
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "a_WalkW"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "models/vj_zombies/slow_main/slow_main_anims/a_walkw.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = 24.0
+						take = 0
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "a_WalkSW"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						disable_interpolation = false
+						enable_scale = false
+						source_filename = "models/vj_zombies/slow_main/slow_main_anims/a_walksw.smd"
+						start_frame = -1
+						end_frame = -1
+						framerate = 24.0
+						take = 0
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
 						name = "Idle01"
 						activity_name = "ACT_IDLE"
 						activity_weight = 1
@@ -789,7 +1315,7 @@
 						reverse = false
 					},
 					{
-						_class = "AnimFile"
+						_class = "1DBlend"
 						name = "walk"
 						children = 
 						[
@@ -850,7 +1376,7 @@
 						]
 						activity_name = "ACT_WALK"
 						activity_weight = 1
-						weight_list_name = ""
+						weight_list_name = "move_yaw"
 						fade_in_time = 0.2
 						fade_out_time = 0.2
 						looping = false
@@ -861,15 +1387,49 @@
 						disable_compression = false
 						disable_interpolation = false
 						enable_scale = false
-						source_filename = "models/vj_zombies/slow_main/slow_main_anims/a_walk1.smd"
-						start_frame = -1
-						end_frame = -1
-						framerate = -1.0
-						take = 0
-						reverse = false
+						poseParam = ""
+						blendList = 
+						[
+							{
+								name = "a_WalkS"
+								weight = -180.0
+							},
+							{
+								name = "a_WalkSE"
+								weight = -135.0
+							},
+							{
+								name = "a_WalkE"
+								weight = -90.0
+							},
+							{
+								name = "a_WalkNE"
+								weight = -45.0
+							},
+							{
+								name = "a_walk1"
+								weight = 0.0
+							},
+							{
+								name = "a_WalkNW"
+								weight = 45.0
+							},
+							{
+								name = "a_WalkW"
+								weight = 90.0
+							},
+							{
+								name = "a_WalkSW"
+								weight = 135.0
+							},
+							{
+								name = "a_WalkS"
+								weight = 180.0
+							},
+						]
 					},
 					{
-						_class = "AnimFile"
+						_class = "1DBlend"
 						name = "walk2"
 						children = 
 						[
@@ -930,7 +1490,7 @@
 						]
 						activity_name = "ACT_WALK"
 						activity_weight = 1
-						weight_list_name = ""
+						weight_list_name = "move_yaw"
 						fade_in_time = 0.2
 						fade_out_time = 0.2
 						looping = false
@@ -941,15 +1501,49 @@
 						disable_compression = false
 						disable_interpolation = false
 						enable_scale = false
-						source_filename = "models/vj_zombies/slow_main/slow_main_anims/a_walk2.smd"
-						start_frame = -1
-						end_frame = -1
-						framerate = -1.0
-						take = 0
-						reverse = false
+						poseParam = ""
+						blendList = 
+						[
+							{
+								name = "a_WalkS"
+								weight = -180.0
+							},
+							{
+								name = "a_WalkSE"
+								weight = -135.0
+							},
+							{
+								name = "a_WalkE"
+								weight = -90.0
+							},
+							{
+								name = "a_WalkNE"
+								weight = -45.0
+							},
+							{
+								name = "a_walk2"
+								weight = 0.0
+							},
+							{
+								name = "a_WalkNW"
+								weight = 45.0
+							},
+							{
+								name = "a_WalkW"
+								weight = 90.0
+							},
+							{
+								name = "a_WalkSW"
+								weight = 135.0
+							},
+							{
+								name = "a_WalkS"
+								weight = 180.0
+							},
+						]
 					},
 					{
-						_class = "AnimFile"
+						_class = "1DBlend"
 						name = "walk3"
 						children = 
 						[
@@ -1010,7 +1604,7 @@
 						]
 						activity_name = "ACT_WALK"
 						activity_weight = 1
-						weight_list_name = ""
+						weight_list_name = "move_yaw"
 						fade_in_time = 0.2
 						fade_out_time = 0.2
 						looping = false
@@ -1021,12 +1615,46 @@
 						disable_compression = false
 						disable_interpolation = false
 						enable_scale = false
-						source_filename = "models/vj_zombies/slow_main/slow_main_anims/a_walk3.smd"
-						start_frame = -1
-						end_frame = -1
-						framerate = -1.0
-						take = 0
-						reverse = false
+						poseParam = ""
+						blendList = 
+						[
+							{
+								name = "a_WalkS"
+								weight = -180.0
+							},
+							{
+								name = "a_WalkSE"
+								weight = -135.0
+							},
+							{
+								name = "a_WalkE"
+								weight = -90.0
+							},
+							{
+								name = "a_WalkNE"
+								weight = -45.0
+							},
+							{
+								name = "a_walk3"
+								weight = 0.0
+							},
+							{
+								name = "a_WalkNW"
+								weight = 45.0
+							},
+							{
+								name = "a_WalkW"
+								weight = 90.0
+							},
+							{
+								name = "a_WalkSW"
+								weight = 135.0
+							},
+							{
+								name = "a_WalkS"
+								weight = 180.0
+							},
+						]
 					},
 					{
 						_class = "AnimFile"

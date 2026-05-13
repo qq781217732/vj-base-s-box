@@ -1,0 +1,8 @@
+"Layer0"
+{
+	"shader"		"shaders/complex.shader"
+	"TextureColor"		"materials/models/stalker/s_wires.tga"
+	"F_ALPHA_TEST"		"1"
+	"TextureTranslucency"		"materials/models/stalker/s_wires_a_trans.tga"
+	"TextureRoughness"		"materials/default/default_rough_s1import.tga"
+}
