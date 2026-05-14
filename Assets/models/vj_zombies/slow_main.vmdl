@@ -6,12 +6,26 @@
 		children = 
 		[
 			{
+				_class = "PoseParamList"
+				children = 
+				[
+					{
+						_class = "PoseParam"
+						name = "move_yaw"
+						poseparam_min = -180.0
+						poseparam_max = 180.0
+						poseparam_looping = false
+						poseparam_loop = 0.0
+					},
+				]
+			},
+			{
 				_class = "RenderMeshList"
 				children = 
 				[
 					{
 						_class = "RenderMeshFile"
-						name = "studio"
+						name = "zombie_classic_Zombie_reference"
 						filename = "models/vj_zombies/slow_main/zombie_classic_zombie_reference.smd"
 						import_translation = [ 0.0, 0.0, 0.0 ]
 						import_rotation = [ 0.0, 0.0, 0.0 ]
@@ -43,12 +57,202 @@
 							exception_list = [  ]
 						}
 					},
+					{
+						_class = "RenderMeshFile"
+						name = "zombie_classic_Zombie_reference_lod1"
+						filename = "models/vj_zombies/slow_main/zombie_classic_zombie_reference_lod1.smd"
+						import_translation = [ 0.0, 0.0, 0.0 ]
+						import_rotation = [ 0.0, 0.0, 0.0 ]
+						import_scale = 1.0
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = [  ]
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						name = "zombie_classic_Headcrab_reference_lod1"
+						filename = "models/vj_zombies/slow_main/zombie_classic_headcrab_reference_lod1.smd"
+						import_translation = [ 0.0, 0.0, 0.0 ]
+						import_rotation = [ 0.0, 0.0, 0.0 ]
+						import_scale = 1.0
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = [  ]
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						name = "zombie_classic_Zombie_reference_lod2"
+						filename = "models/vj_zombies/slow_main/zombie_classic_zombie_reference_lod2.smd"
+						import_translation = [ 0.0, 0.0, 0.0 ]
+						import_rotation = [ 0.0, 0.0, 0.0 ]
+						import_scale = 1.0
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = [  ]
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						name = "zombie_classic_Headcrab_reference_lod2"
+						filename = "models/vj_zombies/slow_main/zombie_classic_headcrab_reference_lod2.smd"
+						import_translation = [ 0.0, 0.0, 0.0 ]
+						import_rotation = [ 0.0, 0.0, 0.0 ]
+						import_scale = 1.0
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = [  ]
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						name = "zombie_classic_Zombie_reference_lod3"
+						filename = "models/vj_zombies/slow_main/zombie_classic_zombie_reference_lod3.smd"
+						import_translation = [ 0.0, 0.0, 0.0 ]
+						import_rotation = [ 0.0, 0.0, 0.0 ]
+						import_scale = 1.0
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = [  ]
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						name = "zombie_classic_Headcrab_reference_lod3"
+						filename = "models/vj_zombies/slow_main/zombie_classic_headcrab_reference_lod3.smd"
+						import_translation = [ 0.0, 0.0, 0.0 ]
+						import_rotation = [ 0.0, 0.0, 0.0 ]
+						import_scale = 1.0
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = [  ]
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						name = "zombie_classic_Zombie_reference_lod4"
+						filename = "models/vj_zombies/slow_main/zombie_classic_zombie_reference_lod4.smd"
+						import_translation = [ 0.0, 0.0, 0.0 ]
+						import_rotation = [ 0.0, 0.0, 0.0 ]
+						import_scale = 1.0
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = [  ]
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						name = "zombie_classic_Headcrab_reference_lod4"
+						filename = "models/vj_zombies/slow_main/zombie_classic_headcrab_reference_lod4.smd"
+						import_translation = [ 0.0, 0.0, 0.0 ]
+						import_rotation = [ 0.0, 0.0, 0.0 ]
+						import_scale = 1.0
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = [  ]
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						name = "zombie_classic_Zombie_reference_lod5"
+						filename = "models/vj_zombies/slow_main/zombie_classic_zombie_reference_lod5.smd"
+						import_translation = [ 0.0, 0.0, 0.0 ]
+						import_rotation = [ 0.0, 0.0, 0.0 ]
+						import_scale = 1.0
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = [  ]
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						name = "zombie_classic_Headcrab_reference_lod5"
+						filename = "models/vj_zombies/slow_main/zombie_classic_headcrab_reference_lod5.smd"
+						import_translation = [ 0.0, 0.0, 0.0 ]
+						import_rotation = [ 0.0, 0.0, 0.0 ]
+						import_scale = 1.0
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = [  ]
+						}
+					},
 				]
 			},
 			{
 				_class = "BodyGroupList"
 				children = 
 				[
+					{
+						_class = "BodyGroup"
+						name = "studio"
+						children = 
+						[
+							{
+								_class = "BodyGroupChoice"
+								meshes = 
+								[
+									"zombie_classic_Zombie_reference",
+									"zombie_classic_Zombie_reference_lod1",
+									"zombie_classic_Zombie_reference_lod2",
+									"zombie_classic_Zombie_reference_lod3",
+									"zombie_classic_Zombie_reference_lod4",
+									"zombie_classic_Zombie_reference_lod5",
+								]
+							},
+						]
+						hidden_in_tools = false
+					},
 					{
 						_class = "BodyGroup"
 						name = "headcrab1"
@@ -64,6 +268,11 @@
 								meshes = 
 								[
 									"zombie_classic_Headcrab_reference",
+									"zombie_classic_Headcrab_reference_lod1",
+									"zombie_classic_Headcrab_reference_lod2",
+									"zombie_classic_Headcrab_reference_lod3",
+									"zombie_classic_Headcrab_reference_lod4",
+									"zombie_classic_Headcrab_reference_lod5",
 								]
 							},
 						]
@@ -88,9 +297,7 @@
 						auto_prune_isolated_components = false
 						meshes = 
 						[
-							"zombie_classic_Zombie_reference.smd",
-							"zombie_classic_Headcrab_reference.smd",
-							"studio",
+							"zombie_classic_Zombie_reference",
 							"zombie_classic_Headcrab_reference",
 						]
 					},
@@ -107,8 +314,8 @@
 						auto_prune_isolated_components = false
 						meshes = 
 						[
-							"zombie_classic_Zombie_reference_lod1.smd",
-							"zombie_classic_Headcrab_reference_lod1.smd",
+							"zombie_classic_Zombie_reference_lod1",
+							"zombie_classic_Headcrab_reference_lod1",
 						]
 					},
 					{
@@ -124,8 +331,8 @@
 						auto_prune_isolated_components = false
 						meshes = 
 						[
-							"zombie_classic_Zombie_reference_lod2.smd",
-							"zombie_classic_Headcrab_reference_lod2.smd",
+							"zombie_classic_Zombie_reference_lod2",
+							"zombie_classic_Headcrab_reference_lod2",
 						]
 					},
 					{
@@ -141,8 +348,8 @@
 						auto_prune_isolated_components = false
 						meshes = 
 						[
-							"zombie_classic_Zombie_reference_lod3.smd",
-							"zombie_classic_Headcrab_reference_lod3.smd",
+							"zombie_classic_Zombie_reference_lod3",
+							"zombie_classic_Headcrab_reference_lod3",
 						]
 					},
 					{
@@ -158,8 +365,8 @@
 						auto_prune_isolated_components = false
 						meshes = 
 						[
-							"zombie_classic_Zombie_reference_lod4.smd",
-							"zombie_classic_Headcrab_reference_lod4.smd",
+							"zombie_classic_Zombie_reference_lod4",
+							"zombie_classic_Headcrab_reference_lod4",
 						]
 					},
 					{
@@ -175,8 +382,8 @@
 						auto_prune_isolated_components = false
 						meshes = 
 						[
-							"zombie_classic_Zombie_reference_lod5.smd",
-							"zombie_classic_Headcrab_reference_lod5.smd",
+							"zombie_classic_Zombie_reference_lod5",
+							"zombie_classic_Headcrab_reference_lod5",
 						]
 					},
 				]
@@ -195,7 +402,7 @@
 							},
 							{
 								from = "headcrabsheet.vmat"
-								to = "materials/models/zombie_classic/headcrabsheet.vmat"
+								to = "materials/models/czombies/zombie_classic_sheet.vmat"
 							},
 						]
 						use_global_default = false
@@ -1387,7 +1594,7 @@
 						disable_compression = false
 						disable_interpolation = false
 						enable_scale = false
-						poseParam = ""
+						poseParam = "move_yaw"
 						blendList = 
 						[
 							{
@@ -1501,7 +1708,7 @@
 						disable_compression = false
 						disable_interpolation = false
 						enable_scale = false
-						poseParam = ""
+						poseParam = "move_yaw"
 						blendList = 
 						[
 							{
@@ -1615,7 +1822,7 @@
 						disable_compression = false
 						disable_interpolation = false
 						enable_scale = false
-						poseParam = ""
+						poseParam = "move_yaw"
 						blendList = 
 						[
 							{

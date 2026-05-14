@@ -7,6 +7,44 @@
 		children = 
 		[
 			{
+				_class = "PoseParamList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "PoseParam"
+						note = ""
+						children = []
+						name = "move_yaw"
+						poseparam_min = -180.0
+						poseparam_max = 180.0
+						poseparam_looping = false
+						poseparam_loop = 0.0
+					},
+					{
+						_class = "PoseParam"
+						note = ""
+						children = []
+						name = "aim_pitch"
+						poseparam_min = -90.0
+						poseparam_max = 90.0
+						poseparam_looping = false
+						poseparam_loop = 0.0
+					},
+					{
+						_class = "PoseParam"
+						note = ""
+						children = []
+						name = "aim_yaw"
+						poseparam_min = -90.0
+						poseparam_max = 90.0
+						poseparam_looping = false
+						poseparam_loop = 0.0
+					},
+				]
+
+			},
+			{
 				_class = "MaterialGroupList"
 				note = ""
 				children = 
@@ -101,6 +139,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_attack_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -125,6 +164,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/b_attack_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -149,6 +189,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/c_attack_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -173,6 +214,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_push_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -197,6 +239,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_aim_9_directions_straight_up_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -221,6 +264,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_aim_9_directions_up_right_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -245,6 +289,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_aim_9_directions_up_center_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -269,6 +314,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_aim_9_directions_up_left_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -293,6 +339,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_aim_9_directions_mid_right_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -317,6 +364,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_aim_9_directions_mid_center_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -341,6 +389,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_aim_9_directions_mid_left_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -365,6 +414,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_aim_9_directions_down_right_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -389,6 +439,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_aim_9_directions_down_center_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -413,6 +464,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_aim_9_directions_down_left_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -437,6 +489,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_attack_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -461,6 +514,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/b_attack_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -485,6 +539,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/c_attack_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -509,6 +564,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_push_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -533,6 +589,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_aim_9_directions_straight_up_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -557,6 +614,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_aim_9_directions_up_right_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -581,6 +639,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_aim_9_directions_up_center_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -605,6 +664,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_aim_9_directions_up_left_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -629,6 +689,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_aim_9_directions_mid_right_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -653,6 +714,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_aim_9_directions_mid_center_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -677,6 +739,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_aim_9_directions_mid_left_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -701,6 +764,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_aim_9_directions_down_right_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -725,6 +789,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_aim_9_directions_down_center_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -749,6 +814,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_aim_9_directions_down_left_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -773,6 +839,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_attack.smd"
 						start_frame = -1
 						end_frame = -1
@@ -797,6 +864,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/b_attack.smd"
 						start_frame = -1
 						end_frame = -1
@@ -821,6 +889,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/c_attack.smd"
 						start_frame = -1
 						end_frame = -1
@@ -845,6 +914,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_push.smd"
 						start_frame = -1
 						end_frame = -1
@@ -869,6 +939,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_aim_9_directions_neutral.smd"
 						start_frame = -1
 						end_frame = -1
@@ -893,6 +964,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_aim_9_directions_down_left.smd"
 						start_frame = -1
 						end_frame = -1
@@ -917,6 +989,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_aim_9_directions_down_center.smd"
 						start_frame = -1
 						end_frame = -1
@@ -941,6 +1014,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_aim_9_directions_down_right.smd"
 						start_frame = -1
 						end_frame = -1
@@ -965,6 +1039,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_aim_9_directions_mid_left.smd"
 						start_frame = -1
 						end_frame = -1
@@ -989,6 +1064,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_aim_9_directions_mid_center.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1013,6 +1089,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_aim_9_directions_mid_right.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1037,6 +1114,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_aim_9_directions_up_left.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1061,6 +1139,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_aim_9_directions_up_center.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1085,6 +1164,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_aim_9_directions_up_right.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1109,6 +1189,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_aim_9_directions_straight_up.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1180,6 +1261,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/jump.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1204,6 +1286,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/idle.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1242,6 +1325,7 @@
 						hidden = true
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_attack.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1280,6 +1364,7 @@
 						hidden = true
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/b_attack.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1318,6 +1403,7 @@
 						hidden = true
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/c_attack.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1356,6 +1442,7 @@
 						hidden = true
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/a_push.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1380,7 +1467,7 @@
 						hidden = true
 						anim_markup_ordered = false
 						disable_compression = false
-						poseParam = ""
+						poseParam = "aim_pitch"
 						blendList = 
 						[
 							{
@@ -1541,6 +1628,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/walk.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1656,6 +1744,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/run.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1771,6 +1860,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_anims/panic_anims_anims/run_beserk.smd"
 						start_frame = -1
 						end_frame = -1

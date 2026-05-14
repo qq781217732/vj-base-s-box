@@ -1,20 +1,21 @@
 "Layer0"
 {
-	"shader"		"shaders/complex.shader"
-	"TextureColor"		"materials/models/cpthazama/zombiepanic/zombie3/head_blin.tga"
-	"SystemAttributes"
+	shader	"complex.vfx"
+	TextureColor	"materials/models/cpthazama/zombiepanic/zombie3/head_blin.tga"
+	SystemAttributes
 	{
-		"PhysicsSurfaceProperties"		"flesh"
+		PhysicsSurfaceProperties	"flesh"
 	}
-	"F_SPECULAR"		"1"
-	"g_flSpecularExponent"		"15.000000"
-	"g_flPhongBoost"		"0.100000"
-	"F_ALPHA_TEST"		"1"
-	"TextureTranslucency"		"materials/models/cpthazama/zombiepanic/zombie3/head_blin_a_trans.tga"
-	"F_RENDER_BACKFACES"		"1"
-	"TextureNormal"		"materials/models/cpthazama/zombiepanic/zombie3/head_blin_nm.tga"
-	"TextureRoughness"		"materials/models/cpthazama/zombiepanic/zombie3/head_blin_nm_a-1_rough.tga"
-	"DynamicParams"
+	F_SPECULAR	"1"
+	g_flSpecularExponent	"15.000000"
+	g_flPhongBoost	"0.100000"
+	F_ALPHA_TEST	"1"
+	TextureTranslucency	"materials/models/cpthazama/zombiepanic/zombie3/head_blin_a_trans.tga"
+	F_RENDER_BACKFACES	"1"
+	TextureNormal	"materials/models/cpthazama/zombiepanic/zombie3/head_blin_nm.tga"
+	TextureRoughness	"materials/models/cpthazama/zombiepanic/zombie3/head_blin_nm_a-1_rough.tga"
+	DynamicParams
 	{
+		g_vSelfIllumTint	""
 	}
 }

@@ -15,7 +15,7 @@
 						_class = "RenderMeshFile"
 						note = ""
 						children = []
-						name = "studio"
+						name = "zombine_Zombie_Soldier_reference"
 						filename = "models/vj_zombies/zombine/zombine_zombie_soldier_reference.smd"
 						import_translation = [0, 0, 0]
 						import_rotation = [0, 0, 0]
@@ -49,6 +49,196 @@
 							exception_list = []
 						}
 					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "zombine_Zombie_Soldier_reference_lod1"
+						filename = "models/vj_zombies/zombine/zombine_zombie_soldier_reference_lod1.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "zombine_zombie_soldier_Headcrab_reference_lod1"
+						filename = "models/vj_zombies/zombine/zombine_zombie_soldier_headcrab_reference_lod1.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "zombine_Zombie_Soldier_reference_lod2"
+						filename = "models/vj_zombies/zombine/zombine_zombie_soldier_reference_lod2.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "zombine_zombie_soldier_Headcrab_reference_lod2"
+						filename = "models/vj_zombies/zombine/zombine_zombie_soldier_headcrab_reference_lod2.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "zombine_Zombie_Soldier_reference_lod3"
+						filename = "models/vj_zombies/zombine/zombine_zombie_soldier_reference_lod3.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "zombine_zombie_soldier_Headcrab_reference_lod3"
+						filename = "models/vj_zombies/zombine/zombine_zombie_soldier_headcrab_reference_lod3.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "zombine_Zombie_Soldier_reference_lod4"
+						filename = "models/vj_zombies/zombine/zombine_zombie_soldier_reference_lod4.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "zombine_zombie_soldier_Headcrab_reference_lod4"
+						filename = "models/vj_zombies/zombine/zombine_zombie_soldier_headcrab_reference_lod4.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "zombine_Zombie_Soldier_reference_lod5"
+						filename = "models/vj_zombies/zombine/zombine_zombie_soldier_reference_lod5.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "zombine_zombie_soldier_Headcrab_reference_lod5"
+						filename = "models/vj_zombies/zombine/zombine_zombie_soldier_headcrab_reference_lod5.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
 				]
 
 			},
@@ -66,6 +256,23 @@
 								_class = "BodyGroupChoice"
 								note = ""
 								children = []
+								name = ""
+								meshes = ["zombine_Zombie_Soldier_reference", "zombine_Zombie_Soldier_reference_lod1", "zombine_Zombie_Soldier_reference_lod2", "zombine_Zombie_Soldier_reference_lod3", "zombine_Zombie_Soldier_reference_lod4", "zombine_Zombie_Soldier_reference_lod5"]
+							},
+						]
+
+						name = "studio"
+						hidden_in_tools = false
+					},
+					{
+						_class = "BodyGroup"
+						note = ""
+						children = 
+						[
+							{
+								_class = "BodyGroupChoice"
+								note = ""
+								children = []
 								name = "blank"
 								meshes = []
 							},
@@ -74,7 +281,7 @@
 								note = ""
 								children = []
 								name = ""
-								meshes = ["zombine_zombie_soldier_Headcrab_reference"]
+								meshes = ["zombine_zombie_soldier_Headcrab_reference", "zombine_zombie_soldier_Headcrab_reference_lod1", "zombine_zombie_soldier_Headcrab_reference_lod2", "zombine_zombie_soldier_Headcrab_reference_lod3", "zombine_zombie_soldier_Headcrab_reference_lod4", "zombine_zombie_soldier_Headcrab_reference_lod5"]
 							},
 						]
 
@@ -95,7 +302,7 @@
 						children = []
 						name = ""
 						switch_threshold = 0.0
-						meshes = ["zombine_Zombie_Soldier_reference.smd", "zombine_zombie_soldier_Headcrab_reference.smd"]
+						meshes = ["zombine_Zombie_Soldier_reference", "zombine_zombie_soldier_Headcrab_reference"]
 					},
 					{
 						_class = "LODGroup"
@@ -103,7 +310,7 @@
 						children = []
 						name = ""
 						switch_threshold = 10
-						meshes = ["zombine_Zombie_Soldier_reference_lod1.smd", "zombine_zombie_soldier_Headcrab_reference_lod1.smd"]
+						meshes = ["zombine_Zombie_Soldier_reference_lod1", "zombine_zombie_soldier_Headcrab_reference_lod1"]
 					},
 					{
 						_class = "LODGroup"
@@ -111,7 +318,7 @@
 						children = []
 						name = ""
 						switch_threshold = 20
-						meshes = ["zombine_Zombie_Soldier_reference_lod2.smd", "zombine_zombie_soldier_Headcrab_reference_lod2.smd"]
+						meshes = ["zombine_Zombie_Soldier_reference_lod2", "zombine_zombie_soldier_Headcrab_reference_lod2"]
 					},
 					{
 						_class = "LODGroup"
@@ -119,7 +326,7 @@
 						children = []
 						name = ""
 						switch_threshold = 35
-						meshes = ["zombine_Zombie_Soldier_reference_lod3.smd", "zombine_zombie_soldier_Headcrab_reference_lod3.smd"]
+						meshes = ["zombine_Zombie_Soldier_reference_lod3", "zombine_zombie_soldier_Headcrab_reference_lod3"]
 					},
 					{
 						_class = "LODGroup"
@@ -127,7 +334,7 @@
 						children = []
 						name = ""
 						switch_threshold = 60
-						meshes = ["zombine_Zombie_Soldier_reference_lod4.smd", "zombine_zombie_soldier_Headcrab_reference_lod4.smd"]
+						meshes = ["zombine_Zombie_Soldier_reference_lod4", "zombine_zombie_soldier_Headcrab_reference_lod4"]
 					},
 					{
 						_class = "LODGroup"
@@ -135,7 +342,7 @@
 						children = []
 						name = ""
 						switch_threshold = 90
-						meshes = ["zombine_Zombie_Soldier_reference_lod5.smd", "zombine_zombie_soldier_Headcrab_reference_lod5.smd"]
+						meshes = ["zombine_Zombie_Soldier_reference_lod5", "zombine_zombie_soldier_Headcrab_reference_lod5"]
 					},
 				]
 
@@ -301,6 +508,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/zombine/zombine_anims/refpose.smd"
 						start_frame = -1
 						end_frame = -1
@@ -325,6 +533,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/zombine/zombine_anims/ragdoll.smd"
 						start_frame = -1
 						end_frame = -1

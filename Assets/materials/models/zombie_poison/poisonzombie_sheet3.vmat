@@ -1,10 +1,10 @@
 "Layer0"
 {
-	"shader"		"shaders/simple.shader"
-	"TextureColor"		"materials/models/zombie_poison/poisonzombie_sheet3.tga"
-	"TextureRoughness"		"materials/models/zombie_poison/poisonzombie_sheet_normal2_a-1_rough.tga"
-	"F_SPECULAR"		"1"
-	"g_flSpecularExponent"		"30.000000"
-	"g_flPhongBoost"		"1.000000"
-	"TextureNormal"		"materials/models/zombie_poison/poisonzombie_sheet_normal2.tga"
+	shader	"complex.vfx"
+	TextureColor	"materials/models/zombie_poison/poisonzombie_sheet3.tga"
+	TextureRoughness	"materials/models/zombie_poison/poisonzombie_sheet_normal2_a-1_rough.tga"
+	F_SPECULAR	"1"
+	g_flSpecularExponent	"30.000000"
+	g_flPhongBoost	"1.000000"
+	TextureNormal	"materials/models/zombie_poison/poisonzombie_sheet_normal2.tga"
 }

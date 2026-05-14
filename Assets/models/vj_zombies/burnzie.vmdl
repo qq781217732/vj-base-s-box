@@ -15,8 +15,84 @@
 						_class = "RenderMeshFile"
 						note = ""
 						children = []
-						name = "Body"
+						name = "bz_reference"
 						filename = "models/vj_zombies/burnzie/bz_reference.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "bz_reference_lod1"
+						filename = "models/vj_zombies/burnzie/bz_reference_lod1.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "bz_reference_lod2"
+						filename = "models/vj_zombies/burnzie/bz_reference_lod2.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "bz_reference_lod3"
+						filename = "models/vj_zombies/burnzie/bz_reference_lod3.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "bz_reference_lod4"
+						filename = "models/vj_zombies/burnzie/bz_reference_lod4.smd"
 						import_translation = [0, 0, 0]
 						import_rotation = [0, 0, 0]
 						import_scale = 1
@@ -34,6 +110,31 @@
 
 			},
 			{
+				_class = "BodyGroupList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "BodyGroup"
+						note = ""
+						children = 
+						[
+							{
+								_class = "BodyGroupChoice"
+								note = ""
+								children = []
+								name = ""
+								meshes = ["bz_reference", "bz_reference_lod1", "bz_reference_lod2", "bz_reference_lod3", "bz_reference_lod4"]
+							},
+						]
+
+						name = "Body"
+						hidden_in_tools = false
+					},
+				]
+
+			},
+			{
 				_class = "LODGroupList"
 				note = ""
 				children = 
@@ -44,7 +145,7 @@
 						children = []
 						name = ""
 						switch_threshold = 0.0
-						meshes = ["bz_reference.smd"]
+						meshes = ["bz_reference"]
 					},
 					{
 						_class = "LODGroup"
@@ -52,7 +153,7 @@
 						children = []
 						name = ""
 						switch_threshold = 10
-						meshes = ["bz_reference_lod1.smd"]
+						meshes = ["bz_reference_lod1"]
 					},
 					{
 						_class = "LODGroup"
@@ -60,7 +161,7 @@
 						children = []
 						name = ""
 						switch_threshold = 18
-						meshes = ["bz_reference_lod2.smd"]
+						meshes = ["bz_reference_lod2"]
 					},
 					{
 						_class = "LODGroup"
@@ -68,7 +169,7 @@
 						children = []
 						name = ""
 						switch_threshold = 35
-						meshes = ["bz_reference_lod3.smd"]
+						meshes = ["bz_reference_lod3"]
 					},
 					{
 						_class = "LODGroup"
@@ -76,7 +177,7 @@
 						children = []
 						name = ""
 						switch_threshold = 55
-						meshes = ["bz_reference_lod4.smd"]
+						meshes = ["bz_reference_lod4"]
 					},
 				]
 
@@ -161,6 +262,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/burnzie/burnzie_anims/ragdoll.smd"
 						start_frame = -1
 						end_frame = -1
@@ -185,6 +287,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/burnzie/burnzie_anims/idle1.smd"
 						start_frame = -1
 						end_frame = -1
@@ -209,6 +312,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/burnzie/burnzie_anims/idle2.smd"
 						start_frame = -1
 						end_frame = -1
@@ -233,6 +337,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/burnzie/burnzie_anims/idle3.smd"
 						start_frame = -1
 						end_frame = -1
@@ -304,6 +409,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/burnzie/burnzie_anims/walk.smd"
 						start_frame = -1
 						end_frame = -1
@@ -375,6 +481,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/burnzie/burnzie_anims/walk2.smd"
 						start_frame = -1
 						end_frame = -1
@@ -435,6 +542,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/burnzie/burnzie_anims/walk_onfire.smd"
 						start_frame = -1
 						end_frame = -1
@@ -459,6 +567,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/burnzie/burnzie_anims/idle_onfire.smd"
 						start_frame = -1
 						end_frame = -1
@@ -508,6 +617,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/burnzie/burnzie_anims/attackleft.smd"
 						start_frame = -1
 						end_frame = -1
@@ -557,6 +667,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/burnzie/burnzie_anims/attackleft2.smd"
 						start_frame = -1
 						end_frame = -1
@@ -606,6 +717,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/burnzie/burnzie_anims/attackright.smd"
 						start_frame = -1
 						end_frame = -1
@@ -655,6 +767,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/burnzie/burnzie_anims/attackright2.smd"
 						start_frame = -1
 						end_frame = -1

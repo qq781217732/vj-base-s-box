@@ -15,8 +15,84 @@
 						_class = "RenderMeshFile"
 						note = ""
 						children = []
-						name = "studio"
+						name = "Zombie_poison_reference"
 						filename = "models/vj_zombies/hulk/zombie_poison_reference.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "Zombie_poison_reference_lod1"
+						filename = "models/vj_zombies/hulk/zombie_poison_reference_lod1.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "Zombie_poison_reference_lod2"
+						filename = "models/vj_zombies/hulk/zombie_poison_reference_lod2.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "Zombie_poison_reference_lod3"
+						filename = "models/vj_zombies/hulk/zombie_poison_reference_lod3.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "Zombie_poison_reference_lod4"
+						filename = "models/vj_zombies/hulk/zombie_poison_reference_lod4.smd"
 						import_translation = [0, 0, 0]
 						import_rotation = [0, 0, 0]
 						import_scale = 1
@@ -34,6 +110,31 @@
 
 			},
 			{
+				_class = "BodyGroupList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "BodyGroup"
+						note = ""
+						children = 
+						[
+							{
+								_class = "BodyGroupChoice"
+								note = ""
+								children = []
+								name = ""
+								meshes = ["Zombie_poison_reference", "Zombie_poison_reference_lod1", "Zombie_poison_reference_lod2", "Zombie_poison_reference_lod3", "Zombie_poison_reference_lod4"]
+							},
+						]
+
+						name = "studio"
+						hidden_in_tools = false
+					},
+				]
+
+			},
+			{
 				_class = "LODGroupList"
 				note = ""
 				children = 
@@ -44,7 +145,7 @@
 						children = []
 						name = ""
 						switch_threshold = 0.0
-						meshes = ["Zombie_poison_reference.smd"]
+						meshes = ["Zombie_poison_reference"]
 					},
 					{
 						_class = "LODGroup"
@@ -52,7 +153,7 @@
 						children = []
 						name = ""
 						switch_threshold = 10
-						meshes = ["Zombie_poison_reference_lod1.smd"]
+						meshes = ["Zombie_poison_reference_lod1"]
 					},
 					{
 						_class = "LODGroup"
@@ -60,7 +161,7 @@
 						children = []
 						name = ""
 						switch_threshold = 20
-						meshes = ["Zombie_poison_reference_lod2.smd"]
+						meshes = ["Zombie_poison_reference_lod2"]
 					},
 					{
 						_class = "LODGroup"
@@ -68,7 +169,7 @@
 						children = []
 						name = ""
 						switch_threshold = 35
-						meshes = ["Zombie_poison_reference_lod3.smd"]
+						meshes = ["Zombie_poison_reference_lod3"]
 					},
 					{
 						_class = "LODGroup"
@@ -76,7 +177,7 @@
 						children = []
 						name = ""
 						switch_threshold = 60
-						meshes = ["Zombie_poison_reference_lod4.smd"]
+						meshes = ["Zombie_poison_reference_lod4"]
 					},
 				]
 
@@ -247,6 +348,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/hulk/hulk_anims/refpose.smd"
 						start_frame = -1
 						end_frame = -1
@@ -271,6 +373,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/hulk/hulk_anims/idle01_fix.smd"
 						start_frame = -1
 						end_frame = -1
@@ -320,6 +423,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/hulk/hulk_anims/firewalk.smd"
 						start_frame = -1
 						end_frame = -1
@@ -369,6 +473,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/hulk/hulk_anims/walk_fix.smd"
 						start_frame = -1
 						end_frame = -1
@@ -418,6 +523,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/hulk/hulk_anims/run.smd"
 						start_frame = -1
 						end_frame = -1
@@ -467,6 +573,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/hulk/hulk_anims/melee_01.smd"
 						start_frame = -1
 						end_frame = -1
@@ -491,6 +598,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/hulk/hulk_anims/flinchc.smd"
 						start_frame = -1
 						end_frame = -1
@@ -515,6 +623,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/hulk/hulk_anims/flinchr.smd"
 						start_frame = -1
 						end_frame = -1
@@ -539,6 +648,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/hulk/hulk_anims/flinchl.smd"
 						start_frame = -1
 						end_frame = -1
@@ -563,6 +673,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/hulk/hulk_anims/ragdoll.smd"
 						start_frame = -1
 						end_frame = -1

@@ -1,21 +1,22 @@
 "Layer0"
 {
-	"shader"		"shaders/complex.shader"
-	"TextureColor"		"materials/models/cpthazama/zombiepanic/zombie4/001_punkerzombie_head_color.tga"
-	"SystemAttributes"
+	shader	"complex.vfx"
+	TextureColor	"materials/models/cpthazama/zombiepanic/zombie4/001_punkerzombie_head_color.tga"
+	SystemAttributes
 	{
-		"PhysicsSurfaceProperties"		"flesh"
+		PhysicsSurfaceProperties	"flesh"
 	}
-	"F_SPECULAR"		"1"
-	"g_flSpecularExponent"		"15.000000"
-	"g_flPhongBoost"		"0.080000"
-	"F_ALPHA_TEST"		"1"
-	"TextureTranslucency"		"materials/models/cpthazama/zombiepanic/zombie4/001_punkerzombie_head_color_a_trans.tga"
-	"g_flOpacityScale"		"1.000000"
-	"F_RENDER_BACKFACES"		"1"
-	"TextureNormal"		"materials/models/cpthazama/zombiepanic/zombie4/002_punkerzombie_head_normal.tga"
-	"TextureRoughness"		"materials/default/default_rough.tga"
-	"DynamicParams"
+	F_SPECULAR	"1"
+	g_flSpecularExponent	"15.000000"
+	g_flPhongBoost	"0.080000"
+	F_ALPHA_TEST	"1"
+	TextureTranslucency	"materials/models/cpthazama/zombiepanic/zombie4/001_punkerzombie_head_color_a_trans.tga"
+	g_flOpacityScale	"1.000000"
+	F_RENDER_BACKFACES	"1"
+	TextureNormal	"materials/models/cpthazama/zombiepanic/zombie4/002_punkerzombie_head_normal.tga"
+	TextureRoughness	"materials/default/default_rough.tga"
+	DynamicParams
 	{
+		g_vSelfIllumTint	""
 	}
 }

@@ -1,6 +1,6 @@
 "Layer0"
 {
-	"shader"		"shaders/simple.shader"
+	"shader"		"shaders/complex.shader"
 	"TextureColor"		"materials/models/cpthazama/zombiepanic/pedro/pedro_body_diff.tga"
 	"F_RENDER_BACKFACES"		"1"
 	"SystemAttributes"

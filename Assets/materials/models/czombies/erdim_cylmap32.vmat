@@ -1,7 +1,7 @@
 "Layer0"
 {
-	"shader"		"shaders/complex.shader"
-	"TextureColor"		"materials/models/czombies/erdim_cylmap32.tga"
-	"TextureNormal"		"materials/models/czombies/erdim_cylmap_normal32.tga"
-	"TextureRoughness"		"materials/default/default_rough_s1import.tga"
+	shader	"complex.vfx"
+	TextureColor	"materials/models/czombies/erdim_cylmap32.tga"
+	TextureNormal	"materials/models/czombies/erdim_cylmap_normal32.tga"
+	TextureRoughness	"materials/default/default_rough_s1import.tga"
 }

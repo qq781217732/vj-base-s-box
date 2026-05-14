@@ -1,9 +1,9 @@
 "Layer0"
 {
-	"shader"		"shaders/simple.shader"
-	"TextureColor"		"materials/models/cpthazama/zombiepanic/zombie2_jacket.tga"
-	"F_SPECULAR_CUBE_MAP"		"1"
-	"F_SPECULAR"		"1"
-	"TextureRoughness"		"materials/models/cpthazama/zombiepanic/zombie2_jacket_nm_a-1_rough.tga"
-	"TextureNormal"		"materials/models/cpthazama/zombiepanic/zombie2_jacket_nm.tga"
+	shader	"complex.vfx"
+	TextureColor	"materials/models/cpthazama/zombiepanic/zombie2_jacket.tga"
+	F_SPECULAR_CUBE_MAP	"1"
+	F_SPECULAR	"1"
+	TextureRoughness	"materials/models/cpthazama/zombiepanic/zombie2_jacket_nm_a-1_rough.tga"
+	TextureNormal	"materials/models/cpthazama/zombiepanic/zombie2_jacket_nm.tga"
 }

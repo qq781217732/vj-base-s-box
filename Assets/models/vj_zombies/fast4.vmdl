@@ -7,6 +7,24 @@
 		children = 
 		[
 			{
+				_class = "PoseParamList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "PoseParam"
+						note = ""
+						children = []
+						name = "move_yaw"
+						poseparam_min = -180.0
+						poseparam_max = 180.0
+						poseparam_looping = false
+						poseparam_loop = 0.0
+					},
+				]
+
+			},
+			{
 				_class = "RenderMeshList"
 				note = ""
 				children = 
@@ -15,8 +33,84 @@
 						_class = "RenderMeshFile"
 						note = ""
 						children = []
-						name = "studio"
+						name = "corpse1_reference"
 						filename = "models/vj_zombies/fast4/corpse1_reference.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "corpse1_reference_lod1"
+						filename = "models/vj_zombies/fast4/corpse1_reference_lod1.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "corpse1_reference_lod2"
+						filename = "models/vj_zombies/fast4/corpse1_reference_lod2.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "corpse1_reference_lod3"
+						filename = "models/vj_zombies/fast4/corpse1_reference_lod3.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "corpse1_reference_lod4"
+						filename = "models/vj_zombies/fast4/corpse1_reference_lod4.smd"
 						import_translation = [0, 0, 0]
 						import_rotation = [0, 0, 0]
 						import_scale = 1
@@ -34,6 +128,31 @@
 
 			},
 			{
+				_class = "BodyGroupList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "BodyGroup"
+						note = ""
+						children = 
+						[
+							{
+								_class = "BodyGroupChoice"
+								note = ""
+								children = []
+								name = ""
+								meshes = ["corpse1_reference", "corpse1_reference_lod1", "corpse1_reference_lod2", "corpse1_reference_lod3", "corpse1_reference_lod4"]
+							},
+						]
+
+						name = "studio"
+						hidden_in_tools = false
+					},
+				]
+
+			},
+			{
 				_class = "LODGroupList"
 				note = ""
 				children = 
@@ -44,7 +163,7 @@
 						children = []
 						name = ""
 						switch_threshold = 0.0
-						meshes = ["corpse1_reference.smd"]
+						meshes = ["corpse1_reference"]
 					},
 					{
 						_class = "LODGroup"
@@ -52,7 +171,7 @@
 						children = []
 						name = ""
 						switch_threshold = 10
-						meshes = ["corpse1_reference_lod1.smd"]
+						meshes = ["corpse1_reference_lod1"]
 					},
 					{
 						_class = "LODGroup"
@@ -60,7 +179,7 @@
 						children = []
 						name = ""
 						switch_threshold = 20
-						meshes = ["corpse1_reference_lod2.smd"]
+						meshes = ["corpse1_reference_lod2"]
 					},
 					{
 						_class = "LODGroup"
@@ -68,7 +187,7 @@
 						children = []
 						name = ""
 						switch_threshold = 30
-						meshes = ["corpse1_reference_lod3.smd"]
+						meshes = ["corpse1_reference_lod3"]
 					},
 					{
 						_class = "LODGroup"
@@ -76,7 +195,7 @@
 						children = []
 						name = ""
 						switch_threshold = 40
-						meshes = ["corpse1_reference_lod4.smd"]
+						meshes = ["corpse1_reference_lod4"]
 					},
 				]
 
@@ -247,6 +366,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast4/fast4_anims/ragdoll.smd"
 						start_frame = -1
 						end_frame = -1

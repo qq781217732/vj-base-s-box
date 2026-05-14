@@ -1,9 +1,9 @@
 "Layer0"
 {
-	"shader"		"shaders/simple.shader"
-	"TextureColor"		"materials/models/stalker/s_head(cyl)dull.tga"
-	"F_SPECULAR_CUBE_MAP"		"2"
-	"TextureCubeMap"		"materials/default/default_cube.pfm"
-	"F_SPECULAR"		"1"
-	"TextureRoughness"		"materials/models/stalker/s_head(cyl)mask_l-1_rough.tga"
+	shader	"complex.vfx"
+	TextureColor	"materials/models/stalker/s_head(cyl)dull.tga"
+	F_SPECULAR_CUBE_MAP	"2"
+	TextureCubeMap	"materials/default/default_cube.pfm"
+	F_SPECULAR	"1"
+	TextureRoughness	"materials/models/stalker/s_head(cyl)mask_l-1_rough.tga"
 }

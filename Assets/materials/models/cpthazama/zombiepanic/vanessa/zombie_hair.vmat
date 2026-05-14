@@ -1,16 +1,17 @@
 "Layer0"
 {
-	"shader"		"shaders/complex.shader"
-	"TextureColor"		"materials/models/cpthazama/zombiepanic/vanessa/vanessa_zombie_diff.tga"
-	"F_RENDER_BACKFACES"		"1"
-	"F_ALPHA_TEST"		"1"
-	"TextureTranslucency"		"materials/models/cpthazama/zombiepanic/vanessa/vanessa_zombie_diff_a_trans.tga"
-	"SystemAttributes"
+	shader	"complex.vfx"
+	TextureColor	"materials/models/cpthazama/zombiepanic/vanessa/vanessa_zombie_diff.tga"
+	F_RENDER_BACKFACES	"1"
+	F_ALPHA_TEST	"1"
+	TextureTranslucency	"materials/models/cpthazama/zombiepanic/vanessa/vanessa_zombie_diff_a_trans.tga"
+	SystemAttributes
 	{
-		"PhysicsSurfaceProperties"		"flesh"
+		PhysicsSurfaceProperties	"flesh"
 	}
-	"TextureRoughness"		"materials/default/default_rough_s1import.tga"
-	"DynamicParams"
+	TextureRoughness	"materials/default/default_rough_s1import.tga"
+	DynamicParams
 	{
+		g_vSelfIllumTint	""
 	}
 }

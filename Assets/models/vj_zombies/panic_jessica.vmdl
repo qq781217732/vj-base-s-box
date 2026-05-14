@@ -7,6 +7,44 @@
 		children = 
 		[
 			{
+				_class = "PoseParamList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "PoseParam"
+						note = ""
+						children = []
+						name = "aim_yaw"
+						poseparam_min = -11.96398
+						poseparam_max = 9.376571
+						poseparam_looping = false
+						poseparam_loop = 0.0
+					},
+					{
+						_class = "PoseParam"
+						note = ""
+						children = []
+						name = "aim_pitch"
+						poseparam_min = -11.68224
+						poseparam_max = 11.53273
+						poseparam_looping = false
+						poseparam_loop = 0.0
+					},
+					{
+						_class = "PoseParam"
+						note = ""
+						children = []
+						name = "move_yaw"
+						poseparam_min = -180.0
+						poseparam_max = 180.0
+						poseparam_looping = false
+						poseparam_loop = 0.0
+					},
+				]
+
+			},
+			{
 				_class = "RenderMeshList"
 				note = ""
 				children = 
@@ -360,6 +398,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_jessica/panic_jessica_anims/ragdoll.smd"
 						start_frame = -1
 						end_frame = -1

@@ -13,12 +13,36 @@ public partial class CreatureNPC
 {
     // ═══ Additional Fields ═══
     public float NextProcessTime { get; set; } = 0.1f;
+    private bool _animEventBridgeSetup;
 
     // ═══ OnUpdate: drives Think loop every frame ═══
     protected override void OnUpdate()
     {
+        if ( !_animEventBridgeSetup )
+            SetupAnimEventBridge();
         if ( !Dead )
             Think();
+    }
+
+    // ═══ AnimEvent bridge: SkinnedModelRenderer events → OnAnimEvent virtual ═══
+    private void SetupAnimEventBridge()
+    {
+        var renderer = Components.Get<SkinnedModelRenderer>();
+        if ( renderer == null ) return;
+
+        renderer.OnGenericEvent += e =>
+            OnAnimEvent( e.Type, e.Int, e.Float, e.Vector, e.String );
+
+        renderer.OnFootstepEvent += e =>
+            OnAnimEvent( "footstep", e.FootId, e.Volume, default, e.AttachmentName );
+
+        // TODO: When _SOUND_MAP is populated from HL2 game_sounds_*.txt / VJBase sounds.lua,
+        // resolve Source 1 logical sound names (e.g. "Zombie.Pain") to actual file paths here.
+        // For now, forward raw name; NPC's SoundTbl_* handles playback at runtime.
+        renderer.OnSoundEvent += e =>
+            OnAnimEvent( "sound", 0, 0, e.Position, e.Name );
+
+        _animEventBridgeSetup = true;
     }
 
     // ═══ Think — main AI loop ═══

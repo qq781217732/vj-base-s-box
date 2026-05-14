@@ -7,6 +7,44 @@
 		children = 
 		[
 			{
+				_class = "PoseParamList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "PoseParam"
+						note = ""
+						children = []
+						name = "aim_yaw"
+						poseparam_min = -11.96397
+						poseparam_max = 9.376609
+						poseparam_looping = false
+						poseparam_loop = 0.0
+					},
+					{
+						_class = "PoseParam"
+						note = ""
+						children = []
+						name = "aim_pitch"
+						poseparam_min = -11.68225
+						poseparam_max = 11.53274
+						poseparam_looping = false
+						poseparam_loop = 0.0
+					},
+					{
+						_class = "PoseParam"
+						note = ""
+						children = []
+						name = "move_yaw"
+						poseparam_min = -180.0
+						poseparam_max = 180.0
+						poseparam_looping = false
+						poseparam_loop = 0.0
+					},
+				]
+
+			},
+			{
 				_class = "RenderMeshList"
 				note = ""
 				children = 
@@ -281,6 +319,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/panic_eugene/panic_eugene_anims/ragdoll.smd"
 						start_frame = -1
 						end_frame = -1

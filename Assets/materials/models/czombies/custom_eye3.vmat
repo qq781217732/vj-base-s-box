@@ -1,8 +1,8 @@
 "Layer0"
 {
-	"shader"		"shaders/complex.shader"
-	"TextureColor"		"materials/models/czombies/custom_eye3.tga"
-	"F_SELF_ILLUM"		"1"
-	"TextureSelfIllumMask"		"[1.000000 1.000000 1.000000 1.000000]"
-	"TextureRoughness"		"materials/default/default_rough_s1import.tga"
+	shader	"complex.vfx"
+	TextureColor	"materials/models/czombies/custom_eye3.tga"
+	F_SELF_ILLUM	"1"
+	TextureSelfIllumMask	"[1.000000 1.000000 1.000000 1.000000]"
+	TextureRoughness	"materials/default/default_rough_s1import.tga"
 }

@@ -1,14 +1,14 @@
 "Layer0"
 {
-	"shader"		"shaders/simple.shader"
-	"TextureColor"		"materials/models/cpthazama/zombiepanic/zombie1/zombie2_pants.tga"
-	"SystemAttributes"
+	shader	"complex.vfx"
+	TextureColor	"materials/models/cpthazama/zombiepanic/zombie1/zombie2_pants.tga"
+	SystemAttributes
 	{
-		"PhysicsSurfaceProperties"		"flesh"
+		PhysicsSurfaceProperties	"flesh"
 	}
-	"F_SPECULAR"		"1"
-	"g_flSpecularExponent"		"28.000000"
-	"g_flPhongBoost"		"0.800000"
-	"TextureNormal"		"materials/models/cpthazama/zombiepanic/zombie1/zombie2_pants_nm.tga"
-	"TextureRoughness"		"materials/models/cpthazama/zombiepanic/zombie1/zombie2_pants_nm_a-1_rough.tga"
+	F_SPECULAR	"1"
+	g_flSpecularExponent	"28.000000"
+	g_flPhongBoost	"0.800000"
+	TextureNormal	"materials/models/cpthazama/zombiepanic/zombie1/zombie2_pants_nm.tga"
+	TextureRoughness	"materials/models/cpthazama/zombiepanic/zombie1/zombie2_pants_nm_a-1_rough.tga"
 }

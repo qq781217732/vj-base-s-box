@@ -1,17 +1,17 @@
 "Layer0"
 {
-	"shader"		"shaders/complex.shader"
-	"TextureColor"		"materials/models/cpthazama/zombiepanic/zombie2/cap_body_color.tga"
-	"SystemAttributes"
+	shader	"complex.vfx"
+	TextureColor	"materials/models/cpthazama/zombiepanic/zombie2/cap_body_color.tga"
+	SystemAttributes
 	{
-		"PhysicsSurfaceProperties"		"flesh"
+		PhysicsSurfaceProperties	"flesh"
 	}
-	"F_RENDER_BACKFACES"		"1"
-	"F_SPECULAR"		"1"
-	"g_flSpecularExponent"		"18.000000"
-	"g_flPhongBoost"		"0.050000"
-	"F_SELF_ILLUM"		"1"
-	"TextureSelfIllumMask"		"materials/models/cpthazama/zombiepanic/zombie2/cap_body_color_a_selfillummask.tga"
-	"TextureNormal"		"materials/models/cpthazama/zombiepanic/zombie2/cap_body_nm.tga"
-	"TextureRoughness"		"materials/default/default_rough.tga"
+	F_RENDER_BACKFACES	"1"
+	F_SPECULAR	"1"
+	g_flSpecularExponent	"18.000000"
+	g_flPhongBoost	"0.050000"
+	F_SELF_ILLUM	"1"
+	TextureSelfIllumMask	"materials/models/cpthazama/zombiepanic/zombie2/cap_body_color_a_selfillummask.tga"
+	TextureNormal	"materials/models/cpthazama/zombiepanic/zombie2/cap_body_nm.tga"
+	TextureRoughness	"materials/default/default_rough.tga"
 }

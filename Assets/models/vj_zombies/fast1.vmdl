@@ -15,7 +15,7 @@
 						_class = "RenderMeshFile"
 						note = ""
 						children = []
-						name = "studio"
+						name = "krovoso_ref_fast"
 						filename = "models/vj_zombies/fast1/krovoso_ref_fast.smd"
 						import_translation = [0, 0, 0]
 						import_rotation = [0, 0, 0]
@@ -29,6 +29,31 @@
 							exclude_by_default = false
 							exception_list = []
 						}
+					},
+				]
+
+			},
+			{
+				_class = "BodyGroupList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "BodyGroup"
+						note = ""
+						children = 
+						[
+							{
+								_class = "BodyGroupChoice"
+								note = ""
+								children = []
+								name = ""
+								meshes = ["krovoso_ref_fast"]
+							},
+						]
+
+						name = "studio"
+						hidden_in_tools = false
 					},
 				]
 
@@ -113,6 +138,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast1/fast1_anims/ragdoll.smd"
 						start_frame = -1
 						end_frame = -1

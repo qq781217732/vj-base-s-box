@@ -1,6 +1,6 @@
 "Layer0"
 {
-	"shader"		"shaders/simple.shader"
+	"shader"		"shaders/complex.shader"
 	"TextureColor"		"materials/models/zombie_poison/poisonzombie_sheet.tga"
 	"F_SPECULAR"		"1"
 	"g_flSpecularExponent"		"30.000000"

@@ -1,8 +1,8 @@
 "Layer0"
 {
-	"shader"		"shaders/simple.shader"
-	"TextureColor"		"materials/models/cpthazama/zombiepanic/zombie2_teeth.tga"
-	"F_SPECULAR_CUBE_MAP"		"1"
-	"F_SPECULAR"		"1"
-	"TextureRoughness"		"materials/models/cpthazama/zombiepanic/zombie2_teeth_a-1_rough.tga"
+	shader	"complex.vfx"
+	TextureColor	"materials/models/cpthazama/zombiepanic/zombie2_teeth.tga"
+	F_SPECULAR_CUBE_MAP	"1"
+	F_SPECULAR	"1"
+	TextureRoughness	"materials/models/cpthazama/zombiepanic/zombie2_teeth_a-1_rough.tga"
 }

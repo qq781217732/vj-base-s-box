@@ -1,6 +1,6 @@
 "Layer0"
 {
-	"shader"		"shaders/complex.shader"
-	"TextureColor"		"materials/models/czombies/citizen_sheet32.tga"
-	"TextureRoughness"		"materials/default/default_rough_s1import.tga"
+	shader	"complex.vfx"
+	TextureColor	"materials/models/czombies/citizen_sheet32.tga"
+	TextureRoughness	"materials/default/default_rough_s1import.tga"
 }

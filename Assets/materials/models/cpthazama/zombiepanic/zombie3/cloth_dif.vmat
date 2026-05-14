@@ -1,19 +1,20 @@
 "Layer0"
 {
-	"shader"		"shaders/complex.shader"
-	"TextureColor"		"materials/models/cpthazama/zombiepanic/zombie3/cloth_dif.tga"
-	"SystemAttributes"
+	shader	"complex.vfx"
+	TextureColor	"materials/models/cpthazama/zombiepanic/zombie3/cloth_dif.tga"
+	SystemAttributes
 	{
-		"PhysicsSurfaceProperties"		"flesh"
+		PhysicsSurfaceProperties	"flesh"
 	}
-	"F_SPECULAR"		"1"
-	"g_flSpecularExponent"		"14.000000"
-	"g_flPhongBoost"		"0.050000"
-	"F_ALPHA_TEST"		"1"
-	"TextureTranslucency"		"[1.000000 1.000000 1.000000 1.000000]"
-	"TextureNormal"		"materials/models/cpthazama/zombiepanic/zombie3/cloth_norm.tga"
-	"TextureRoughness"		"materials/models/cpthazama/zombiepanic/zombie3/cloth_norm_a-1_rough.tga"
-	"DynamicParams"
+	F_SPECULAR	"1"
+	g_flSpecularExponent	"14.000000"
+	g_flPhongBoost	"0.050000"
+	F_ALPHA_TEST	"1"
+	TextureTranslucency	"[1.000000 1.000000 1.000000 1.000000]"
+	TextureNormal	"materials/models/cpthazama/zombiepanic/zombie3/cloth_norm.tga"
+	TextureRoughness	"materials/models/cpthazama/zombiepanic/zombie3/cloth_norm_a-1_rough.tga"
+	DynamicParams
 	{
+		g_vSelfIllumTint	""
 	}
 }

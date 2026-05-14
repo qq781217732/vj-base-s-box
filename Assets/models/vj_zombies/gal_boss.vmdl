@@ -7,6 +7,24 @@
 		children = 
 		[
 			{
+				_class = "PoseParamList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "PoseParam"
+						note = ""
+						children = []
+						name = "move_yaw"
+						poseparam_min = -180.0
+						poseparam_max = 180.0
+						poseparam_looping = false
+						poseparam_loop = 0.0
+					},
+				]
+
+			},
+			{
 				_class = "RenderMeshList"
 				note = ""
 				children = 
@@ -15,8 +33,27 @@
 						_class = "RenderMeshFile"
 						note = ""
 						children = []
-						name = "studio"
+						name = "monk_reference"
 						filename = "models/vj_zombies/gal_boss/monk_reference.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "monk_reference_lod1"
+						filename = "models/vj_zombies/gal_boss/monk_reference_lod1.smd"
 						import_translation = [0, 0, 0]
 						import_rotation = [0, 0, 0]
 						import_scale = 1
@@ -34,6 +71,31 @@
 
 			},
 			{
+				_class = "BodyGroupList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "BodyGroup"
+						note = ""
+						children = 
+						[
+							{
+								_class = "BodyGroupChoice"
+								note = ""
+								children = []
+								name = ""
+								meshes = ["monk_reference", "monk_reference_lod1"]
+							},
+						]
+
+						name = "studio"
+						hidden_in_tools = false
+					},
+				]
+
+			},
+			{
 				_class = "LODGroupList"
 				note = ""
 				children = 
@@ -44,7 +106,7 @@
 						children = []
 						name = ""
 						switch_threshold = 0.0
-						meshes = ["monk_reference.smd"]
+						meshes = ["monk_reference"]
 					},
 					{
 						_class = "LODGroup"
@@ -52,7 +114,7 @@
 						children = []
 						name = ""
 						switch_threshold = 15
-						meshes = ["monk_reference_lod1.smd"]
+						meshes = ["monk_reference_lod1"]
 					},
 				]
 
@@ -211,6 +273,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/gal_boss/gal_boss_anims/ragdoll.smd"
 						start_frame = -1
 						end_frame = -1

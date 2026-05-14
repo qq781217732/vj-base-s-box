@@ -1,11 +1,11 @@
 "Layer0"
 {
-	"shader"		"shaders/complex.shader"
-	"TextureColor"		"materials/models/czombies/ted_facemap30.tga"
-	"SystemAttributes"
+	shader	"complex.vfx"
+	TextureColor	"materials/models/czombies/ted_facemap30.tga"
+	SystemAttributes
 	{
-		"PhysicsSurfaceProperties"		"Flesh"
+		PhysicsSurfaceProperties	"Flesh"
 	}
-	"TextureNormal"		"materials/models/czombies/ted_facemap30_normal.tga"
-	"TextureRoughness"		"materials/default/default_rough_s1import.tga"
+	TextureNormal	"materials/models/czombies/ted_facemap30_normal.tga"
+	TextureRoughness	"materials/default/default_rough_s1import.tga"
 }

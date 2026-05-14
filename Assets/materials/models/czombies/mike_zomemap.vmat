@@ -1,10 +1,10 @@
 "Layer0"
 {
-	"shader"		"shaders/complex.shader"
-	"TextureColor"		"materials/models/czombies/mike_zomemap.tga"
-	"SystemAttributes"
+	shader	"complex.vfx"
+	TextureColor	"materials/models/czombies/mike_zomemap.tga"
+	SystemAttributes
 	{
-		"PhysicsSurfaceProperties"		"Flesh"
+		PhysicsSurfaceProperties	"Flesh"
 	}
-	"TextureRoughness"		"materials/default/default_rough_s1import.tga"
+	TextureRoughness	"materials/default/default_rough_s1import.tga"
 }

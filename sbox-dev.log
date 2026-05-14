@@ -1,89 +1,366 @@
- 01:25:54   Compiler CS1513 } expected
- 01:25:54   Compiler CS1519 Invalid token '}' in a member declaration
- 01:25:54   Compiler CS1513 } expected
- 01:25:54   Compiler CS1022 Type or namespace definition, or end-of-file expected
- 01:25:54   Compiler CS1527 Elements defined in a namespace cannot be explicitly declared as private, protected, protected internal, or private protected
- 01:25:54   Compiler CS0116 A namespace cannot directly contain members such as fields, methods or statements
- 01:25:54   Compiler CS0116 A namespace cannot directly contain members such as fields, methods or statements
- 01:25:54   Compiler CS0116 A namespace cannot directly contain members such as fields, methods or statements
- 01:25:54   Compiler CS0116 A namespace cannot directly contain members such as fields, methods or statements
- 01:25:54   Compiler CS0116 A namespace cannot directly contain members such as fields, methods or statements
- 01:25:54   Compiler CS0116 A namespace cannot directly contain members such as fields, methods or statements
- 01:25:54   Compiler CS0116 A namespace cannot directly contain members such as fields, methods or statements
- 01:25:54   Compiler CS0116 A namespace cannot directly contain members such as fields, methods or statements
- 01:25:54   Compiler CS0116 A namespace cannot directly contain members such as fields, methods or statements
- 01:25:54   Compiler CS0116 A namespace cannot directly contain members such as fields, methods or statements
- 01:25:54   Compiler CS0116 A namespace cannot directly contain members such as fields, methods or statements
- 01:25:54   Compiler CS0116 A namespace cannot directly contain members such as fields, methods or statements
- 01:25:54   Compiler CS0116 A namespace cannot directly contain members such as fields, methods or statements
- 01:25:54   Compiler CS0116 A namespace cannot directly contain members such as fields, methods or statements
- 01:25:54   Compiler CS0549 '.RunCombat()' is a new virtual member in sealed type ''
- 01:25:54   Compiler CS0549 '.ExecuteMeleeAttack(BaseWeapon)' is a new virtual member in sealed type ''
- 01:25:54   Compiler CS0549 '.ExecuteRangeAttack(BaseWeapon)' is a new virtual member in sealed type ''
- 01:25:54   Compiler CS0549 '.ExecuteLeapAttack()' is a new virtual member in sealed type ''
- 01:25:54   Compiler CS0549 '.OnCreatureDeath(DamageInfo)' is a new virtual member in sealed type ''
- 01:25:54   Compiler CS0549 '.StopAttacks()' is a new virtual member in sealed type ''
- 01:25:54   Compiler CS0549 '.OnCreatureInit()' is a new virtual member in sealed type ''
- 01:25:54   Compiler CS0122 'AttackState' is inaccessible due to its protection level
- 01:25:54   Compiler CS0115 'HumanNPC.OnCreatureDeath(DamageInfo)': no suitable method found to override
- 01:25:54   Compiler CS0103 The name 'IsDead' does not exist in the current context
- 01:25:54   Compiler CS0103 The name 'PauseAttacks' does not exist in the current context
- 01:25:54   Compiler CS0103 The name 'IsFlinching' does not exist in the current context
- 01:25:54   Compiler CS0103 The name '_nextAttack' does not exist in the current context
- 01:25:54   Compiler CS0103 The name 'Components' does not exist in the current context
- 01:25:54   Compiler CS0103 The name 'HasCondition' does not exist in the current context
- 01:25:54   Compiler CS0103 The name 'ExecuteMeleeAttack' does not exist in the current context
- 01:25:54   Compiler CS0103 The name 'PlayAttackSound' does not exist in the current context
- 01:25:54   Compiler CS0103 The name 'HasCondition' does not exist in the current context
- 01:25:54   Compiler CS0103 The name 'ExecuteRangeAttack' does not exist in the current context
- 01:25:54   Compiler CS0103 The name 'PlayAttackSound' does not exist in the current context
- 01:25:54   Compiler CS0103 The name '_isFlinching' does not exist in the current context
- 01:25:54   Compiler CS0103 The name 'OnCreatureInit' does not exist in the current context
- 01:25:54   Compiler CS0103 The name 'RunCombat' does not exist in the current context
- 01:25:54   Compiler CS0103 The name '_attackType' does not exist in the current context
- 01:25:54   Compiler CS0103 The name '_attackState' does not exist in the current context
- 01:25:54   Compiler CS0122 'AttackState' is inaccessible due to its protection level
- 01:25:54   Compiler CS0120 An object reference is required for the non-static field, method, or property 'Transform.Position'
- 01:25:54   Compiler CS0117 'Transform' does not contain a definition for 'World'
- 01:25:54   Compiler CS0119 'GameObject' is a type, which is not valid in the given context
- 01:25:54   Compiler CS0120 An object reference is required for the non-static field, method, or property 'Transform.Position'
- 01:25:54   Compiler CS0117 'Transform' does not contain a definition for 'World'
- 01:25:54   Compiler CS0103 The name 'Enemy' does not exist in the current context
- 01:25:54   Compiler CS0119 'GameObject' is a type, which is not valid in the given context
- 01:25:54   Compiler CS0246 The type or namespace name 'IDamageable' could not be found (are you missing a using directive or an assembly reference?)
- 01:25:54   Compiler CS0117 'Transform' does not contain a definition for 'World'
- 01:25:54   Compiler CS0103 The name 'ApplyBleed' does not exist in the current context
- 01:25:54   Compiler CS0103 The name '_attackState' does not exist in the current context
- 01:25:54   Compiler  [1] CS0122 'AttackState' is inaccessible due to its protection level
- 01:25:54   Compiler CS0103 The name 'PlaySound' does not exist in the current context
- 01:25:54   Compiler CS0103 The name '_nextAttack' does not exist in the current context
- 01:25:54   Compiler CS0103 The name 'ExtraMeleeHit' does not exist in the current context
- 01:25:54   Compiler CS0103 The name 'OnCreatureDeath' does not exist in the current context
- 01:25:54   Compiler CS0103 The name '_attackType' does not exist in the current context
- 01:25:54   Compiler CS0103 The name '_attackState' does not exist in the current context
- 01:25:54   Compiler CS0122 'AttackState' is inaccessible due to its protection level
- 01:25:54   Compiler CS1503 Argument 1: cannot convert from 'VJBase.' to 'VJBase.BaseNPC'
- 01:25:54   Compiler CS0103 The name '_attackState' does not exist in the current context
- 01:25:54   Compiler CS0122 'AttackState' is inaccessible due to its protection level
- 01:25:54   Compiler CS0103 The name 'Enemy' does not exist in the current context
- 01:25:54   Compiler CS0120 An object reference is required for the non-static field, method, or property 'SandboxSystemExtensions.IsValid(IValid?)'
- 01:25:54   Compiler CS0103 The name '_attackType' does not exist in the current context
- 01:25:54   Compiler CS0103 The name '_attackState' does not exist in the current context
- 01:25:54   Compiler CS0122 'AttackState' is inaccessible due to its protection level
- 01:25:54   Compiler CS0120 An object reference is required for the non-static field, method, or property 'Transform.Position'
- 01:25:54   Compiler CS0103 The name 'Enemy' does not exist in the current context
- 01:25:54   Compiler CS0120 An object reference is required for the non-static field, method, or property 'PhysicsBody.Velocity'
- 01:25:54   Compiler CS0103 The name '_attackState' does not exist in the current context
- 01:25:54   Compiler CS0122 'AttackState' is inaccessible due to its protection level
- 01:25:54   Compiler CS0103 The name '_nextAttack' does not exist in the current context
- 01:25:54   Compiler CS0103 The name 'IsDead' does not exist in the current context
- 01:25:54   Compiler CS0103 The name '_attackType' does not exist in the current context
- 01:25:54   Compiler CS0103 The name '_attackState' does not exist in the current context
- 01:25:54   Compiler CS0122 'AttackState' is inaccessible due to its protection level
- 01:25:54   Compiler CS0103 The name 'PlayAttackSound' does not exist in the current context
- 01:25:54   Compiler CS0103 The name '_attackType' does not exist in the current context
- 01:25:54   Compiler CS0103 The name '_attackType' does not exist in the current context
- 01:25:54   Compiler CS0103 The name '_attackState' does not exist in the current context
- 01:25:54   Compiler CS0122 'AttackState' is inaccessible due to its protection level
- 01:25:54   Compiler CS0103 The name '_attackAnimTime' does not exist in the current context
- 01:25:54   Compiler CS0117 'CreatureNPC' does not contain a definition for 'OnCreatureDeath'
+2026/05/12 00:22:37.4194	[engine/Engine] SteamAPI_Init succeeded.  SteamID is [U:1:381939168] (76561198342204896), AppID is 590830	
+2026/05/12 00:22:38.2272	[engine/RenderSystem] Layer VK_LAYER_ROCKSTAR_GAMES_social_club uses API version 1.0 which is older than the application specified API version of 1.2. May cause issues.	
+2026/05/12 00:22:38.5734	[engine/RenderSystem] Vulkan Physical Device: NVIDIA GeForce RTX 4070 SUPER	
+2026/05/12 00:22:38.9608	[engine/RenderSystem] Vulkan driver version: 595.79.0.0	
+2026/05/12 00:22:42.1082	[Generic] Editor Startup version 26.05.06a	
+2026/05/12 00:22:42.7683	[engine/AssetSystem] AssetSystem pruned 1 stale assets	
+2026/05/12 00:22:43.0435	[Generic] Compiling Tools	
+2026/05/12 00:22:46.1524	[PackageManager] Install Package (Already Mounted) local.base#local [local]	
+2026/05/12 00:22:46.1749	[Generic] Command screenshot_highres already exists - not overwriting (Take a high resolution screenshot you specify the width and height)	
+2026/05/12 00:22:46.2273	[Generic] Compiling base projects	
+2026/05/12 00:23:02.9678	[Generic] Validating cloud packages	
+2026/05/12 00:23:03.2194	[PackageManager] Install Package (Already Mounted) local.base#local [local]	
+2026/05/12 00:23:03.2194	[PackageManager] Install Package (Already Mounted) local.menu#local [local]	
+2026/05/12 00:23:03.7011	[PackageManager] Install Package (Already Mounted) local.toolbase#local [local]	
+2026/05/12 00:23:03.7252	[PackageManager] Install Package (Already Mounted) local.shadergraph#local [local]	
+2026/05/12 00:23:03.7575	[PackageManager] Install Package (Already Mounted) local.actiongraph#local [local]	
+2026/05/12 00:23:03.8487	[PackageManager] Install Package (Already Mounted) local.moviemaker#local [local]	
+2026/05/12 00:23:03.8578	[PackageManager] Install Package (Already Mounted) local.hammer#local [local]	
+2026/05/12 00:23:03.8578	[PackageManager] Install Package (Already Mounted) local.dooeditor#local [local]	
+2026/05/12 00:23:03.8578	[PackageManager] Install Package (Already Mounted) local.base#local [local]	
+2026/05/12 00:23:03.8578	[PackageManager] Install Package (Already Mounted) local.menu#local [local]	
+2026/05/12 00:23:03.8700	[PackageManager] Install Package (Already Mounted) local.toolbase#local [local]	
+2026/05/12 00:23:03.8700	[PackageManager] Install Package (Already Mounted) local.shadergraph#local [local]	
+2026/05/12 00:23:03.8700	[PackageManager] Install Package (Already Mounted) local.actiongraph#local [local]	
+2026/05/12 00:23:03.8700	[PackageManager] Install Package (Already Mounted) local.moviemaker#local [local]	
+2026/05/12 00:23:03.8700	[PackageManager] Install Package (Already Mounted) local.hammer#local [local]	
+2026/05/12 00:23:03.8700	[PackageManager] Install Package (Already Mounted) local.dooeditor#local [local]	
+2026/05/12 00:23:03.8700	[PackageManager] Install Package (Already Mounted) guusconl.simpleinteractions#local [local]	
+2026/05/12 00:23:03.8700	[PackageManager] Install Package (Already Mounted) jtc.mcp-server#local [local]	
+2026/05/12 00:23:03.8700	[PackageManager] Install Package (Already Mounted) redsnail.watertool#local [local]	
+2026/05/12 00:23:03.8700	[PackageManager] Install Package (Already Mounted) toekneered.simpleinteractcomponent#local [local]	
+2026/05/12 00:23:04.1053	[engine/AssetSystem] AssetSystem pruned 4 stale assets	
+2026/05/12 00:23:09.1367	[Compiler/local.testzombie.editor] Broken Reference: package.local.testzombie (the compiler failed)	System.Exception: Broken Reference: package.local.testzombie (the compiler failed)
+   at Sandbox.CompileGroup.FindReferenceAsync(String reference, Compiler fromCompiler)
+   at Sandbox.Compiler.BuildReferencesAsync(CodeArchive archive)
+   at Sandbox.Compiler.BuildAsync()
+2026/05/12 00:23:09.1367	[Generic] Compile of 'local.testzombie' Failed:	
+2026/05/12 00:23:09.1367	[Generic] Warning | The annotation for nullable reference types should only be used in code within a '#nullable' annotations context. - F:\DevProject\Sbox\testzombie\Code\swb_shared\DamageInfo.cs:32,12	
+2026/05/12 00:23:09.1367	[Generic] Warning | The annotation for nullable reference types should only be used in code within a '#nullable' annotations context. - F:\DevProject\Sbox\testzombie\Code\swb_shared\DamageInfo.cs:33,8	
+2026/05/12 00:23:09.1367	[Generic] Warning | The annotation for nullable reference types should only be used in code within a '#nullable' annotations context. - F:\DevProject\Sbox\testzombie\Code\swb_shared\DamageInfo.cs:35,14	
+2026/05/12 00:23:09.1367	[Generic] Warning | The annotation for nullable reference types should only be used in code within a '#nullable' annotations context. - F:\DevProject\Sbox\testzombie\Code\swb_shared\IPlayerBase.cs:44,22	
+2026/05/12 00:23:09.1367	[Generic] Warning | The annotation for nullable reference types should only be used in code within a '#nullable' annotations context. - F:\DevProject\Sbox\testzombie\Code\swb_shared\IPlayerBase.cs:34,22	
+2026/05/12 00:23:09.1367	[Generic] Error | The type or namespace name 'TraceResult' could not be found (are you missing a using directive or an assembly reference?) - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\VJBaseWeapon.cs:693,26	
+2026/05/12 00:23:09.1367	[Generic] Warning | The annotation for nullable reference types should only be used in code within a '#nullable' annotations context. - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.cs:564,21	
+2026/05/12 00:23:09.1367	[Generic] Warning | The annotation for nullable reference types should only be used in code within a '#nullable' annotations context. - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.cs:568,21	
+2026/05/12 00:23:09.1367	[Generic] Warning | 'CreatureNPC.MaintainAlertBehavior(bool)' hides inherited member 'BaseNPC.MaintainAlertBehavior(bool)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword. - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\CreatureNPC.Think.cs:503,20	
+2026/05/12 00:23:09.1367	[Generic] Warning | 'CreatureNPC.IsVJBaseSNPC' hides inherited member 'BaseNPC.IsVJBaseSNPC'. Use the new keyword if hiding was intended. - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\CreatureNPC.cs:17,12	
+2026/05/12 00:23:09.1367	[Generic] Warning | 'HumanNPC.SCHEDULE_ALERT_CHASE(bool)' hides inherited member 'CreatureNPC.SCHEDULE_ALERT_CHASE(bool)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword. - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:1218,20	
+2026/05/12 00:23:09.1367	[Generic] Warning | 'HumanNPC.AnimationTranslations' hides inherited member 'BaseNPC.AnimationTranslations'. Use the new keyword if hiding was intended. - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.cs:472,31	
+2026/05/12 00:23:09.1367	[Generic] Warning | 'GameResourceAttribute' is obsolete: 'Use AssetType instead' - F:\DevProject\Sbox\testzombie\Code\Data\EncounterConfig.cs:10,1	
+2026/05/12 00:23:09.1367	[Generic] Warning | 'HammerSpawnBlocker.Enabled' hides inherited member 'Component.Enabled'. Use the new keyword if hiding was intended. - F:\DevProject\Sbox\testzombie\Code\Entities\Hammer\HammerSpawnBlocker.cs:19,13	
+2026/05/12 00:23:09.1367	[Generic] Warning | 'Weapon.IsRunning' hides inherited member 'Component.IsRunning(Doo)'. Use the new keyword if hiding was intended. - F:\DevProject\Sbox\testzombie\Code\swb_base\Weapon.Var.cs:354,12	
+2026/05/12 00:23:09.1367	[Generic] Warning | 'BaseZombie.BodyRenderer' hides inherited member 'BaseNpc.BodyRenderer'. Use the new keyword if hiding was intended. - F:\DevProject\Sbox\testzombie\Code\Zombies\BaseZombie.cs:127,28	
+2026/05/12 00:23:09.1367	[Generic] Error | Type 'BaseNPC' already defines a member called 'MaintainActivity' with the same parameter types - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.cs:1589,20	
+2026/05/12 00:23:09.1367	[Generic] Error | The type 'BaseNPC' already contains a definition for 'FL_NOTARGET' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.cs:74,12	
+2026/05/12 00:23:09.1367	[Generic] Error | The name 'StartHealth' does not exist in the current context - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\CreatureNPC.Think.cs:44,73	
+2026/05/12 00:23:09.1367	[Generic] Error | 'Vector3' does not contain a definition for 'Value' and no accessible extension method 'Value' accepting a first argument of type 'Vector3' could be found (are you missing a using directive or an assembly reference?) - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\CreatureNPC.Think.cs:165,76	
+2026/05/12 00:23:09.1367	[Generic] Error | The name 'TaskComplete' does not exist in the current context - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\CreatureNPC.Think.cs:298,32	
+2026/05/12 00:23:09.1367	[Generic] Error | No overload for method 'StopMoving' takes 1 arguments - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\CreatureNPC.Think.cs:301,32	
+2026/05/12 00:23:09.1367	[Generic] Error | The call is ambiguous between the following methods or properties: 'BaseNPC.MaintainActivity()' and 'BaseNPC.MaintainActivity()' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\CreatureNPC.Think.cs:425,8	
+2026/05/12 00:23:09.1367	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'string?' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:36,38	
+2026/05/12 00:23:09.1367	[Generic] Error | 'List<string>' does not contain a definition for 'Load' and no accessible extension method 'Load' accepting a first argument of type 'List<string>' could be found (are you missing a using directive or an assembly reference?) - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:41,39	
+2026/05/12 00:23:09.1367	[Generic] Error | Operator '!=' cannot be applied to operands of type 'string' and 'List<string>' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:172,46	
+2026/05/12 00:23:09.1367	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:174,43	
+2026/05/12 00:23:09.1367	[Generic] Error | Operator '!=' cannot be applied to operands of type 'string' and 'List<string>' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:189,42	
+2026/05/12 00:23:09.1367	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:191,46	
+2026/05/12 00:23:09.1367	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Entities\VJProjectile.cs:190,11	
+2026/05/12 00:23:09.1367	[Generic] Error | Argument 2: cannot convert from 'Vector3' to 'float' - F:\DevProject\Sbox\testzombie\Code\VJBase\Entities\VJProjectile.cs:190,19	
+2026/05/12 00:23:09.1367	[Generic] Error | 'EnemyData' is a type, which is not valid in the given context - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:242,26	
+2026/05/12 00:23:09.1367	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:314,22	
+2026/05/12 00:23:09.1367	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:317,22	
+2026/05/12 00:23:09.1367	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:323,30	
+2026/05/12 00:23:09.1367	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:337,30	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:347,30	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:350,30	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:353,30	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:356,30	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:359,30	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:362,30	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:365,30	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:373,38	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:376,38	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:379,38	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:386,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:392,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:395,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:398,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:404,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:407,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:410,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:419,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:422,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:428,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:431,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:435,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:438,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:441,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:444,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:447,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:450,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:456,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:459,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:471,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:474,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Use of unassigned local variable 'ownerNpc' - F:\DevProject\Sbox\testzombie\Code\VJBase\Entities\VJProjectile.cs:230,29	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:498,30	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:507,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:510,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:513,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:516,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:519,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:522,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:525,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:528,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:531,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:534,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:537,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:543,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:546,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:549,34	
+2026/05/12 00:23:09.1510	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:552,34	
+2026/05/12 00:23:09.1674	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:555,34	
+2026/05/12 00:23:09.1674	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:558,34	
+2026/05/12 00:23:09.1674	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:561,34	
+2026/05/12 00:23:09.1674	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:564,34	
+2026/05/12 00:23:09.1674	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:567,34	
+2026/05/12 00:23:09.1674	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:570,34	
+2026/05/12 00:23:09.1674	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:573,34	
+2026/05/12 00:23:09.1674	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:576,34	
+2026/05/12 00:23:09.1674	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:579,34	
+2026/05/12 00:23:09.1674	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:582,34	
+2026/05/12 00:23:09.1674	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:588,34	
+2026/05/12 00:23:09.1674	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:591,34	
+2026/05/12 00:23:09.1674	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:594,34	
+2026/05/12 00:23:09.1674	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:598,34	
+2026/05/12 00:23:09.1674	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:601,34	
+2026/05/12 00:23:09.1674	[Generic] Error | The type or namespace name 'PlayerBase' could not be found (are you missing a using directive or an assembly reference?) - F:\DevProject\Sbox\testzombie\Code\VJBase\Entities\VJProjectile.cs:280,37	
+2026/05/12 00:23:09.1674	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Entities\VJProjectile.cs:322,11	
+2026/05/12 00:23:09.1674	[Generic] Error | Argument 2: cannot convert from 'Vector3' to 'float' - F:\DevProject\Sbox\testzombie\Code\VJBase\Entities\VJProjectile.cs:322,19	
+2026/05/12 00:23:09.1674	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Entities\VJProjectile.cs:401,11	
+2026/05/12 00:23:09.1674	[Generic] Error | Argument 2: cannot convert from 'Vector3' to 'float' - F:\DevProject\Sbox\testzombie\Code\VJBase\Entities\VJProjectile.cs:401,19	
+2026/05/12 00:23:09.1674	[Generic] Error | Cannot implicitly convert type 'Sandbox.ModelRenderer' to 'Sandbox.SkinnedModelRenderer'. An explicit conversion exists (are you missing a cast?) - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\VJEntitySpawner.cs:81,24	
+2026/05/12 00:23:09.1674	[Generic] Error | 'AnimationGraph' does not contain a definition for 'GetDirectPlayback' and no accessible extension method 'GetDirectPlayback' accepting a first argument of type 'AnimationGraph' could be found (are you missing a using directive or an assembly reference?) - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\VJAnimationMapper.cs:184,75	
+2026/05/12 00:23:09.1674	[Generic] Error | The type or namespace name 'PropHelper' could not be found (are you missing a using directive or an assembly reference?) - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\VJDebug.cs:93,20	
+2026/05/12 00:23:09.1674	[Generic] Error | The name 'Task' does not exist in the current context - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\VJDebug.cs:100,8	
+2026/05/12 00:23:09.1674	[Generic] Error | The type or namespace name 'PlayerBase' could not be found (are you missing a using directive or an assembly reference?) - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\CreatureNPC.Think.cs:693,51	
+2026/05/12 00:23:09.1674	[Generic] Error | 'Rigidbody' does not contain a definition for 'IsKinematic' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\CreatureNPC.Think.cs:786,73	
+2026/05/12 00:23:09.1674	[Generic] Error | Argument 2: cannot convert from 'string' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Engine\AISenses.cs:402,60	
+2026/05/12 00:23:09.1674	[Generic] Error | The type or namespace name 'PlayerBase' could not be found (are you missing a using directive or an assembly reference?) - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\CreatureNPC.Think.cs:969,51	
+2026/05/12 00:23:09.1674	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:621,30	
+2026/05/12 00:23:09.1674	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:624,30	
+2026/05/12 00:23:09.1674	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:627,30	
+2026/05/12 00:23:09.1674	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:633,34	
+2026/05/12 00:23:09.1674	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:636,34	
+2026/05/12 00:23:09.1674	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:639,34	
+2026/05/12 00:23:09.1674	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:642,34	
+2026/05/12 00:23:09.1674	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:645,34	
+2026/05/12 00:23:09.1674	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:650,34	
+2026/05/12 00:23:09.1674	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:653,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:657,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:660,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:664,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:667,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:670,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:674,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:677,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:680,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:683,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:686,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:692,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:695,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:698,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:701,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:704,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:708,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:711,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:714,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:717,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:720,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:723,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:726,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:729,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:732,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:735,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:738,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:741,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:747,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:750,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:753,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:756,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:759,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:762,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:765,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:769,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:772,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:776,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:779,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:782,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:786,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:789,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:792,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:795,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:798,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:804,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:807,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:810,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:813,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:816,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:819,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:822,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:825,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:828,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:832,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:835,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:838,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:841,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:844,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:847,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:850,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:853,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:859,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:862,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:865,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:868,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:871,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:874,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:877,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:880,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:883,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:887,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:890,34	
+2026/05/12 00:23:09.1829	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:893,34	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:899,34	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:902,34	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:905,34	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:908,34	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:923,30	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:926,30	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:929,30	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:932,30	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:935,30	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:938,30	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:941,30	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:944,30	
+2026/05/12 00:23:09.2017	[Generic] Error | The name 'BecomeEnemyToPlayer' does not exist in the current context - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\CreatureNPC.Think.cs:1106,40	
+2026/05/12 00:23:09.2017	[Generic] Error | The type or namespace name 'PlayerBase' could not be found (are you missing a using directive or an assembly reference?) - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\CreatureNPC.Think.cs:1108,46	
+2026/05/12 00:23:09.2017	[Generic] Error | 'BaseNPC' does not contain a definition for 'BecomeEnemyToPlayer' and no accessible extension method 'BecomeEnemyToPlayer' accepting a first argument of type 'BaseNPC' could be found (are you missing a using directive or an assembly reference?) - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\CreatureNPC.Think.cs:1135,54	
+2026/05/12 00:23:09.2017	[Generic] Error | 'BaseNPC' does not contain a definition for 'BecomeEnemyToPlayer' and no accessible extension method 'BecomeEnemyToPlayer' accepting a first argument of type 'BaseNPC' could be found (are you missing a using directive or an assembly reference?) - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\CreatureNPC.Think.cs:1142,45	
+2026/05/12 00:23:09.2017	[Generic] Error | 'BaseNPC' does not contain a definition for 'OnBecomeEnemyToPlayer' and no accessible extension method 'OnBecomeEnemyToPlayer' accepting a first argument of type 'BaseNPC' could be found (are you missing a using directive or an assembly reference?) - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\CreatureNPC.Think.cs:1149,37	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\CreatureNPC.Think.cs:1191,36	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'VJBase.Activity' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\CreatureNPC.Think.cs:1282,46	
+2026/05/12 00:23:09.2017	[Generic] Warning | Possible unintended reference comparison; to get a value comparison, cast the left hand side to type 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\CreatureNPC.Think.cs:1123,20	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:955,30	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:958,30	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:961,30	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 1: cannot convert from 'VJBase.Activity' to 'int' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:964,30	
+2026/05/12 00:23:09.2017	[Generic] Warning | The variable 'i' is assigned but its value is never used - F:\DevProject\Sbox\testzombie\Code\Gamemodes\BaseGamemode.cs:147,6	
+2026/05/12 00:23:09.2017	[Generic] Error | 'PointLight' does not contain a definition for 'Brightness' and no accessible extension method 'Brightness' accepting a first argument of type 'PointLight' could be found (are you missing a using directive or an assembly reference?) - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\VJBaseWeapon.cs:721,18	
+2026/05/12 00:23:09.2017	[Generic] Error | 'PointLight' does not contain a definition for 'Range' and no accessible extension method 'Range' accepting a first argument of type 'PointLight' could be found (are you missing a using directive or an assembly reference?) - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\VJBaseWeapon.cs:724,18	
+2026/05/12 00:23:09.2017	[Generic] Error | 'PointLight' does not contain a definition for 'Color' and no accessible extension method 'Color' accepting a first argument of type 'PointLight' could be found (are you missing a using directive or an assembly reference?) - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\VJBaseWeapon.cs:727,18	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'string?' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\CreatureNPC.Think.cs:1396,34	
+2026/05/12 00:23:09.2017	[Generic] Error | Cannot implicitly convert type 'System.Collections.Generic.List<string>' to 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\CreatureNPC.Think.cs:1398,12	
+2026/05/12 00:23:09.2017	[Generic] Warning | Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call. - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\CreatureNPC.Think.cs:1505,12	
+2026/05/12 00:23:09.2017	[Generic] Warning | Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call. - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\CreatureNPC.Think.cs:1560,16	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:1081,44	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 2: cannot convert from 'Vector3' to 'float' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:1081,57	
+2026/05/12 00:23:09.2017	[Generic] Warning | The variable 'minRadius' is assigned but its value is never used - F:\DevProject\Sbox\testzombie\Code\GameDirector.cs:161,6	
+2026/05/12 00:23:09.2017	[Generic] Error | 'AnimationGraph' does not contain a definition for 'GetDirectPlayback' and no accessible extension method 'GetDirectPlayback' accepting a first argument of type 'AnimationGraph' could be found (are you missing a using directive or an assembly reference?) - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.AA.cs:680,66	
+2026/05/12 00:23:09.2017	[Generic] Error | Operator '==' cannot be applied to operands of type 'List<string>' and 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.AA.cs:717,23	
+2026/05/12 00:23:09.2017	[Generic] Error | Operator '==' cannot be applied to operands of type 'List<string>' and 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.AA.cs:717,45	
+2026/05/12 00:23:09.2017	[Generic] Error | Operator '==' cannot be applied to operands of type 'List<string>' and 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.AA.cs:718,7	
+2026/05/12 00:23:09.2017	[Generic] Error | Operator '==' cannot be applied to operands of type 'List<string>' and 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.AA.cs:718,28	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'string?' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.AA.cs:727,64	
+2026/05/12 00:23:09.2017	[Generic] Warning | The variable 'minRadius' is assigned but its value is never used - F:\DevProject\Sbox\testzombie\Code\Gamemodes\SurvivalGamemode.cs:282,6	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\VJBaseWeapon.cs:907,40	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 2: cannot convert from 'Vector3' to 'float' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\VJBaseWeapon.cs:907,47	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\VJBaseWeapon.cs:934,36	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 2: cannot convert from 'Vector3' to 'float' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\VJBaseWeapon.cs:934,44	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\VJBaseWeapon.cs:951,43	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 2: cannot convert from 'Vector3' to 'float' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\VJBaseWeapon.cs:951,54	
+2026/05/12 00:23:09.2017	[Generic] Error | The type or namespace name 'PlayerBase' could not be found (are you missing a using directive or an assembly reference?) - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\VJBaseWeapon.cs:989,51	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\VJBaseWeapon.cs:1061,44	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 2: cannot convert from 'Vector3' to 'float' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\VJBaseWeapon.cs:1061,51	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\VJBaseWeapon.cs:1076,44	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 2: cannot convert from 'Vector3' to 'float' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\VJBaseWeapon.cs:1076,52	
+2026/05/12 00:23:09.2017	[Generic] Error | 'DamageInfo' does not contain a definition for 'Force' and no accessible extension method 'Force' accepting a first argument of type 'DamageInfo' could be found (are you missing a using directive or an assembly reference?) - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\VJBaseWeapon.cs:1111,23	
+2026/05/12 00:23:09.2017	[Generic] Error | Argument 2: cannot convert from 'Sandbox.SceneTraceResult' to 'TraceResult' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\VJBaseWeapon.cs:1130,66	
+2026/05/12 00:23:09.2017	[Generic] Error | The type or namespace name 'PlayerBase' could not be found (are you missing a using directive or an assembly reference?) - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\VJBaseWeapon.cs:1199,39	
+2026/05/12 00:23:09.2017	[Generic] Error | An expression of type 'Activity' cannot be handled by a pattern of type 'string'. - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.Animation.cs:210,35	
+2026/05/12 00:23:09.2017	[Generic] Warning | The variable 'doRealAnimTime' is assigned but its value is never used - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.Animation.cs:291,17	
+2026/05/12 00:23:09.2017	[Generic] Error | Use of unassigned local variable 'nextSeq' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.Animation.cs:522,37	
+2026/05/12 00:23:09.2017	[Generic] Error | Cannot implicitly convert type 'VJBase.Activity[]' to 'VJBase.Activity' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.Animation.cs:617,36	
+2026/05/12 00:23:09.2017	[Generic] Error | Cannot implicitly convert type 'System.Collections.Generic.List<VJBase.Activity>' to 'VJBase.Activity' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.Animation.cs:624,36	
+2026/05/12 00:23:09.2137	[Generic] Error | Cannot implicitly convert type 'VJBase.Activity[]' to 'VJBase.Activity' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.Animation.cs:657,15	
+2026/05/12 00:23:09.2137	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<Vector3>' to 'Vector3' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:1809,56	
+2026/05/12 00:23:09.2137	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<Vector3>' to 'Vector3' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:1901,40	
+2026/05/12 00:23:09.2137	[Generic] Error | Operator '+' cannot be applied to operands of type 'List<Vector3>' and 'Vector3' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:2116,62	
+2026/05/12 00:23:09.2137	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<Vector3>' to 'Vector3' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:2121,56	
+2026/05/12 00:23:09.2137	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'VJBase.Activity' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:2156,80	
+2026/05/12 00:23:09.2137	[Generic] Error | 'TurnData' does not contain a definition for 'FaceEnemy' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:2167,72	
+2026/05/12 00:23:09.2137	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'VJBase.Activity' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:2190,70	
+2026/05/12 00:23:09.2137	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'VJBase.Activity' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:2270,79	
+2026/05/12 00:23:09.2137	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'VJBase.Activity' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:2274,83	
+2026/05/12 00:23:09.2137	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<Vector3>' to 'Vector3' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:2344,56	
+2026/05/12 00:23:09.2137	[Generic] Error | No overload for method 'MaintainAlertBehavior' takes 0 arguments - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:2515,12	
+2026/05/12 00:23:09.2137	[Generic] Error | Argument 3: cannot convert from 'object' to 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:2566,67	
+2026/05/12 00:23:09.2137	[Generic] Error | Argument 3: cannot convert from 'object' to 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:2663,47	
+2026/05/12 00:23:09.2137	[Generic] Warning | Possible unintended reference comparison; to get a value comparison, cast the left hand side to type 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:2523,12	
+2026/05/12 00:23:09.2137	[Generic] Warning | Possible unintended reference comparison; to get a value comparison, cast the left hand side to type 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:2530,17	
+2026/05/12 00:23:09.2137	[Generic] Error | Argument 3: cannot convert from 'object' to 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:2681,62	
+2026/05/12 00:23:09.2137	[Generic] Error | Cannot implicitly convert type 'System.Collections.Generic.List<Vector3>' to 'Vector3' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:2748,33	
+2026/05/12 00:23:09.2137	[Generic] Error | An expression of type 'GameObject' cannot be handled by a pattern of type 'string'. - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:2783,29	
+2026/05/12 00:23:09.2137	[Generic] Error | Cannot implicitly convert type 'System.Collections.Generic.List<string>' to 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:2793,31	
+2026/05/12 00:23:09.2137	[Generic] Error | Cannot implicitly convert type 'System.Collections.Generic.List<string>' to 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:2796,31	
+2026/05/12 00:23:09.2137	[Generic] Error | Argument 4: cannot convert from 'object' to 'Vector3?' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:2847,67	
+2026/05/12 00:23:09.2137	[Generic] Error | Argument 4: cannot convert from 'object' to 'Vector3?' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:2853,90	
+2026/05/12 00:23:09.2137	[Generic] Error | A local or parameter named 'dmgInflictor' cannot be declared in this scope because that name is used in an enclosing local scope to define a local or parameter - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:3172,16	
+2026/05/12 00:23:09.2137	[Generic] Error | Operator '+' cannot be applied to operands of type 'float' and '(float a, float b)' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:3264,32	
+2026/05/12 00:23:09.2137	[Generic] Error | The name 'GetAimPosition' does not exist in the current context - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:3409,57	
+2026/05/12 00:23:09.2137	[Generic] Error | Argument 2: cannot convert from 'System.Collections.Generic.List<string>' to 'VJBase.Activity' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:3413,90	
+2026/05/12 00:23:09.2137	[Generic] Error | 'AISchedule' does not contain a definition for 'EngineTask' and no accessible extension method 'EngineTask' accepting a first argument of type 'AISchedule' could be found (are you missing a using directive or an assembly reference?) - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:3440,37	
+2026/05/12 00:23:09.2137	[Generic] Error | No overload for method 'MaintainAlertBehavior' takes 0 arguments - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:3522,36	
+2026/05/12 00:23:09.2137	[Generic] Error | The name 'dmgAttacker' does not exist in the current context - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:3706,23	
+2026/05/12 00:23:09.2137	[Generic] Error | The name 'dmgAttacker' does not exist in the current context - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:3707,23	
+2026/05/12 00:23:09.2137	[Generic] Error | 'BaseNPC' does not contain a definition for 'BecomeEnemyToPlayer' and no accessible extension method 'BecomeEnemyToPlayer' accepting a first argument of type 'BaseNPC' could be found (are you missing a using directive or an assembly reference?) - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:3734,58	
+2026/05/12 00:23:09.2137	[Generic] Error | The name 'dmgAttacker' does not exist in the current context - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:3735,54	
+2026/05/12 00:23:09.2137	[Generic] Error | The name 'dmgAttacker' does not exist in the current context - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:3739,55	
+2026/05/12 00:23:09.2137	[Generic] Error | The name 'dmgAttacker' does not exist in the current context - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:3740,71	
+2026/05/12 00:23:09.2137	[Generic] Error | 'BaseNPC' does not contain a definition for 'BecomeEnemyToPlayer' and no accessible extension method 'BecomeEnemyToPlayer' accepting a first argument of type 'BaseNPC' could be found (are you missing a using directive or an assembly reference?) - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:3741,49	
+2026/05/12 00:23:09.2137	[Generic] Error | The name 'dmgAttacker' does not exist in the current context - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:3744,53	
+2026/05/12 00:23:09.2137	[Generic] Error | 'BaseNPC' does not contain a definition for 'OnBecomeEnemyToPlayer' and no accessible extension method 'OnBecomeEnemyToPlayer' accepting a first argument of type 'BaseNPC' could be found (are you missing a using directive or an assembly reference?) - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:3748,41	
+2026/05/12 00:23:09.2137	[Generic] Error | The name 'dmgAttacker' does not exist in the current context - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:3751,63	
+2026/05/12 00:23:09.2137	[Generic] Error | The name 'dmgAttacker' does not exist in the current context - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:3754,63	
+2026/05/12 00:23:09.2137	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:3792,36	
+2026/05/12 00:23:09.2137	[Generic] Error | A local or parameter named 'deathTime' cannot be declared in this scope because that name is used in an enclosing local scope to define a local or parameter - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:3875,20	
+2026/05/12 00:23:09.2137	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'VJBase.Activity' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:3875,47	
+2026/05/12 00:23:09.2137	[Generic] Warning | Possible unintended reference comparison; to get a value comparison, cast the left hand side to type 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:3722,24	
+2026/05/12 00:23:09.2137	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'string?' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:4011,34	
+2026/05/12 00:23:09.2137	[Generic] Error | Cannot implicitly convert type 'System.Collections.Generic.List<string>' to 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:4013,12	
+2026/05/12 00:23:09.2137	[Generic] Warning | Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call. - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:4116,12	
+2026/05/12 00:23:09.2137	[Generic] Warning | Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call. - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:4182,0	
+2026/05/12 00:23:09.2137	[Generic] Warning | Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call. - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:4187,16	
+2026/05/12 00:23:09.2137	[Generic] Error | 'DamageInfo' does not contain a definition for 'Force' and no accessible extension method 'Force' accepting a first argument of type 'DamageInfo' could be found (are you missing a using directive or an assembly reference?) - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:4242,40	
+2026/05/12 00:23:09.2137	[Generic] Error | 'Rigidbody' does not contain a definition for 'IsKinematic' - F:\DevProject\Sbox\testzombie\Code\VJBase\Bases\HumanNPC.Think.cs:4335,69	
+2026/05/12 00:23:09.2137	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'string?' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.cs:1514,38	
+2026/05/12 00:23:09.2137	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.cs:1516,40	
+2026/05/12 00:23:09.2137	[Generic] Error | Argument 2: cannot convert from 'Vector3' to 'float' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.cs:1516,48	
+2026/05/12 00:23:09.2137	[Generic] Error | Operator '??' cannot be applied to operands of type 'string' and 'List<string>' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.cs:1616,27	
+2026/05/12 00:23:09.2137	[Generic] Error | Operator '??' cannot be applied to operands of type 'string' and 'List<string>' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.cs:1632,27	
+2026/05/12 00:23:09.2137	[Generic] Error | Type of conditional expression cannot be determined because there is no implicit conversion between 'string' and 'System.Collections.Generic.List<string>' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.cs:1665,27	
+2026/05/12 00:23:09.2137	[Generic] Error | Type of conditional expression cannot be determined because there is no implicit conversion between 'string' and 'System.Collections.Generic.List<string>' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.cs:1681,27	
+2026/05/12 00:23:09.2137	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.cs:1716,32	
+2026/05/12 00:23:09.2137	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'string?' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.cs:1921,34	
+2026/05/12 00:23:09.2137	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.cs:1926,40	
+2026/05/12 00:23:09.2137	[Generic] Error | Ambiguity between 'BaseNPC.FL_NOTARGET' and 'BaseNPC.FL_NOTARGET' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.cs:2061,35	
+2026/05/12 00:23:09.2137	[Generic] Error | The name 'BeginDeath' does not exist in the current context - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.cs:2627,12	
+2026/05/12 00:23:09.2137	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'string?' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.cs:3008,33	
+2026/05/12 00:23:09.2137	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.cs:3028,16	
+2026/05/12 00:23:09.2137	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.cs:3036,32	
+2026/05/12 00:23:09.2137	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.cs:3045,28	
+2026/05/12 00:23:09.2137	[Generic] Error | Argument 1: cannot convert from 'System.Collections.Generic.List<string>' to 'string' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.cs:3049,32	
+2026/05/12 00:23:09.2137	[Generic] Error | Ambiguity between 'BaseNPC.FL_NOTARGET' and 'BaseNPC.FL_NOTARGET' - F:\DevProject\Sbox\testzombie\Code\VJBase\Core\BaseNPC.cs:3570,52	
+2026/05/12 00:23:09.2137	[Generic] Warning | Field 'CrossbowBolt.timeSinceSpawned' is never assigned to, and will always have its default value  - F:\DevProject\Sbox\testzombie\Code\Entities\CrossbowBolt.cs:40,10	
+2026/05/12 00:23:09.2137	[Generic] Warning | The field 'SoundSystem._nextIndex' is never used - F:\DevProject\Sbox\testzombie\Code\VJBase\Engine\AISenses.cs:145,19	
+2026/05/12 00:23:09.2296	[Generic] Compile of 'local.testzombie.editor' Failed:	
+2026/05/12 00:23:09.2296	[Generic] Errors when loading 'Sandbox.Project'	

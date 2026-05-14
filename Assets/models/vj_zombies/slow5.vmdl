@@ -15,7 +15,7 @@
 						_class = "RenderMeshFile"
 						note = ""
 						children = []
-						name = "male_03"
+						name = "male_03_reference"
 						filename = "models/vj_zombies/slow5/male_03_reference.smd"
 						import_translation = [0, 0, 0]
 						import_rotation = [0, 0, 0]
@@ -29,6 +29,31 @@
 							exclude_by_default = false
 							exception_list = []
 						}
+					},
+				]
+
+			},
+			{
+				_class = "BodyGroupList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "BodyGroup"
+						note = ""
+						children = 
+						[
+							{
+								_class = "BodyGroupChoice"
+								note = ""
+								children = []
+								name = ""
+								meshes = ["male_03_reference"]
+							},
+						]
+
+						name = "male_03"
+						hidden_in_tools = false
 					},
 				]
 
@@ -169,6 +194,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/slow5/slow5_anims/ragdoll.smd"
 						start_frame = -1
 						end_frame = -1

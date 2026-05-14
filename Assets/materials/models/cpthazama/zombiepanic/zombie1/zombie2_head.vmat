@@ -1,10 +1,10 @@
 "Layer0"
 {
-	"shader"		"shaders/simple.shader"
-	"TextureColor"		"materials/models/cpthazama/zombiepanic/zombie1/zombie2_head.tga"
-	"F_SPECULAR"		"1"
-	"g_flSpecularExponent"		"100.000000"
-	"g_flPhongBoost"		"1.000000"
-	"TextureNormal"		"materials/models/cpthazama/zombiepanic/zombie1/zombie2_head_nm.tga"
-	"TextureRoughness"		"materials/models/cpthazama/zombiepanic/zombie1/zombie2_head_nm_a-1_rough.tga"
+	shader	"complex.vfx"
+	TextureColor	"materials/models/cpthazama/zombiepanic/zombie1/zombie2_head.tga"
+	F_SPECULAR	"1"
+	g_flSpecularExponent	"100.000000"
+	g_flPhongBoost	"1.000000"
+	TextureNormal	"materials/models/cpthazama/zombiepanic/zombie1/zombie2_head_nm.tga"
+	TextureRoughness	"materials/models/cpthazama/zombiepanic/zombie1/zombie2_head_nm_a-1_rough.tga"
 }

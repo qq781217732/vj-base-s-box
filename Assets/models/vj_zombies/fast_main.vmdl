@@ -7,6 +7,44 @@
 		children = 
 		[
 			{
+				_class = "PoseParamList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "PoseParam"
+						note = ""
+						children = []
+						name = "move_yaw"
+						poseparam_min = -180.0
+						poseparam_max = 180.0
+						poseparam_looping = false
+						poseparam_loop = 0.0
+					},
+					{
+						_class = "PoseParam"
+						note = ""
+						children = []
+						name = "lean_lateral"
+						poseparam_min = -1.0
+						poseparam_max = 1.0
+						poseparam_looping = false
+						poseparam_loop = 0.0
+					},
+					{
+						_class = "PoseParam"
+						note = ""
+						children = []
+						name = "lean_vertical"
+						poseparam_min = -1.0
+						poseparam_max = 1.0
+						poseparam_looping = false
+						poseparam_loop = 0.0
+					},
+				]
+
+			},
+			{
 				_class = "RenderMeshList"
 				note = ""
 				children = 
@@ -15,7 +53,7 @@
 						_class = "RenderMeshFile"
 						note = ""
 						children = []
-						name = "studio"
+						name = "zombie_fast_fast_Zombiefast_reference"
 						filename = "models/vj_zombies/fast_main/zombie_fast_fast_zombiefast_reference.smd"
 						import_translation = [0, 0, 0]
 						import_rotation = [0, 0, 0]
@@ -49,6 +87,158 @@
 							exception_list = []
 						}
 					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "zombie_fast_fast_Zombiefast_reference_lod1"
+						filename = "models/vj_zombies/fast_main/zombie_fast_fast_zombiefast_reference_lod1.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "zombie_fast_fast_Headcrab_reference_lod1"
+						filename = "models/vj_zombies/fast_main/zombie_fast_fast_headcrab_reference_lod1.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "zombie_fast_fast_Zombiefast_reference_lod2"
+						filename = "models/vj_zombies/fast_main/zombie_fast_fast_zombiefast_reference_lod2.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "zombie_fast_fast_Headcrab_reference_lod2"
+						filename = "models/vj_zombies/fast_main/zombie_fast_fast_headcrab_reference_lod2.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "zombie_fast_fast_Zombiefast_reference_lod3"
+						filename = "models/vj_zombies/fast_main/zombie_fast_fast_zombiefast_reference_lod3.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "zombie_fast_fast_Headcrab_reference_lod3"
+						filename = "models/vj_zombies/fast_main/zombie_fast_fast_headcrab_reference_lod3.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "zombie_fast_fast_Zombiefast_reference_lod4"
+						filename = "models/vj_zombies/fast_main/zombie_fast_fast_zombiefast_reference_lod4.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						note = ""
+						children = []
+						name = "zombie_fast_fast_Headcrab_reference_lod4"
+						filename = "models/vj_zombies/fast_main/zombie_fast_fast_headcrab_reference_lod4.smd"
+						import_translation = [0, 0, 0]
+						import_rotation = [0, 0, 0]
+						import_scale = 1
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = []
+						}
+					},
 				]
 
 			},
@@ -66,6 +256,23 @@
 								_class = "BodyGroupChoice"
 								note = ""
 								children = []
+								name = ""
+								meshes = ["zombie_fast_fast_Zombiefast_reference", "zombie_fast_fast_Zombiefast_reference_lod1", "zombie_fast_fast_Zombiefast_reference_lod2", "zombie_fast_fast_Zombiefast_reference_lod3", "zombie_fast_fast_Zombiefast_reference_lod4"]
+							},
+						]
+
+						name = "studio"
+						hidden_in_tools = false
+					},
+					{
+						_class = "BodyGroup"
+						note = ""
+						children = 
+						[
+							{
+								_class = "BodyGroupChoice"
+								note = ""
+								children = []
 								name = "blank"
 								meshes = []
 							},
@@ -74,7 +281,7 @@
 								note = ""
 								children = []
 								name = ""
-								meshes = ["zombie_fast_fast_Headcrab_reference"]
+								meshes = ["zombie_fast_fast_Headcrab_reference", "zombie_fast_fast_Headcrab_reference_lod1", "zombie_fast_fast_Headcrab_reference_lod2", "zombie_fast_fast_Headcrab_reference_lod3", "zombie_fast_fast_Headcrab_reference_lod4"]
 							},
 						]
 
@@ -95,7 +302,7 @@
 						children = []
 						name = ""
 						switch_threshold = 0.0
-						meshes = ["zombie_fast_fast_Zombiefast_reference.smd", "zombie_fast_fast_Headcrab_reference.smd"]
+						meshes = ["zombie_fast_fast_Zombiefast_reference", "zombie_fast_fast_Headcrab_reference"]
 					},
 					{
 						_class = "LODGroup"
@@ -103,7 +310,7 @@
 						children = []
 						name = ""
 						switch_threshold = 8
-						meshes = ["zombie_fast_fast_Zombiefast_reference_lod1.smd", "zombie_fast_fast_Headcrab_reference_lod1.smd"]
+						meshes = ["zombie_fast_fast_Zombiefast_reference_lod1", "zombie_fast_fast_Headcrab_reference_lod1"]
 					},
 					{
 						_class = "LODGroup"
@@ -111,7 +318,7 @@
 						children = []
 						name = ""
 						switch_threshold = 20
-						meshes = ["zombie_fast_fast_Zombiefast_reference_lod2.smd", "zombie_fast_fast_Headcrab_reference_lod2.smd"]
+						meshes = ["zombie_fast_fast_Zombiefast_reference_lod2", "zombie_fast_fast_Headcrab_reference_lod2"]
 					},
 					{
 						_class = "LODGroup"
@@ -119,7 +326,7 @@
 						children = []
 						name = ""
 						switch_threshold = 40
-						meshes = ["zombie_fast_fast_Zombiefast_reference_lod3.smd", "zombie_fast_fast_Headcrab_reference_lod3.smd"]
+						meshes = ["zombie_fast_fast_Zombiefast_reference_lod3", "zombie_fast_fast_Headcrab_reference_lod3"]
 					},
 					{
 						_class = "LODGroup"
@@ -127,7 +334,7 @@
 						children = []
 						name = ""
 						switch_threshold = 80
-						meshes = ["zombie_fast_fast_Zombiefast_reference_lod4.smd", "zombie_fast_fast_Headcrab_reference_lod4.smd"]
+						meshes = ["zombie_fast_fast_Zombiefast_reference_lod4", "zombie_fast_fast_Headcrab_reference_lod4"]
 					},
 				]
 
@@ -304,6 +511,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_idle_lean_left_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -328,6 +536,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_idle_lean_center_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -352,6 +561,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_idle_lean_right_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -376,6 +586,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_idle_lean_up_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -400,6 +611,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_idle_lean_down_corrective_animation.smd"
 						start_frame = -1
 						end_frame = -1
@@ -424,6 +636,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/climblanding.smd"
 						start_frame = -1
 						end_frame = -1
@@ -448,6 +661,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/a_walks.smd"
 						start_frame = -1
 						end_frame = -1
@@ -472,6 +686,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/a_walkse.smd"
 						start_frame = -1
 						end_frame = -1
@@ -496,6 +711,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/a_walke.smd"
 						start_frame = -1
 						end_frame = -1
@@ -520,6 +736,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/a_walkne.smd"
 						start_frame = -1
 						end_frame = -1
@@ -544,6 +761,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/a_walkn.smd"
 						start_frame = -1
 						end_frame = -1
@@ -568,6 +786,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/a_walknw.smd"
 						start_frame = -1
 						end_frame = -1
@@ -592,6 +811,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/a_walkw.smd"
 						start_frame = -1
 						end_frame = -1
@@ -616,6 +836,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/a_walksw.smd"
 						start_frame = -1
 						end_frame = -1
@@ -640,6 +861,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_idle_lean_neutral.smd"
 						start_frame = -1
 						end_frame = -1
@@ -664,6 +886,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_idle_lean_center.smd"
 						start_frame = -1
 						end_frame = -1
@@ -688,6 +911,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_idle_lean_right.smd"
 						start_frame = -1
 						end_frame = -1
@@ -712,6 +936,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_idle_lean_left.smd"
 						start_frame = -1
 						end_frame = -1
@@ -736,6 +961,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_idle_lean_up.smd"
 						start_frame = -1
 						end_frame = -1
@@ -760,6 +986,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_idle_lean_down.smd"
 						start_frame = -1
 						end_frame = -1
@@ -784,6 +1011,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/idle.smd"
 						start_frame = -1
 						end_frame = -1
@@ -808,6 +1036,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/idle_angry.smd"
 						start_frame = -1
 						end_frame = -1
@@ -832,6 +1061,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/idle_onfire.smd"
 						start_frame = -1
 						end_frame = -1
@@ -881,6 +1111,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/run.smd"
 						start_frame = -1
 						end_frame = -1
@@ -919,6 +1150,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/leap.smd"
 						start_frame = -1
 						end_frame = -1
@@ -943,6 +1175,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/leapstrike.smd"
 						start_frame = -1
 						end_frame = -1
@@ -967,6 +1200,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/landright.smd"
 						start_frame = -1
 						end_frame = -1
@@ -991,6 +1225,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/landleft.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1040,6 +1275,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/melee.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1064,6 +1300,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/climbmount.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1113,6 +1350,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/climbloop.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1137,6 +1375,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/climbdismount.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1161,6 +1400,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/jumpnavmove.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1185,6 +1425,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/leap_start.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1209,6 +1450,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/leap_loop.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1233,6 +1475,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/leap_land.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1257,6 +1500,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/br2_roar.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1295,6 +1539,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/br2_attack.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1344,7 +1589,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
-						poseParam = ""
+						poseParam = "move_yaw"
 						blendList = 
 						[
 							{
@@ -1402,7 +1647,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
-						poseParam = ""
+						poseParam = "lean_lateral"
 						blendList = 
 						[
 							{
@@ -1436,7 +1681,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
-						poseParam = ""
+						poseParam = "lean_vertical"
 						blendList = 
 						[
 							{
@@ -1470,6 +1715,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_idle.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1494,6 +1740,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_idle_right.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1518,6 +1765,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_idle_left.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1542,6 +1790,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/buggy_jumpdown_preidle.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1566,6 +1815,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/buggy_preidle.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1590,6 +1840,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/buggy_preidle_leap.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1614,6 +1865,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/buggy_postidle_leap.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1652,6 +1904,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/buggy_enter1.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1690,6 +1943,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/buggy_enter_right.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1728,6 +1982,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/buggy_enter_left.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1777,6 +2032,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/buggy_enter_front_left.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1815,6 +2071,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/buggy_enter_front_right.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1853,6 +2110,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/buggy_enter_back_left.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1891,6 +2149,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/buggy_enter_back_right.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1915,6 +2174,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/buggy_dismount.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1939,6 +2199,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_bump.smd"
 						start_frame = -1
 						end_frame = -1
@@ -1977,6 +2238,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_melee1.smd"
 						start_frame = -1
 						end_frame = -1
@@ -2015,6 +2277,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_melee2.smd"
 						start_frame = -1
 						end_frame = -1
@@ -2039,6 +2302,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_pass_melee1.smd"
 						start_frame = -1
 						end_frame = -1
@@ -2063,6 +2327,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_driver_melee1.smd"
 						start_frame = -1
 						end_frame = -1
@@ -2101,6 +2366,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_roar.smd"
 						start_frame = -1
 						end_frame = -1
@@ -2139,6 +2405,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_leap.smd"
 						start_frame = -1
 						end_frame = -1
@@ -2163,6 +2430,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/vehicle_leap_loop.smd"
 						start_frame = -1
 						end_frame = -1
@@ -2187,6 +2455,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/ragdoll.smd"
 						start_frame = -1
 						end_frame = -1
@@ -2292,6 +2561,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/buggy_fast_dynamic01.smd"
 						start_frame = -1
 						end_frame = -1
@@ -2316,6 +2586,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/slump_a.smd"
 						start_frame = -1
 						end_frame = -1
@@ -2365,6 +2636,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/slumprise_a.smd"
 						start_frame = -1
 						end_frame = -1
@@ -2389,6 +2661,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/slump_b.smd"
 						start_frame = -1
 						end_frame = -1
@@ -2449,6 +2722,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/slumprise_b.smd"
 						start_frame = -1
 						end_frame = -1
@@ -2509,6 +2783,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/fast_main/fast_main_anims/slumprise_c.smd"
 						start_frame = -1
 						end_frame = -1

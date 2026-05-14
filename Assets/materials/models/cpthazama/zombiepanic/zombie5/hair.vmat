@@ -1,11 +1,12 @@
 "Layer0"
 {
-	"shader"		"shaders/complex.shader"
-	"TextureColor"		"materials/models/cpthazama/zombiepanic/zombie5/diffuse.tga"
-	"F_TRANSLUCENT"		"1"
-	"TextureTranslucency"		"materials/models/cpthazama/zombiepanic/zombie5/diffuse_a_trans.tga"
-	"TextureRoughness"		"materials/default/default_rough_s1import.tga"
-	"DynamicParams"
+	shader	"complex.vfx"
+	TextureColor	"materials/models/cpthazama/zombiepanic/zombie5/diffuse.tga"
+	F_TRANSLUCENT	"1"
+	TextureTranslucency	"materials/models/cpthazama/zombiepanic/zombie5/diffuse_a_trans.tga"
+	TextureRoughness	"materials/default/default_rough_s1import.tga"
+	DynamicParams
 	{
+		g_vSelfIllumTint	""
 	}
 }

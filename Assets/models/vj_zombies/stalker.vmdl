@@ -15,7 +15,7 @@
 						_class = "RenderMeshFile"
 						note = ""
 						children = []
-						name = "studio"
+						name = "stalker_old_reference"
 						filename = "models/vj_zombies/stalker/stalker_old_reference.smd"
 						import_translation = [0, 0, 0]
 						import_rotation = [0, 0, 0]
@@ -29,6 +29,31 @@
 							exclude_by_default = false
 							exception_list = []
 						}
+					},
+				]
+
+			},
+			{
+				_class = "BodyGroupList"
+				note = ""
+				children = 
+				[
+					{
+						_class = "BodyGroup"
+						note = ""
+						children = 
+						[
+							{
+								_class = "BodyGroupChoice"
+								note = ""
+								children = []
+								name = ""
+								meshes = ["stalker_old_reference"]
+							},
+						]
+
+						name = "studio"
+						hidden_in_tools = false
 					},
 				]
 
@@ -145,6 +170,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/stalker/stalker_anims/idle1.smd"
 						start_frame = -1
 						end_frame = -1
@@ -169,6 +195,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/stalker/stalker_anims/idle2.smd"
 						start_frame = -1
 						end_frame = -1
@@ -218,6 +245,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/stalker/stalker_anims/walk.smd"
 						start_frame = -1
 						end_frame = -1
@@ -267,6 +295,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/stalker/stalker_anims/run.smd"
 						start_frame = -1
 						end_frame = -1
@@ -327,6 +356,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/stalker/stalker_anims/podconvulse.smd"
 						start_frame = -1
 						end_frame = -1
@@ -351,6 +381,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/stalker/stalker_anims/working.smd"
 						start_frame = -1
 						end_frame = -1
@@ -375,6 +406,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/stalker/stalker_anims/ragdoll.smd"
 						start_frame = -1
 						end_frame = -1
@@ -399,6 +431,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/stalker/stalker_anims/rangeattack.smd"
 						start_frame = -1
 						end_frame = -1
@@ -423,6 +456,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/stalker/stalker_anims/work.smd"
 						start_frame = -1
 						end_frame = -1
@@ -447,6 +481,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/stalker/stalker_anims/jumpback.smd"
 						start_frame = -1
 						end_frame = -1
@@ -485,6 +520,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/stalker/stalker_anims/attack1.smd"
 						start_frame = -1
 						end_frame = -1
@@ -509,6 +545,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/stalker/stalker_anims/attack2.smd"
 						start_frame = -1
 						end_frame = -1
@@ -533,6 +570,7 @@
 						hidden = false
 						anim_markup_ordered = false
 						disable_compression = false
+						poseParam = ""
 						source_filename = "models/vj_zombies/stalker/stalker_anims/attack3.smd"
 						start_frame = -1
 						end_frame = -1
